@@ -56,41 +56,87 @@ No IP to protect. All current software projects by the MES are publically availa
 
 
 \section{Copyright License}
-
-\wss{This project will follow a proprietary licensing agreement, which can be found in the LICENSE file.}
+This project will follow a proprietary licensing agreement, which can be found in the LICENSE file.
 
 \section{Team Meeting Plan}
-We will hold team meetings twice a week, either online or in person, based on availability and need.
 
-Advisor meetings will take place monthly through Teams unless urgent issues arise. In such cases, meetings may be held in person, depending on the severity of the matter and in consultation with the advisor.
+We will hold team meetings twice a week, either online or in person, based on availability and need. Advisor meetings will take place monthly through Teams unless urgent issues arise. In such cases, meetings may be held in person, depending on the severity of the matter and in consultation with the advisor.
 
-Meeting Structure:
+\subsection{Meeting Structure}
 
-Team Meetings: Each team member will share updates on completed tasks and current work. During this time, others can ask questions or provide feedback. After updates, we will discuss potential next steps and address any concerns as a group. Finally, each member will have an opportunity to raise questions or seek support on any challenges they are facing.
+\subsubsection{Team Meetings}
+Each team member will share updates on completed tasks and current work. During this time, others can ask questions or provide feedback. After updates, we will discuss potential next steps and address any concerns as a group. Finally, each member will have an opportunity to raise questions or seek support on any challenges they are facing.
 
-Advisor Meetings: We will begin by providing an overview of the project’s progress and potential next steps. The advisor will then have the opportunity to raise any concerns or provide guidance. We will conclude by discussing any questions or clarifications needed regarding the project.
+\subsubsection{Advisor Meetings}
+We will begin by providing an overview of the project’s progress and potential next steps. The advisor will then have the opportunity to raise any concerns or provide guidance. We will conclude by discussing any questions or clarifications needed regarding the project.
 
+\subsection{Meeting Roles}
 The role of meeting chair will rotate among team members. Prior to advisor meetings, the team will collaboratively decide on the agenda and compile a list of questions and concerns to be addressed.
 
 \section{Team Communication Plan}
-In terms of team communication, we will use discord as well as maintain a word/google document that is used to record and track any bugs found while committing code. This document would also track if the bug is ongoing or resolved. Additionally, any merge conflicts or issues pushing or pulling code will be notified to team members via discord or if urgent through phone call.
-
-\wss{Issues on GitHub should be part of your communication plan.}
+In terms of team communication for this project, we will use discord as the main messaging platform. Discord will be used for messaging between the group members, to plan meetings, talk about issues, share resources and concepts. In addition, all group members will stay up to date on the GitHub issues to track any issue with their commits and be required to address (fix or simply respond) all their issues. Additionally, any merge conflicts or issues pushing or pulling code will be notified to team members via discord or if urgent through phone call.
 
 \section{Team Member Roles}
-We are planning on circulating these roles as the project progresses. We will be assigning members to roles such as meeting chair, notetaker, reviewer, and leader. These roles will interchange between group members on a monthly basis.
+
+We have assigned the following roles to team members, detailing their responsibilities:
+
+\begin{itemize}
+    \item \textbf{Meeting Chair: Taaha Atif}
+    \begin{itemize}
+        \item Organizes and leads team meetings.
+        \item Prepares the meeting agenda and ensures all topics are covered.
+        \item Facilitates discussions and ensures that meetings run smoothly and on time.
+    \end{itemize}
+
+    \item \textbf{Notetaker: Rachid Khneisser}
+    \begin{itemize}
+        \item Takes detailed notes during meetings.
+        \item Distributes meeting minutes to all team members after each meeting.
+        \item Ensures that action items and decisions are clearly documented.
+    \end{itemize}
+
+    \item \textbf{Reviewer: Sufyan Motala}
+    \begin{itemize}
+        \item Reviews all project documents and deliverables for accuracy and completeness.
+        \item Provides feedback and suggestions for improvements.
+        \item Ensures that all work meets the project’s quality standards.
+    \end{itemize}
+
+    \item \textbf{Leader: Housam Alamour}
+    \begin{itemize}
+        \item Oversees the overall progress of the project.
+        \item Coordinates tasks and ensures that deadlines are met.
+        \item Acts as the main point of contact between the team and the advisor.
+    \end{itemize}
+\end{itemize}
 
 
 \section{Workflow Plan}
-Git Usage:
 
-Git will be used to pull/push code (share code) between the group. PRs will require at least one peer review before being merged to ensure code quality and adherence to project standards.
+\subsection{Git Usage}
+Git will be used to pull/push code (share code) between the group. The following practices will be followed:
+\begin{itemize}
+  \item \textbf{Branches}: Each feature or bug fix will be developed in its own branch. Branch names will follow a consistent naming convention.
+  \item \textbf{Pull Requests (PRs)}: Pull requests will be used to merge changes from feature branches into the main branch. PRs will require at least one peer review before being merged to ensure code quality and adherence to project standards.
+  \item \textbf{Commit Messages}: Commit messages will be descriptive about what changes have been made, what files this commit changes, and why these changes are required.
+\end{itemize}
 
-Issue Management:
-Code will be tested as progress continues and any issues that arise will be brought up to group and shall be picked up by a group member that volunteers or has worked on similar issues previously.
+\subsection{Issue Management}
+Issues will be managed to ensure smooth progress and timely resolution of problems:
+\begin{itemize}
+    \item \textbf{Issue Templates}: Templates will be used for creating new issues to ensure all necessary information is provided. Templates will include sections for description, steps to reproduce, expected behavior, and actual behavior.
+    \item \textbf{Issue Classification}: Issues will be classified based on their type (e.g., bug, feature request, enhancement) and priority (e.g., high, medium, low).
+    \item \textbf{Assignment}: Issues will be assigned to team members based on their expertise and availability. Team members can volunteer for issues or be assigned by the project manager.
+\end{itemize}
 
-CI/CD Implementation:
-on commit, code will be auto-formatted as well as linting will be done via CI/CD. Static analysis will also be done on committed code.
+\subsection{CI/CD Implementation}
+Continuous Integration and Continuous Deployment (CI/CD) will be implemented to maintain code quality and streamline the development process:
+\begin{itemize}
+    \item \textbf{Auto-formatting}: On commit, code will be auto-formatted to adhere to the project's coding standards.
+    \item \textbf{Linting}: Linting will be performed via CI/CD to catch syntax and style issues early.
+    \item \textbf{Static Analysis}: Static analysis will be conducted on committed code to identify potential issues and improve code quality.
+    \item \textbf{Automated Testing}: Automated tests will be run on each commit to ensure that new changes do not break existing functionality.
+\end{itemize}
 
 \begin{itemize}
 	\item How will you be using git, including branches, pull request, etc.?
