@@ -24,7 +24,6 @@
 \midrule
 Sept 24th, 2024 & Housam \& Taaha & Completed the confidential information, IP info, Copyright, Team plan and Workflow plan \\
 Sept 24th, 2024 & Omar, Rachid & Changes to part 8, 9, Appendix\\
-... & ... & ...\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -180,21 +179,56 @@ members will need to augment their training.}
 
 Topics to discuss include the following:
 
-\begin{itemize}
-\item Specific programming language
-\item Specific libraries
-\item Pre-trained models
-\item Specific linter tool (if appropriate)
-\item Specific unit testing framework
-\item Investigation of code coverage measuring tools
-\item Specific plans for Continuous Integration (CI), or an explanation that CI
-  is not being done
-\item Specific performance measuring tools (like Valgrind), if
-  appropriate
-\item Tools you will likely be using?
-\end{itemize}
+\section{Expected Technology}
+Please note that any specific technologies referenced in this section are merely suggestions and exist mainly as an illustrative example for what the potential product used for each section could be and what it's capabilities should be. These options are not fixed and are subject to be changed as the project continues to be developed.
 
-\wss{git, GitHub and GitHub projects should be part of your technology.}
+\begin{itemize}
+  \item \textbf{Specific programming language:}
+  \begin{itemize}
+      \item \textbf{TypeScript}: For this project, we will be using Typescript as it has been set out as a constraint by the supervisor for consistency reasons as many of the previous MES tools use this language. However, its benefits are that it provides static typing, which helps catch errors early and improves code quality. Additionally, it integrates well with Next.js, the other requirement for this project.
+  \end{itemize}
+  
+  \item \textbf{Specific libraries:}
+  
+  \begin{itemize}
+    \item First, we have a constraint that we must use Next.js imposed by the supervisor for similar reasons above as to why Typescript will be used. Our team wants to choose libraries that facilitate the development of a web application, as that is the main goal of our project. We are looking for libraries that help with server-side rendering, static site generation, and routing. We also need libraries that will help us sort through the old financial information as part of this project involves reading and parsing the old Excel documents that were used to keep track of financials for clubs in the past.
+  \end{itemize}
+  
+  \item \textbf{Pre-trained models:}
+  \begin{itemize}
+      \item Not applicable: This project does not involve machine learning, so no pre-trained models will be used.
+  \end{itemize}
+  
+  \item \textbf{Specific linter tool (if appropriate):}
+  \begin{itemize}
+    \item The team will pick a linter tool to ensure code quality and consistency that will help to identify and fix problems in the codebase. It helps identify and fix problems in TypeScript code.
+  \end{itemize}
+  
+  \item \textbf{Specific unit testing framework:}
+  \begin{itemize}
+    \item  A unit testing framework such as Jest will be chosen to test the individual components, ensuring that each part of the application functions correctly.
+  \end{itemize}
+  
+  \item \textbf{Investigation of code coverage measuring tools:}
+  \begin{itemize}
+    \item Code coverage tools will be used to measure the percent of the codebase tested, showing the team how to improve test coverage and code quality. This may be potentially done with Jest and GitHub actions. This will help ensure  that all parts of the codebase are tested.
+  \end{itemize}
+  
+  \item \textbf{Specific plans for Continuous Integration (CI), or an explanation that CI is not being done:}
+  \begin{itemize}
+    \item Continuous Integration (CI) tools will be implemented to automate the testing and deployment process. This will help ensure that code changes are continuously integrated and tested. GitHub Actions has most of the features needed for our development as it automates the testing and deployment process.
+  \end{itemize}
+  
+  \item \textbf{Specific performance measuring tools (like Valgrind), if appropriate:}
+  \begin{itemize}
+    \item While not likely that we will need specific performance measuring tools for a web application, as this is not quite a real time system, we still want the tool to be responsive, fast and easy to use for all users. For this reason we will mostly be basing our performance tests off how long pages take to load on different hardware, and if needed we will utilize other tools like Lighthouse to assess the efficiency and speed of the application, identifying areas for optimization.
+  \end{itemize}
+  
+  \item \textbf{Tools you will likely be using:}
+  \begin{itemize}
+    \item We will choose development tools and editors to increase productivity and streamline the development process. We want good "return on investment" for our time to implement and learn how to use any tools in this project. Thus, we will mainly be using tools already used by our team members. This includes Visual Studio Code: This code editor will be used for development. It offers a wide range of extensions and integrations that enhance productivity. We will also extensively be using GitHub and GitHub projects as part of this effort for version control.
+  \end{itemize}
+\end{itemize}
 
 \section{Coding Standard}
 
