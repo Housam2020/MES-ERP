@@ -76,7 +76,8 @@ In terms of team communication for this project, we will use discord as the main
 
 \section{Team Member Roles}
 
-We have assigned the following roles to team members, detailing their responsibilities:
+We have assigned the following roles to team members, detailing their responsibilities.
+Every month we will meet back to adjust the roles of each person as needed according to what people want to do and what their strengths are. In addition, group members can request a vote to switch to another role at any time.
 
 \begin{itemize}
     \item \textbf{Meeting Chair: Taaha Atif}
@@ -117,12 +118,17 @@ We have assigned the following roles to team members, detailing their responsibi
 
 \section{Workflow Plan}
 
+\section{Workflow Plan}
+
 \subsection{Git Usage}
 Git will be used to pull/push code (share code) between the group. The following practices will be followed:
 \begin{itemize}
-  \item \textbf{Branches}: Each feature or bug fix will be developed in its own branch. Branch names will follow a consistent naming convention.
+  \item \textbf{Branches}: Each feature or bug fix will be developed in its own branch. Branch names will follow a consistent naming convention, such as \texttt{feature/feature-name} or \texttt{bugfix/issue-number}.
   \item \textbf{Pull Requests (PRs)}: Pull requests will be used to merge changes from feature branches into the main branch. PRs will require at least one peer review before being merged to ensure code quality and adherence to project standards.
-  \item \textbf{Commit Messages}: Commit messages will be descriptive about what changes have been made, what files this commit changes, and why these changes are required.
+  \item \textbf{Commit Messages}: Commit messages will be descriptive and follow a consistent format, detailing what changes have been made, what files are affected, and why these changes are necessary.
+  \item \textbf{Tags}: Tags will be used to mark significant milestones and releases in the project. Tags will follow a semantic versioning format, such as \texttt{v1.0.0}.
+  \item \textbf{Issue Tracking}: Issues will be tracked using a project management tool like GitHub Issues. Issues will be categorized based on their type (e.g., bug, feature request) and priority (e.g., high, medium, low).
+  \item \textbf{Project Management Tools}: We will use GitHub Projects to organize and manage tasks, track progress, and ensure that all team members are aligned with the project goals.
 \end{itemize}
 
 \subsection{Issue Management}
@@ -142,15 +148,20 @@ Continuous Integration and Continuous Deployment (CI/CD) will be implemented to 
     \item \textbf{Automated Testing}: Automated tests will be run on each commit to ensure that new changes do not break existing functionality.
 \end{itemize}
 
-\section{Project Decomposition and Scheduling}
+\section{POC Demo Plan}
 
-We will be using GitHub projects to manage tasks, track progress, and work efficiently together. 
-GitHub projects will allow us to divide work into multiple tasks that every member can take on. 
-Each task will be associated with a GitHub issue and will be categorized under appropriate columns. 
-We will be using milestones for many of the deadlines our capstone has. Finally, GitHub itself will 
-be used for version control, allowing us to efficiently share and work on our codebase. \\
+\subsection{Proof of Concept (POC) Demonstration}
+The Proof of Concept (POC) demonstration will be a critical part of our project, showcasing the feasibility and functionality of our proposed solution. The following elements will be included in the POC demo plan:
 
-Link: \href{https://github.com/Housam2020/MES-ERP}{https://github.com/Housam2020/MES-ERP} \\
+\begin{itemize}
+    \item \textbf{Objective}: Clearly define the objectives of the POC, outlining what we aim to demonstrate and achieve.
+    \item \textbf{Scope}: Specify the scope of the POC, detailing the features and functionalities that will be included in the demonstration.
+    \item \textbf{Risks and Mitigation}: Identify potential risks associated with the POC and provide detailed mitigation strategies. This includes considering the consequences of any risks that may be difficult to mitigate.
+    \item \textbf{Implementation Plan}: Outline the steps and timeline for implementing the POC, ensuring that all necessary components are developed and tested.
+    \item \textbf{Evaluation Criteria}: Establish clear criteria for evaluating the success of the POC, including performance metrics and user feedback.
+\end{itemize}
+
+The POC demo plan will provide a good overview of our steps taken to complete this project, making sure that all aspects are thoroughly considered and addressed. This will help us identify and mitigate risks early, leading to the success of the project.
 
 Our project will be scheduled as such: \\
 
@@ -169,19 +180,13 @@ Our project will be scheduled as such: \\
 
 \section{Proof of Concept Demonstration Plan}
 
-What is the main risk, or risks, for the success of your project?  What will you
-demonstrate during your proof of concept demonstration to convince yourself that
-you will be able to overcome this risk?
-
 \vspace{0.5cm}
 
-The main risks for our project would be unexpected inputs from the reciepts we are 
-given, this is the main purpose of the project so if it does not work 100 percent of the 
-time it would be a failure on our part. To demonstrate success at the proof of concept
-demo we will bring a variety of reciepts and demonstrate to everyone how our project operates.
-We will show we can handle normal, boundary and unusual inputs with an appropriate response, and if 
-this is done we can say we have successfully overcame the risk of being unable to handle some inputs. 
+The Proof of Concept (POC) demonstration will be a critical part of our project, showcasing the feasibility and functionality of our proposed solution.
 
+The main risk for our project is handling unexpected inputs from the receipts we are given. Since this is the primary purpose of the project, failure to handle these inputs 100\% of the time would be a significant issue. To demonstrate success at the POC demo, we will bring a variety of receipts and showcase how our project operates. We will show that we can handle normal, boundary, and unusual inputs with appropriate responses. Successfully demonstrating this capability will indicate that we have effectively mitigated the risk of being unable to handle some inputs.
+
+\subsection{Link to GitHub Project:} \href{https://github.com/Housam2020/MES-ERP}{https://github.com/Housam2020/MES-ERP} \\
 \section{Expected Technology}
 
 Please note that any specific technologies referenced in this section are merely suggestions and exist mainly as an illustrative example for what the potential product used for each section could be and what it's capabilities should be. These options are not fixed and are subject to be changed as the project continues to be developed.
@@ -203,7 +208,7 @@ Please note that any specific technologies referenced in this section are merely
       \item TensorFlow or PyTorch: Frameworks for utilizing pre-trained machine learning models for the machine learning based expense categorization stretch goal.
   \end{itemize}
   
-  \item \textbf{Specific linter tool (if appropriate):}
+  \item \textbf{Specific linter tool:}
   \begin{itemize}
     \item The team will pick a linter tool to ensure code quality and consistency that will help to identify and fix problems in the codebase. It helps identify and fix problems in TypeScript code.
   \end{itemize}
@@ -218,12 +223,12 @@ Please note that any specific technologies referenced in this section are merely
     \item Code coverage tools will be used to measure the percent of the codebase tested, showing the team how to improve test coverage and code quality. This may be potentially done with Jest and GitHub actions. This will help ensure  that all parts of the codebase are tested.
   \end{itemize}
   
-  \item \textbf{Specific plans for Continuous Integration (CI), or an explanation that CI is not being done:}
+  \item \textbf{Specific plans for Continuous Integration (CI):}
   \begin{itemize}
     \item Continuous Integration (CI) tools will be implemented to automate the testing and deployment process. This will help ensure that code changes are continuously integrated and tested. GitHub Actions has most of the features needed for our development as it automates the testing and deployment process.
   \end{itemize}
   
-  \item \textbf{Specific performance measuring tools (like Valgrind), if appropriate:}
+  \item \textbf{Specific performance measuring tools:}
   \begin{itemize}
     \item While not likely that we will need specific performance measuring tools for a web application, as this is not quite a real time system, we still want the tool to be responsive, fast and easy to use for all users. For this reason we will mostly be basing our performance tests off how long pages take to load on different hardware, and if needed we will utilize other tools like Lighthouse to assess the efficiency and speed of the application, identifying areas for optimization.
   \end{itemize}
@@ -260,8 +265,6 @@ We will adopt the following coding standards to ensure code quality and maintain
         \item Use descriptive commit messages, this can be done by following the \href{https://www.conventionalcommits.org/en/v1.0.0/}{Conventional Commits} specification.
     \end{itemize}
 
-    \newpage{}
-
     \item \textbf{Code Reviews:}
     \begin{itemize}
         \item Require peer reviews for all code changes to ensure quality and adherence to standards.
@@ -272,13 +275,15 @@ We will adopt the following coding standards to ensure code quality and maintain
         \item Write unit tests for each major feature using a set testing framework.
         \item Monitor code coverage to ensure an adequate amount of code coverage has been reached (currently set to 90\%).
     \end{itemize}
+    \item \textbf{Variable Naming:}
+  \begin{itemize}
+      \item Use camelCase for variable names to ensure consistency and readability. For example, use \texttt{totalAmount} instead of \texttt{total\_amount}.
+  \end{itemize}
 \end{itemize}
 
 \newpage{}
 
 \section*{Appendix --- Reflection}
-
-\input{../Reflection.tex}
 
 \begin{enumerate}
     \item Why is it important to create a development plan prior to starting the
