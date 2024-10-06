@@ -77,7 +77,12 @@ Date 2 & 1.1 & Notes\\
 
 \section{Mandated Constraints}
 \subsection{Solution Constraints}
-\lips
+\begin{enumerate}
+  \item The app must handle the throughput of the 60 student groups to the MES wihtout trouble.
+  \item The app must inform student groups the status of their request. 
+  \item The app must notify the MES for any new requests made 
+  \item The app must be up and running at all times, if not a message must be shown signifying why the app is offline. 
+\end{enumerate}
 \subsection{Implementation Environment of the Current System}
 \lips
 \subsection{Partner or Collaborative Applications}
@@ -100,11 +105,38 @@ involved in the Project}
 
 \section{Relevant Facts And Assumptions}
 \subsection{Relevant Facts}
-\lips
+\begin{itemize}
+  \item There is no current application built for this project.
+  \item The project will be built primarily in ReactJS.
+  \item There are 60 student groups to account for.
+  \item The current process for submitting checks is manual, which takes far too long.
+  \item The input should be generalized, with no differentiation between student groups.
+  \item The application is intended to be created with future growth in mind.
+\end{itemize}
+
+
+
 \subsection{Business Rules}
-\lips
+\begin{itemize}
+  \item Users will be notified when their reciepts are re-imbursed.
+  \item The site will notify the MES when a request comes through.
+  \item Users will be notified of an expected deadline for when the requests will be fulfilled.
+  \item Users will be notified of any maintenance times the site will need.
+  \item All financial recors will be recoreded in the backend of the appication 
+  \item Each student group must submit their own request by a deadline given by the MES.
+\end{itemize}
+
 \subsection{Assumptions}
-\lips
+\begin{itemize}
+  \item Student groups and the MES are in contact and know the ground rules of what to expect from purhcases.
+  \item We are expecting the MES to provide us with a server to run our software
+  \item The system will be coded in ReactJS
+  \item The system will be built from scratch 
+  \item The MES is expected to provide us with test cases for the app
+  \item Internet is expected to be provided, as well as a suitable system with enough RAM/storage for the app. 
+  \item All 60 student groups will use the application and provide as even more test cases for the app. 
+  \item Reciepts will be compatible in any form for the app.
+\end{itemize}
 
 \section{The Scope of the Work}
 \subsection{The Current Situation}
@@ -188,15 +220,34 @@ involved in the Project}
 
 \section{Operational and Environmental Requirements}
 \subsection{Expected Physical Environment}
-\lips
+\begin{enumerate}
+  \item The system will be in a office room.
+  \item The systems location will be on the McMaster Campus. 
+  \item The product will be useable in natural office enviornments. 
+\end{enumerate}
 \subsection{Wider Environment Requirements}
-\lips
+\begin{enumerate}
+  \item The hardware of the system will not be in an unusual enviornment
+\end{enumerate}
+
 \subsection{Requirements for Interfacing with Adjacent Systems}
-\lips
+\begin{enumerate}
+  \item The app will be usable on a desktop or laptop.
+  \item The app will be runnable on windows, mac and linux 
+  \item The app will work on the last 4 versions of Chrome, Firefox and edge 
+\end{enumerate}
 \subsection{Productization Requirements}
-\lips
+\begin{enumerate}
+  \item N/A (this product is not for sale) 
+\end{enumerate}
 \subsection{Release Requirements}
-\lips
+\begin{enumerate}
+  \item The product will follow an agile software development lifestyle.
+  \item The product will only have maintenance is a crucial bug is found. 
+  \item Each newer release will not make an older one fail. 
+  \item Products must be throughouly tested before each release. 
+  \item A bug found will be made a ticket which will be given a deadline to solve by and then a new release build will be made.  
+\end{enumerate}
 
 \section{Maintainability and Support Requirements}
 \subsection{Maintenance Requirements}
@@ -242,11 +293,17 @@ involved in the Project}
 
 \section{Off-the-Shelf Solutions}
 \subsection{Ready-Made Products}
-\lips
+\begin{enumerate}
+  \item There is no pre-existing solution for this problem, this problem is MES specific and has never been done before.
+\end{enumerate}
 \subsection{Reusable Components}
-\lips
+\begin{enumerate}
+  \item The main library we will use is ReactJS, there will be no other components that can be used/reused. 
+\end{enumerate}
 \subsection{Products That Can Be Copied}
-\lips
+\begin{enumerate}
+  \item Any budgeting apps UI can be copied and taken over for the front end of the application. With that frontend along with some changes it can be applied to our app. 
+\end{enumerate}
 
 \section{New Problems}
 \subsection{Effects on the Current Environment}
