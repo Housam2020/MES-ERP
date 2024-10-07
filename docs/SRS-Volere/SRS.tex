@@ -177,7 +177,57 @@ involved in the Project}
 
 \section{Functional Requirements}
 \subsection{Functional Requirements}
-\lips
+
+\begin{itemize}
+
+  \item \textbf{Requirement Number}: 001
+  \item \textbf{Description}: The system must allow club financial managers to submit reimbursement requests.
+  \item \textbf{Rationale}: This functionality ensures that clubs can request refunds for approved expenses efficiently and without error.
+  \item \textbf{Fit Criterion}: A club financial manager must be able to submit a reimbursement request successfully, which should appears in the MES staff's pending approval list within 1 minute.
+  \item \textbf{Priority}: High
+  \item \textbf{Originator}: Club Financial Manager
+  \item \textbf{Dependencies}: Requires the role-based access system to be implemented.
+  
+  \bigskip
+
+  \item \textbf{Requirement Number}: 002
+  \item \textbf{Description}: The system must allow MES staff to approve or reject reimbursement requests.
+  \item \textbf{Rationale}: Ensures proper management of reimbursement requests.
+  \item \textbf{Fit Criterion}: A reimbursement request must be updated with the approval or rejection status within 5 seconds of the MES staff submitting their decision.
+  \item \textbf{Priority}: High
+  \item \textbf{Originator}: MES Finance Team
+  \item \textbf{Dependencies}: Dependent on successful submission of reimbursement requests by club financial managers.
+
+  \bigskip
+
+  \item \textbf{Requirement Number}: 003
+  \item \textbf{Description}: The system must send notifications to club financial managers when their reimbursement requests are approved or rejected.
+  \item \textbf{Rationale}: This ensures that club financial managers are informed of the status of their reimbursement requests.
+  \item \textbf{Fit Criterion}: A notification must be sent within 5 seconds of approval or rejection of a reimbursement request.
+  \item \textbf{Priority}: Medium
+  \item \textbf{Originator}: MES Finance Team
+  \item \textbf{Dependencies}: Must follow the approval or rejection of a request by MES staff.
+
+  \bigskip
+
+  \item \textbf{Requirement Number}: 004
+  \item \textbf{Description}: The system must allow administrators to access all financial records, audit logs, and user activity.
+  \item \textbf{Rationale}: Administrators need full access for auditing, tracking, and system oversight.
+  \item \textbf{Fit Criterion}: Administrators must be able to view any financial records or user actions within 5 seconds of requesting the information.
+  \item \textbf{Priority}: High
+  \item \textbf{Originator}: System Administrators
+  \item \textbf{Dependencies}: Requires the role-based access system to be implemented.
+  
+  \bigskip
+  
+  \item \textbf{Requirement Number}: 005
+  \item \textbf{Description}: The system must allow users to view a reason for rejection when a reimbursement request is rejected.
+  \item \textbf{Rationale}: To help users correct issues with their requests.
+  \item \textbf{Fit Criterion}: On rejection, the system must display or notify the user of the rejection reason within 5 seconds.
+  \item \textbf{Priority}: Medium
+  \item \textbf{Originator}: Club Financial Managers
+
+\end{itemize}
 
 \section{Look and Feel Requirements}
 \subsection{Appearance Requirements}
