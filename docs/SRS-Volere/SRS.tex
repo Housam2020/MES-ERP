@@ -424,20 +424,73 @@ This section details the individual product use cases listed in the Product Use 
 \lips
 
 \section{Performance Requirements}
+
 \subsection{Speed and Latency Requirements}
-\lips
+The platform must ensure a responsive experience for users to maintain workflow efficiency and user satisfaction. Specific speed and latency requirements include:
+
+\begin{itemize}
+    \item Any interface between a user and the automated system shall have a maximum response time of 2 seconds.
+    \item The response shall be fast enough to avoid interrupting the user’s flow of thought during the submission and review processes.
+    \item The system shall process and save repetitive information within 1 second to enhance user experience.
+    \item The product shall download any updates or status parameters within 5 minutes of a change being made.
+    \item The system shall generate reports within 10 seconds of the request to facilitate timely decision-making by financial auditors.
+\end{itemize}
+
 \subsection{Safety-Critical Requirements}
-\lips
+Given the financial nature of the platform and its handling of sensitive information, safety-critical requirements focus on data security and user privacy. These requirements include:
+
+\begin{itemize}
+    \item The platform shall comply with the Health Department’s standard E110-98 regarding data protection and user privacy.
+    \item The system shall ensure that no sensitive user data is exposed during the submission or review of expense reports.
+    \item User authentication processes must prevent unauthorized access to financial information.
+    \item Regular security audits must be performed to ensure compliance with established safety standards.
+\end{itemize}
+
 \subsection{Precision or Accuracy Requirements}
-\lips
+To ensure accurate financial reporting and user trust, precision requirements for monetary transactions and data entries are essential. These requirements include:
+
+\begin{itemize}
+    \item All monetary amounts shall be accurate to two decimal places.
+    \item The system shall ensure the accuracy of expense calculations within ±1\% to prevent discrepancies in reporting.
+    \item The product shall validate and display error messages for any inaccurate entries immediately upon submission.
+\end{itemize}
+
 \subsection{Robustness or Fault-Tolerance Requirements}
-\lips
+The platform must demonstrate robustness to ensure continuous operation even during unexpected failures or high usage. Specific robustness requirements include:
+
+\begin{itemize}
+    \item The product shall continue to operate in local mode whenever it loses its connection to the central server, allowing users to save entries temporarily.
+    \item The system shall provide 10 minutes of emergency operation in case of electricity failure, ensuring that critical processes can still be completed.
+    \item Automatic backups of all financial data shall occur every hour to prevent data loss.
+\end{itemize}
+
 \subsection{Capacity Requirements}
-\lips
+The platform must accommodate a significant number of users and transactions, ensuring it can handle the expected load. These requirements include:
+
+\begin{itemize}
+    \item The product shall cater to a minimum of 300 simultaneous users during peak usage hours, ensuring that the system remains responsive.
+    \item The platform must handle up to 1000 expense report submissions per day without degradation in performance.
+    \item The database shall be capable of storing financial records for at least 10 years, accommodating historical data for auditing purposes.
+\end{itemize}
+
 \subsection{Scalability or Extensibility Requirements}
-\lips
+To meet future growth and increased demand, the platform must be designed for scalability. Key requirements include:
+
+\begin{itemize}
+    \item The product shall be capable of processing up to 500,000 customers within three years of launch, ensuring infrastructure can grow with the organization.
+    \item The platform must handle a growth of transaction volumes, allowing for 50,000 transactions per hour within two years of deployment.
+    \item The system architecture should be modular to facilitate the addition of new features without requiring significant redesign.
+\end{itemize}
+
 \subsection{Longevity Requirements}
-\lips
+The longevity of the platform is crucial for ensuring a return on investment and sustainability. Requirements include:
+
+\begin{itemize}
+    \item The product shall be expected to operate effectively for a minimum of five years within the defined maximum maintenance budget.
+    \item The system must be designed with upgrade paths to accommodate future technology advancements without complete replacement.
+    \item All components of the system must be built with durability and support in mind, with the expectation of routine maintenance every six months.
+\end{itemize}
+
 
 \section{Operational and Environmental Requirements}
 \subsection{Expected Physical Environment}
