@@ -213,12 +213,125 @@ involved in the Project}
 \lips
 
 \section{The Scope of the Product}
+
 \subsection{Product Boundary}
-\lips
-\subsection{Product Use Case Table}
-\lips
-\subsection{Individual Product Use Cases (PUC's)}
-\lips
+The product boundary defines the scope of the McMaster Engineering Society (MES) Custom Financial Expense Reporting Platform. The product boundary distinguishes between functionalities to be automated by the platform and those that will remain manual or handled by other existing systems.
+
+\begin{itemize}
+    \item \textbf{Automated Functions:}
+    \begin{itemize}
+        \item Streamlining reimbursement requests for student groups.
+        \item Managing payment requests efficiently.
+        \item Facilitating intramural funding applications with a clear workflow.
+        \item Saving repetitive information, such as void cheques and e-transfer email addresses.
+        \item Customizing approval workflows to fit different organizational needs.
+        \item Implementing audit tracking for compliance with financial regulations.
+        \item Automating ledger tracking for real-time financial monitoring.
+        \item Sending SMS and automated emails for updates and notifications to users.
+        \item Processing invoices, receipts, payment notices, and remittance advice effectively.
+    \end{itemize}
+    \item \textbf{Manual Functions:}
+    \begin{itemize}
+        \item Initial data entry for historical records and previous expense submissions.
+        \item User training and support for navigating the new platform.
+        \item Handling of any non-digital submissions or documents.
+    \end{itemize}
+\end{itemize}
+
+\subsection{TODO: Product Use Case Table}
+The Product Use Case Table summarizes the specific functionalities (Product Use Cases, or PUCs) that the platform will support. This table identifies the main actors involved and outlines the input and output data associated with each use case.
+
+\begin{table}[h]
+    \centering
+    \caption{Product Use Case Summary Table}
+    \begin{tabular}{|c|l|l|l|}
+        \hline
+        \textbf{PUC No} & \textbf{PUC Name} & \textbf{Actor/s} & \textbf{Input \& Output} \\ \hline
+        1 & Submit Reimbursement Request & Student Leader & Reimbursement Details (in) \\ \hline
+        2 & Review Reimbursement Requests & Administrator & Reimbursement Request (in), Approval Status (out) \\ \hline
+        3 & Track Payment Requests & Administrator & Payment Request (in), Payment Status (out) \\ \hline
+        4 & Process Funding Applications & Student Leader & Funding Application (in), Approval Status (out) \\ \hline
+        5 & Save Repetitive Information & Student Leader & Repetitive Info (in), Confirmation (out) \\ \hline
+        6 & Generate Reports & Financial Auditor & Report Criteria (in), Generated Report (out) \\ \hline
+        7 & Send Notifications & System & User Notification Preferences (in), SMS/Email Notification (out) \\ \hline
+        8 & Manage Audit Trails & Financial Auditor & Audit Criteria (in), Audit Trail Report (out) \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Individual Product Use Cases (PUCs)}
+This section details the individual product use cases listed in the Product Use Case Table. Each use case outlines the scenario, the actors involved, and the interactions within the system.
+
+\subsubsection{PUC 1: Submit Reimbursement Request}
+\textbf{Actors:} Student Leader \\
+\textbf{Scenario:} A student leader submits an expense reimbursement request through the platform.
+\begin{itemize}
+    \item The student logs into the system.
+    \item They navigate to the reimbursement section and fill out the required fields (e.g., amount, purpose, and attaching receipts).
+    \item Upon submission, the request is sent for review to the administrator.
+    \item Confirmation of submission is displayed on the screen.
+\end{itemize}
+
+\subsubsection{PUC 2: Review Reimbursement Requests}
+\textbf{Actors:} Administrator \\
+\textbf{Scenario:} An administrator reviews submitted reimbursement requests.
+\begin{itemize}
+    \item The administrator logs into the system.
+    \item They access the list of pending reimbursement requests.
+    \item The administrator reviews the details and either approves or rejects the request.
+    \item An automated notification is sent to the student leader regarding the decision.
+\end{itemize}
+
+\subsubsection{PUC 3: Track Payment Requests}
+\textbf{Actors:} Administrator \\
+\textbf{Scenario:} The administrator tracks the status of payment requests.
+\begin{itemize}
+    \item The administrator logs into the system.
+    \item They navigate to the payment request section.
+    \item The status of each request is displayed (e.g., pending, processed, completed).
+\end{itemize}
+
+\subsubsection{PUC 4: Process Funding Applications}
+\textbf{Actors:} Student Leader \\
+\textbf{Scenario:} A student leader processes an application for intramural funding.
+\begin{itemize}
+    \item The student accesses the funding application section.
+    \item They fill out the required information and submit it for approval.
+    \item The system sends a notification confirming the application submission.
+\end{itemize}
+
+\subsubsection{PUC 5: Save Repetitive Information}
+\textbf{Actors:} Student Leader \\
+\textbf{Scenario:} The student saves repetitive financial information for future use.
+\begin{itemize}
+    \item The student navigates to the settings section.
+    \item They enter and save their bank details and contact information.
+    \item The information is stored for future reimbursement requests.
+\end{itemize}
+
+\subsubsection{PUC 6: Generate Reports}
+\textbf{Actors:} Financial Auditor \\
+\textbf{Scenario:} A financial auditor generates financial reports for review.
+\begin{itemize}
+    \item The auditor selects criteria for the report (e.g., date range, type of expenses).
+    \item The system generates the report and displays it for download.
+\end{itemize}
+
+\subsubsection{PUC 7: Send Notifications}
+\textbf{Actors:} System \\
+\textbf{Scenario:} The system sends notifications to users based on their preferences.
+\begin{itemize}
+    \item Upon important updates (e.g., approval of reimbursement), the system triggers notifications.
+    \item Notifications are sent via SMS or email as specified by the user.
+\end{itemize}
+
+\subsubsection{PUC 8: Manage Audit Trails}
+\textbf{Actors:} Financial Auditor \\
+\textbf{Scenario:} The financial auditor reviews audit trails to ensure compliance.
+\begin{itemize}
+    \item The auditor accesses the audit trail section in the platform.
+    \item They filter results based on date and type of activity.
+    \item A detailed report is generated to review all activities related to financial transactions.
+\end{itemize}
 
 \section{Functional Requirements}
 \subsection{Functional Requirements}
