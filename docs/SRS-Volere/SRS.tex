@@ -547,7 +547,7 @@ Expected to support all platforms (mac,windows,linux)
 \section{Security Requirements}
 \subsection{Access Requirements}
 
-\begin{itemize}
+\begin{enumerate}
   \item Administrators must have full access to all system functionalities, including creating, modifying, and deleting records for all users, managing user roles, and viewing audit logs and financial reports.
   \item MES staff must have access to financial records, reimbursement requests, audit logs, and the ability to approve or reject reimbursement requests.
   \item Club financial managers must have access to their respective club's financial records, submission of reimbursement requests, and viewing of their club's budget tracking, but no access to financial data from other clubs.
@@ -555,32 +555,32 @@ Expected to support all platforms (mac,windows,linux)
   \item Club financial managers must not have access to sensitive financial information beyond their own club's data.
   \item Administrators and MES staff must be able to modify financial records, approve budgets, and manage payments, while club financial managers can only submit reimbursement requests.
   \item All access to information and functions, such as reimbursement approval and budget tracking, must be restricted according to user roles to protect the confidentiality of the financial data.
-\end{itemize}
+\end{enumerate}
 
 \subsection{Integrity Requirements}
 
-\begin{itemize}
+\begin{enumerate}
     \item The system must ensure that all financial data, such as budgets, expense reports, and reimbursement requests, remain accurate and have not been tampered with. This includes preventing inaccurate or unauthorized modifications to any financial records. This is to ensure that submitted data is valid and consistent with the system's requirements.
     \item The product must protect itself from attacks coming from external sources and from unintentional mistakes by authorized users. If an external attack occurs, the system should log the attempt and prevent any changes to financial data.
     \item The system shall prevent internal misuse, such as incorrect data entry, through validation rules and error handling mechanisms.
     \item To maintain data integrity, the system must perform automated backups of all important financial data. In the event of system failure, data corruption, or accidental deletion, these backups should allow the system to recover with minimal data loss. Recovery processes should be tested regularly to ensure reliability.
     \item The system shall maintain detailed logs of all actions taken within the platform, such as data modifications, approvals, or deletions. These logs will be immutable and can be used to restore data or identify the source of an error if data becomes corrupted or tampered with.
-\end{itemize}
+\end{enumerate}
 
 \subsection{Privacy Requirements}
 
-\begin{itemize}
+\begin{enumerate}
   \item The system must comply with all relevant privacy laws and regulations to ensure that personal data is handled in accordance with these laws.
   \item Before collecting any personal information, the system must inform users of the types of data collected, how it will be used, and who will have access to it.
   \item The system must obtain consent from users before collecting personal information. Users must have the ability to revoke data collection consent at any time, and the system must stop processing or storing the data on the user.
   \item Users must be able to view, edit, or request corrections to their personal data stored in the system.
   \item The system must notify users of any changes to its information or privacy policy. Users should have the opportunity to review and give feedback or consent to the changes before any further processing of their data.
   \item The system must protect all personal information with encryption or other security measures to ensure it cannot be accessed, modified, or deleted by unauthorized users. 
-\end{itemize}
+\end{enumerate}
 
 \subsection{Audit Requirements}
 
-\begin{itemize}
+\begin{enumerate}
   \item The system must retain detailed records of all user transactions, including financial submissions, approvals, modifications, and deletions, ensuring that all actions can be traced back to the responsible user.
   \item Audit logs must record the date and time of each transaction, the user involved, and the specific actions taken, ensuring full traceability of the system's usage.
   \item The audit logs must be immutable, ensuring that no user can modify or delete the audit records.
@@ -588,17 +588,17 @@ Expected to support all platforms (mac,windows,linux)
   \item The system must record login attempts, both successful and unsuccessful, to provide a complete history of user access to the system.
   \item Access to the audit logs must be restricted to authorized users, such as administrators and auditors, ensuring confidentiality of the audit data.
   \item The system must ensure that audit data is protected from unauthorized access or tampering, using security measures such as encryption and access control.
-\end{itemize}
+\end{enumerate}
 
 \subsection{Immunity Requirements}
 
-\begin{itemize}
+\begin{enumerate}
   \item The system must implement protective measures against unauthorized programs such as viruses, malwares, and spywares, ensuring that the system remains secure from threats.
   \item The system must regularly scan for potential security vulnerabilities and unauthorized software, using antivirus and anti-malware tools to detect threats.
   \item The system must be capable of eliminating any detected malicious software to prevent it from affecting the integrity of the system or its data.
   \item The system must provide real-time monitoring for suspicious activities that show attempted infections.
   \item The system must ensure that all software components and libraries used in the product are regularly updated with the latest security patches to reduce the risk of infection by known vulnerabilities.
-\end{itemize}
+\end{enumerate}
 
 \section{Cultural Requirements}
 \subsection{Cultural Requirements}
@@ -670,8 +670,6 @@ To ensure the quality and reliability of the platform, it must comply with vario
   \item \textbf{Action}: Stakeholders will be meeting to perform UI/UX design mockups to determine design priorities.
   \item \textbf{Resolution}: Expected decision within two weeks.
 \end{itemize}
-
-Desktop
 
 \section{Off-the-Shelf Solutions}
 \subsection{Ready-Made Products}
