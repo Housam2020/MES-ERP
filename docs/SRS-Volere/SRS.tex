@@ -54,11 +54,15 @@ Date 2 & 1.1 & Notes\\
 ~\newpage
 \section{Purpose of the Project}
 \subsection{User Business}
-\lips
-\subsection{Goals of the Project}
-\lips
-\section{Stakeholders} 
+The McMaster Engineering Society is looking to develop a finance and accounting system that will streamline the financial operations of 60 student groups. Due to recent struggles managing and keeping track of reimbursement requests, many students must wait large wait times during the process. The implementation of our solution will allow the MES to provide users with adequate tracking of reimbursement requests made as well as reduce the loss of requests and lower wait times.
 
+
+\subsection{Goals of the Project}
+Currently, the MES is losing track of reimbursement requests made resulting in large wait times and loss of money. We aim to provide a solution that effectively manages and organizes the large throughput of reimbursement requests sent. The effectiveness of our solution will be measured based on how well it reduces wait times as well as how many requests are lost.
+
+Additionally, we plan on implementing custom budget creation and tracking for all users. Through this, users will be able to effectively create and manage budgets for different categories and all transactions will be tracked in real time. This would allow users to gain financial oversight, ultimately preventing going over budget. Custom budgets should be categorized correctly 95% of the time.
+
+\section{Stakeholders}
 \subsection{Client}
 The client for this project is the McMaster Engineering Society (MES). The MES financially supports 60 different student groups and numerous individuals throughout the year through a reimbursement model. The society is responsible for approving the final product and ensuring it meets the needs of the student groups.
 The MES invests in this platform to streamline financial processes, reduce administrative overhead, and improve user experience for students and administrators.
@@ -403,7 +407,7 @@ This section details the individual product use cases listed in the Product Use 
   Rationale: The system should not offensive or inappropriate to users.
   \item There will be no visually unpleasing elements such as colour combinations that strain the eyes. \\ 
   Rationale: There should not be any elements that make the application harder to read.
-  \item The platform’s tone should remain professional and formal. \\
+  \item The platform's tone should remain professional and formal. \\
   Rationale: A professional tone builds trust with users by emphasizing the seriousness of the platform, particularly given its purpose in handling financial workflows.
   \item Form fields should be simple and clear, with error states highlighted in red to help users easily identify and correct mistakes. \\
   Rationale: Well-designed form fields minimize confusion during data entry, while clear error messages guide users through resolving issues.
@@ -413,15 +417,19 @@ This section details the individual product use cases listed in the Product Use 
 
 \section{Usability and Humanity Requirements}
 \subsection{Ease of Use Requirements}
-\lips
+The final solution will be easy for users to use. Creating a reimbursement claim shall take less than 5 minutes to submit. The tracking process of the claim will be fairly simple as users will have the ability to check up on the progress of the request at any time of the day. The MES members handling the reimbursement claims will be able to complete requests 35% faster and will lose at most 5% of the submitted claims.
+
 \subsection{Personalization and Internationalization Requirements}
-\lips
+The solution will have the option to switch between english and french languages as the application is created for a canadian university. The solution will also have a page which tracks the users reimbursement claims based on the date the request was sent (earliest first)
+
 \subsection{Learning Requirements}
-\lips
+The solution will be fairly simple to utilize. Users will be provided instructions on how to create and track claims however it is expected that the user will be able to create additional claims without the use of the manual after creating their first claim.
+
 \subsection{Understandability and Politeness Requirements}
-\lips
+The final solution shall be easy and understandable to navigate. Any symbols used shall be common symbols (eg. home button can have home symbol etc.) and the language used shall be understandable to the average university student. The application process will only require the user to enter in information that is mandatory. The solution will not show the details of its construction to both the MES and the users.
+
 \subsection{Accessibility Requirements}
-\lips
+The product shall have an option for increased font sizes for those with visual impairments.
 
 \section{Performance Requirements}
 
@@ -525,11 +533,17 @@ The longevity of the platform is crucial for ensuring a return on investment and
 
 \section{Maintainability and Support Requirements}
 \subsection{Maintenance Requirements}
-\lips
+Possibly bug fixes found within the software and changes to the reimbursement process if made in the future. Possible expansions to the number of student groups. Regular backups of data.
+
 \subsection{Supportability Requirements}
-\lips
+Our solution will be supported on all platforms (windows, mac, linux) however not on mobile devices. Our service will only work on laptops provided by the MES. This laptop is required to have at least 4GB ram, modern cpu and access to the internet.
+
 \subsection{Adaptability Requirements}
-\lips
+Expected to run above windows 10 or ideally be updated to latest windows/mac software.
+Expected to be designed for possible expansion (increase in users etc)
+Expected to run on provided MES laptops
+Expected to support all platforms (mac,windows,linux)
+
 
 \section{Security Requirements}
 \subsection{Access Requirements}
@@ -622,15 +636,50 @@ To ensure the quality and reliability of the platform, it must comply with vario
 \end{itemize}
 
 \section{Open Issues}
-While the project has made substantial progress, several open issues require resolution to ensure successful implementation and compliance:
-
 \begin{itemize}
-    \item \textbf{Finalization of Data Protection Measures:} The specifics of how user data will be protected and processed need to be finalized, including encryption methods and access controls.
-    \item \textbf{Legal Consultation on Financial Regulations:} Ongoing consultation with legal experts is necessary to navigate the financial regulations that may affect the platform's operations.
-    \item \textbf{Accessibility Features Implementation:} Determining the best methods to ensure compliance with accessibility standards remains an open issue, necessitating further discussion with stakeholders and accessibility experts.
-    \item \textbf{Integration with Existing Systems:} Understanding how the new platform will integrate with existing MES financial systems is crucial and requires additional input from IT staff.
-\end{itemize}
+  \item \textbf{Issue Number}: 001
+  \item \textbf{Cross-reference}: Affects Functional Requirement 003.
+  \item \textbf{Summary}: The team is deciding if notifications should be sent through email, SMS, or through in-app alerts.
+  \item \textbf{Stakeholders Involved}: Project Team, MES IT Team.
+  \item \textbf{Action}: Perform a survey with stakeholders to determine the preferred notification method.
+  \item \textbf{Resolution}: Expected decision within one week.
+  
+  \bigskip
+  
+  \item \textbf{Issue Number}: 002
+  \item \textbf{Cross-reference}: Affects Functional Requirement 001.
+  \item \textbf{Summary}: It is not clear what types of reimbursement requests that will require additional validation.
+  \item \textbf{Stakeholders Involved}: Project Team, MES Finance Team.
+  \item \textbf{Action}: Stakeholders will be meeting to define validation rules for reimbursement requests.
+  \item \textbf{Resolution}: Expected within two weeks.
+  
+  \bigskip
+  
+  \item \textbf{Issue Number}: 003
+  \item \textbf{Cross-reference}: Affects Functional Requirement 004.
+  \item \textbf{Summary}: It is not clear how long audit logs should be stored in the system.
+  \item \textbf{Stakeholders Involved}: Project Team, MES IT Team.
+  \item \textbf{Action}: Stakeholders will be meeting to determine data retention policies. 
+  \item \textbf{Resolution}: Expected decision within two weeks.
+  
+  \bigskip
 
+  \item \textbf{Issue Number}: 004
+  \item \textbf{Cross-reference}: Affects Functional Requirement 002.
+  \item \textbf{Summary}: It is not clear whether some requests should get multiple approvals from multiple people. For example, a reimbursement request showing high levels of spending needing to be reimbursed.
+  \item \textbf{Stakeholders Involved}: Project Team, MES Finance Team.
+  \item \textbf{Action}: Stakeholders will be meeting to define thresholds and cases for multiple approvals.
+  \item \textbf{Resolution}: Expected decision within two weeks.
+  
+  \bigskip
+  
+  \item \textbf{Issue Number}: 005
+  \item \textbf{Cross-reference}: Affects Look and Feel Requirements.
+  \item \textbf{Summary}: It has not yet been determined how the platform's responsiveness will be prioritized across desktop, tablet, and mobile.
+  \item \textbf{Stakeholders Involved}: Project Team.
+  \item \textbf{Action}: Stakeholders will be meeting to perform UI/UX design mockups to determine design priorities.
+  \item \textbf{Resolution}: Expected decision within two weeks.
+\end{itemize}
 
 \section{Off-the-Shelf Solutions}
 \subsection{Ready-Made Products}
@@ -721,14 +770,16 @@ Identifying these potential follow-up problems allows for strategic planning and
 \lips
 \section{User Documentation and Training}
 \subsection{User Documentation Requirements}
-\lips
+User manual - will contain log in details and how to send reimbursement request
+
 \subsection{Training Requirements}
-\lips
+No training required, user manual will cover instructions
+
 
 \section{Waiting Room}
 \begin{enumerate}
   \item A mobile app version of the platform should be developed for easier on-the-go access to financial tracking and submissions. \\
-  Rationale: A dedicated mobile app would improve accessibility for users who need to submit expenses or view budgets while away from their desktops. Although this would be beneficial, it is not critical for the platform’s core functionality as responsive design already ensures usability on mobile devices.
+  Rationale: A dedicated mobile app would improve accessibility for users who need to submit expenses or view budgets while away from their desktops. Although this would be beneficial, it is not critical for the platform's core functionality as responsive design already ensures usability on mobile devices.
   \item Implement machine learning-based expense categorization to automatically categorize expenses based on historical data. \\
   Rationale: Automated categorization of expenses would reduce manual entry and improve accuracy, providing an intelligent system that learns from user inputs. This is a technically complex feature that could be revisited after the platform's initial release.
   \item Provide users with customizable dashboards where they can select and prioritize the financial metrics most relevant to them. \\
