@@ -59,8 +59,7 @@ The McMaster Engineering Society is looking to develop a finance and accounting 
 
 \subsection{Goals of the Project}
 Currently, the MES is losing track of reimbursement requests made resulting in large wait times and loss of money. We aim to provide a solution that effectively manages and organizes the large throughput of reimbursement requests sent. The effectiveness of our solution will be measured based on how well it reduces wait times as well as how many requests are lost.
-
-Additionally, we plan on implementing custom budget creation and tracking for all users. Through this, users will be able to effectively create and manage budgets for different categories and all transactions will be tracked in real time. This would allow users to gain financial oversight, ultimately preventing going over budget. Custom budgets should be categorized correctly 95% of the time.
+Additionally, we plan on implementing custom budget creation and tracking for all users. Through this, users will be able to effectively create and manage budgets for different categories and all transactions will be tracked in real time. This would allow users to gain financial oversight, ultimately preventing going over budget. Custom budgets should be categorized correctly 95\% of the time.
 
 \section{Stakeholders}
 \subsection{Client}
@@ -417,20 +416,46 @@ This section details the individual product use cases listed in the Product Use 
 
 \section{Usability and Humanity Requirements}
 \subsection{Ease of Use Requirements}
-The final solution will be easy for users to use. Creating a reimbursement claim shall take less than 5 minutes to submit. The tracking process of the claim will be fairly simple as users will have the ability to check up on the progress of the request at any time of the day. The MES members handling the reimbursement claims will be able to complete requests 35% faster and will lose at most 5% of the submitted claims.
 
+\begin{enumerate}
+  
+  \item The solution's UI elements such as buttons and forms will adhere to consistent styling in order to allow for an easy to understand user experience. \\
+  Rationale: Maintaining consistency allows user to easily understand the system while interacting with the UI.
+  \item The solution will have an organized main menu that will allow users to navigate quickly between numerous tabs. \\
+  Rationale: Having a platform that is easy to use requires a good navigation menu in order to reduce time taken for users when finding the tab they wish to visit.
+\end{enumerate}
 \subsection{Personalization and Internationalization Requirements}
-The solution will have the option to switch between english and french languages as the application is created for a canadian university. The solution will also have a page which tracks the users reimbursement claims based on the date the request was sent (earliest first)
 
+\begin{enumerate}
+  
+  \item Users will have the ability to organize reimbursement claims based on date. \\
+  Rationale: Being able to organize the claims will allow user to quickly navigate and find claims made in the past, ultimately saving time.
+\end{enumerate}
 \subsection{Learning Requirements}
-The solution will be fairly simple to utilize. Users will be provided instructions on how to create and track claims however it is expected that the user will be able to create additional claims without the use of the manual after creating their first claim.
 
+\begin{enumerate}
+  \item Users will be provided instructions and a follow along process when making their first claim \\
+  Rationale: Walking the user through the reimbursement request process would effectively and efficiently teach the user on how to create requests in the future, saving time and minimizing confusion.
+  
+\end{enumerate}
 \subsection{Understandability and Politeness Requirements}
-The final solution shall be easy and understandable to navigate. Any symbols used shall be common symbols (eg. home button can have home symbol etc.) and the language used shall be understandable to the average university student. The application process will only require the user to enter in information that is mandatory. The solution will not show the details of its construction to both the MES and the users.
 
+\begin{enumerate}
+  
+  \item There will be small help pop-ups available to users that will provide brief explanations of certain terminology or brief descriptions of what to input. \\
+  Rationale: Providing such information would allow users to understand what is being asked without having to determine it themselves.
+  \item Any error messages on the platform will provide information regarding why the error is showing. \\
+  Rationale: Having detailed error messages will help users to quickly troubleshoot the problem and fix their mistakes.
+\end{enumerate}
 \subsection{Accessibility Requirements}
-The product shall have an option for increased font sizes for those with visual impairments.
 
+\begin{enumerate}
+  
+  \item The product shall have an option for increased font sizes for those with visual impairments. \\
+  Rationale: Allowing an adjustable font size would accomodate for users who have bad vision.
+  \item The product shall have an option for adjusting colour themes and will avoid colour combinations that are not supported for those with colour blindness. \\
+  Rationale: Allowing customizable colour themes would accomodate for users who are colour blind.
+\end{enumerate}
 \section{Performance Requirements}
 
 \subsection{Speed and Latency Requirements}
@@ -532,16 +557,33 @@ The longevity of the platform is crucial for ensuring a return on investment and
 
 \section{Maintainability and Support Requirements}
 \subsection{Maintenance Requirements}
-Possibly bug fixes found within the software and changes to the reimbursement process if made in the future. Possible expansions to the number of student groups. Regular backups of data.
 
+\begin{enumerate}
+  
+  \item If any changes to the reimbursement process is made in the future or if the number of student groups increase, the software will be easily extensible to allow for future development. \\
+  Rationale: Keeping the program extensible will make the program easy to maintain and add features later on in the future.
+  \item Any general maintenance issues should be resolvable by hired software developers after being provided all necessary documentation. \\
+  Rationale: The system should be well documented to allow for easy understanding of the software.
+\end{enumerate}
 \subsection{Supportability Requirements}
-Our solution will be supported on all platforms (windows, mac, linux) however not on mobile devices. Our service will only work on laptops provided by the MES. This laptop is required to have at least 4GB ram, modern cpu and access to the internet.
 
+\begin{enumerate}
+  
+  \item The solution will be supported on all platforms (Windows, Linux, Mac). \\
+  Rationale: Having a wide range of platforms will allow users from different operating systems to easily use the software.
+  \item The service shall only run on MES authorized devices. These devices are expected to have atleast 4GB ram, a modern CPU, and access to the internet. \\
+  Rationale: The MES requires the solution to be ran on authorized devices due to security reasons.
+\end{enumerate}
 \subsection{Adaptability Requirements}
-Expected to run above windows 10 or ideally be updated to latest windows/mac software.
-Expected to be designed for possible expansion (increase in users etc)
-Expected to run on provided MES laptops
-Expected to support all platforms (mac,windows,linux)
+\begin{enumerate}
+  
+  \item Expected to run above windows 10 or ideally be updated to latest windows/mac software. \\
+  \item Expected to be designed for possible expansion (increase in users etc) \\
+  \item Expected to run on provided MES laptops and to support all platforms (mac,windows,linux)
+\end{enumerate}
+
+
+
 
 
 \section{Security Requirements}
