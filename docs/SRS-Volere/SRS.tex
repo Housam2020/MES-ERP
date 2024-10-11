@@ -871,14 +871,28 @@ N/A - There are no current requirements to migrate data from the old product to 
 N/A - No existing data will be modified or translated. Should it become necessary to import historical data in the future, this process will be considered during a potential extension of the system, as detailed in Section 25.
 
 \section{Costs}
-\lips
-\section{User Documentation and Training}
-\subsection{User Documentation Requirements}
-User manual - will contain log in details and how to send reimbursement request
 
-\subsection{Training Requirements}
-No training required, user manual will cover instructions
+The cost estimation for the McMaster Engineering Society Custom Financial Expense Reporting Platform is based on factors such as functional and non-functional requirements, the difficulty of the business use cases, and the expected development effort.
 
+\subsection{Labor Costs}
+The total estimated labor cost is based on the following:
+\begin{itemize}
+    \item \textbf{Development Hours}: The estimated time required for developing the platform is between 400 to 500 hours. This estimate accounts for the implementation of core features such as reimbursement submissions, approval workflows, and financial tracking and integration with third-party services for sms notifications, and UI/UX design.
+    \item \textbf{Testing Hours}: Testing the platform, including unit testing and integration testing, is expected to take 50 to 70 hours. This estimate is based on functional requirements and the need to ensure stability across many use cases.
+\end{itemize}
+
+\subsection{Monetary Costs}
+While the development and testing are measured in hours, the following are expected to have real monetary costs:
+\begin{itemize}
+    \item \textbf{SMS Notification Costs}: Since the system will send SMS notifications, each SMS sent will have a cost. Based on typical SMS rates, the estimated cost is \$0.01 to \$0.05 per SMS, depending on the service provider. For 1,000 notifications, the cost would be in the range of \$10 to \$50.
+    \item \textbf{Server Operating Costs}: The system will be hosted on a local server provided by MES. Although there is no cloud storage cost, running the server will have electricity and maintenance costs. These are expected to be minimal and can be estimated at approximately \$10 to \$20 per month.
+\end{itemize}
+
+\subsection{Additional Considerations}
+\begin{itemize}
+    \item \textbf{Maintenance Costs}: After development, maintenance will be required for system updates, bug fixes, and adding new features. This will likely require an extra 5-10 hours per month.
+    \item \textbf{Backup Plan}: An extra 10-20 hours is set aside for unexpected issues or changes in requirements during development.
+\end{itemize}
 
 \section{Waiting Room}
 \begin{enumerate}
