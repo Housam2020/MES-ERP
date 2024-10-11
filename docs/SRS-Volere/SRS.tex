@@ -217,13 +217,45 @@ involved in the Project}
 
 \section{The Scope of the Work}
 \subsection{The Current Situation}
-\lips
+Currently, the McMaster Engineering Society (MES) manages financial operations for over 60 student groups. The existing process for handling reimbursement requests is inefficient and manual. This is due to the lack of a consolidated platform to manage this reimbursement workflow which leads to delays, loss of reimbursement requests, and difficulty in tracking budgets and expenses.
+
 \subsection{The Context of the Work}
-\lips
+The goal of the MES-ERP project is to streamline the financial processes of the MES by providing a consolidated platform that combines reimbursement tracking, budget management, and financial reporting. The scope of the work includes allowing users to submit and track reimbursement requests, manage budgets, and generate financial reports. In addition, the system will include an audit trail of all transactions to aid the MES during audits.
+
 \subsection{Work Partitioning}
-\lips
+\begin{itemize}
+  \item \textbf{Reimbursement Submission Module:} A feature that allows users to submit receipts and financial documents for reimbursement.
+  \item \textbf{Reimbursement Review and Approval:} A feature to allow MES administrators to review, approve, or reject reimbursement requests.
+  \item \textbf{Audit and Compliance Module:} This feature will ensure that all transactions are logged and auditable, complying with MES financial policies.
+  \item \textbf{Budget and User Dashboards:} A feature that provides users with an overview of their budgets, expenses, and pending requests.
+\end{itemize}
+
 \subsection{Specifying a Business Use Case (BUC)}
-\lips
+\textbf{BUC 1 - Submitting a Reimbursement Request:}
+\begin{itemize}
+  \item \textbf{Precondition:} The user must have access to the system and necessary documentation for submission.
+  \item \textbf{Trigger:} A student group needs reimbursement for an expense.
+  \item \textbf{Steps:}
+  \begin{enumerate}
+      \item The user logs into the MES-ERP system.
+      \item The user navigates to the  `Submit Reimbursement' section.
+      \item The user fills out the required fields, attaches relevant receipts or documents, and submits the form.
+  \end{enumerate}
+  \item \textbf{Postconditions:} The reimbursement request is logged in the system and sent for review by the MES administrators.
+\end{itemize}
+
+\textbf{BUC 2 - Review Reimbursement Requests:}
+\begin{itemize}
+  \item \textbf{Precondition:} A request has been submitted by a student group.
+  \item \textbf{Trigger:} MES administrators receive a notification of a new reimbursement request.
+  \item \textbf{Steps:}
+  \begin{enumerate}
+      \item The MES administrator logs into the system.
+      \item The MES administrator reviews the reimbursement request and attached documents.
+      \item The MES administrator updates the status of the request in the system with either an approval or rejection with feedback.
+  \end{enumerate}
+  \item \textbf{Postconditions:} The reimbursement request is either approved and sent for payment or rejected with feedback provided to the user.
+\end{itemize}
 
 \section{Business Data Model and Data Dictionary}
 \subsection{Business Data Model}
