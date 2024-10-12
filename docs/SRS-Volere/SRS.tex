@@ -259,7 +259,40 @@ The goal of the MES-ERP project is to streamline the financial processes of the 
 
 \section{Business Data Model and Data Dictionary}
 \subsection{Business Data Model}
-\lips
+The MES-ERP system will handle various types of financial and user-related data, organized into distinct entities to support the core functionalities of the platform. Below is an overview of the key entities and their relationships:
+
+\begin{itemize}
+    \item \textbf{User Entity:}
+    \begin{itemize}
+        \item \textbf{Attributes:} UserID, Name, Email, Role (Student Group Leader, Administrator, Financial Officer), Login Credentials
+        \item \textbf{Relationship:} A user can submit many reimbursement requests and manage budgets.
+    \end{itemize}
+    
+    \item \textbf{Reimbursement Request Entity:}
+    \begin{itemize}
+        \item \textbf{Attributes:} RequestID, SubmitterID (links to UserID), Date of Submission, Amount, Status (Submitted, Approved, Rejected, Paid), Attached Receipts
+        \item \textbf{Relationship:} Each reimbursement request is submitted by one user but can be reviewed by multiple administrators.
+    \end{itemize}
+    
+    \item \textbf{Budget Entity:}
+    \begin{itemize}
+        \item \textbf{Attributes:} BudgetID, GroupID (identifies the student group), Total Amount Allocated, Amount Spent, Category (e.g., Event, Travel, Supplies)
+        \item \textbf{Relationship:} A student group manages one budget per financial year, and each budget can have multiple expense reports linked to it.
+    \end{itemize}
+    
+    \item \textbf{Ledger Entity:}
+    \begin{itemize}
+        \item \textbf{Attributes:} LedgerID, Date of Transaction, GroupID, Amount, Category, ReimbursementRequestID (optional)
+        \item \textbf{Relationship:} Each ledger entry corresponds to an individual financial transaction, either linked to a reimbursement request or manually entered by the MES administration.
+    \end{itemize}
+    
+    \item \textbf{Audit Log Entity:}
+    \begin{itemize}
+        \item \textbf{Attributes:} AuditLogID, Action, PerformedBy (links to UserID), Date and Time, Entity Affected (e.g., ReimbursementRequestID or BudgetID)
+        \item \textbf{Relationship:} The audit log tracks all actions related to budget management, reimbursement requests, and financial approvals, ensuring compliance with MES regulations.
+    \end{itemize}
+\end{itemize}
+
 \subsection{Data Dictionary}
 \lips
 
