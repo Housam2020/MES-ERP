@@ -36,7 +36,7 @@
 \toprule
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-Date1 & Name(s) & Description of changes\\
+October 15, 2024 & Omar Muhammad & Introduction, scope and system boundaries\\
 Date2 & Name(s) & Description of changes\\
 ... & ... & ...\\
 \bottomrule
@@ -55,14 +55,84 @@ Date2 & Name(s) & Description of changes\\
 
 \section{Introduction}
 
+A hazard is defined as a condition or event that can result in harm, failure, or an undesirable outcome in a system. For engineers, hazards are risks that can affect the safety of a system, its functionality, or its operational integrity. For this project, a possible solution discussed was a web based app for phones, laptops, and computers. Specifically, in our project, a hazard can be identified as something that would degrade the operational integrity of the system, cause a crash in our system, expose a user to information that should not be available to them, or grant a user access to something they shouldn't have access to.
 \wss{You can include your definition of what a hazard is here.}
 
 \section{Scope and Purpose of Hazard Analysis}
+
+The scope of the hazard analysis will include any potential risk that will degrade operational integrity, cause crashes, or give users unauthorized access/information to system functionalities. The losses incurred from the listed scope would include unauthorized access to sensitive data, or exposure to restricted information. This risk could lead to a failure to maintain accurate data of the reimbursement requests. For example, if the backend of the app is edited without proper authorization, it will cause the McMaster Engineering Society to have false information and could make them miss out on reimbursement requests, which lowers the integrity of the app. A final loss would be degraded system functionality or complete system failure if the app cannot handle various inputs from users. If these risks occur frequently, the user base of the application will not be happy and we will risk them not wanting to use the app. By conducting this hazard analysis, we intend to limit all these risks, by limiting the risks we ensure the users of the application will remain content with it and will continue to use the app. 
 
 \wss{You should say what \textbf{loss} could be incurred because of the
 hazards.}
 
 \section{System Boundaries and Components}
+
+\begin{itemize}
+    \item \textbf{Component: Database} 
+    \begin{itemize}
+        \item Hazards:
+        \begin{enumerate}
+            \item Unauthorized access leading to data breaches.
+            \item Data corruption or loss during operations or updates.
+            \item Insufficient backups causing data loss.
+        \end{enumerate}
+    \end{itemize}
+
+    \item \textbf{Component: Front End} 
+    \begin{itemize}
+        \item Hazards:
+        \begin{enumerate}
+            \item Unhandled inputs leading to system crashes. 
+            \item Poor user experience with performance speed. 
+            \item Poor user experience from a lack of system feedback. 
+            \item Browser compatibility issues causing incorrect display of content.
+            \item Browser compatibility issues causing crashes. 
+        \end{enumerate}
+    \end{itemize}
+
+    \item \textbf{Component: Back End} 
+    \begin{itemize}
+        \item Hazards:
+        \begin{enumerate}
+            \item System crashes due to unhandled exceptions or inputs.
+            \item Failure to process data correctly, leading to incorrect outputs.
+            \item Poor security implementation exposing APIs.
+        \end{enumerate}
+    \end{itemize}
+    
+    \item \textbf{Component: Hardware/Server} 
+    \begin{itemize}
+        \item Hazards:
+        \begin{enumerate}
+            \item Power failures or hardware malfunctions.
+            \item Weak server side processing power causing increased latency. 
+            \item No potential backup server in case of emergency.
+            \item Insufficient server capacity for handling peak loads.
+        \end{enumerate}
+    \end{itemize}
+
+    \item \textbf{Component: Authentication System} 
+    \begin{itemize}
+        \item Hazards:
+        \begin{enumerate}
+            \item Unauthorized access due to weak authentication protocols.
+            \item Mismanagement of user roles leading to incorrect access control.
+        \end{enumerate}
+    \end{itemize}
+
+    \item \textbf{Component: Reimbursement System (Input/Output)} 
+    \begin{itemize}
+        \item Hazards:
+        \begin{enumerate}
+            \item Incorrect data submission (e.g. incorrect amounts, invalid receipts) causing delays or rejection of requests.
+            \item Output discrepancies (e.g. incorrect approvals or incorrect reimbursement amounts) due to calculation or logic errors.
+            \item Failure to notify the appropriate parties (clubs or administrators) regarding the status of the request, leading to confusion and delays.
+            \item Data tampering during the approval process, allowing unauthorized changes to reimbursement requests.
+            \item Lack of exception handling, leading to duplicate requests or other unintended circumstances. 
+        \end{enumerate}
+    \end{itemize}
+    
+\end{itemize}
 
 \wss{Dividing the system into components will help you brainstorm the hazards.
 You shouldn't do a full design of the components, just get a feel for the major
