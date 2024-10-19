@@ -37,6 +37,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 October 15, 2024 & Omar Muhammad & Introduction, scope and system boundaries\\
+October 18, 2024 & Housam Alamour & Critical Assumptions\\
 Date2 & Name(s) & Description of changes\\
 ... & ... & ...\\
 \bottomrule
@@ -141,11 +142,20 @@ each individual piece of hardware.  If your software will have a database, or an
 important library, these are also potential components.}
 
 \section{Critical Assumptions}
+\begin{enumerate}
+    \item \textbf{Assumption 1: Reliable Internet Connectivity} \\
+    The system assumes that all users, including student leaders, administrators, and MES staff, will have access to reliable and stable internet connections when interacting with the platform. This assumption is important because the platform is designed to work through a web-based interface. This will require real-time data processing. Reliable internet connectivity is necessary for users to access features like submitting reimbursement requests, tracking the status of payments, and viewing financial reports without interruption. If the connection is unstable, users might experience delays or errors during data submission, which may lead to incomplete reimbursement requests or user frustration. Also, poor connectivity could stop the delivery of notifications, meaning users will not get critical notifications and updates. Addressing potential connectivity issues early through notifications in the interface, error-handling when there is no connection and potentially providing offline access options could mitigate risks associated with this assumption.
 
-\wss{These assumptions that are made about the software or system.  You should
-minimize the number of assumptions that remove potential hazards.  For instance,
-you could assume a part will never fail, but it is generally better to include
-this potential failure mode.}
+    \item \textbf{Assumption 2: Server Availability and Performance} \\
+    It is assumed that the McMaster Engineering Society (MES) will provide a dedicated server with sufficient resources, including CPU power, memory, and storage, to support the platform's operations. The server must handle the anticipated workload, real-time updates, and concurrent access by all administrator of the reimbursement program of the MES as well as administrators of the clubs during peak periods. The server's storage capacity should be enough to store financial data for at least 3 years. This will allow for comprehensive audit trails and historical data retrieval. This assumption is important because if the server cannot handle the project, this could result in slower response times, data processing delays, or system crashes. This would directly impact user experience and the efficiency of financial operations. If these are not met or if future demand necessitates, then there may be a need to upgrade, potentially increasing project costs and delaying deployment. Regular performance monitoring should be planned to ensure server capacity aligns with user demand over time.
+
+    \item \textbf{Assumption 3: User Compliance with Data Entry Standards} \\
+    It is assumed that all users of the platform, including student group leaders and MES staff, will adhere to the established data entry standards when submitting information into the system. This includes entering accurate details for each reimbursement request, such as the amount, purpose, and necessary attachments like receipts. Sticking to these standards ensures that the data processed by the platform is accurate and complete, minimizing errors during financial reviews and report generation. If users do not comply with these standards, there is a risk of data entry errors leading to rejected requests, delays in processing, and additional administrative workload to correct mistakes. Proper user training and clear guidelines should be implemented so all users comply. Additionally, the platform should include input validation and error-checking features to reduce the likelihood of incorrect data entries.
+
+    \item \textbf{Assumption 4: User Access to Compatible Devices and Browsers} \\
+    It is assumed that all users, including student group leaders, administrators, group members and MES staff, will have access to devices and browsers that are compatible with the new platform. The platform is designed to function optimally on modern operating systems, as well as on commonly used browsers. This assumption is critical because the system's user interface and performance rely on up-to-date browser features and operating system support to ensure a smooth user experience. If users attempt to access the platform on outdated devices or unsupported browsers, they may experience issues such as reduced functionality, slower response times, or display errors. To mitigate this risk, it will be essential to clearly communicate the platform’s minimum system requirements to users and provide support for upgrading or accessing compatible devices where possible.
+    
+\end{enumerate}
 
 \section{Failure Mode and Effect Analysis}
 
