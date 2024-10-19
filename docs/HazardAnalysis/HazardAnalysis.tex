@@ -3,6 +3,7 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{hyperref}
+\usepackage{longtable}
 
 \hypersetup{
     colorlinks=true,       % false: boxed links; true: colored links
@@ -37,7 +38,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 October 15, 2024 & Omar Muhammad & Introduction, scope and system boundaries\\
-October 18, 2024 & Housam Alamour & Critical Assumptions\\
+October 18, 2024 & Housam Alamour & Critical Assumptions, started on FMEA\\
 Date2 & Name(s) & Description of changes\\
 ... & ... & ...\\
 \bottomrule
@@ -157,16 +158,28 @@ important library, these are also potential components.}
     
 \end{enumerate}
 
-\section{Failure Mode and Effect Analysis}
 
-\wss{Include your FMEA table here. This is the most important part of this document.}
-\wss{The safety requirements in the table do not have to have the prefix SR.
-The most important thing is to show traceability to your SRS. You might trace to
-requirements you have already written, or you might need to add new
-requirements.}
-\wss{If no safety requirement can be devised, other mitigation strategies can be
-entered in the table, including strategies involving providing additional
-documentation, and/or test cases.}
+
+\section{Failure Mode and Effect Analysis (FMEA)}
+TO BE EDITED
+
+\begin{longtable}{|p{3cm}|p{3cm}|p{3cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{4cm}|}
+    \hline
+    \textbf{Failure Mode} & \textbf{Cause} & \textbf{Effect} & \textbf{S} & \textbf{O} & \textbf{D} & \textbf{RPN} & \textbf{Recommended Actions} \\ \hline
+    \endfirsthead
+    
+    \hline
+    \textbf{Failure Mode} & \textbf{Cause} & \textbf{Effect} & \textbf{S} & \textbf{O} & \textbf{D} & \textbf{RPN} & \textbf{Recommended Actions} \\ \hline
+    \endhead
+    
+    Data loss during migration & Incorrect data mapping or migration errors & Loss of historical financial records, affecting audit compliance & 8 & 4 & 6 & 192 & Implement data validation scripts, perform multiple migration trials, and ensure backups are in place. \\ \hline
+    Unauthorized access to financial data & Weak password policies or unpatched security vulnerabilities & Breach of sensitive data, legal consequences & 9 & 3 & 5 & 135 & Enforce strong password policies, perform regular security audits, and implement multi-factor authentication. \\ \hline
+    System downtime & Server overload during peak usage times & Users unable to submit reimbursement requests, delays in financial processing & 7 & 5 & 4 & 140 & Increase server capacity, implement load balancing, and monitor system performance continuously. \\ \hline
+    Incorrect reimbursement approvals & Human error during manual review & Financial discrepancies, user dissatisfaction & 6 & 4 & 7 & 168 & Automate the approval process for routine requests, provide training for manual review, and introduce a second review layer for high-value transactions. \\ \hline
+
+\end{longtable}
+
+
 
 \section{Safety and Security Requirements}
 
