@@ -183,8 +183,14 @@ TO BE EDITED
 
 \section{Safety and Security Requirements}
 
-\wss{Newly discovered requirements.  These should also be added to the SRS.  (A
-rationale design process how and why to fake it.)}
+\begin{enumerate}
+    \item There must be comprehensive logging and monitoring of access to reimbursement information, including tracking actions such as data access, modification, and deletion. \\
+    Rationale: Monitoring access helps in identifying and responding to unauthorized access attempts or suspicious activities, providing an audit trail that enhances data security.
+    \item There must be role based access control to restrict access to reimbursement and financial data. \\
+    Rationale: Only authorized personnel, such as administrators and designated financial officers, should have access to sensitive reimbursement information. This control ensures confidentiality and limits access to sensitive financial information.
+    \item There must be data encryption for sensitive information such as user credentials, financial data, and reimbursement requests. \\
+    Rationale: Encryption protects sensitive data from unauthorized access and ensures that data is secure during transmission and storage.
+\end{enumerate}
 
 \section{Roadmap}
 \subsection{Immediate Implementation}
