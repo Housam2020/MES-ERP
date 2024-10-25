@@ -163,7 +163,7 @@ important library, these are also potential components.}
 \section{Failure Mode and Effect Analysis (FMEA)}
 TO BE EDITED
 
-\begin{longtable}{|p{3cm}|p{3cm}|p{3cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{4cm}|}
+\begin{longtable}{|p{2.2cm}|p{2.2cm}|p{2.2cm}|p{0.6cm}|p{0.6cm}|p{0.6cm}|p{0.6cm}|p{3cm}|}
     \hline
     \textbf{Failure Mode} & \textbf{Cause} & \textbf{Effect} & \textbf{S} & \textbf{O} & \textbf{D} & \textbf{RPN} & \textbf{Recommended Actions} \\ \hline
     \endfirsthead
@@ -172,10 +172,10 @@ TO BE EDITED
     \textbf{Failure Mode} & \textbf{Cause} & \textbf{Effect} & \textbf{S} & \textbf{O} & \textbf{D} & \textbf{RPN} & \textbf{Recommended Actions} \\ \hline
     \endhead
     
-    Data loss during migration & Incorrect data mapping or migration errors & Loss of historical financial records, affecting audit compliance & 8 & 4 & 6 & 192 & Implement data validation scripts, perform multiple migration trials, and ensure backups are in place. \\ \hline
-    Unauthorized access to financial data & Weak password policies or unpatched security vulnerabilities & Breach of sensitive data, legal consequences & 9 & 3 & 5 & 135 & Enforce strong password policies, perform regular security audits, and implement multi-factor authentication. \\ \hline
-    System downtime & Server overload during peak usage times & Users unable to submit reimbursement requests, delays in financial processing & 7 & 5 & 4 & 140 & Increase server capacity, implement load balancing, and monitor system performance continuously. \\ \hline
-    Incorrect reimbursement approvals & Human error during manual review & Financial discrepancies, user dissatisfaction & 6 & 4 & 7 & 168 & Automate the approval process for routine requests, provide training for manual review, and introduce a second review layer for high-value transactions. \\ \hline
+    Data loss during migration & Incorrect data mapping & Loss of historical records, audit issues & 8 & 4 & 6 & 192 & Use validation scripts, trial migrations, ensure backups. \\ \hline
+    Unauthorized access & Weak passwords or vulnerabilities & Data breach, legal issues & 9 & 3 & 5 & 135 & Strong passwords, security audits, multi-factor auth. \\ \hline
+    System downtime & Server overload & Submission delays, processing impact & 7 & 5 & 4 & 140 & Increase capacity, load balance, monitor performance. \\ \hline
+    Incorrect approvals & Manual errors & Financial discrepancies, dissatisfaction & 6 & 4 & 7 & 168 & Automate approvals, training, add review layer. \\ \hline
 
 \end{longtable}
 
