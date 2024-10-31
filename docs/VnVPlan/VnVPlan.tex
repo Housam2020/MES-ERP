@@ -65,80 +65,68 @@ in.}
 \section{Symbols, Abbreviations, and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{l l} 
-  \toprule		
-  \textbf{symbol} & \textbf{description}\\
-  \midrule 
-  T & Test\\
-  \bottomrule
-\end{tabular}\\
+\begin{tabular}{|p{3cm}|p{10cm}|}
+    \hline
+    \textbf{Abbreviation} & \textbf{Description} \\
+    \hline
+    MES & McMaster Engineering Society \\
+    \hline
+    V\&V & Verification and Validation \\
+    \hline
+    SRS & Software Requirements Specification \\
+    \hline
+    UI & User Interface \\
+    \hline
+    API & Application Programming Interface \\
+    \hline
+    CI/CD & Continuous Integration / Continuous Deployment \\
+    \hline
+\end{tabular}
 
-\wss{symbols, abbreviations, or acronyms --- you can simply reference the SRS
-  \citep{SRS} tables, if appropriate}
+\bigskip
 
-\wss{Remove this section if it isn't needed}
+This section defines the symbols, abbreviations, and acronyms used throughout the document to ensure clarity and consistency.
+
 
 \newpage
 
 \pagenumbering{arabic}
 
-This document ... \wss{provide an introductory blurb and roadmap of the
-  Verification and Validation plan}
+This document outlines the Verification and Validation (V\&V) Plan for the McMaster Engineering Society Custom Financial Expense Reporting Platform. The V\&V plan will ensure that the software performs as expected, meets user requirements, is secure, and reliable. The primary goals of this document are to define the objectives, methods, and scope of the V\&V process, covering aspects such as requirements validation, design verification, and system testing.
 
 \section{General Information}
 
 \subsection{Summary}
 
-\wss{Say what software is being tested.  Give its name and a brief overview of
-  its general functions.}
+The MES Custom Financial Expense Reporting Platform is a web-based application designed to streamline financial operations for McMaster Engineering Society and its associated student groups. It enables users to submit, review, and track reimbursement requests, create budgets, and manage expenses in a transparent, auditable, and efficient manner. This V\&V Plan outlines the verification and validation processes for ensuring the accuracy, functionality, and security of the software.
 
 \subsection{Objectives}
 
-\wss{State what is intended to be accomplished.  The objective will be around
-  the qualities that are most important for your project.  You might have
-  something like: ``build confidence in the software correctness,''
-  ``demonstrate adequate usability.'' etc.  You won't list all of the qualities,
-  just those that are most important.}
+The primary objective of this V\&V Plan is to confirm that the MES Custom Financial Expense Reporting Platform meets its requirements and operates as intended. The plan aims to:
+\begin{itemize}
+    \item Build confidence in the software's functional correctness and ensure it meets all outlined requirements.
+    \item Validate usability by demonstrating a clear, intuitive, and user-friendly interface for all key user roles.
+    \item Ensure system security and data integrity, especially regarding sensitive financial data and authorization levels.
+\end{itemize}
 
-\wss{You should also list the objectives that are out of scope.  You don't have 
-the resources to do everything, so what will you be leaving out.  For instance, 
-if you are not going to verify the quality of usability, state this.  It is also 
-worthwhile to justify why the objectives are left out.}
-
-\wss{The objectives are important because they highlight that you are aware of 
-limitations in your resources for verification and validation.  You can't do everything, 
-so what are you going to prioritize?  As an example, if your system depends on an 
-external library, you can explicitly state that you will assume that external library 
-has already been verified by its implementation team.}
+The plan does not prioritize nonfunctional aspects such as aesthetic design consistency or performance optimizations beyond standard system requirements, as these are not critical to initial functionality and budget constraints.
 
 \subsection{Challenge Level and Extras}
 
-\wss{State the challenge level (advanced, general, basic) for your project.
-Your challenge level should exactly match what is included in your problem
-statement.  This should be the challenge level agreed on between you and the
-course instructor.  You can use a pull request to update your challenge level
-(in TeamComposition.csv or Repos.csv) if your plan changes as a result of the
-VnV planning exercise.}
-
-\wss{Summarize the extras (if any) that were tackled by this project.  Extras
-can include usability testing, code walkthroughs, user documentation, formal
-proof, GenderMag personas, Design Thinking, etc.  Extras should have already
-been approved by the course instructor as included in your problem statement.
-You can use a pull request to update your extras (in TeamComposition.csv or
-Repos.csv) if your plan changes as a result of the VnV planning exercise.}
+The challenge level for this project is classified as \textbf{General}, aligning with the expectations outlined in the problem statement. The team has chosen to address the critical needs of verification of functionality, security, and usability. No additional extras beyond the required project scope are included in this V\&V Plan.
 
 \subsection{Relevant Documentation}
 
-\wss{Reference relevant documentation.  This will definitely include your SRS
-  and your other project documents (design documents, like MG, MIS, etc).  You
-  can include these even before they are written, since by the time the project
-  is done, they will be written.  You can create BibTeX entries for your
-  documents and within those entries include a hyperlink to the documents.}
+The following documents are relevant to this V\&V plan and provide a basis for verification activities:
 
-\citet{SRS}
+\begin{itemize}
+    \item \textbf{Software Requirements Specification (SRS)} \citep{SRS}: Defines the functional and nonfunctional requirements of the system, serving as a primary source for validation and test case development.
+    \item \textbf{Hazard Analysis}\citep{HazardAnalysis}: Outlines potential system risks and serves as a guide for security testing and fault tolerance validation.
+    \item \textbf{Problem Statement}\citep{ProblemStatement}: Provides an overview of the project's purpose, goals, and core functionality requirements, detailing the needs of the McMaster Engineering Society for a streamlined financial reporting platform. It identifies key problems in the current system, justifying the need for an automated, digital solution to enhance efficiency and reliability in financial processes.
+    \item \textbf{Development Plan}\citep{DevelopmentPlan}: Outlines the project's development lifecycle, including phases for requirements gathering, design, implementation, and testing. It establishes milestones, assigns roles, and defines the timeline, while ensuring that the team follows best practices in Agile development, with iterative check-ins for verification and validation of functional requirements.
+\end{itemize}
 
-\wss{Don't just list the other documents.  You should explain why they are relevant and 
-how they relate to your VnV efforts.}
+These documents establish the foundation for testing activities, allowing each verification and validation activity to target specific functional areas, requirements, or potential risk zones.
 
 \section{Plan}
 
