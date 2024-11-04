@@ -16,7 +16,7 @@ jobs:
       - name: Cache APT packages
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: texlive-full latexmk biber texlive-bibtex-extra default-jre plantuml
+          packages: texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-bibtex-extra biber
           version: 1.0
 
       - name: Cache texlive directory
@@ -30,24 +30,18 @@ jobs:
           restore-keys: |
             texlive-${{ runner.os }}-
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
-
-      - name: Install asciidoctor-pdf
-        run: |
-          gem install asciidoctor-pdf --pre
-
       - name: Build PDFs
         run: |
-          # Find all Makefiles in docs subdirectories and execute them
-          find docs -mindepth 2 -name "Makefile" -execdir make \;
+          cd docs/VnVPlan
+          pdflatex -interaction=nonstopmode VnVPlan.tex
+          bibtex VnVPlan
+          pdflatex -interaction=nonstopmode VnVPlan.tex
+          pdflatex -interaction=nonstopmode VnVPlan.tex
 
       - name: Commit and push PDFs
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add docs/**/*.pdf
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-generated PDFs" && git push)
+          git add docs/VnVPlan/VnVPlan.pdf
+          git commit -m "Auto-build VnVPlan PDF" || echo "No changes to commit"
+          git push
