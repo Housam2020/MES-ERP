@@ -13,14 +13,22 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install texlive and required packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            texlive-full \
-            latexmk \
-            biber \
-            texlive-bibtex-extra
+      - name: Cache APT packages
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: texlive-full latexmk biber texlive-bibtex-extra default-jre plantuml
+          version: 1.0
+
+      - name: Cache texlive directory
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/local/share/texlive
+            /usr/local/texlive
+            ~/.texlive
+          key: texlive-${{ runner.os }}-${{ hashFiles('**/*.tex') }}
+          restore-keys: |
+            texlive-${{ runner.os }}-
 
       - name: Build PDFs
         run: |
