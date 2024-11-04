@@ -269,24 +269,82 @@ The following tools will be utilized for automated testing and verification, ali
 All tools have been selected to integrate seamlessly with our Next.js and TypeScript stack while supporting our coding standards and quality requirements. The automation of these tools through our CI/CD pipeline ensures consistent verification across all stages of development.
 
 \subsection{Software Validation Plan}
+The validation plan ensures the software meets the needs of the McMaster Engineering Society and its 60 student groups through a comprehensive approach:
+\subsubsection*{External Data Validation}
+\begin{itemize}
+   \item Historical reimbursement data from the MES's previous Excel-based system will be used to validate:
+   \begin{itemize}
+       \item Accuracy of financial calculations.
+       \item Correct budget categorization.
+       \item Processing time improvements.
+   \end{itemize}
+   \item Sample receipts provided by the MES will be used to validate the receipt processing system.
+\end{itemize}
 
-\wss{If there is any external data that can be used for validation, you should
-  point to it here.  If there are no plans for validation, you should state that
-  here.}
+\subsubsection*{Stakeholder Requirements Review}
+\begin{itemize}
+   \item Task-based inspection sessions with MES VP Finance to verify SRS completeness:
+   \begin{itemize}
+       \item Walkthrough of common reimbursement scenarios.
+       \item Review of financial approval workflows.
+       \item Verification of audit requirements.
+   \end{itemize}
+   \item Requirements validation through prototype demonstrations:
+   \begin{itemize}
+       \item Interactive sessions with student group leaders.
+       \item Feedback collection on user interface design.
+       \item Verification of notification preferences.
+   \end{itemize}
+\end{itemize}
 
-\wss{You might want to use review sessions with the stakeholder to check that
-the requirements document captures the right requirements.  Maybe task based
-inspection?}
+\subsubsection*{Rev 0 Demo Validation}
+\begin{itemize}
+   \item Scheduled demonstration with external supervisor (MES VP Finance).
+   \item Focus areas for supervisor feedback:
+   \begin{itemize}
+       \item Validation of implemented requirements from Section 9.1 of the SRS.
+       \item Verification of financial workflow accuracy.
+       \item Assessment of security measures.
+       \item User interface evaluation.
+   \end{itemize}
+   \item This feedback will be documented and incorporated into subsequent development iterations.
+\end{itemize}
 
-\wss{For those capstone teams with an external supervisor, the Rev 0 demo should 
-be used as an opportunity to validate the requirements.  You should plan on 
-demonstrating your project to your supervisor shortly after the scheduled Rev 0 demo.  
-The feedback from your supervisor will be very useful for improving your project.}
+\subsubsection*{User Acceptance Testing}
+\begin{itemize}
+   \item Beta testing program with selected student groups:
+   \begin{itemize}
+       \item Testing with real reimbursement scenarios.
+       \item Validation of notification systems.
+       \item Performance under typical usage patterns.
+   \end{itemize}
+   \item Specific validation metrics:
+   \begin{itemize}
+       \item Reimbursement request completion time.
+       \item Budget categorization accuracy (target: 90\%).
+       \item System response times under load.
+       \item User error rates during submission process.
+   \end{itemize}
+\end{itemize}
 
-\wss{For teams without an external supervisor, user testing can serve the same purpose 
-as a Rev 0 demo for the supervisor.}
+\subsubsection*{Requirements Validation}
+\begin{itemize}
+   \item Regular requirement review sessions to ensure:
+   \begin{itemize}
+       \item Alignment with MES financial policies.
+       \item Compliance with security requirements.
+       \item Meeting of performance targets.
+   \end{itemize}
+   \item Validation of specific SRS requirements:
+   \begin{itemize}
+       \item Custom budget creation functionality.
+       \item Real-time ledger tracking.
+       \item Multi-level approval workflows.
+       \item Automated notifications.
+   \end{itemize}
+\end{itemize}
 
-\wss{This section might reference back to the SRS verification section.}
+All validation activities will be documented and tracked through GitHub. Feedback will be incorporated into the development cycle. There will be particular attention to the core requirements of reducing wait times and preventing loss of reimbursement requests. Any changes to requirements identified through validation will be reviewed and updated in the SRS document accordingly.
 
 \section{System Tests}
 
