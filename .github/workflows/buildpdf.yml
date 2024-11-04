@@ -30,6 +30,11 @@ jobs:
           restore-keys: |
             texlive-${{ runner.os }}-
 
+      - name: Install Asciidoctor PDF
+        uses: reitzig/actions-asciidoctor@v2.0.1
+        with:
+          version: 2.0.20
+
       - name: Build PDFs
         run: |
           # Find all Makefiles in docs subdirectories and execute them
