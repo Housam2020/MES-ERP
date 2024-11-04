@@ -13,30 +13,13 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Cache APT packages
-        uses: awalsh128/cache-apt-pkgs-action@latest
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v3
         with:
-          packages: texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-bibtex-extra biber
-          version: 1.0
-
-      - name: Cache texlive directory
-        uses: actions/cache@v3
-        with:
-          path: |
-            /usr/local/share/texlive
-            /usr/local/texlive
-            ~/.texlive
-          key: texlive-${{ runner.os }}-${{ hashFiles('**/*.tex') }}
-          restore-keys: |
-            texlive-${{ runner.os }}-
-
-      - name: Build PDFs
-        run: |
-          cd docs/VnVPlan
-          pdflatex -interaction=nonstopmode VnVPlan.tex
-          bibtex VnVPlan
-          pdflatex -interaction=nonstopmode VnVPlan.tex
-          pdflatex -interaction=nonstopmode VnVPlan.tex
+          root_file: docs/VnVPlan/VnVPlan.tex
+          working_directory: docs/VnVPlan
+          args: -pdf -file-line-error -interaction=nonstopmode
+          extra_system_packages: biber
 
       - name: Commit and push PDFs
         run: |
