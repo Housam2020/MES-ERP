@@ -19,7 +19,10 @@ jobs:
           root_file: docs/VnVPlan/VnVPlan.tex
           working_directory: docs/VnVPlan
           args: -pdf -file-line-error -interaction=nonstopmode
-          extra_system_packages: biber
+          post_compile: |
+            bibtex VnVPlan
+            pdflatex -interaction=nonstopmode VnVPlan.tex
+            pdflatex -interaction=nonstopmode VnVPlan.tex
 
       - name: Commit and push PDFs
         run: |
