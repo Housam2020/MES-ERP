@@ -1,0 +1,35 @@
+name: Build PDF
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Install texlive and required packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            texlive-full \
+            latexmk \
+            biber \
+            texlive-bibtex-extra
+
+      - name: Build PDFs
+        run: |
+          # Find all Makefiles in docs subdirectories and execute them
+          find docs -mindepth 2 -name "Makefile" -execdir make \;
+
+      - name: Upload PDFs
+        uses: actions/upload-artifact@v2
+        with:
+          name: generated-pdfs
+          path: |
+            docs/**/*.pdf
+            !docs/**/.*
+            !docs/Checklists/*.pdf
