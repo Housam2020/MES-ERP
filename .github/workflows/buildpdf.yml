@@ -16,7 +16,7 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: docs/VnVPlan/VnVPlan.tex
+          root_file: VnVPlan.tex
           working_directory: docs/VnVPlan
           args: -pdf -file-line-error -interaction=nonstopmode
           post_compile: |
