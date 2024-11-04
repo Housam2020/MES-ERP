@@ -30,10 +30,15 @@ jobs:
           restore-keys: |
             texlive-${{ runner.os }}-
 
-      - name: Install Asciidoctor PDF
-        uses: reitzig/actions-asciidoctor@v2.0.1
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          version: 2.0.20
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Install asciidoctor-pdf
+        run: |
+          gem install asciidoctor-pdf --pre
 
       - name: Build PDFs
         run: |
