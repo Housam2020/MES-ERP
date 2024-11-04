@@ -5,6 +5,8 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -25,11 +27,9 @@ jobs:
           # Find all Makefiles in docs subdirectories and execute them
           find docs -mindepth 2 -name "Makefile" -execdir make \;
 
-      - name: Upload PDFs
-        uses: actions/upload-artifact@v4
-        with:
-          name: generated-pdfs
-          path: |
-            docs/**/*.pdf
-            !docs/**/.*
-            !docs/Checklists/*.pdf
+      - name: Commit and push PDFs
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add docs/**/*.pdf
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-generated PDFs" && git push)
