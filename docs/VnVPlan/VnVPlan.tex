@@ -219,21 +219,54 @@ The implementation of the verification plan will be accomplished through a multi
 \end{itemize}
 
 \subsection{Automated Testing and Verification Tools}
+The following tools will be utilized for automated testing and verification, aligned with our development technology stack:
 
-\wss{What tools are you using for automated testing.  Likely a unit testing
-  framework and maybe a profiling tool, like ValGrind.  Other possible tools
-  include a static analyzer, make, continuous integration tools, test coverage
-  tools, etc.  Explain your plans for summarizing code coverage metrics.
-  Linters are another important class of tools.  For the programming language
-  you select, you should look at the available linters.  There may also be tools
-  that verify that coding standards have been respected, like flake9 for
-  Python.}
+\subsubsection*{Testing Frameworks}
+\begin{itemize}
+    \item Jest: Primary testing framework for unit and integration testing.
+    \item React Testing Library: Component testing focusing on user interactions and UI behavior.
+    \item Cypress: End-to-end testing for user flows and system integration.
+\end{itemize}
 
-\wss{If you have already done this in the development plan, you can point to
-that document.}
+\subsubsection*{Code Quality Tools}
+\begin{itemize}
+    \item ESLint: Configured with specific rules for TypeScript and Next.js development.
+    \item Prettier: Automated code formatting on commit to maintain consistent style.
+    \item TypeScript: Static type checking with strict mode enabled.
+    \item Git pre-commit hooks: Automated formatting and linting checks before commits are allowed.
+\end{itemize}
 
-\wss{The details of this section will likely evolve as you get closer to the
-  implementation.}
+\subsubsection*{Continuous Integration}
+\begin{itemize}
+    \item GitHub Actions for:
+    \begin{itemize}
+        \item Automated test execution on each commit.
+        \item Code quality checks through ESLint.
+        \item Type checking through TypeScript compiler.
+        \item Automated deployment to staging environment for pull requests.
+    \end{itemize}
+    \item Test coverage reporting through Jest with:
+    \begin{itemize}
+        \item Minimum 90\% coverage requirement as specified in the Development Plan.
+        \item Coverage reports generated for each pull request.
+        \item Blocking of merges if coverage thresholds aren't met.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Performance Monitoring}
+\begin{itemize}
+    \item Lighthouse: Performance, accessibility, and best practices monitoring.
+    \item Chrome DevTools: Memory usage and rendering performance analysis.
+    \item Next.js Analytics: Built-in performance monitoring for production deployments.
+\end{itemize}
+
+\subsubsection*{Security Testing}
+\begin{itemize}
+    \item npm audit: Regular dependency vulnerability scanning.
+    \item Automated vulnerability scanning integrated into CI pipeline.
+\end{itemize}
+
+All tools have been selected to integrate seamlessly with our Next.js and TypeScript stack while supporting our coding standards and quality requirements. The automation of these tools through our CI/CD pipeline ensures consistent verification across all stages of development.
 
 \subsection{Software Validation Plan}
 
