@@ -422,13 +422,7 @@ All validation activities will be documented and tracked through GitHub. Feedbac
 
 \section{System Tests}
 
-This section outlines the testing strategies for the functional and nonfunctional requirements of the MES Custom Financial Expense Reporting Platform. Each test case is linked to the requirements specified in the SRS to ensure thorough validation of the application.
-
 \subsection{Tests for Functional Requirements}
-
-These tests validate core features of the platform, such as reimbursement processing, budget management, and approval workflows. The subsections break down tests into areas that align with key functionalities outlined in the SRS.
-
-\subsubsection{Reimbursement Submissions}
 
 \textbf{Test 1: Submission Confirmation}
 \begin{itemize}
@@ -452,8 +446,6 @@ These tests validate core features of the platform, such as reimbursement proces
     \item \textbf{How Test Will Be Performed}: Approve the request and check the status change, notification delivery, and database integrity
 \end{itemize}
 
-\subsubsection{Budget Management}
-
 \textbf{Test 3: Expense Addition}
 \begin{itemize}
     \item \textbf{Test ID}: test-id3
@@ -464,37 +456,82 @@ These tests validate core features of the platform, such as reimbursement proces
     \item \textbf{Test Case Derivation}: Ensures real-time updates to the budget, as required by the SRS
     \item \textbf{How Test Will Be Performed}: Add an expense and verify updates in the UI and database
 \end{itemize}
+\textbf{Test 4: Budget Creation and Categorization}
+\begin{itemize}
+    \item \textbf{Test ID}: test-id4
+    \item \textbf{Control}: Automatic
+    \item \textbf{Initial State}: User logged in with access to budget management tools
+    \item \textbf{Input}: Budget creation request specifying category and amount
+    \item \textbf{Output}: Confirmation of successful budget creation, correctly categorized under specified category
+    \item \textbf{Test Case Derivation}: Ensures budget creation and categorization align with SRS requirements for custom budget management
+    \item \textbf{How Test Will Be Performed}: Create budget, categorize it, and verify correct display and categorization in dashboard
+\end{itemize}
 
----
+\textbf{Test 5: Notification on Reimbursement Status Change}
+\begin{itemize}
+    \item \textbf{Test ID}: test-id5
+    \item \textbf{Control}: Automatic
+    \item \textbf{Initial State}: User has a pending reimbursement request
+    \item \textbf{Input}: Admin updates status of reimbursement request to "approved"
+    \item \textbf{Output}: Notification is sent to user confirming approval, with update in dashboard
+    \item \textbf{Test Case Derivation}: Confirms notification system reliability as per SRS notification requirements
+    \item \textbf{How Test Will Be Performed}: Change status in admin panel, observe notification and dashboard update for the user
+\end{itemize}
+\textbf{Test 6: Audit Trail Logging}
+\begin{itemize}
+    \item \textbf{Test ID}: test-id6
+    \item \textbf{Control}: Automatic
+    \item \textbf{Initial State}: System is idle with no recent actions in audit log
+    \item \textbf{Input}: User performs actions, such as budget creation and expense submission
+    \item \textbf{Output}: Each action is logged in the audit trail with accurate timestamps and user IDs
+    \item \textbf{Test Case Derivation}: Ensures all actions are traceable for compliance, as per SRS audit requirements
+    \item \textbf{How Test Will Be Performed}: Perform actions and verify entries in audit log
+\end{itemize}
 
 \subsection{Tests for Nonfunctional Requirements}
 
-These tests address performance, usability, and security aspects of the application. They ensure the system is efficient and meets user expectations.
-
-\subsubsection{Performance Testing}
-
-\textbf{Test 4: Load Handling}
+\textbf{Test 7: Response Time Under Load}
 \begin{itemize}
-    \item \textbf{Test ID}: test-id10
+    \item \textbf{Test ID}: test-id7
+    \item \textbf{Type}: Dynamic
+    \item \textbf{Initial State}: System with minimal load
+    \item \textbf{Input/Condition}: Simultaneous budget submissions by multiple users
+    \item \textbf{Output/Result}: Response time remains within acceptable limits, per performance specifications
+    \item \textbf{Test Case Derivation}: Verifies system’s performance under high load, per nonfunctional requirements for speed and latency
+    \item \textbf{How Test Will Be Performed}: Use simulated users to submit requests, monitor response times
+\end{itemize}
+
+\textbf{Test 8: Security and Access Control}
+\begin{itemize}
+    \item \textbf{Test ID}: test-id8
+    \item \textbf{Control}: Manual
+    \item \textbf{Initial State}: Unauthorized user attempting access
+    \item \textbf{Input}: Unauthorized access attempt to restricted sections
+    \item \textbf{Output}: Access denied, with secure handling of unauthorized access attempt
+    \item \textbf{Test Case Derivation}: Confirms that unauthorized access is prevented as per security requirements in SRS
+    \item \textbf{How Test Will Be Performed}: Attempt access and verify access denial and logging of the event
+\end{itemize}
+\textbf{Test 9: Load Handling}
+\begin{itemize}
+    \item \textbf{Test ID}: test-id9
     \item \textbf{Type}: Dynamic
     \item \textbf{Initial State}: User dashboard loaded with multiple active sessions
     \item \textbf{Input/Condition}: Simultaneous form submissions from multiple users
-    \item \textbf{Output/Result}: System responds within 5 seconds under load
-    \item \textbf{How Test Will Be Performed}: Manually simulate multiple users submitting forms at the same time by having multiple team members perform form submissions in parallel on different devices or browsers.
+    \item \textbf{Output/Result}: System responds within acceptable limits without degradation in performance
+    \item \textbf{Test Case Derivation}: Verifies system’s load handling capacity to ensure scalability, per nonfunctional requirements
+    \item \textbf{How Test Will Be Performed}: Manually simulate multiple users by having several people submit forms at the same time from different devices or browsers. Each user will fill out and submit a form concurrently while monitoring the system's response time, performance, and any issues that arise, such as slowdowns or errors.
 \end{itemize}
 
-\subsubsection{Security Testing}
-
-\textbf{Test 5: Data Integrity Check}
+\textbf{Test 10: Data Integrity and Security}
 \begin{itemize}
-    \item \textbf{Test ID}: test-id11
-    \item \textbf{Type}: Static and Dynamic
-    \item \textbf{Initial State}: System ready, database connected
-    \item \textbf{Input}: Attempt to modify sensitive data without proper authorization
-    \item \textbf{Output}: Unauthorized modification attempt is blocked
-    \item \textbf{How Test Will Be Performed}: Manually attempt to access and modify sensitive data (e.g., through the application interface or API) without proper authorization. This could involve using invalid user credentials, altering URL parameters, or testing with non-privileged user accounts. The system should reject these unauthorized actions and prevent any changes to sensitive data.
-
-\end{itemize}
+    \item \textbf{Test ID}: test-id10
+    \item \textbf{Control}: Automatic
+    \item \textbf{Initial State}: Data integrity checks enabled
+    \item \textbf{Input}: Multiple transactions and database updates
+    \item \textbf{Output}: Data remains consistent, secure, and unaltered without authorization
+    \item \textbf{Test Case Derivation}: Ensures data integrity and protection against unauthorized changes as per security and data integrity requirements
+    \item \textbf{How Test Will Be Performed}: Perform series of database operations and validate data consistency and security logs
+\end{itemize} 
 
 \subsection{Traceability Between Test Cases and Requirements (above)}
 
@@ -505,9 +542,12 @@ These tests address performance, usability, and security aspects of the applicat
       \textbf{Requirement} & \textbf{Test Case(s)} \\
       \hline
       Reimbursement Submission & test-id1, test-id2 \\
-      Budget Management & test-id3 \\
-      Performance Under Load & test-id10 \\
-      Security and Data Integrity & test-id11 \\
+      Budget Management & test-id3, test-id4 \\
+      Notification System & test-id5 \\
+      Audit Logging & test-id6 \\
+      Performance Under Load & test-id7, test-id9 \\
+      Security and Access Control & test-id8 \\
+      Data Integrity and Security & test-id10 \\
       \hline
   \end{tabular}
   \caption{Traceability Between Test Cases and Requirements}
@@ -670,7 +710,6 @@ graduate attribute of Lifelong Learning.
   \item What went well while writing this deliverable? \\
   \textbf{Sufyan:} What went well for me this assignment was getting github actions to build the pdf on commit. I also enjoyed learning about all the tooling we could use for the project to ensure code quality, test coverage and security. \\
   \textbf{Taaha} What went well while writing this deliverable was the amount of support I had when asking teammates questions. Was extremely helpful whenever I came across an issue I was unsure of. \\
-  \textbf{Taaha:} What went well while writing this deliverable was the amount of support I had when asking teammates questions. Was extremely helpful whenever I came across an issue I was unsure of. \\
   \textbf{Omar:} What went well was the clarity of this document, we understand our project so we were able to devise this document with little to no questions asked to the TA. \\
   \textbf{Housam:} One aspect that went well for me was refining the plan structure to align with the project’s goals and requirements. Working on the document also helped solidify my understanding of the V\&V process and how it integrates into the larger project goals. \\
   \textbf{Rachid:} What went well for me this deliverable was that we discussed how we were going to work on this very early and this allowed me to spend more time thinking and working on this deliverable
@@ -678,7 +717,7 @@ graduate attribute of Lifelong Learning.
   \item What pain points did you experience during this deliverable, and how
     did you resolve them? \\
   \textbf{Sufyan:} The pain points I experienced were getting the github actions to work properly. I had to do a lot of research and trial and error to get it to work. I also had some issues with the formatting of the document. I resolved these issues by asking for help from my team members. \\
-  \textbf{Taaha} The pain points I experienced were mostly related to formatting the document correctly. In order to resolve this, I got help from teammates and looked online.
+  \textbf{Taaha} The pain points I experienced were mostly related to formatting the document correctly. In order to resolve this, I got help from teammates and looked online. \\
   \textbf{Omar:} I got really sick during this deliverable which slowed down my progress a lot, in addition, it was harder to manage this deliverable since I had a bunch of other deliverables due near the same time. \\
   \textbf{Housam:} The main challenge I faced was balancing detail with conciseness, as I wanted to cover each point in the plan without making it overly lengthy. At times, I felt I was going into too much detail, so I reviewed my work multiple times to find a clear and concise way to present information. Discussing with teammates helped refine certain sections and focus on essential content. \\
   \textbf{Rachid:} This deliverable was extremely clear and as a result, I experienced no pain points.
