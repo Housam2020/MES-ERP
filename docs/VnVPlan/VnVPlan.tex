@@ -129,46 +129,120 @@ The following documents are relevant to this V\&V plan and provide a basis for v
 These documents establish the foundation for testing activities, allowing each verification and validation activity to target specific functional areas, requirements, or potential risk zones.
 
 \section{Plan}
-
-\wss{Introduce this section.  You can provide a roadmap of the sections to
-  come.}
+This section outlines the Verification and Validation (V\&V) process for the MES Custom Financial Expense Reporting Platform, which aims to provide reliable financial management for MES and its associated student groups. The plan is structured to cover team roles, verification of the Software Requirements Specification (SRS), design verification, and verification of the V\&V plan itself. Each subsection provides an approach tailored to the critical functional and non-functional requirements outlined in the SRS.
 
 \subsection{Verification and Validation Team}
+The V\&V team is composed of designated members, each assigned specific responsibilities to ensure thorough verification of functionality, usability, security, and data integrity. The table below describes each team member's role and responsibilities:
 
-\wss{Your teammates.  Maybe your supervisor.
-  You should do more than list names.  You should say what each person's role is
-  for the project's verification.  A table is a good way to summarize this information.}
+\begin{tabularx}{\textwidth}{|X|X|X|}
+    \hline
+    \textbf{Name} & \textbf{Role} & \textbf{Responsibilities} \\
+    \hline
+    Housam & V\&V Lead & Oversees all V\&V activities, ensures that testing is aligned with MES requirements, and coordinates communication between team members and stakeholders. Reviews testing documentation for completeness and accuracy. \\
+    \hline
+    Rachid & Functional Tester & Manages the testing of all functional requirements, such as reimbursement submission, payment tracking, and budget management. Ensures that each feature meets specified criteria and conducts integration tests for module interactions. \\
+    \hline
+    Taaha & Security Tester & Responsible for verifying data security and access controls. Conducts tests to validate role-based access, secure data handling, and compliance with MES privacy policies. Implements static and dynamic security tests. \\
+    \hline
+    Sufyan & Usability Tester & Focuses on the user experience by conducting accessibility testing, analyzing interface consistency, and evaluating navigation efficiency. Engages with end-users to gather feedback and adjust usability requirements. \\
+    \hline
+  \end{tabularx}
+
+\pagebreak
+
+  \begin{tabularx}{\textwidth}{|X|X|X|}
+    Omar & Performance Tester & Conducts tests to evaluate system performance under various loads and conditions. Responsible for stress testing, measuring response times, and identifying any performance bottlenecks, ensuring the platform remains efficient and responsive even during peak usage. \\
+    \hline
+\end{tabularx}
+
+Each team member will participate in weekly meetings to discuss V\&V progress, address issues, and adapt the V\&V approach as needed. The V\&V Lead will compile findings from each member and provide consolidated feedback to the project supervisor and stakeholders for continuous improvement.
 
 \subsection{SRS Verification Plan}
+The SRS document is critical for establishing a clear and agreed-upon set of requirements for the MES Custom Financial Expense Reporting Platform. Our SRS verification plan will ensure the SRS’s accuracy, completeness, and alignment with MES’s objectives. The following approaches will be used for verifying the SRS:
 
-\wss{List any approaches you intend to use for SRS verification.  This may
-  include ad hoc feedback from reviewers, like your classmates (like your
-  primary reviewer), or you may plan for something more rigorous/systematic.}
+\begin{itemize}
+    \item \textbf{Peer Review}: Team members and classmates will conduct an initial peer review of the SRS document. Reviewers will assess the clarity and completeness of requirements, noting ambiguities or missing details. Feedback will be documented, and revisions will be made to address identified issues.
+    
+    \item \textbf{Stakeholder Review}: The SRS will be presented to MES stakeholders in a structured review meeting. During this meeting, we will walk stakeholders through each requirement, prioritizing critical functionality such as reimbursement processing, budget management, and notification systems. Specific feedback will be sought on:
+    \begin{itemize}
+        \item Completeness of functional requirements, such as the need for real-time updates on reimbursement statuses.
+        \item User accessibility and usability, focusing on ease of submission for student leaders.
+        \item Compliance with MES financial policies, including secure audit trails and access controls.
+    \end{itemize}
+    
+    \item \textbf{Supervisor Feedback}: The project supervisor will review the SRS as part of a task-based inspection. The supervisor will be provided with a checklist of essential aspects to verify, including:
+    \begin{itemize}
+        \item Consistency in terminology and definitions.
+        \item Logical flow between sections, ensuring that each requirement aligns with MES’s needs.
+        \item Identification of non-functional requirements related to performance, scalability, and security.
+    \end{itemize}
+    Feedback from the supervisor will be reviewed, and adjustments will be made to enhance clarity and accuracy.
 
-\wss{If you have a supervisor for the project, you shouldn't just say they will
-read over the SRS.  You should explain your structured approach to the review.
-Will you have a meeting?  What will you present?  What questions will you ask?
-Will you give them instructions for a task-based inspection?  Will you use your
-issue tracker?}
-
-\wss{Maybe create an SRS checklist?}
+    \item \textbf{SRS Checklist}: A checklist will be created to ensure all requirements are accounted for. The checklist will include criteria such as:
+    \begin{itemize}
+        \item Traceability: Each requirement must map back to a specific use case or MES need.
+        \item Testability: Each requirement must be written in a way that makes it possible to validate through specific tests.
+        \item Clarity and conciseness: Requirements should be free from ambiguous language and be concise enough for straightforward implementation.
+    \end{itemize}
+\end{itemize}
 
 \subsection{Design Verification Plan}
+To confirm that the design aligns with the SRS and will fulfill MES’s functional and non-functional requirements, a structured design verification process will be conducted. The design verification plan includes the following elements:
 
-\wss{Plans for design verification}
+\begin{itemize}
+    \item \textbf{Design Walkthroughs}: The team will conduct regular design walkthroughs, reviewing key components and workflows. During these sessions, each module (e.g., reimbursement submission, audit logging, budget tracking) will be analyzed against the SRS to ensure alignment. Feedback from walkthroughs will be documented, and modifications will be made to address any identified issues.
 
-\wss{The review will include reviews by your classmates}
+    \item \textbf{Peer Reviews}: Team members will conduct detailed reviews of each other’s design documentation, checking for adherence to design principles, completeness, and alignment with MES’s goals. This review will include:
+    \begin{itemize}
+        \item Checking that all use cases are addressed in the design.
+        \item Verifying that interactions between modules support seamless user experience and efficient functionality.
+        \item Ensuring that security measures are in place for handling sensitive financial data.
+    \end{itemize}
 
-\wss{Create a checklists?}
+    \item \textbf{Checklists for Design Verification}: Each design element will be assessed using a checklist, covering:
+    \begin{itemize}
+        \item Consistency with SRS requirements.
+        \item Scalability and extensibility of the design.
+        \item Feasibility of implementation within the project timeline and resources.
+        \item Compliance with MES standards, such as maintaining an intuitive user interface.
+    \end{itemize}
+    Checklists will help maintain thoroughness and consistency across the team’s design review efforts.
+
+    \item \textbf{Supervisor Feedback}: After each design phase, the design documentation will be reviewed by the project supervisor. The supervisor’s review will focus on verifying that the design meets project expectations for functionality, scalability, and security. A checklist will be provided to the supervisor to guide the review, focusing on aspects such as:
+    \begin{itemize}
+        \item Alignment of the design with SRS requirements.
+        \item Feasibility of the design for expected usage levels by MES stakeholders.
+        \item Identification of any areas where design adjustments are needed to meet MES standards.
+    \end{itemize}
+    Feedback from the supervisor will be integrated into the design documentation.
+\end{itemize}
 
 \subsection{Verification and Validation Plan Verification Plan}
+The V\&V plan itself requires verification to ensure that it is both feasible and comprehensive. This verification process will involve the following steps:
 
-\wss{The verification and validation plan is an artifact that should also be
-verified.  Techniques for this include review and mutation testing.}
+\begin{itemize}
+    \item \textbf{Peer Review}: Team members will review the V\&V plan for logical flow, completeness, and feasibility. The reviewers will check that each component of the V\&V plan aligns with the requirements in the SRS and that planned activities are feasible within the project timeline.
 
-\wss{The review will include reviews by your classmates}
+    \item \textbf{Mutation Testing}: Selected sections of the V\&V plan will undergo mutation testing to identify weaknesses or gaps in test case descriptions. This will help us refine test cases to ensure they cover a wide range of possible inputs and edge cases, making the V\&V plan more robust.
 
-\wss{Create a checklists?}
+    \item \textbf{Checklist for V\&V Plan Review}: A checklist will guide the review of the V\&V plan, covering:
+    \begin{itemize}
+        \item Presence of all required V\&V components, such as unit, integration, and system tests.
+        \item Feasibility of planned activities, given project resources and constraints.
+        \item Traceability between test cases and SRS requirements, ensuring comprehensive coverage.
+        \item Alignment of verification techniques with the specific needs of the MES platform.
+    \end{itemize}
+
+    \item \textbf{Feedback from Supervisor and Stakeholders}: A meeting will be held with the project supervisor and MES stakeholders to review the V\&V plan. During this session, we will gather feedback on:
+    \begin{itemize}
+        \item Adequacy of planned testing for mission-critical functions (e.g., reimbursement submission, audit logging).
+        \item Planned usability testing to ensure user satisfaction among student groups and administrators.
+        \item Risk mitigation strategies for potential project challenges, such as data security concerns.
+    \end{itemize}
+    The feedback gathered will be used to refine the V\&V plan further, ensuring it meets the expectations of all stakeholders.
+\end{itemize}
+
+By implementing the above V\&V plan, we aim to build confidence in the MES Custom Financial Expense Reporting Platform’s functionality, usability, and security, ensuring it meets the expectations of the MES and its users.
 
 \subsection{Implementation Verification Plan}
 The implementation of the verification plan will be accomplished through a multi faceted approach:
