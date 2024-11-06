@@ -13,7 +13,7 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Compile LaTeX document
+      - name: Compile LaTeX document - VnVPlan
         uses: xu-cheng/latex-action@v3
         with:
           root_file: VnVPlan.tex
@@ -24,10 +24,22 @@ jobs:
             pdflatex -interaction=nonstopmode VnVPlan.tex
             pdflatex -interaction=nonstopmode VnVPlan.tex
 
+      - name: Compile LaTeX document - POC Team Contribution
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: POC_Team_Contrib.tex
+          working_directory: docs/projMngmnt
+          args: -pdf -file-line-error -interaction=nonstopmode
+          post_compile: |
+            bibtex POC_Team_Contrib
+            pdflatex -interaction=nonstopmode POC_Team_Contrib.tex
+            pdflatex -interaction=nonstopmode POC_Team_Contrib.tex
+
       - name: Commit and push PDFs
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add docs/VnVPlan/VnVPlan.pdf
-          git commit -m "Auto-build VnVPlan PDF" || echo "No changes to commit"
+          git add docs/projMngmnt/POC_Team_Contrib.pdf
+          git commit -m "Auto-build PDFs" || echo "No changes to commit"
           git push
