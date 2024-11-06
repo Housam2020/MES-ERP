@@ -31,8 +31,6 @@ jobs:
           working_directory: docs/projMngmnt
           args: -pdf -file-line-error -interaction=nonstopmode
           post_compile: |
-            bibtex POC_Team_Contrib
-            pdflatex -interaction=nonstopmode POC_Team_Contrib.tex
             pdflatex -interaction=nonstopmode POC_Team_Contrib.tex
 
       - name: Commit and push PDFs
