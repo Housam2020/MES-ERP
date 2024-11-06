@@ -179,9 +179,17 @@ Rachid & 6 & 0 \\
 Most issues have been closed yet, but when we revise and update our previous documents we will go through all of the issues. 
 \section{CICD}
 
-\wss{Say how CICD will be used in your project}
+To ensure consistent quality within our project, we will use a CICD pipeline integrated with GitHub Actions. Our CICD strategy focuses on:
 
-\wss{If your team has additional metrics of productivity, please feel free to
-add them to this report.}
+\begin{itemize}
+    \item \textbf{Automated Testing and Linting}: Every time a commit is pushed to the repository, GitHub Actions will automatically multiple checks, including running unit tests, integration tests, and linting checks. This will help us catch errors early in the development cycle, ensuring code quality and reducing bugs.
+
+    \item \textbf{PDF Build Automation for Documentation}: Whenever a change is made to any LaTeX file in the repository, GitHub Actions will automatically compile the updated LaTeX document to PDF. This ensures that our documentation is always up-to-date and accessible in PDF format. If the build fails, team members will receive an alert, allowing them to address any issues immediately.
+
+    \item \textbf{Automated Deployment to Staging Environment}: For every change that is pushed to the main branch, GitHub Actions will deploy the latest version of the application to a staging environment. This will allow the team and stakeholders to review and test features. 
+
+    \item \textbf{Version Control and Release Management}: At each major project milestone, GitHub Actions will assist in creating a tagged release. This includes an archived version of the code, documentation, and any necessary deployment instructions, providing a clear record of progress.
+
+\end{itemize}
 
 \end{document}
