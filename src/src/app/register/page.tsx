@@ -33,7 +33,7 @@ export default function RegisterPage() {
       if (data.user && !data.session) {
         setError("Please check your email to confirm your registration.");
       } else {
-        router.push("/user-dashboard");
+        router.push("/dashboard/user"); // should probably redirect to login and there notify to check email
       }
     } catch (error) {
       console.error("Error registering user:", error);
