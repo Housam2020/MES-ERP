@@ -1,30 +1,44 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-export default async function AdminDashboard() {
+export default async function Home() {
   const supabase = await createClient();
 
-  // Get the authenticated user
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Redirect to login if no user is found
   if (!user) {
     redirect("/login");
   }
 
+  // Extract username from email
+  const username = user.email.split("@")[0];
+
   return (
-    <div className="flex min-h-screen items-center justify-center p-8 sm:p-20">
-      <div className="text-center">
-        <h1 className="text-xl font-bold mb-4">Admin Dashboard</h1>
-        <h2 className="text-lg mb-6">Welcome, {user.email}</h2>
-        <form action="/auth/signout" method="post">
-          <button className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5">
-            Sign out
-          </button>
-        </form>
-      </div>
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="w-full bg-blue-600 text-white p-4 shadow-md">
+        <div className="container mx-auto flex justify-between items-center">
+          <h1 className="text-lg font-semibold">
+            Welcome, {username}
+          </h1>
+          <form action="/auth/signout" method="post">
+            <button className="rounded-full border border-solid border-white/[.2] transition-colors flex items-center justify-center hover:bg-blue-700 text-sm h-10 px-4">
+              Sign out
+            </button>
+          </form>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-grow flex items-center justify-center bg-gray-100">
+        <div className="flex flex-col items-center gap-8 bg-white p-10 rounded-lg shadow-lg w-full max-w-5xl h-full sm:h-auto">
+          <h2 className="text-2xl font-semibold text-gray-800">Dashboard</h2>
+          <p className="text-gray-600">This is your user dashboard where you can view and manage your information.</p>
+          {/* Add any additional dashboard content here */}
+        </div>
+      </main>
     </div>
   );
 }
