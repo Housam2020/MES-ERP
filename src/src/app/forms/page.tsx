@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { createClient } from '@/utils/supabase/client';
