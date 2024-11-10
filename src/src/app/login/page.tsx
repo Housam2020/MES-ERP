@@ -18,16 +18,50 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({
+  
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
+  
       if (error) throw error;
-      router.push("/dashboard/user");
+  
+      const userId = data.user?.id;
+      if (!userId) throw new Error("Login failed.");
+  
+      const { data: userRecord, error: fetchError } = await supabase
+        .from("Users")
+        .select("role")
+        .eq("id", userId)
+        .single();
+  
+      let role;
+      
+      if (fetchError) {
+        if (fetchError.code === "PGRST116") {
+          const { error: insertError } = await supabase
+            .from("Users")
+            .insert([{ id: userId, email, role: "user" }]);
+  
+          if (insertError) throw insertError;
+  
+          role = "user";
+        } else {
+          throw fetchError;
+        }
+      } else {
+        role = userRecord.role;
+      }
+  
+      if (role === "admin") {
+        router.push("/dashboard/admin");
+      } else {
+        router.push("/dashboard/user");
+      }
+  
       router.refresh();
     } catch (error) {
       console.error("Error logging in:", error);
