@@ -36,7 +36,7 @@ export default async function Home() {
           <h1 className="text-lg font-semibold">
             Welcome, {username}
           </h1>
-          <form action="/auth/signout" method="post">
+          <form action="/signout" method="post">
             <button className="rounded-full border border-solid border-white/[.2] transition-colors flex items-center justify-center hover:bg-blue-700 text-sm h-10 px-4">
               Sign out
             </button>
