@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { createClient } from '@/utils/supabase/client';
+import { useForm } from 'react-hook-form';
+import { createClient } from "@/utils/supabase/client";
+import { v4 as uuidv4 } from 'uuid';
 
 type FormData = {
   email_address: string;
@@ -42,19 +43,42 @@ type FormData = {
 const ReimbursementForm: React.FC = () => {
   const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>();
   const [formStep, setFormStep] = useState(0);
-  const supabase = createClient();
 
   const onSubmit = async (data: FormData) => {
+    const supabase = await createClient();
     try {
+      // Get the logged-in user's ID
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+  
+      if (userError || !user) {
+        alert('Failed to get the logged-in user.');
+        throw userError;
+      }
+      // Generate a unique UUID for the new record
+      const request_id = uuidv4();
+      const user_id = user.id;
+      const newData = { request_id:  request_id, user_id: user_id, ...data };
+  
+      // Insert the payment request
       const { error } = await supabase
-        .from('mes_payment_reimbursement')
-        .insert([data]);
-
-      if (error) throw error;
+        .from('payment_requests')
+        .insert([newData]);
+  
+      if (error) {
+        if (error.code === '23505') { // Unique violation error code for PostgreSQL
+          alert('A record with this information already exists.');
+        } else {
+          alert(`Failed to submit the form: ${error.message}`);
+        }
+        throw error;
+      }
       alert('Form submitted successfully');
+  
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Failed to submit the form');
     }
   };
 

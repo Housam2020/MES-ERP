@@ -17,7 +17,7 @@ export default async function Home() {
   const { data: paymentRequests, error } = await supabase
     .from('payment_requests')
     .select('full_name, who_are_you, amount_requested_cad, group_or_team_name, payment_timeframe, reimbursement_or_payment, timestamp')
-    .eq('id', user.id); 
+    .eq('user_id', user.id); 
 
   if (error) {
     console.error("Error fetching payment requests:", error);
