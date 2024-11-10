@@ -4,20 +4,16 @@ import { redirect } from "next/navigation";
 export default async function Home() {
   const supabase = await createClient();
 
-  // Get the authenticated user
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Redirect to login if no user is authenticated
   if (!user) {
     redirect("/login");
   }
 
-  // Extract username from email
   const username = user.email.split("@")[0];
 
-  // Fetch payment requests with specified columns
   const { data: paymentRequests, error } = await supabase
     .from('payment_requests')
     .select('full_name, who_are_you, amount_requested_cad, group_or_team_name, payment_timeframe, reimbursement_or_payment, timestamp');
@@ -43,7 +39,6 @@ export default async function Home() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="flex-grow flex items-center justify-center bg-gray-100">
         <div className="flex flex-col items-center gap-8 bg-white p-10 rounded-lg shadow-lg w-full max-w-5xl h-full sm:h-auto">
           <h2 className="text-2xl font-semibold text-gray-800">Dashboard</h2>
