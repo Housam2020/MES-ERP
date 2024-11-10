@@ -14,22 +14,30 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
 
       if (error) throw error;
-      router.push("/login");
+
+      if (data.user && !data.session) {
+        setError("Please check your email to confirm your registration.");
+      } else {
+        router.push("/user-dashboard"); // need to redirect to login i think
+      }
     } catch (error) {
       console.error("Error registering user:", error);
+      setError("Error registering user. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -63,6 +71,7 @@ export default function RegisterPage() {
                 required
               />
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Loading..." : "Register"}
             </Button>
