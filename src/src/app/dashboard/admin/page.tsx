@@ -8,6 +8,9 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  console.log(user); // This will display the user data in the browser console
+
+
   if (!user) {
     redirect("/login");
   }

@@ -47,5 +47,18 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
+  // Fetch data from the payment_requests table
+  const { data: paymentRequests, error } = await supabase
+    .from('payment_requests')
+    .select('*')
+
+  if (error) {
+    console.error("Error fetching payment requests:", error)
+    // Handle the error or return a response as needed
+  } else {
+    console.log("Payment requests:", paymentRequests)
+    // You can attach this data to the response or use it as needed
+  }
+
   return supabaseResponse;
 }
