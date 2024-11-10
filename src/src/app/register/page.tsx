@@ -21,13 +21,27 @@ export default function RegisterPage() {
 
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
 
       if (error) throw error;
-      router.push("/login");
+
+      const userId = data.user.id; // this can be null?
+      const role = "user";
+
+      const { error: dbError } = await supabase
+      .from("Users")
+      .insert([
+        { id: userId, email, role }
+      ]);
+
+
+      if (dbError) throw dbError;
+
+      // Not redirecting to admin because cant be admin on register for now. 
+      router.push("/user-dashboard");
     } catch (error) {
       console.error("Error registering user:", error);
     } finally {

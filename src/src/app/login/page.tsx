@@ -21,13 +21,34 @@ export default function LoginPage() {
 
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
-      router.push("/dashboard/user");
+
+      const userId = data.user.id; // Possibly null
+      console.log(userId);
+      const { data: userRecord, error: fetchError } = await supabase
+        .from("Users")
+        .select("role")
+        .eq("id", userId)
+        .single();
+
+        console.log("HI");
+        console.log(fetchError);
+
+      if (fetchError) throw fetchError;
+
+      const role = userRecord.role;
+
+      if (role === "admin") {
+        router.push("/dashboard/admin");
+      } else {
+        router.push("/dashboard/user");
+      }
+
       router.refresh();
     } catch (error) {
       console.error("Error logging in:", error);
