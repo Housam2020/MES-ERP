@@ -17,21 +17,15 @@ export default async function Home() {
   // Extract username from email
   const username = user.email.split("@")[0];
 
-  // Fetch payment requests
+  // Fetch payment requests where user_id matches the authenticated user's ID
   const { data: paymentRequests, error } = await supabase
     .from('payment_requests')
-    .select('*');
-
-  console.log(paymentRequests)
-
+    .select('full_name, who_are_you, amount_requested_cad, group_or_team_name, payment_timeframe, reimbursement_or_payment, timestamp')
+    .eq('id', user.id); // assuming 'user_id' is the foreign key in 'payment_requests' table
 
   if (error) {
     console.error("Error fetching payment requests:", error);
-    // Handle error as needed, such as returning an error component or message
-    return (
-      <div>Error loading payment requests.</div>
-    );
-
+    return <div>Error loading payment requests.</div>;
   }
 
   return (
@@ -61,25 +55,31 @@ export default async function Home() {
             <table className="min-w-full bg-white">
               <thead>
                 <tr>
-                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">ID</th>
-                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Amount</th>
-                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Description</th>
-                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Status</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Full Name</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Who Are You</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Amount Requested (CAD)</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Group or Team Name</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Payment Timeframe</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Reimbursement or Payment</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Timestamp</th>
                 </tr>
               </thead>
               <tbody>
                 {paymentRequests && paymentRequests.length > 0 ? (
                   paymentRequests.map((request) => (
-                    <tr key={request.id}>
-                      <td className="py-2 px-4 border-b border-gray-200">{request.id}</td>
-                      <td className="py-2 px-4 border-b border-gray-200">{request.amount}</td>
-                      <td className="py-2 px-4 border-b border-gray-200">{request.description}</td>
-                      <td className="py-2 px-4 border-b border-gray-200">{request.status}</td>
+                    <tr key={request.timestamp}>
+                      <td className="py-2 px-4 border-b border-gray-200">{request.full_name}</td>
+                      <td className="py-2 px-4 border-b border-gray-200">{request.who_are_you}</td>
+                      <td className="py-2 px-4 border-b border-gray-200">{request.amount_requested_cad}</td>
+                      <td className="py-2 px-4 border-b border-gray-200">{request.group_or_team_name}</td>
+                      <td className="py-2 px-4 border-b border-gray-200">{request.payment_timeframe}</td>
+                      <td className="py-2 px-4 border-b border-gray-200">{request.reimbursement_or_payment}</td>
+                      <td className="py-2 px-4 border-b border-gray-200">{new Date(request.timestamp).toLocaleString()}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" className="py-4 text-center text-gray-600">
+                    <td colSpan="7" className="py-4 text-center text-gray-600">
                       No payment requests found.
                     </td>
                   </tr>
