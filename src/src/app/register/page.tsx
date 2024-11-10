@@ -14,10 +14,12 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
       const supabase = createClient();
@@ -28,22 +30,14 @@ export default function RegisterPage() {
 
       if (error) throw error;
 
-      const userId = data.user.id; // this can be null?
-      const role = "user";
-
-      const { error: dbError } = await supabase
-      .from("Users")
-      .insert([
-        { id: userId, email, role }
-      ]);
-
-
-      if (dbError) throw dbError;
-
-      // Not redirecting to admin because cant be admin on register for now. 
-      router.push("/user-dashboard");
+      if (data.user && !data.session) {
+        setError("Please check your email to confirm your registration.");
+      } else {
+        router.push("/user-dashboard");
+      }
     } catch (error) {
       console.error("Error registering user:", error);
+      setError("Error registering user. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -77,6 +71,7 @@ export default function RegisterPage() {
                 required
               />
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Loading..." : "Register"}
             </Button>
