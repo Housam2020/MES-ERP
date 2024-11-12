@@ -5,15 +5,11 @@ import { createClient } from "@/utils/supabase/client";
 export default function EditableStatusRow({ request }) {
   const [status, setStatus] = useState(request.status);
 
-  // Handle form submission to update status
   const handleStatusChange = async (newStatus) => {
-    setStatus(newStatus); // Update state for UI immediately
+    setStatus(newStatus); 
     console.log(newStatus);
     try {
-      // Initialize Supabase client
       const supabase = await createClient();
-
-      // Update row in database with new status
       const { error } = await supabase
         .from("payment_requests")
         .update({ status: newStatus })
@@ -24,7 +20,7 @@ export default function EditableStatusRow({ request }) {
         throw new Error("Failed to update status");
       }
 
-      alert("Status updated successfully!"); // Confirmation for user
+      alert("Status updated successfully!"); 
     } catch (error) {
       console.error("Error updating status:", error);
       alert("Failed to update status");
@@ -41,19 +37,18 @@ export default function EditableStatusRow({ request }) {
       <td className="py-2 px-4 border-b border-gray-200">{request.reimbursement_or_payment}</td>
       <td className="py-2 px-4 border-b border-gray-200">{new Date(request.timestamp).toLocaleString()}</td>
       <td className="py-2 px-4 border-b border-gray-200">
-        {/* Dropdown for selecting status */}
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleStatusChange(status); // Submit the updated status
+            handleStatusChange(status); 
           }}
         >
           <select
             value={status}
             onChange={(e) => {
               const newValue = e.target.value;
-              setStatus(newValue); // Update local state immediately
-              handleStatusChange(newValue); // Pass the new value directly to handleStatusChange
+              setStatus(newValue); 
+              handleStatusChange(newValue); 
             }}
             className="border border-gray-300 rounded p-1"
           >
