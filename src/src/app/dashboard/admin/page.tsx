@@ -58,7 +58,7 @@ export default async function Home() {
               <tbody>
                 {paymentRequests && paymentRequests.length > 0 ? (
                   paymentRequests.map((request) => (
-                    <EditableStatusRow key={request.id} request={request} />
+                    <EditableStatusRow key={request.request_id} request={request} />
                   ))
                 ) : (
                   <tr>

@@ -64,7 +64,7 @@ export default async function Home() {
               <tbody>
                 {paymentRequests && paymentRequests.length > 0 ? (
                   paymentRequests.map((request) => (
-                    <tr key={request.timestamp}>
+                    <tr key={request.request_id}>
                       <td className="py-2 px-4 border-b border-gray-200">{request.full_name}</td>
                       <td className="py-2 px-4 border-b border-gray-200">{request.who_are_you}</td>
                       <td className="py-2 px-4 border-b border-gray-200">{request.amount_requested_cad}</td>
