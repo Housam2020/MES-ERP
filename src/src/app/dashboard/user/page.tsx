@@ -18,6 +18,7 @@ export default async function Home() {
   const { data: paymentRequests, error } = await supabase
     .from("payment_requests")
     .select("*")
+    .order("timestamp", { ascending: true }) 
     .eq("user_id", user.id);
 
   console.log(paymentRequests);
