@@ -652,11 +652,10 @@ const ReimbursementForm: React.FC = () => {
                 Previous
               </button>
               <button
-                type="button"
-                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
-                onClick={() => setFormStep(8)}
+                type="submit"
+                className="bg-green-600 text-white py-2 px-4 rounded mt-4"
               >
-                Next
+                Submit
               </button>
               
             </>
@@ -1264,11 +1263,10 @@ const ReimbursementForm: React.FC = () => {
                 Previous
               </button>
               <button
-                type="button"
-                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
-                onClick={() => setFormStep(3)}
+                type="submit"
+                className="bg-green-600 text-white py-2 px-4 rounded mt-4"
               >
-                Next
+                Submit
               </button>
               
             </>
