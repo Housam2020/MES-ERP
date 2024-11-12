@@ -16,9 +16,9 @@ export default async function Home() {
 
   const { data: paymentRequests, error } = await supabase
     .from('payment_requests')
-    .select('full_name, who_are_you, amount_requested_cad, group_or_team_name, payment_timeframe, reimbursement_or_payment, timestamp')
+    .select('*')
     .eq('user_id', user.id); 
-
+  console.log(paymentRequests)
   if (error) {
     console.error("Error fetching payment requests:", error);
     return <div>Error loading payment requests.</div>;
@@ -42,8 +42,8 @@ export default async function Home() {
 
       <main className="flex-grow flex items-center justify-center bg-gray-100">
         <div className="flex flex-col items-center gap-8 bg-white p-10 rounded-lg shadow-lg w-full max-w-5xl h-full sm:h-auto">
-          <h2 className="text-2xl font-semibold text-gray-800">Dashboard</h2>
-          <p className="text-gray-600">This is your user dashboard where you can view and manage your information.</p>
+          <h2 className="text-2xl font-semibold text-gray-800">Your Dashboard</h2>
+          <p className="text-gray-600"></p>
           
           {/* Payment Requests Table */}
           <div className="w-full overflow-x-auto">
@@ -57,6 +57,8 @@ export default async function Home() {
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Payment Timeframe</th>
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Reimbursement or Payment</th>
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Timestamp</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Status</th>
+
                 </tr>
               </thead>
               <tbody>
@@ -70,6 +72,8 @@ export default async function Home() {
                       <td className="py-2 px-4 border-b border-gray-200">{request.payment_timeframe}</td>
                       <td className="py-2 px-4 border-b border-gray-200">{request.reimbursement_or_payment}</td>
                       <td className="py-2 px-4 border-b border-gray-200">{new Date(request.timestamp).toLocaleString()}</td>
+                      <td className="py-2 px-4 border-b border-gray-200">{request.status}</td>
+
                     </tr>
                   ))
                 ) : (
