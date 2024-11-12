@@ -40,7 +40,7 @@ export default async function Home() {
 
       <main className="flex-grow flex items-center justify-center bg-gray-100">
         <div className="flex flex-col items-center gap-8 bg-white p-10 rounded-lg shadow-lg w-full max-w-5xl h-full sm:h-auto">
-          <h2 className="text-2xl font-semibold text-gray-800">Your Dashboard</h2>
+          <h2 className="text-2xl font-semibold text-gray-800">Reimbursement Requests</h2>
           <div className="w-full overflow-x-auto">
             <table className="min-w-full bg-white">
               <thead>
