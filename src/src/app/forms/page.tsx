@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { v4 as uuidv4 } from 'uuid';
 
 type FormData = {
+  who_are_you: string;
   email_address: string;
   full_name: string;
   contact_phone_number: string;
@@ -90,7 +91,24 @@ const ReimbursementForm: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           {formStep === 0 && (
             <>
-              <div className="mb-4">
+            <div className="mb-4">
+                <label htmlFor="who_are_you" className="block text-sm font-medium">Who Are You?</label>
+                <select
+                  {...register('who_are_you', { required: 'Selection is required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select Option</option>
+                  <option value="MES Position">MES Position</option>
+                  <option value="Ratified Club, Team, or Program Society">Ratified Club, Team, or Program Society</option>
+                  <option value="Student Projects and New Club Seed Funding">Student Projects and New Club Seed Funding</option>
+                  <option value="Intramurals Funding">Intramurals Funding</option>
+                  <option value="Conference/Competition Delegate (Open or Affiliate)">Conference/Competition Delegate (Open or Affiliate)</option>
+
+                </select>
+                {errors.who_are_you && <p className="text-red-500 text-sm">{errors.who_are_you.message}</p>}
+              </div>
+
+            <div className="mb-4">
                 <label htmlFor="email_address" className="block text-sm font-medium">Email Address</label>
                 <input
                   {...register('email_address', { required: 'Email is required' })}
@@ -99,6 +117,7 @@ const ReimbursementForm: React.FC = () => {
                 />
                 {errors.email_address && <p className="text-red-500 text-sm">{errors.email_address.message}</p>}
               </div>
+
               <div className="mb-4">
                 <label htmlFor="full_name" className="block text-sm font-medium">Full Name</label>
                 <input
@@ -293,108 +312,6 @@ const ReimbursementForm: React.FC = () => {
           {formStep === 2 && (
             <>
               <div className="mb-4">
-                <label htmlFor="budget_line" className="block text-sm font-medium">Relevant Budget Line</label>
-                <select
-                  {...register('budget_line', { required: 'Budget line is required' })}
-                  className="mt-1 p-2 border rounded w-full"
-                >
-                  <option value="">Select budget line</option>
-                  <option value="Academic Events & Info Sessions">Academic Events & Info Sessions</option>
-                  <option value="Academic Resources">Academic Resources</option>
-                  <option value="Accounting Software">Accounting Software</option>
-                  <option value="Advertising">Advertising</option>
-                  <option value="Audit">Audit</option>
-                  <option value="Awards">Awards</option>
-                  <option value="B2S Week">B2S Week</option>
-                  <option value="Bank Fees">Bank Fees</option>
-                  <option value="Bookkeeper">Bookkeeper</option>
-                  <option value="Capstone Fund">Capstone Fund</option>
-                  <option value="CFES Membership">CFES Membership</option>
-                  <option value="CFES Presidents' Meeting">CFES Presidents' Meeting</option>
-                  <option value="Closed Conferences & Competitions">Closed Conferences & Competitions</option>
-                  <option value="Clubfest">Clubfest</option>
-                  <option value="Community Outreach">Community Outreach</option>
-                  <option value="Coordinator Retention">Coordinator Retention</option>
-                  <option value="Council Operations">Council Operations</option>
-                  <option value="Culture">Culture</option>
-                  <option value="Director of Events">Director of Events</option>
-                  <option value="ECCS Fees">ECCS Fees</option>
-                  <option value="Elections">Elections</option>
-                  <option value="Engineering Competition Delegate Funding">Engineering Competition Delegate Funding</option>
-                  <option value="Engineering Help Centre">Engineering Help Centre</option>
-                  <option value="ESSCO Membership">ESSCO Membership</option>
-                  <option value="ESSCO Ontario Engineering Competition">ESSCO Ontario Engineering Competition</option>
-                  <option value="Executive Operations">Executive Operations</option>
-                  <option value="Executive Planning Weekend">Executive Planning Weekend</option>
-                  <option value="Faculty Frenzy">Faculty Frenzy</option>
-                  <option value="Fireball">Fireball</option>
-                  <option value="First Year Society">First Year Society</option>
-                  <option value="Frequency">Frequency</option>
-                  <option value="Frost Week">Frost Week</option>
-                  <option value="Fundraising Donations">Fundraising Donations</option>
-                  <option value="Handbook">Handbook</option>
-                  <option value="Hatch Student Spaces">Hatch Student Spaces</option>
-                  <option value="Hatch Student Workshop">Hatch Student Workshop</option>
-                  <option value="Intramurals">Intramurals</option>
-                  <option value="IT">IT</option>
-                  <option value="Jumpsuit Initiative">Jumpsuit Initiative</option>
-                  <option value="Kennedy (formerly called Iron Ring)">Kennedy (formerly called Iron Ring)</option>
-                  <option value="Leadership Development Conference">Leadership Development Conference</option>
-                  <option value="Long Term Investments">Long Term Investments</option>
-                  <option value="Lounge">Lounge</option>
-                  <option value="McMaster Engineering Competition">McMaster Engineering Competition</option>
-                  <option value="Mentorship Program">Mentorship Program</option>
-                  <option value="MES Branding">MES Branding</option>
-                  <option value="MES Card Supplies">MES Card Supplies</option>
-                  <option value="National Engineering Month">National Engineering Month</option>
-                  <option value="Office Supplies">Office Supplies</option>
-                  <option value="Oksoberfest">Oksoberfest</option>
-                  <option value="Open Conferences & Competitions">Open Conferences & Competitions</option>
-                  <option value="Operational Contingency">Operational Contingency</option>
-                  <option value="Operations">Operations</option>
-                  <option value="Professional Development">Professional Development</option>
-                  <option value="Semi Annual General Meeting">Semi Annual General Meeting</option>
-                  <option value="Sports Events">Sports Events</option>
-                  <option value="Spread the Love Week">Spread the Love Week</option>
-                  <option value="Student Group Leadership Training">Student Group Leadership Training</option>
-                  <option value="Student Projects">Student Projects</option>
-                  <option value="Sustainability">Sustainability</option>
-                  <option value="Talent Show">Talent Show</option>
-                  <option value="The Drain">The Drain</option>
-                  <option value="The Event">The Event</option>
-                  <option value="Town Halls">Town Halls</option>
-                  <option value="Trailer">Trailer</option>
-                  <option value="Trivia Night">Trivia Night</option>
-                  <option value="Tutoring Program">Tutoring Program</option>
-                  <option value="Two Way Radio Frequency License">Two Way Radio Frequency License</option>
-                  <option value="Website / InfraTech">Website / InfraTech</option>
-                  <option value="Welcome Week">Welcome Week</option>
-                  <option value="Wellness">Wellness</option>
-                </select>
-                {errors.budget_line && <p className="text-red-500 text-sm">{errors.budget_line.message}</p>}
-              </div>
-              {/* Additional sections... */}
-              <button
-                type="button"
-                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
-                onClick={() => setFormStep(1)}
-              >
-                Previous
-              </button>
-              <button
-                type="button"
-                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
-                onClick={() => setFormStep(3)}
-              >
-                Next
-              </button>
-              
-            </>
-          )}
-
-          {formStep === 3 && (
-            <>
-              <div className="mb-4">
                 <label htmlFor="group_or_team_name" className="block text-sm font-medium">Club, Team, or Program Society Information</label>
                 <select
                   {...register('group_or_team_name', { required: 'Group/Team Required' })}
@@ -457,6 +374,36 @@ const ReimbursementForm: React.FC = () => {
               <button
                 type="button"
                 className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(1)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(3)}
+              >
+                Next
+              </button>
+              
+            </>
+          )}
+
+          {formStep === 3 && (
+            <>
+            <div className="mb-4">
+                <label htmlFor="approved_individual_or_project_name" className="block text-sm font-medium">Please enter the name of the individual, project or the student group that's been approved by the Student Projects Coordinator(s).</label>
+                <input
+                  {...register('approved_individual_or_project_name', { required: 'Email is required' })}
+                  type="email"
+                  className="mt-1 p-2 border rounded w-full"
+                />
+                {errors.approved_individual_or_project_name && <p className="text-red-500 text-sm">{errors.approved_individual_or_project_name.message}</p>}
+              </div>
+              
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
                 onClick={() => setFormStep(2)}
               >
                 Previous
@@ -473,36 +420,6 @@ const ReimbursementForm: React.FC = () => {
           )}
 
           {formStep === 4 && (
-            <>
-            <div className="mb-4">
-                <label htmlFor="approved_individual_or_project_name" className="block text-sm font-medium">Please enter the name of the individual, project or the student group that's been approved by the Student Projects Coordinator(s).</label>
-                <input
-                  {...register('approved_individual_or_project_name', { required: 'Email is required' })}
-                  type="email"
-                  className="mt-1 p-2 border rounded w-full"
-                />
-                {errors.approved_individual_or_project_name && <p className="text-red-500 text-sm">{errors.approved_individual_or_project_name.message}</p>}
-              </div>
-              
-              <button
-                type="button"
-                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
-                onClick={() => setFormStep(3)}
-              >
-                Previous
-              </button>
-              <button
-                type="button"
-                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
-                onClick={() => setFormStep(5)}
-              >
-                Next
-              </button>
-              
-            </>
-          )}
-
-          {formStep === 5 && (
             <>
               <div className="mb-4">
                 <label htmlFor="sport_and_team_name" className="block text-sm font-medium">Please select the sport and team name that was submitted to the  Intramural Reimbursement Request 2024/25 form.</label>
@@ -555,14 +472,14 @@ const ReimbursementForm: React.FC = () => {
               <button
                 type="button"
                 className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
-                onClick={() => setFormStep(4)}
+                onClick={() => setFormStep(3)}
               >
                 Previous
               </button>
               <button
                 type="button"
                 className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
-                onClick={() => setFormStep(6)}
+                onClick={() => setFormStep(5)}
               >
                 Next
               </button>
@@ -570,7 +487,7 @@ const ReimbursementForm: React.FC = () => {
             </>
           )}
 
-          {formStep === 6 && (
+          {formStep === 5 && (
             <>
               <div className="mb-4">
                 <label htmlFor="conference_or_competition_name" className="block text-sm font-medium">Please enter the name of the conference or competition.</label>
@@ -614,14 +531,14 @@ const ReimbursementForm: React.FC = () => {
               <button
                 type="button"
                 className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
-                onClick={() => setFormStep(5)}
+                onClick={() => setFormStep(4)}
               >
                 Previous
               </button>
               <button
                 type="button"
                 className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
-                onClick={() => setFormStep(7)}
+                onClick={() => setFormStep(6)}
               >
                 Next
               </button>
@@ -629,7 +546,7 @@ const ReimbursementForm: React.FC = () => {
             </>
           )}
 
-          {formStep === 7 && (
+          {formStep === 6 && (
             <>
               <div className="mb-4">
                 <label htmlFor="reimbursement_or_payment" className="block text-sm font-medium">Reimbursement or Payment?</label>
@@ -648,10 +565,53 @@ const ReimbursementForm: React.FC = () => {
               <button
                 type="button"
                 className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(5)}
+              >
+                Previous
+              </button>
+
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(7)}
+              >
+                Next
+              </button>
+              
+              
+            </>
+          )}
+
+          {formStep === 7 && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="amount_requested_cad" className="block text-sm font-medium">Please enter the amount requested in CAD.</label>
+                <input
+                  {...register('amount_requested_cad', { required: 'Amount is required' })}
+                  type="text"
+                  className="mt-1 p-2 border rounded w-full"
+                />
+                {errors.amount_requested_cad && <p className="text-red-500 text-sm">{errors.amount_requested_cad.message}</p>}
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="payment_timeframe" className="block text-sm font-medium">Payment Timefram Date</label>
+                <input
+                  type="date"
+                  {...register('payment_timeframe', { required: 'Date is required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                />
+                {errors.payment_timeframe && <p className="text-red-500 text-sm">{errors.payment_timeframe.message}</p>}
+              </div>
+
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
                 onClick={() => setFormStep(6)}
               >
                 Previous
               </button>
+
               <button
                 type="submit"
                 className="bg-green-600 text-white py-2 px-4 rounded mt-4"
@@ -659,112 +619,11 @@ const ReimbursementForm: React.FC = () => {
                 Submit
               </button>
               
-            </>
-          )}
-
-          {formStep === 8 && (
-            <>
-              <div className="mb-4">
-                <label htmlFor="budget_line" className="block text-sm font-medium">Relevant Budget Line</label>
-                <select
-                  {...register('budget_line', { required: 'Budget line is required' })}
-                  className="mt-1 p-2 border rounded w-full"
-                >
-                  <option value="">Select budget line</option>
-                  <option value="Academic Events & Info Sessions">Academic Events & Info Sessions</option>
-                  <option value="Academic Resources">Academic Resources</option>
-                  <option value="Accounting Software">Accounting Software</option>
-                  <option value="Advertising">Advertising</option>
-                  <option value="Audit">Audit</option>
-                  <option value="Awards">Awards</option>
-                  <option value="B2S Week">B2S Week</option>
-                  <option value="Bank Fees">Bank Fees</option>
-                  <option value="Bookkeeper">Bookkeeper</option>
-                  <option value="Capstone Fund">Capstone Fund</option>
-                  <option value="CFES Membership">CFES Membership</option>
-                  <option value="CFES Presidents' Meeting">CFES Presidents' Meeting</option>
-                  <option value="Closed Conferences & Competitions">Closed Conferences & Competitions</option>
-                  <option value="Clubfest">Clubfest</option>
-                  <option value="Community Outreach">Community Outreach</option>
-                  <option value="Coordinator Retention">Coordinator Retention</option>
-                  <option value="Council Operations">Council Operations</option>
-                  <option value="Culture">Culture</option>
-                  <option value="Director of Events">Director of Events</option>
-                  <option value="ECCS Fees">ECCS Fees</option>
-                  <option value="Elections">Elections</option>
-                  <option value="Engineering Competition Delegate Funding">Engineering Competition Delegate Funding</option>
-                  <option value="Engineering Help Centre">Engineering Help Centre</option>
-                  <option value="ESSCO Membership">ESSCO Membership</option>
-                  <option value="ESSCO Ontario Engineering Competition">ESSCO Ontario Engineering Competition</option>
-                  <option value="Executive Operations">Executive Operations</option>
-                  <option value="Executive Planning Weekend">Executive Planning Weekend</option>
-                  <option value="Faculty Frenzy">Faculty Frenzy</option>
-                  <option value="Fireball">Fireball</option>
-                  <option value="First Year Society">First Year Society</option>
-                  <option value="Frequency">Frequency</option>
-                  <option value="Frost Week">Frost Week</option>
-                  <option value="Fundraising Donations">Fundraising Donations</option>
-                  <option value="Handbook">Handbook</option>
-                  <option value="Hatch Student Spaces">Hatch Student Spaces</option>
-                  <option value="Hatch Student Workshop">Hatch Student Workshop</option>
-                  <option value="Intramurals">Intramurals</option>
-                  <option value="IT">IT</option>
-                  <option value="Jumpsuit Initiative">Jumpsuit Initiative</option>
-                  <option value="Kennedy (formerly called Iron Ring)">Kennedy (formerly called Iron Ring)</option>
-                  <option value="Leadership Development Conference">Leadership Development Conference</option>
-                  <option value="Long Term Investments">Long Term Investments</option>
-                  <option value="Lounge">Lounge</option>
-                  <option value="McMaster Engineering Competition">McMaster Engineering Competition</option>
-                  <option value="Mentorship Program">Mentorship Program</option>
-                  <option value="MES Branding">MES Branding</option>
-                  <option value="MES Card Supplies">MES Card Supplies</option>
-                  <option value="National Engineering Month">National Engineering Month</option>
-                  <option value="Office Supplies">Office Supplies</option>
-                  <option value="Oksoberfest">Oksoberfest</option>
-                  <option value="Open Conferences & Competitions">Open Conferences & Competitions</option>
-                  <option value="Operational Contingency">Operational Contingency</option>
-                  <option value="Operations">Operations</option>
-                  <option value="Professional Development">Professional Development</option>
-                  <option value="Semi Annual General Meeting">Semi Annual General Meeting</option>
-                  <option value="Sports Events">Sports Events</option>
-                  <option value="Spread the Love Week">Spread the Love Week</option>
-                  <option value="Student Group Leadership Training">Student Group Leadership Training</option>
-                  <option value="Student Projects">Student Projects</option>
-                  <option value="Sustainability">Sustainability</option>
-                  <option value="Talent Show">Talent Show</option>
-                  <option value="The Drain">The Drain</option>
-                  <option value="The Event">The Event</option>
-                  <option value="Town Halls">Town Halls</option>
-                  <option value="Trailer">Trailer</option>
-                  <option value="Trivia Night">Trivia Night</option>
-                  <option value="Tutoring Program">Tutoring Program</option>
-                  <option value="Two Way Radio Frequency License">Two Way Radio Frequency License</option>
-                  <option value="Website / InfraTech">Website / InfraTech</option>
-                  <option value="Welcome Week">Welcome Week</option>
-                  <option value="Wellness">Wellness</option>
-                </select>
-                {errors.budget_line && <p className="text-red-500 text-sm">{errors.budget_line.message}</p>}
-              </div>
-              {/* Additional sections... */}
-              <button
-                type="button"
-                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
-                onClick={() => setFormStep(1)}
-              >
-                Previous
-              </button>
-              <button
-                type="button"
-                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
-                onClick={() => setFormStep(3)}
-              >
-                Next
-              </button>
               
             </>
           )}
 
-        {formStep === 9 && (
+        {formStep === 8 && (
             <>
               <div className="mb-4">
                 <label htmlFor="budget_line" className="block text-sm font-medium">Relevant Budget Line</label>
@@ -1279,3 +1138,4 @@ const ReimbursementForm: React.FC = () => {
 };
 
 export default ReimbursementForm;
+
