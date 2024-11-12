@@ -191,6 +191,87 @@ const ReimbursementForm: React.FC = () => {
                 </select>
                 {errors.role && <p className="text-red-500 text-sm">{errors.role.message}</p>}
               </div>
+              <div className="mb-4">
+              <label htmlFor="budget_line" className="block text-sm font-medium">Relevant Budget Line</label>
+                <select
+                  {...register('budget_line', { required: 'Budget line is required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select budget line</option>
+                  <option value="Academic Events & Info Sessions">Academic Events & Info Sessions</option>
+                  <option value="Academic Resources">Academic Resources</option>
+                  <option value="Accounting Software">Accounting Software</option>
+                  <option value="Advertising">Advertising</option>
+                  <option value="Audit">Audit</option>
+                  <option value="Awards">Awards</option>
+                  <option value="B2S Week">B2S Week</option>
+                  <option value="Bank Fees">Bank Fees</option>
+                  <option value="Bookkeeper">Bookkeeper</option>
+                  <option value="Capstone Fund">Capstone Fund</option>
+                  <option value="CFES Membership">CFES Membership</option>
+                  <option value="CFES Presidents' Meeting">CFES Presidents' Meeting</option>
+                  <option value="Closed Conferences & Competitions">Closed Conferences & Competitions</option>
+                  <option value="Clubfest">Clubfest</option>
+                  <option value="Community Outreach">Community Outreach</option>
+                  <option value="Coordinator Retention">Coordinator Retention</option>
+                  <option value="Council Operations">Council Operations</option>
+                  <option value="Culture">Culture</option>
+                  <option value="Director of Events">Director of Events</option>
+                  <option value="ECCS Fees">ECCS Fees</option>
+                  <option value="Elections">Elections</option>
+                  <option value="Engineering Competition Delegate Funding">Engineering Competition Delegate Funding</option>
+                  <option value="Engineering Help Centre">Engineering Help Centre</option>
+                  <option value="ESSCO Membership">ESSCO Membership</option>
+                  <option value="ESSCO Ontario Engineering Competition">ESSCO Ontario Engineering Competition</option>
+                  <option value="Executive Operations">Executive Operations</option>
+                  <option value="Executive Planning Weekend">Executive Planning Weekend</option>
+                  <option value="Faculty Frenzy">Faculty Frenzy</option>
+                  <option value="Fireball">Fireball</option>
+                  <option value="First Year Society">First Year Society</option>
+                  <option value="Frequency">Frequency</option>
+                  <option value="Frost Week">Frost Week</option>
+                  <option value="Fundraising Donations">Fundraising Donations</option>
+                  <option value="Handbook">Handbook</option>
+                  <option value="Hatch Student Spaces">Hatch Student Spaces</option>
+                  <option value="Hatch Student Workshop">Hatch Student Workshop</option>
+                  <option value="Intramurals">Intramurals</option>
+                  <option value="IT">IT</option>
+                  <option value="Jumpsuit Initiative">Jumpsuit Initiative</option>
+                  <option value="Kennedy (formerly called Iron Ring)">Kennedy (formerly called Iron Ring)</option>
+                  <option value="Leadership Development Conference">Leadership Development Conference</option>
+                  <option value="Long Term Investments">Long Term Investments</option>
+                  <option value="Lounge">Lounge</option>
+                  <option value="McMaster Engineering Competition">McMaster Engineering Competition</option>
+                  <option value="Mentorship Program">Mentorship Program</option>
+                  <option value="MES Branding">MES Branding</option>
+                  <option value="MES Card Supplies">MES Card Supplies</option>
+                  <option value="National Engineering Month">National Engineering Month</option>
+                  <option value="Office Supplies">Office Supplies</option>
+                  <option value="Oksoberfest">Oksoberfest</option>
+                  <option value="Open Conferences & Competitions">Open Conferences & Competitions</option>
+                  <option value="Operational Contingency">Operational Contingency</option>
+                  <option value="Operations">Operations</option>
+                  <option value="Professional Development">Professional Development</option>
+                  <option value="Semi Annual General Meeting">Semi Annual General Meeting</option>
+                  <option value="Sports Events">Sports Events</option>
+                  <option value="Spread the Love Week">Spread the Love Week</option>
+                  <option value="Student Group Leadership Training">Student Group Leadership Training</option>
+                  <option value="Student Projects">Student Projects</option>
+                  <option value="Sustainability">Sustainability</option>
+                  <option value="Talent Show">Talent Show</option>
+                  <option value="The Drain">The Drain</option>
+                  <option value="The Event">The Event</option>
+                  <option value="Town Halls">Town Halls</option>
+                  <option value="Trailer">Trailer</option>
+                  <option value="Trivia Night">Trivia Night</option>
+                  <option value="Tutoring Program">Tutoring Program</option>
+                  <option value="Two Way Radio Frequency License">Two Way Radio Frequency License</option>
+                  <option value="Website / InfraTech">Website / InfraTech</option>
+                  <option value="Welcome Week">Welcome Week</option>
+                  <option value="Wellness">Wellness</option>
+                </select>
+                {errors.budget_line && <p className="text-red-500 text-sm">{errors.budget_line.message}</p>}
+              </div>
               <button
                 type="button"
                 className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
@@ -300,11 +381,896 @@ const ReimbursementForm: React.FC = () => {
                 Previous
               </button>
               <button
-                type="submit"
-                className="bg-green-600 text-white py-2 px-4 rounded mt-4"
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(3)}
               >
-                Submit
+                Next
               </button>
+              
+            </>
+          )}
+
+          {formStep === 3 && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="group_or_team_name" className="block text-sm font-medium">Club, Team, or Program Society Information</label>
+                <select
+                  {...register('group_or_team_name', { required: 'Group/Team Required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Please select the name of your group or team.</option>
+                  <option value="Aerospace">Aerospace</option>
+                  <option value="Bachelor of Technology Association">Bachelor of Technology Association</option>
+                  <option value="Baja Racing">Baja Racing</option>
+                  <option value="Chem E Car">Chem E Car</option>
+                  <option value="Chem Eng Society">Chem Eng Society</option>
+                  <option value="Civil Engineering Society">Civil Engineering Society</option>
+                  <option value="Competitive Programming">Competitive Programming</option>
+                  <option value="Computer Science Society">Computer Science Society</option>
+                  <option value="Deep Space Analogue Research Expedition">Deep Space Analogue Research Expedition</option>
+                  <option value="DeltaHacks">DeltaHacks</option>
+                  <option value="Design League">Design League</option>
+                  <option value="EcoCar">EcoCar</option>
+                  <option value="Electrical and Computer Engineering Society">Electrical and Computer Engineering Society</option>
+                  <option value="Engineering and Society Students’ Association">Engineering and Society Students’ Association</option>
+                  <option value="Engineering Musical">Engineering Musical</option>
+                  <option value="Engineering Physics Society">Engineering Physics Society</option>
+                  <option value="Engineers Without Borders">Engineers Without Borders</option>
+                  <option value="EngiQueers">EngiQueers</option>
+                  <option value="Google Developer Student Clubs">Google Developer Student Clubs</option>
+                  <option value="HealthHatch">HealthHatch</option>
+                  <option value="Heavy Construction Student Chapter">Heavy Construction Student Chapter</option>
+                  <option value="iBioMed Society">iBioMed Society</option>
+                  <option value="Institute of Electrical and Electronics Engineers Student Branch">Institute of Electrical and Electronics Engineers Student Branch</option>
+                  <option value="Institute of Transportation Engineers Student Chapter">Institute of Transportation Engineers Student Chapter</option>
+                  <option value="MAC Formula Electric">MAC Formula Electric</option>
+                  <option value="Mars Rover">Mars Rover</option>
+                  <option value="Materials Science and Engineering Society">Materials Science and Engineering Society</option>
+                  <option value="McMaster Energy Association">McMaster Energy Association</option>
+                  <option value="McMaster Engineering and Management Society">McMaster Engineering and Management Society</option>
+                  <option value="McMaster Engineering Concrete Toboggan Team">McMaster Engineering Concrete Toboggan Team</option>
+                  <option value="McMaster Engineering Hockey Club">McMaster Engineering Hockey Club</option>
+                  <option value="McMaster Engineers with Disabilities">McMaster Engineers with Disabilities</option>
+                  <option value="McMaster Mechatronics Society">McMaster Mechatronics Society</option>
+                  <option value="McMaster Pumpkin Chunkin">McMaster Pumpkin Chunkin</option>
+                  <option value="McMaster Society for Engineering Research">McMaster Society for Engineering Research</option>
+                  <option value="McMaster Society of Mechanical Engineering">McMaster Society of Mechanical Engineering</option>
+                  <option value="Mechanical Contractors Association Hamilton Niagara Student Chapter">Mechanical Contractors Association Hamilton Niagara Student Chapter</option>
+                  <option value="Medical Engineering Design Team">Medical Engineering Design Team</option>
+                  <option value="National Society of Black Engineers">National Society of Black Engineers</option>
+                  <option value="North American Young Generation in Nuclear">North American Young Generation in Nuclear</option>
+                  <option value="RoboMaster">RoboMaster</option>
+                  <option value="Rocketry">Rocketry</option>
+                  <option value="Seismic Design">Seismic Design</option>
+                  <option value="Software Engineering Society">Software Engineering Society</option>
+                  <option value="Solar Car">Solar Car</option>
+                  <option value="Start Coding">Start Coding</option>
+                  <option value="Steel Bridge">Steel Bridge</option>
+                  <option value="Sumobot">Sumobot</option>
+                  <option value="Women in Engineering">Women in Engineering</option>
+                </select>
+                {errors.budget_line && <p className="text-red-500 text-sm">{errors.budget_line.message}</p>}
+              </div>
+              {/* Additional sections... */}
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(2)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(4)}
+              >
+                Next
+              </button>
+              
+            </>
+          )}
+
+          {formStep === 4 && (
+            <>
+            <div className="mb-4">
+                <label htmlFor="approved_individual_or_project_name" className="block text-sm font-medium">Please enter the name of the individual, project or the student group that's been approved by the Student Projects Coordinator(s).</label>
+                <input
+                  {...register('approved_individual_or_project_name', { required: 'Email is required' })}
+                  type="email"
+                  className="mt-1 p-2 border rounded w-full"
+                />
+                {errors.approved_individual_or_project_name && <p className="text-red-500 text-sm">{errors.approved_individual_or_project_name.message}</p>}
+              </div>
+              
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(3)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(5)}
+              >
+                Next
+              </button>
+              
+            </>
+          )}
+
+          {formStep === 5 && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="sport_and_team_name" className="block text-sm font-medium">Please select the sport and team name that was submitted to the  Intramural Reimbursement Request 2024/25 form.</label>
+                <select
+                  {...register('sport_and_team_name', { required: 'Sport and Team Name is required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select Sport and Team Name</option>
+                  <option value="Badminton - Dinogals">Badminton - Dinogals</option>
+                  <option value="Badminton - Down Bad-Minton">Badminton - Down Bad-Minton</option>
+                  <option value="Badminton - Feather Fighters">Badminton - Feather Fighters</option>
+                  <option value="Basketball - Hungry Marauders">Basketball - Hungry Marauders</option>
+                  <option value="Basketball - idk?">Basketball - idk?</option>
+                  <option value="Basketball - Places">Basketball - Places</option>
+                  <option value="Ice Hockey - Iron Ringers">Ice Hockey - Iron Ringers</option>
+                  <option value="Ice Hockey - The Steel Beams">Ice Hockey - The Steel Beams</option>
+                  <option value="Indoor Ultimate Frisbee - Grenglins">Indoor Ultimate Frisbee - Grenglins</option>
+                  <option value="Indoor Ultimate Frisbee - KerrrrrFrisbee">Indoor Ultimate Frisbee - KerrrrrFrisbee</option>
+                  <option value="Innertube H20-Basketball - Soaked and Slammin">Innertube H20-Basketball - Soaked and Slammin</option>
+                  <option value="Innertube H20-Polo - BÜNT BUS">Innertube H20-Polo - BÜNT BUS</option>
+                  <option value="Innertube H20-Polo - The Fried Pollos">Innertube H20-Polo - The Fried Pollos</option>
+                  <option value="Soccer - Ansh Kuckreja">Soccer - Ansh Kuckreja</option>
+                  <option value="Soccer - Balls">Soccer - Balls</option>
+                  <option value="Soccer - FOOTY 1A03">Soccer - FOOTY 1A03</option>
+                  <option value="Soccer - Hedden Headers">Soccer - Hedden Headers</option>
+                  <option value="Soccer - It's Called Football">Soccer - It's Called Football</option>
+                  <option value="Soccer - Jess and friends">Soccer - Jess and friends</option>
+                  <option value="Soccer - LeEngineers">Soccer - LeEngineers</option>
+                  <option value="Soccer - Material Girls">Soccer - Material Girls</option>
+                  <option value="Soccer - Soccer">Soccer - Soccer</option>
+                  <option value="Soccer - Togo Salmon Hall B128">Soccer - Togo Salmon Hall B128</option>
+                  <option value="Spike Ball - Barely Passing">Spike Ball - Barely Passing</option>
+                  <option value="Spike Ball - Diddy Kong">Spike Ball - Diddy Kong</option>
+                  <option value="Spike Ball - RatPack">Spike Ball - RatPack</option>
+                  <option value="Volleyball - Arabica">Volleyball - Arabica</option>
+                  <option value="Volleyball - MDL">Volleyball - MDL</option>
+                  <option value="Volleyball - Net Force">Volleyball - Net Force</option>
+                  <option value="Volleyball - Pull me for a good time">Volleyball - Pull me for a good time</option>
+                  <option value="Volleyball - Rip Himanshu">Volleyball - Rip Himanshu</option>
+                  <option value="Volleyball - Spike City">Volleyball - Spike City</option>
+                  <option value="Volleyball - Super Smash Bros">Volleyball - Super Smash Bros</option>
+                  <option value="Volleyball - team1">Volleyball - team1</option>
+                  <option value="Volleyball - The Volleyball Game!">Volleyball - The Volleyball Game!</option>
+                  <option value="Volleyball - Volleyballers">Volleyball - Volleyballers</option>
+                  
+                </select>
+                {errors.budget_line && <p className="text-red-500 text-sm">{errors.budget_line.message}</p>}
+              </div>
+              {/* Additional sections... */}
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(4)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(6)}
+              >
+                Next
+              </button>
+              
+            </>
+          )}
+
+          {formStep === 6 && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="conference_or_competition_name" className="block text-sm font-medium">Please enter the name of the conference or competition.</label>
+                <input
+                  {...register('conference_or_competition_name', { required: 'Name is required' })}
+                  type="email"
+                  className="mt-1 p-2 border rounded w-full"
+                />
+                {errors.conference_or_competition_name && <p className="text-red-500 text-sm">{errors.conference_or_competition_name.message}</p>}
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="conference_competition_type" className="block text-sm font-medium">What type of conference/competition did you attend?</label>
+                <select
+                  {...register('conference_competition_type', { required: 'Selection Required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select Option</option>
+                  <option value="Open Conference/Competition">Open Conference/Competition</option>
+                  <option value="Affiliate Conference/Competition">Affiliate Conference/Competition</option>
+                  
+                </select>
+                {errors.conference_competition_type && <p className="text-red-500 text-sm">{errors.conference_competition_type.message}</p>}
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="head_delegate" className="block text-sm font-medium">Are you the Head Delegate?</label>
+                <select
+                  {...register('head_delegate', { required: 'Selection Required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select Option</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                  
+                </select>
+                {errors.head_delegate && <p className="text-red-500 text-sm">{errors.head_delegate.message}</p>}
+              </div>
+
+              {/* add upload... */}
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(5)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(7)}
+              >
+                Next
+              </button>
+              
+            </>
+          )}
+
+          {formStep === 7 && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="reimbursement_or_payment" className="block text-sm font-medium">Reimbursement or Payment?</label>
+                <select
+                  {...register('reimbursement_or_payment', { required: 'Selection Required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select Option</option>
+                  <option value="Reimbursement Request">Reimbursement Request</option>
+                  <option value="Payment Request">Payment Request</option>
+                  
+                </select>
+                {errors.reimbursement_or_payment && <p className="text-red-500 text-sm">{errors.reimbursement_or_payment.message}</p>}
+              </div>
+              {/* Additional sections... */}
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(6)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(8)}
+              >
+                Next
+              </button>
+              
+            </>
+          )}
+
+          {formStep === 8 && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="budget_line" className="block text-sm font-medium">Relevant Budget Line</label>
+                <select
+                  {...register('budget_line', { required: 'Budget line is required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select budget line</option>
+                  <option value="Academic Events & Info Sessions">Academic Events & Info Sessions</option>
+                  <option value="Academic Resources">Academic Resources</option>
+                  <option value="Accounting Software">Accounting Software</option>
+                  <option value="Advertising">Advertising</option>
+                  <option value="Audit">Audit</option>
+                  <option value="Awards">Awards</option>
+                  <option value="B2S Week">B2S Week</option>
+                  <option value="Bank Fees">Bank Fees</option>
+                  <option value="Bookkeeper">Bookkeeper</option>
+                  <option value="Capstone Fund">Capstone Fund</option>
+                  <option value="CFES Membership">CFES Membership</option>
+                  <option value="CFES Presidents' Meeting">CFES Presidents' Meeting</option>
+                  <option value="Closed Conferences & Competitions">Closed Conferences & Competitions</option>
+                  <option value="Clubfest">Clubfest</option>
+                  <option value="Community Outreach">Community Outreach</option>
+                  <option value="Coordinator Retention">Coordinator Retention</option>
+                  <option value="Council Operations">Council Operations</option>
+                  <option value="Culture">Culture</option>
+                  <option value="Director of Events">Director of Events</option>
+                  <option value="ECCS Fees">ECCS Fees</option>
+                  <option value="Elections">Elections</option>
+                  <option value="Engineering Competition Delegate Funding">Engineering Competition Delegate Funding</option>
+                  <option value="Engineering Help Centre">Engineering Help Centre</option>
+                  <option value="ESSCO Membership">ESSCO Membership</option>
+                  <option value="ESSCO Ontario Engineering Competition">ESSCO Ontario Engineering Competition</option>
+                  <option value="Executive Operations">Executive Operations</option>
+                  <option value="Executive Planning Weekend">Executive Planning Weekend</option>
+                  <option value="Faculty Frenzy">Faculty Frenzy</option>
+                  <option value="Fireball">Fireball</option>
+                  <option value="First Year Society">First Year Society</option>
+                  <option value="Frequency">Frequency</option>
+                  <option value="Frost Week">Frost Week</option>
+                  <option value="Fundraising Donations">Fundraising Donations</option>
+                  <option value="Handbook">Handbook</option>
+                  <option value="Hatch Student Spaces">Hatch Student Spaces</option>
+                  <option value="Hatch Student Workshop">Hatch Student Workshop</option>
+                  <option value="Intramurals">Intramurals</option>
+                  <option value="IT">IT</option>
+                  <option value="Jumpsuit Initiative">Jumpsuit Initiative</option>
+                  <option value="Kennedy (formerly called Iron Ring)">Kennedy (formerly called Iron Ring)</option>
+                  <option value="Leadership Development Conference">Leadership Development Conference</option>
+                  <option value="Long Term Investments">Long Term Investments</option>
+                  <option value="Lounge">Lounge</option>
+                  <option value="McMaster Engineering Competition">McMaster Engineering Competition</option>
+                  <option value="Mentorship Program">Mentorship Program</option>
+                  <option value="MES Branding">MES Branding</option>
+                  <option value="MES Card Supplies">MES Card Supplies</option>
+                  <option value="National Engineering Month">National Engineering Month</option>
+                  <option value="Office Supplies">Office Supplies</option>
+                  <option value="Oksoberfest">Oksoberfest</option>
+                  <option value="Open Conferences & Competitions">Open Conferences & Competitions</option>
+                  <option value="Operational Contingency">Operational Contingency</option>
+                  <option value="Operations">Operations</option>
+                  <option value="Professional Development">Professional Development</option>
+                  <option value="Semi Annual General Meeting">Semi Annual General Meeting</option>
+                  <option value="Sports Events">Sports Events</option>
+                  <option value="Spread the Love Week">Spread the Love Week</option>
+                  <option value="Student Group Leadership Training">Student Group Leadership Training</option>
+                  <option value="Student Projects">Student Projects</option>
+                  <option value="Sustainability">Sustainability</option>
+                  <option value="Talent Show">Talent Show</option>
+                  <option value="The Drain">The Drain</option>
+                  <option value="The Event">The Event</option>
+                  <option value="Town Halls">Town Halls</option>
+                  <option value="Trailer">Trailer</option>
+                  <option value="Trivia Night">Trivia Night</option>
+                  <option value="Tutoring Program">Tutoring Program</option>
+                  <option value="Two Way Radio Frequency License">Two Way Radio Frequency License</option>
+                  <option value="Website / InfraTech">Website / InfraTech</option>
+                  <option value="Welcome Week">Welcome Week</option>
+                  <option value="Wellness">Wellness</option>
+                </select>
+                {errors.budget_line && <p className="text-red-500 text-sm">{errors.budget_line.message}</p>}
+              </div>
+              {/* Additional sections... */}
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(1)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(3)}
+              >
+                Next
+              </button>
+              
+            </>
+          )}
+
+        {formStep === 9 && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="budget_line" className="block text-sm font-medium">Relevant Budget Line</label>
+                <select
+                  {...register('budget_line', { required: 'Budget line is required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select budget line</option>
+                  <option value="Academic Events & Info Sessions">Academic Events & Info Sessions</option>
+                  <option value="Academic Resources">Academic Resources</option>
+                  <option value="Accounting Software">Accounting Software</option>
+                  <option value="Advertising">Advertising</option>
+                  <option value="Audit">Audit</option>
+                  <option value="Awards">Awards</option>
+                  <option value="B2S Week">B2S Week</option>
+                  <option value="Bank Fees">Bank Fees</option>
+                  <option value="Bookkeeper">Bookkeeper</option>
+                  <option value="Capstone Fund">Capstone Fund</option>
+                  <option value="CFES Membership">CFES Membership</option>
+                  <option value="CFES Presidents' Meeting">CFES Presidents' Meeting</option>
+                  <option value="Closed Conferences & Competitions">Closed Conferences & Competitions</option>
+                  <option value="Clubfest">Clubfest</option>
+                  <option value="Community Outreach">Community Outreach</option>
+                  <option value="Coordinator Retention">Coordinator Retention</option>
+                  <option value="Council Operations">Council Operations</option>
+                  <option value="Culture">Culture</option>
+                  <option value="Director of Events">Director of Events</option>
+                  <option value="ECCS Fees">ECCS Fees</option>
+                  <option value="Elections">Elections</option>
+                  <option value="Engineering Competition Delegate Funding">Engineering Competition Delegate Funding</option>
+                  <option value="Engineering Help Centre">Engineering Help Centre</option>
+                  <option value="ESSCO Membership">ESSCO Membership</option>
+                  <option value="ESSCO Ontario Engineering Competition">ESSCO Ontario Engineering Competition</option>
+                  <option value="Executive Operations">Executive Operations</option>
+                  <option value="Executive Planning Weekend">Executive Planning Weekend</option>
+                  <option value="Faculty Frenzy">Faculty Frenzy</option>
+                  <option value="Fireball">Fireball</option>
+                  <option value="First Year Society">First Year Society</option>
+                  <option value="Frequency">Frequency</option>
+                  <option value="Frost Week">Frost Week</option>
+                  <option value="Fundraising Donations">Fundraising Donations</option>
+                  <option value="Handbook">Handbook</option>
+                  <option value="Hatch Student Spaces">Hatch Student Spaces</option>
+                  <option value="Hatch Student Workshop">Hatch Student Workshop</option>
+                  <option value="Intramurals">Intramurals</option>
+                  <option value="IT">IT</option>
+                  <option value="Jumpsuit Initiative">Jumpsuit Initiative</option>
+                  <option value="Kennedy (formerly called Iron Ring)">Kennedy (formerly called Iron Ring)</option>
+                  <option value="Leadership Development Conference">Leadership Development Conference</option>
+                  <option value="Long Term Investments">Long Term Investments</option>
+                  <option value="Lounge">Lounge</option>
+                  <option value="McMaster Engineering Competition">McMaster Engineering Competition</option>
+                  <option value="Mentorship Program">Mentorship Program</option>
+                  <option value="MES Branding">MES Branding</option>
+                  <option value="MES Card Supplies">MES Card Supplies</option>
+                  <option value="National Engineering Month">National Engineering Month</option>
+                  <option value="Office Supplies">Office Supplies</option>
+                  <option value="Oksoberfest">Oksoberfest</option>
+                  <option value="Open Conferences & Competitions">Open Conferences & Competitions</option>
+                  <option value="Operational Contingency">Operational Contingency</option>
+                  <option value="Operations">Operations</option>
+                  <option value="Professional Development">Professional Development</option>
+                  <option value="Semi Annual General Meeting">Semi Annual General Meeting</option>
+                  <option value="Sports Events">Sports Events</option>
+                  <option value="Spread the Love Week">Spread the Love Week</option>
+                  <option value="Student Group Leadership Training">Student Group Leadership Training</option>
+                  <option value="Student Projects">Student Projects</option>
+                  <option value="Sustainability">Sustainability</option>
+                  <option value="Talent Show">Talent Show</option>
+                  <option value="The Drain">The Drain</option>
+                  <option value="The Event">The Event</option>
+                  <option value="Town Halls">Town Halls</option>
+                  <option value="Trailer">Trailer</option>
+                  <option value="Trivia Night">Trivia Night</option>
+                  <option value="Tutoring Program">Tutoring Program</option>
+                  <option value="Two Way Radio Frequency License">Two Way Radio Frequency License</option>
+                  <option value="Website / InfraTech">Website / InfraTech</option>
+                  <option value="Welcome Week">Welcome Week</option>
+                  <option value="Wellness">Wellness</option>
+                </select>
+                {errors.budget_line && <p className="text-red-500 text-sm">{errors.budget_line.message}</p>}
+              </div>
+              {/* Additional sections... */}
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(1)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(3)}
+              >
+                Next
+              </button>
+              
+            </>
+          )}
+
+        {formStep === 10 && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="budget_line" className="block text-sm font-medium">Relevant Budget Line</label>
+                <select
+                  {...register('budget_line', { required: 'Budget line is required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select budget line</option>
+                  <option value="Academic Events & Info Sessions">Academic Events & Info Sessions</option>
+                  <option value="Academic Resources">Academic Resources</option>
+                  <option value="Accounting Software">Accounting Software</option>
+                  <option value="Advertising">Advertising</option>
+                  <option value="Audit">Audit</option>
+                  <option value="Awards">Awards</option>
+                  <option value="B2S Week">B2S Week</option>
+                  <option value="Bank Fees">Bank Fees</option>
+                  <option value="Bookkeeper">Bookkeeper</option>
+                  <option value="Capstone Fund">Capstone Fund</option>
+                  <option value="CFES Membership">CFES Membership</option>
+                  <option value="CFES Presidents' Meeting">CFES Presidents' Meeting</option>
+                  <option value="Closed Conferences & Competitions">Closed Conferences & Competitions</option>
+                  <option value="Clubfest">Clubfest</option>
+                  <option value="Community Outreach">Community Outreach</option>
+                  <option value="Coordinator Retention">Coordinator Retention</option>
+                  <option value="Council Operations">Council Operations</option>
+                  <option value="Culture">Culture</option>
+                  <option value="Director of Events">Director of Events</option>
+                  <option value="ECCS Fees">ECCS Fees</option>
+                  <option value="Elections">Elections</option>
+                  <option value="Engineering Competition Delegate Funding">Engineering Competition Delegate Funding</option>
+                  <option value="Engineering Help Centre">Engineering Help Centre</option>
+                  <option value="ESSCO Membership">ESSCO Membership</option>
+                  <option value="ESSCO Ontario Engineering Competition">ESSCO Ontario Engineering Competition</option>
+                  <option value="Executive Operations">Executive Operations</option>
+                  <option value="Executive Planning Weekend">Executive Planning Weekend</option>
+                  <option value="Faculty Frenzy">Faculty Frenzy</option>
+                  <option value="Fireball">Fireball</option>
+                  <option value="First Year Society">First Year Society</option>
+                  <option value="Frequency">Frequency</option>
+                  <option value="Frost Week">Frost Week</option>
+                  <option value="Fundraising Donations">Fundraising Donations</option>
+                  <option value="Handbook">Handbook</option>
+                  <option value="Hatch Student Spaces">Hatch Student Spaces</option>
+                  <option value="Hatch Student Workshop">Hatch Student Workshop</option>
+                  <option value="Intramurals">Intramurals</option>
+                  <option value="IT">IT</option>
+                  <option value="Jumpsuit Initiative">Jumpsuit Initiative</option>
+                  <option value="Kennedy (formerly called Iron Ring)">Kennedy (formerly called Iron Ring)</option>
+                  <option value="Leadership Development Conference">Leadership Development Conference</option>
+                  <option value="Long Term Investments">Long Term Investments</option>
+                  <option value="Lounge">Lounge</option>
+                  <option value="McMaster Engineering Competition">McMaster Engineering Competition</option>
+                  <option value="Mentorship Program">Mentorship Program</option>
+                  <option value="MES Branding">MES Branding</option>
+                  <option value="MES Card Supplies">MES Card Supplies</option>
+                  <option value="National Engineering Month">National Engineering Month</option>
+                  <option value="Office Supplies">Office Supplies</option>
+                  <option value="Oksoberfest">Oksoberfest</option>
+                  <option value="Open Conferences & Competitions">Open Conferences & Competitions</option>
+                  <option value="Operational Contingency">Operational Contingency</option>
+                  <option value="Operations">Operations</option>
+                  <option value="Professional Development">Professional Development</option>
+                  <option value="Semi Annual General Meeting">Semi Annual General Meeting</option>
+                  <option value="Sports Events">Sports Events</option>
+                  <option value="Spread the Love Week">Spread the Love Week</option>
+                  <option value="Student Group Leadership Training">Student Group Leadership Training</option>
+                  <option value="Student Projects">Student Projects</option>
+                  <option value="Sustainability">Sustainability</option>
+                  <option value="Talent Show">Talent Show</option>
+                  <option value="The Drain">The Drain</option>
+                  <option value="The Event">The Event</option>
+                  <option value="Town Halls">Town Halls</option>
+                  <option value="Trailer">Trailer</option>
+                  <option value="Trivia Night">Trivia Night</option>
+                  <option value="Tutoring Program">Tutoring Program</option>
+                  <option value="Two Way Radio Frequency License">Two Way Radio Frequency License</option>
+                  <option value="Website / InfraTech">Website / InfraTech</option>
+                  <option value="Welcome Week">Welcome Week</option>
+                  <option value="Wellness">Wellness</option>
+                </select>
+                {errors.budget_line && <p className="text-red-500 text-sm">{errors.budget_line.message}</p>}
+              </div>
+              {/* Additional sections... */}
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(1)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(3)}
+              >
+                Next
+              </button>
+              
+            </>
+          )}
+
+          {formStep === 11 && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="budget_line" className="block text-sm font-medium">Relevant Budget Line</label>
+                <select
+                  {...register('budget_line', { required: 'Budget line is required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select budget line</option>
+                  <option value="Academic Events & Info Sessions">Academic Events & Info Sessions</option>
+                  <option value="Academic Resources">Academic Resources</option>
+                  <option value="Accounting Software">Accounting Software</option>
+                  <option value="Advertising">Advertising</option>
+                  <option value="Audit">Audit</option>
+                  <option value="Awards">Awards</option>
+                  <option value="B2S Week">B2S Week</option>
+                  <option value="Bank Fees">Bank Fees</option>
+                  <option value="Bookkeeper">Bookkeeper</option>
+                  <option value="Capstone Fund">Capstone Fund</option>
+                  <option value="CFES Membership">CFES Membership</option>
+                  <option value="CFES Presidents' Meeting">CFES Presidents' Meeting</option>
+                  <option value="Closed Conferences & Competitions">Closed Conferences & Competitions</option>
+                  <option value="Clubfest">Clubfest</option>
+                  <option value="Community Outreach">Community Outreach</option>
+                  <option value="Coordinator Retention">Coordinator Retention</option>
+                  <option value="Council Operations">Council Operations</option>
+                  <option value="Culture">Culture</option>
+                  <option value="Director of Events">Director of Events</option>
+                  <option value="ECCS Fees">ECCS Fees</option>
+                  <option value="Elections">Elections</option>
+                  <option value="Engineering Competition Delegate Funding">Engineering Competition Delegate Funding</option>
+                  <option value="Engineering Help Centre">Engineering Help Centre</option>
+                  <option value="ESSCO Membership">ESSCO Membership</option>
+                  <option value="ESSCO Ontario Engineering Competition">ESSCO Ontario Engineering Competition</option>
+                  <option value="Executive Operations">Executive Operations</option>
+                  <option value="Executive Planning Weekend">Executive Planning Weekend</option>
+                  <option value="Faculty Frenzy">Faculty Frenzy</option>
+                  <option value="Fireball">Fireball</option>
+                  <option value="First Year Society">First Year Society</option>
+                  <option value="Frequency">Frequency</option>
+                  <option value="Frost Week">Frost Week</option>
+                  <option value="Fundraising Donations">Fundraising Donations</option>
+                  <option value="Handbook">Handbook</option>
+                  <option value="Hatch Student Spaces">Hatch Student Spaces</option>
+                  <option value="Hatch Student Workshop">Hatch Student Workshop</option>
+                  <option value="Intramurals">Intramurals</option>
+                  <option value="IT">IT</option>
+                  <option value="Jumpsuit Initiative">Jumpsuit Initiative</option>
+                  <option value="Kennedy (formerly called Iron Ring)">Kennedy (formerly called Iron Ring)</option>
+                  <option value="Leadership Development Conference">Leadership Development Conference</option>
+                  <option value="Long Term Investments">Long Term Investments</option>
+                  <option value="Lounge">Lounge</option>
+                  <option value="McMaster Engineering Competition">McMaster Engineering Competition</option>
+                  <option value="Mentorship Program">Mentorship Program</option>
+                  <option value="MES Branding">MES Branding</option>
+                  <option value="MES Card Supplies">MES Card Supplies</option>
+                  <option value="National Engineering Month">National Engineering Month</option>
+                  <option value="Office Supplies">Office Supplies</option>
+                  <option value="Oksoberfest">Oksoberfest</option>
+                  <option value="Open Conferences & Competitions">Open Conferences & Competitions</option>
+                  <option value="Operational Contingency">Operational Contingency</option>
+                  <option value="Operations">Operations</option>
+                  <option value="Professional Development">Professional Development</option>
+                  <option value="Semi Annual General Meeting">Semi Annual General Meeting</option>
+                  <option value="Sports Events">Sports Events</option>
+                  <option value="Spread the Love Week">Spread the Love Week</option>
+                  <option value="Student Group Leadership Training">Student Group Leadership Training</option>
+                  <option value="Student Projects">Student Projects</option>
+                  <option value="Sustainability">Sustainability</option>
+                  <option value="Talent Show">Talent Show</option>
+                  <option value="The Drain">The Drain</option>
+                  <option value="The Event">The Event</option>
+                  <option value="Town Halls">Town Halls</option>
+                  <option value="Trailer">Trailer</option>
+                  <option value="Trivia Night">Trivia Night</option>
+                  <option value="Tutoring Program">Tutoring Program</option>
+                  <option value="Two Way Radio Frequency License">Two Way Radio Frequency License</option>
+                  <option value="Website / InfraTech">Website / InfraTech</option>
+                  <option value="Welcome Week">Welcome Week</option>
+                  <option value="Wellness">Wellness</option>
+                </select>
+                {errors.budget_line && <p className="text-red-500 text-sm">{errors.budget_line.message}</p>}
+              </div>
+              {/* Additional sections... */}
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(1)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(3)}
+              >
+                Next
+              </button>
+              
+            </>
+          )}
+
+          {formStep === 12 && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="budget_line" className="block text-sm font-medium">Relevant Budget Line</label>
+                <select
+                  {...register('budget_line', { required: 'Budget line is required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select budget line</option>
+                  <option value="Academic Events & Info Sessions">Academic Events & Info Sessions</option>
+                  <option value="Academic Resources">Academic Resources</option>
+                  <option value="Accounting Software">Accounting Software</option>
+                  <option value="Advertising">Advertising</option>
+                  <option value="Audit">Audit</option>
+                  <option value="Awards">Awards</option>
+                  <option value="B2S Week">B2S Week</option>
+                  <option value="Bank Fees">Bank Fees</option>
+                  <option value="Bookkeeper">Bookkeeper</option>
+                  <option value="Capstone Fund">Capstone Fund</option>
+                  <option value="CFES Membership">CFES Membership</option>
+                  <option value="CFES Presidents' Meeting">CFES Presidents' Meeting</option>
+                  <option value="Closed Conferences & Competitions">Closed Conferences & Competitions</option>
+                  <option value="Clubfest">Clubfest</option>
+                  <option value="Community Outreach">Community Outreach</option>
+                  <option value="Coordinator Retention">Coordinator Retention</option>
+                  <option value="Council Operations">Council Operations</option>
+                  <option value="Culture">Culture</option>
+                  <option value="Director of Events">Director of Events</option>
+                  <option value="ECCS Fees">ECCS Fees</option>
+                  <option value="Elections">Elections</option>
+                  <option value="Engineering Competition Delegate Funding">Engineering Competition Delegate Funding</option>
+                  <option value="Engineering Help Centre">Engineering Help Centre</option>
+                  <option value="ESSCO Membership">ESSCO Membership</option>
+                  <option value="ESSCO Ontario Engineering Competition">ESSCO Ontario Engineering Competition</option>
+                  <option value="Executive Operations">Executive Operations</option>
+                  <option value="Executive Planning Weekend">Executive Planning Weekend</option>
+                  <option value="Faculty Frenzy">Faculty Frenzy</option>
+                  <option value="Fireball">Fireball</option>
+                  <option value="First Year Society">First Year Society</option>
+                  <option value="Frequency">Frequency</option>
+                  <option value="Frost Week">Frost Week</option>
+                  <option value="Fundraising Donations">Fundraising Donations</option>
+                  <option value="Handbook">Handbook</option>
+                  <option value="Hatch Student Spaces">Hatch Student Spaces</option>
+                  <option value="Hatch Student Workshop">Hatch Student Workshop</option>
+                  <option value="Intramurals">Intramurals</option>
+                  <option value="IT">IT</option>
+                  <option value="Jumpsuit Initiative">Jumpsuit Initiative</option>
+                  <option value="Kennedy (formerly called Iron Ring)">Kennedy (formerly called Iron Ring)</option>
+                  <option value="Leadership Development Conference">Leadership Development Conference</option>
+                  <option value="Long Term Investments">Long Term Investments</option>
+                  <option value="Lounge">Lounge</option>
+                  <option value="McMaster Engineering Competition">McMaster Engineering Competition</option>
+                  <option value="Mentorship Program">Mentorship Program</option>
+                  <option value="MES Branding">MES Branding</option>
+                  <option value="MES Card Supplies">MES Card Supplies</option>
+                  <option value="National Engineering Month">National Engineering Month</option>
+                  <option value="Office Supplies">Office Supplies</option>
+                  <option value="Oksoberfest">Oksoberfest</option>
+                  <option value="Open Conferences & Competitions">Open Conferences & Competitions</option>
+                  <option value="Operational Contingency">Operational Contingency</option>
+                  <option value="Operations">Operations</option>
+                  <option value="Professional Development">Professional Development</option>
+                  <option value="Semi Annual General Meeting">Semi Annual General Meeting</option>
+                  <option value="Sports Events">Sports Events</option>
+                  <option value="Spread the Love Week">Spread the Love Week</option>
+                  <option value="Student Group Leadership Training">Student Group Leadership Training</option>
+                  <option value="Student Projects">Student Projects</option>
+                  <option value="Sustainability">Sustainability</option>
+                  <option value="Talent Show">Talent Show</option>
+                  <option value="The Drain">The Drain</option>
+                  <option value="The Event">The Event</option>
+                  <option value="Town Halls">Town Halls</option>
+                  <option value="Trailer">Trailer</option>
+                  <option value="Trivia Night">Trivia Night</option>
+                  <option value="Tutoring Program">Tutoring Program</option>
+                  <option value="Two Way Radio Frequency License">Two Way Radio Frequency License</option>
+                  <option value="Website / InfraTech">Website / InfraTech</option>
+                  <option value="Welcome Week">Welcome Week</option>
+                  <option value="Wellness">Wellness</option>
+                </select>
+                {errors.budget_line && <p className="text-red-500 text-sm">{errors.budget_line.message}</p>}
+              </div>
+              {/* Additional sections... */}
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(1)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(3)}
+              >
+                Next
+              </button>
+              
+            </>
+          )}
+
+          {formStep === 13 && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="budget_line" className="block text-sm font-medium">Relevant Budget Line</label>
+                <select
+                  {...register('budget_line', { required: 'Budget line is required' })}
+                  className="mt-1 p-2 border rounded w-full"
+                >
+                  <option value="">Select budget line</option>
+                  <option value="Academic Events & Info Sessions">Academic Events & Info Sessions</option>
+                  <option value="Academic Resources">Academic Resources</option>
+                  <option value="Accounting Software">Accounting Software</option>
+                  <option value="Advertising">Advertising</option>
+                  <option value="Audit">Audit</option>
+                  <option value="Awards">Awards</option>
+                  <option value="B2S Week">B2S Week</option>
+                  <option value="Bank Fees">Bank Fees</option>
+                  <option value="Bookkeeper">Bookkeeper</option>
+                  <option value="Capstone Fund">Capstone Fund</option>
+                  <option value="CFES Membership">CFES Membership</option>
+                  <option value="CFES Presidents' Meeting">CFES Presidents' Meeting</option>
+                  <option value="Closed Conferences & Competitions">Closed Conferences & Competitions</option>
+                  <option value="Clubfest">Clubfest</option>
+                  <option value="Community Outreach">Community Outreach</option>
+                  <option value="Coordinator Retention">Coordinator Retention</option>
+                  <option value="Council Operations">Council Operations</option>
+                  <option value="Culture">Culture</option>
+                  <option value="Director of Events">Director of Events</option>
+                  <option value="ECCS Fees">ECCS Fees</option>
+                  <option value="Elections">Elections</option>
+                  <option value="Engineering Competition Delegate Funding">Engineering Competition Delegate Funding</option>
+                  <option value="Engineering Help Centre">Engineering Help Centre</option>
+                  <option value="ESSCO Membership">ESSCO Membership</option>
+                  <option value="ESSCO Ontario Engineering Competition">ESSCO Ontario Engineering Competition</option>
+                  <option value="Executive Operations">Executive Operations</option>
+                  <option value="Executive Planning Weekend">Executive Planning Weekend</option>
+                  <option value="Faculty Frenzy">Faculty Frenzy</option>
+                  <option value="Fireball">Fireball</option>
+                  <option value="First Year Society">First Year Society</option>
+                  <option value="Frequency">Frequency</option>
+                  <option value="Frost Week">Frost Week</option>
+                  <option value="Fundraising Donations">Fundraising Donations</option>
+                  <option value="Handbook">Handbook</option>
+                  <option value="Hatch Student Spaces">Hatch Student Spaces</option>
+                  <option value="Hatch Student Workshop">Hatch Student Workshop</option>
+                  <option value="Intramurals">Intramurals</option>
+                  <option value="IT">IT</option>
+                  <option value="Jumpsuit Initiative">Jumpsuit Initiative</option>
+                  <option value="Kennedy (formerly called Iron Ring)">Kennedy (formerly called Iron Ring)</option>
+                  <option value="Leadership Development Conference">Leadership Development Conference</option>
+                  <option value="Long Term Investments">Long Term Investments</option>
+                  <option value="Lounge">Lounge</option>
+                  <option value="McMaster Engineering Competition">McMaster Engineering Competition</option>
+                  <option value="Mentorship Program">Mentorship Program</option>
+                  <option value="MES Branding">MES Branding</option>
+                  <option value="MES Card Supplies">MES Card Supplies</option>
+                  <option value="National Engineering Month">National Engineering Month</option>
+                  <option value="Office Supplies">Office Supplies</option>
+                  <option value="Oksoberfest">Oksoberfest</option>
+                  <option value="Open Conferences & Competitions">Open Conferences & Competitions</option>
+                  <option value="Operational Contingency">Operational Contingency</option>
+                  <option value="Operations">Operations</option>
+                  <option value="Professional Development">Professional Development</option>
+                  <option value="Semi Annual General Meeting">Semi Annual General Meeting</option>
+                  <option value="Sports Events">Sports Events</option>
+                  <option value="Spread the Love Week">Spread the Love Week</option>
+                  <option value="Student Group Leadership Training">Student Group Leadership Training</option>
+                  <option value="Student Projects">Student Projects</option>
+                  <option value="Sustainability">Sustainability</option>
+                  <option value="Talent Show">Talent Show</option>
+                  <option value="The Drain">The Drain</option>
+                  <option value="The Event">The Event</option>
+                  <option value="Town Halls">Town Halls</option>
+                  <option value="Trailer">Trailer</option>
+                  <option value="Trivia Night">Trivia Night</option>
+                  <option value="Tutoring Program">Tutoring Program</option>
+                  <option value="Two Way Radio Frequency License">Two Way Radio Frequency License</option>
+                  <option value="Website / InfraTech">Website / InfraTech</option>
+                  <option value="Welcome Week">Welcome Week</option>
+                  <option value="Wellness">Wellness</option>
+                </select>
+                {errors.budget_line && <p className="text-red-500 text-sm">{errors.budget_line.message}</p>}
+              </div>
+              {/* Additional sections... */}
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2"
+                onClick={() => setFormStep(1)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setFormStep(3)}
+              >
+                Next
+              </button>
+              
             </>
           )}
         </form>
