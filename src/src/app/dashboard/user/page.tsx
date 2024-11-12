@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import SubmitButton from "./SubmitButton";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -15,10 +16,11 @@ export default async function Home() {
   const username = user.email.split("@")[0];
 
   const { data: paymentRequests, error } = await supabase
-    .from('payment_requests')
-    .select('*')
-    .eq('user_id', user.id); 
-  console.log(paymentRequests)
+    .from("payment_requests")
+    .select("*")
+    .eq("user_id", user.id);
+
+  console.log(paymentRequests);
   if (error) {
     console.error("Error fetching payment requests:", error);
     return <div>Error loading payment requests.</div>;
@@ -29,9 +31,7 @@ export default async function Home() {
       {/* Header */}
       <header className="w-full bg-blue-600 text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-lg font-semibold">
-            Welcome, {username}
-          </h1>
+          <h1 className="text-lg font-semibold">Welcome, {username}</h1>
           <form action="/signout" method="post">
             <button className="rounded-full border border-solid border-white/[.2] transition-colors flex items-center justify-center hover:bg-blue-700 text-sm h-10 px-4">
               Sign out
@@ -58,7 +58,6 @@ export default async function Home() {
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Reimbursement or Payment</th>
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Timestamp</th>
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Status</th>
-
                 </tr>
               </thead>
               <tbody>
@@ -73,18 +72,20 @@ export default async function Home() {
                       <td className="py-2 px-4 border-b border-gray-200">{request.reimbursement_or_payment}</td>
                       <td className="py-2 px-4 border-b border-gray-200">{new Date(request.timestamp).toLocaleString()}</td>
                       <td className="py-2 px-4 border-b border-gray-200">{request.status}</td>
-
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="py-4 text-center text-gray-600">
+                    <td colSpan="8" className="py-4 text-center text-gray-600">
                       No payment requests found.
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
+            <div className="flex justify-center mt-4">
+              <SubmitButton />
+            </div> 
           </div>
         </div>
       </main>
