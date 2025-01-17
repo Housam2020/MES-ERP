@@ -571,12 +571,14 @@ None.
 \subsubsection{Exported Access Programs}
 \begin{center}
     \scriptsize
-    \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+    \begin{tabular}{|p{2cm}|p{4cm}|p{4cm}|p{4cm}|} % Add | for vertical lines
         \hline
         \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
         \hline
         routeRequest & requestID (\texttt{String}), userRole (\texttt{String}) & status (\texttt{String}) & InvalidRoleException \\
+        \hline
         addNote & requestID (\texttt{String}), note (\texttt{String}) & confirmation (\texttt{Boolean}) & RequestNotFoundException \\
+        \hline
         updateStatus & requestID (\texttt{String}), newStatus (\texttt{String}) & confirmation (\texttt{Boolean}) & InvalidStatusException \\
         \hline
     \end{tabular}
@@ -641,12 +643,14 @@ Budget and Funding Management
 \subsubsection{Exported Access Programs}
 \begin{center}
     \scriptsize
-    \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+    \begin{tabular}{|p{2cm}|p{4cm}|p{4cm}|p{4cm}|} % Add | for vertical lines
         \hline
         \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
         \hline
         getBudget & departmentID (\texttt{String}) & budgetDetails (\texttt{Object}) & DepartmentNotFoundException \\
+        \hline
         validateFunds & requestAmount (\texttt{Float}), departmentID (\texttt{String}) & status (\texttt{Boolean}) & InsufficientFundsException \\
+        \hline
         updateBudget & departmentID (\texttt{String}), amount (\texttt{Float}) & confirmation (\texttt{Boolean}) & BudgetOverflowException \\
         \hline
     \end{tabular}
@@ -712,7 +716,8 @@ Disbursement \& Payment Processing
 
 \subsubsection{Exported Access Programs}
 \begin{center}
-    \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+    \scriptsize
+    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|} % Add | for vertical lines
         \hline
         \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
         \hline
@@ -846,7 +851,7 @@ Notifications \& Communication
 \subsubsection{Exported Access Programs}
 \begin{center}
     \scriptsize
-    \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|} % Add | for vertical lines
         \hline
         \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
         \hline
@@ -949,11 +954,12 @@ None.
 \subsubsection{Exported Access Programs}
 \begin{center}
     \scriptsize
-    \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+    \begin{tabular}{|p{2cm}|p{4cm}|p{4cm}|p{2cm}|} % Add | for vertical lines
         \hline
         \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
         \hline
-        generateReport & filters (\texttt{Object}) & report (\texttt{PDF/CSV}) & InvalidFilterException \\
+        generateReport & filters (\texttt{Object}) & report (\texttt{PDF/CSV}) & InvalidFilter \newline Exception \\
+        \hline
         getUsageStats & timeframe (\texttt{String}) & stats (\texttt{Object}) & None \\
         \hline
     \end{tabular}
