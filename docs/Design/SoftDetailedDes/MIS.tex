@@ -85,9 +85,6 @@ found at \url{...}.  \wss{provide the url for your repo}
 
 \section{Notation}
 
-\wss{You should describe your notation.  You can use what is below as
-  a starting point.}
-
 The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
 with the addition that template modules have been adapted from
 \cite{GhezziEtAl2003}.  The mathematical notation comes from Chapter 3 of
@@ -120,112 +117,593 @@ different types. In addition, \progname \ uses functions, which
 are defined by the data types of their inputs and outputs. Local functions are
 described by giving their type signature followed by their specification.
 
-\section{Module Decomposition}
+\section{Timeline}
 
-The following table is taken directly from the Module Guide document for this project.
+This section outlines the timeline for the implementation of the project. The timeline includes the development of all modules, testing, and deployment phases. Tasks are divided by modules, specifying responsibilities and key milestones.
+
+\subsection{Development Timeline}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Week} & \textbf{Task} & \textbf{Details} \\ 
+\hline
+Week 1 & Initial Planning & Team meeting to finalize requirements and review the SRS. Assign responsibilities for each module. \\ 
+\hline
+Week 2 & User Authentication and Profile Management Module & Development of secure login, roles, and basic profile updates. Begin unit testing for authentication. \\ 
+\hline
+Week 3 & Expense Submission and Tracking Module & Implement submission forms for expenses, including receipt uploads and status tracking. Start unit testing. \\ 
+\hline
+Week 4 & Budget and Funding Management Module & Develop logic for fetching budgets, validating funds, and updating department budgets. Integrate with the database module. \\ 
+\hline
+Week 5 & Approval Workflow and Review Module & Implement dynamic routing rules and approval workflows. Integrate notifications for pending approvals. Conduct unit testing. \\ 
+\hline
+Week 6 & Disbursement and Payment Processing Module & Create logic for issuing payments and generating logs for auditing. Integrate with external financial systems. \\ 
+\hline
+Week 7 & Notifications and Communication Module & Build notifications for key events, such as request approvals or denials. Include dashboard alerts for overdue actions. \\ 
+\hline
+Week 8 & Reporting and Analytics Module & Develop functionality for generating reports and tracking usage statistics. Validate with sample data. \\ 
+\hline
+Week 9 & Policy and Compliance Management Module & Implement rule validation for requests and ensure compliance checks during submission. \\ 
+\hline
+Week 10 & Integration with Other University Systems Module & Create API connectors for university systems (SIS, finance) and test for reliability. \\ 
+\hline
+Week 11 & Administrator and Configuration Panel Module & Build an admin interface for managing roles, notifications, and system logs. Ensure ease of use. \\ 
+\hline
+Week 12 & Testing and Integration & Conduct full system testing, including integration testing across all modules. Address any bugs or performance issues. \\ 
+\hline
+Week 13 & Final Review & Review system functionality against requirements. Conduct user testing and gather feedback for final improvements. \\ 
+\hline
+Week 14 & Deployment & Deploy the system on university servers. Ensure documentation is complete and ready for handover. \\ 
+\hline
+\end{tabularx}
+
+\subsection{Testing and Verification}
+Testing will be conducted in multiple phases:
+\begin{itemize}
+    \item Unit Testing: Conducted during the implementation of each module (Weeks 2–11).
+    \item Integration Testing: Performed once modules are integrated (Week 12).
+    \item System Testing: Comprehensive testing of the entire system to ensure functionality and performance (Week 12–13).
+    \item User Acceptance Testing: Gather feedback from end-users during Week 13 to identify potential areas for improvement.
+\end{itemize}
+
+\subsection{Responsibilities}
+The following responsibilities are assigned to team members:
+\begin{itemize}
+    \item Module Implementation: Each team member is responsible for implementing the modules assigned to them during the initial planning phase.
+    \item Documentation: All team members contribute to the MIS and ensure consistency with the SRS.
+    \item Testing: Shared responsibility for writing and executing test cases, with module developers performing unit tests.
+    \item Deployment: Coordinated by the team lead, with support from all team members for configuration and setup.
+\end{itemize}
+
+\section{Module Decomposition}
+The modules in this system are divided into the following levels:
 
 \begin{table}[h!]
-\centering
-\begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
-\toprule
-\textbf{Level 1} & \textbf{Level 2}\\
-\midrule
-
-{Hardware-Hiding} & ~ \\
-\midrule
-
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
-& Output Format\\
-& Output Verification\\
-& Temperature ODEs\\
-& Energy Equations\\ 
-& Control Module\\
-& Specification Parameters Module\\
-\midrule
-
-\multirow{3}{0.3\textwidth}{Software Decision} & {Sequence Data Structure}\\
-& ODE Solver\\
-& Plotting\\
-\bottomrule
-
-\end{tabular}
-\caption{Module Hierarchy}
-\label{TblMH}
+    \centering
+    \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
+        \toprule
+        \textbf{Level 1} & \textbf{Level 2} \\
+        \midrule
+        Hardware-Hiding Module & Database Module \\
+        \midrule
+        \multirow{6}{0.3\textwidth}{Behavior-Hiding Module} & Approval Workflow and Review \\
+        & Budget and Funding Management \\
+        & Reporting and Analytics \\
+        & Policy and Compliance Management \\
+        & Notifications and Communication \\
+        & Disbursement and Payment Processing \\
+        \midrule
+        \multirow{3}{0.3\textwidth}{Software Decision Module} & GUI Module \\
+        & Integration with Other University Systems \\
+        & Software Design Decisions Module \\
+        \bottomrule
+    \end{tabular}
+    \caption{Module Decomposition}
+    \label{tab:module_decomposition}
 \end{table}
 
 \newpage
 ~\newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
-  cross-referencing}
-
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
-
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+\section{MIS of Approval Workflow and Review Module}
 
 \subsection{Module}
-
-\wss{Short name for the module}
+Approval Workflow and Review
 
 \subsection{Uses}
+\begin{itemize}
+    \item Budget and Funding Management Module
+    \item Notifications and Communication Module
+    \item Database Module
+\end{itemize}
 
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+None.
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+    \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        routeRequest & requestID (\texttt{String}), userRole (\texttt{String}) & status (\texttt{String}) & InvalidRoleException \\
+        addNote & requestID (\texttt{String}), note (\texttt{String}) & confirmation (\texttt{Boolean}) & RequestNotFoundException \\
+        updateStatus & requestID (\texttt{String}), newStatus (\texttt{String}) & confirmation (\texttt{Boolean}) & InvalidStatusException \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+    \item requests: A mapping of request IDs to their current status and approver roles.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+    \item Database: Stores information about requests, user roles, and approval workflows.
+    \item Notification System: Sends alerts for pending approvals or status updates.
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item User roles are pre-validated by the authentication system.
+    \item All approvers have access to the system during their review process.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent \texttt{routeRequest(requestID, userRole)}:
+\begin{itemize}
+    \item Output: Returns the current status of the request or raises an InvalidRoleException if the userRole is unauthorized.
+\end{itemize}
+
+\noindent \texttt{addNote(requestID, note)}:
+\begin{itemize}
+    \item Transition: Adds a note to the request specified by \texttt{requestID}.
+    \item Output: Returns \texttt{true} if successful or raises RequestNotFoundException if the request ID does not exist.
+\end{itemize}
+
+\noindent \texttt{updateStatus(requestID, newStatus)}:
+\begin{itemize}
+    \item Transition: Updates the status of the request specified by \texttt{requestID}.
+    \item Output: Returns \texttt{true} if successful or raises InvalidStatusException if the new status is invalid.
+\end{itemize}
+
+\subsubsection{Local Functions}
+None.
+
+\section{MIS of Budget and Funding Management Module}
+
+\subsection{Module}
+Budget and Funding Management
+
+\subsection{Uses}
+\begin{itemize}
+    \item Database Module
+    \item Notifications and Communication Module
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+    \item MAX\_BUDGET: The maximum allowable budget per department.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+    \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        getBudget & departmentID (\texttt{String}) & budgetDetails (\texttt{Object}) & DepartmentNotFoundException \\
+        validateFunds & requestAmount (\texttt{Float}), departmentID (\texttt{String}) & status (\texttt{Boolean}) & InsufficientFundsException \\
+        updateBudget & departmentID (\texttt{String}), amount (\texttt{Float}) & confirmation (\texttt{Boolean}) & BudgetOverflowException \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+    \item budgets: A mapping of department IDs to their current budget values.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+    \item Database: Stores information about department budgets and transactions.
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item All transactions are logged for auditing purposes.
+    \item Real-time budget data is synchronized with the university financial system.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent \texttt{getBudget(departmentID)}:
+\begin{itemize}
+    \item Output: Returns an object containing the budget details of the specified department or raises DepartmentNotFoundException.
+\end{itemize}
+
+\noindent \texttt{validateFunds(requestAmount, departmentID)}:
+\begin{itemize}
+    \item Output: Returns \texttt{true} if sufficient funds are available, otherwise raises InsufficientFundsException.
+\end{itemize}
+
+\noindent \texttt{updateBudget(departmentID, amount)}:
+\begin{itemize}
+    \item Transition: Updates the budget for the specified department by the specified amount.
+    \item Output: Returns \texttt{true} if successful or raises BudgetOverflowException if the update exceeds MAX\_BUDGET.
+\end{itemize}
+
+\subsubsection{Local Functions}
+None.
+
+\section{MIS of Reporting and Analytics Module}
+
+\subsection{Module}
+Reporting and Analytics
+
+\subsection{Uses}
+\begin{itemize}
+    \item Database Module
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+None.
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+    \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        generateReport & filters (\texttt{Object}) & report (\texttt{PDF/CSV}) & InvalidFilterException \\
+        getUsageStats & timeframe (\texttt{String}) & stats (\texttt{Object}) & None \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+    \item reports: Stores past generated reports for caching and quick access.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+    \item Database: Stores analytics data related to system usage and transactions.
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item Data required for analytics is periodically updated and complete.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent \texttt{generateReport(filters)}:
+\begin{itemize}
+    \item Output: Returns a report in PDF or CSV format based on the filters provided, or raises InvalidFilterException if the filters are malformed.
+\end{itemize}
+
+\noindent \texttt{getUsageStats(timeframe)}:
+\begin{itemize}
+    \item Output: Returns an object containing system usage statistics for the specified timeframe.
+\end{itemize}
+
+\subsubsection{Local Functions}
+None.
+
+\section{MIS of Graphical User Interface (GUI) Module}
+
+\subsection{Module}
+Graphical User Interface (GUI)
+
+\subsection{Uses}
+\begin{itemize}
+    \item Notifications and Communication Module
+    \item Database Module
+    \item Approval Workflow and Review Module
+\end{itemize}
 
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+None.
 
 \subsubsection{Exported Access Programs}
-
 \begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-\wss{accessProg} & - & - & - \\
-\hline
-\end{tabular}
+    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        \texttt{renderDashboard} & \texttt{userID (String)} & \texttt{dashboardView (HTML/JSON)} & \texttt{UserNotFoundException} \\
+        \hline
+        \texttt{updateView} & \texttt{viewName (String)} & \texttt{success (Boolean)} & \texttt{ViewNotFoundException} \\
+        \hline
+        \texttt{handleInput} & \texttt{event (Object)} & \texttt{actionResponse (Boolean)} & \texttt{InputException} \\
+        \hline
+    \end{tabular}
 \end{center}
 
 \subsection{Semantics}
 
 \subsubsection{State Variables}
-
-\wss{Not all modules will have state variables.  State variables give the module
-  a memory.}
+\begin{itemize}
+    \item \textbf{activeView}: The current view being displayed to the user, identified by its name (e.g., "Dashboard", "Expense Submission").
+    \item \textbf{userSession}: Details about the currently logged-in user, including preferences and session data.
+\end{itemize}
 
 \subsubsection{Environment Variables}
-
-\wss{This section is not necessary for all modules.  Its purpose is to capture
-  when the module has external interaction with the environment, such as for a
-  device driver, screen interface, keyboard, file, etc.}
+\begin{itemize}
+    \item \textbf{Browser Window}: Displays the GUI and captures user inputs.
+    \item \textbf{Server API}: Fetches data to dynamically update the GUI based on user interactions.
+\end{itemize}
 
 \subsubsection{Assumptions}
-
-\wss{Try to minimize assumptions and anticipate programmer errors via
-  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+\begin{itemize}
+    \item The browser supports modern web standards (HTML5, CSS3, JavaScript).
+    \item Users have active and authenticated sessions before interacting with the GUI.
+\end{itemize}
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent \texttt{renderDashboard(userID)}:
 \begin{itemize}
-\item transition: \wss{if appropriate} 
-\item output: \wss{if appropriate} 
-\item exception: \wss{if appropriate} 
+    \item \textbf{Output}: Renders the dashboard for the given \texttt{userID} or raises a \texttt{UserNotFoundException} if the user is not valid.
 \end{itemize}
 
-\wss{A module without environment variables or state variables is unlikely to
-  have a state transition.  In this case a state transition can only occur if
-  the module is changing the state of another module.}
+\noindent \texttt{updateView(viewName)}:
+\begin{itemize}
+    \item \textbf{Output}: Updates the active view to the one specified by \texttt{viewName} and returns \texttt{true} if successful, or raises a \texttt{ViewNotFoundException}.
+\end{itemize}
 
-\wss{Modules rarely have both a transition and an output.  In most cases you
-  will have one or the other.}
+\noindent \texttt{handleInput(event)}:
+\begin{itemize}
+    \item \textbf{Transition}: Processes user interactions, such as button clicks or form submissions, and triggers corresponding actions.
+    \item \textbf{Output}: Returns \texttt{true} if the input is handled successfully or raises an \texttt{InputException}.
+\end{itemize}
 
 \subsubsection{Local Functions}
+None.
 
-\wss{As appropriate} \wss{These functions are for the purpose of specification.
-  They are not necessarily something that is going to be implemented
-  explicitly.  Even if they are implemented, they are not exported; they only
-  have local scope.}
+\section{MIS of Policy \& Compliance Management Module}
+
+\subsection{Module}
+Policy \& Compliance Management
+
+\subsection{Uses}
+\begin{itemize}
+    \item Database Module
+    \item Notifications and Communication Module
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+\begin{itemize}
+    \item \texttt{MAX\_REIMBURSEMENT}: The maximum allowable reimbursement amount for a single request.
+    \item \texttt{TRAVEL\_APPROVAL\_LIMIT}: The threshold above which travel expenses require prior approval.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        \texttt{validateRequest} & \texttt{requestDetails (Object)} & \texttt{validationStatus (Boolean)} & \texttt{PolicyViolationException} \\
+        \hline
+        \texttt{getPolicyRules} & \texttt{policyType (String)} & \texttt{rules (Object)} & \texttt{PolicyNotFoundException} \\
+        \hline
+        \texttt{logComplianceCheck} & \texttt{requestID (String), result (Boolean)} & \texttt{confirmation (Boolean)} & \texttt{LogFailureException} \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+\begin{itemize}
+    \item \textbf{policies}: A mapping of policy types to their respective rules and thresholds.
+    \item \textbf{complianceLogs}: A record of compliance checks performed on submitted requests.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+    \item \textbf{Policy Database}: Stores policy definitions and thresholds.
+    \item \textbf{Audit System}: Logs compliance checks and violations for review.
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item Policy rules are periodically updated to align with organizational regulations.
+    \item Compliance checks are triggered automatically during the request submission process.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent \texttt{validateRequest(requestDetails)}:
+\begin{itemize}
+    \item \textbf{Output}: Returns \texttt{true} if the request complies with all applicable policies or raises a \texttt{PolicyViolationException} if a rule is violated.
+\end{itemize}
+
+\noindent \texttt{getPolicyRules(policyType)}:
+\begin{itemize}
+    \item \textbf{Output}: Returns the rules for the specified \texttt{policyType} or raises a \texttt{PolicyNotFoundException} if the policy type is invalid.
+\end{itemize}
+
+\noindent \texttt{logComplianceCheck(requestID, result)}:
+\begin{itemize}
+    \item \textbf{Transition}: Records the result of a compliance check for the given \texttt{requestID}.
+    \item \textbf{Output}: Returns \texttt{true} if the log is updated successfully or raises a \texttt{LogFailureException}.
+\end{itemize}
+
+\subsubsection{Local Functions}
+None.
+
+\section{MIS of Integration with Other University Systems Module}
+
+\subsection{Module}
+Integration with Other University Systems
+
+\subsection{Uses}
+\begin{itemize}
+    \item Database Module
+    \item External APIs (University Systems)
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+\begin{itemize}
+    \item \texttt{STUDENT\_INFO\_API\_URL}: The endpoint for accessing the university’s Student Information System (SIS).
+    \item \texttt{FINANCE\_SYSTEM\_API\_URL}: The endpoint for accessing the university’s financial system.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        \texttt{fetchStudentInfo} & \texttt{studentID (String)} & \texttt{studentDetails (Object)} & \texttt{StudentNotFoundException} \\
+        \hline
+        \texttt{syncFinancialData} & \texttt{departmentID (String)} & \texttt{syncStatus (Boolean)} & \texttt{FinanceSyncFailureException} \\
+        \hline
+        \texttt{verifyEnrollment} & \texttt{studentID (String)} & \texttt{enrollmentStatus (Boolean)} & \texttt{EnrollmentVerificationException} \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+\begin{itemize}
+    \item \textbf{universityData}: A cache of information fetched from external university systems for performance optimization.
+    \item \textbf{syncLogs}: A record of synchronization activities between the system and external APIs.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+    \item \textbf{University SIS}: Provides student details such as enrollment status, department, and contact information.
+    \item \textbf{University Finance System}: Manages departmental budgets, account balances, and payment records.
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item API endpoints for university systems are reliable and adhere to predefined contracts.
+    \item Authentication credentials for accessing university systems are securely stored and updated as needed.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent \texttt{fetchStudentInfo(studentID)}:
+\begin{itemize}
+    \item \textbf{Output}: Returns the details of the student identified by \texttt{studentID}, or raises \texttt{StudentNotFoundException} if no matching record is found.
+\end{itemize}
+
+\noindent \texttt{syncFinancialData(departmentID)}:
+\begin{itemize}
+    \item \textbf{Transition}: Synchronizes financial data for the given \texttt{departmentID} with the university’s finance system.
+    \item \textbf{Output}: Returns \texttt{true} if the synchronization is successful or raises \texttt{FinanceSyncFailureException} if an error occurs.
+\end{itemize}
+
+\noindent \texttt{verifyEnrollment(studentID)}:
+\begin{itemize}
+    \item \textbf{Output}: Returns \texttt{true} if the student is enrolled, or raises \texttt{EnrollmentVerificationException} if verification fails.
+\end{itemize}
+
+\subsubsection{Local Functions}
+None.
+
+\section{MIS of Administrator and Configuration Panel Module}
+
+\subsection{Module}
+Administrator and Configuration Panel
+
+\subsection{Uses}
+\begin{itemize}
+    \item Database Module
+    \item Notifications and Communication Module
+    \item Integration with Other University Systems Module
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+\begin{itemize}
+    \item \texttt{DEFAULT\_ROLE\_PERMISSIONS}: A mapping of roles to their default access permissions.
+    \item \texttt{MAX\_NOTIFICATION\_TEMPLATES}: The maximum number of customizable notification templates allowed.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        \texttt{addRole} & \texttt{roleName (String), permissions (List)} & \texttt{confirmation (Boolean)} & \texttt{RoleAlreadyExistsException} \\
+        \hline
+        \texttt{updateApprovalChain} & \texttt{chainConfig (Object)} & \texttt{confirmation (Boolean)} & \texttt{InvalidChainConfigException} \\
+        \hline
+        \texttt{editNotificationTemplate} & \texttt{templateID (String), newTemplate (String)} & \texttt{confirmation (Boolean)} & \texttt{TemplateNotFoundException} \\
+        \hline
+        \texttt{viewLogs} & \texttt{timeframe (String)} & \texttt{logData (Object)} & None \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+\begin{itemize}
+    \item \textbf{roles}: A mapping of roles to their permissions and associated users.
+    \item \textbf{notificationTemplates}: A collection of templates for system notifications.
+    \item \textbf{auditLogs}: A collection of system logs for administrative actions.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+    \item \textbf{Database}: Stores configuration settings, logs, and role assignments.
+    \item \textbf{Notification System}: Delivers updates to users based on configured templates.
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item Role and permission updates propagate immediately to all system components.
+    \item Audit logs are retained and accessible for the configured retention period.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent \texttt{addRole(roleName, permissions)}:
+\begin{itemize}
+    \item \textbf{Transition}: Adds a new role with the specified permissions to the system.
+    \item \textbf{Output}: Returns \texttt{true} if the role is added successfully or raises \texttt{RoleAlreadyExistsException}.
+\end{itemize}
+
+\noindent \texttt{updateApprovalChain(chainConfig)}:
+\begin{itemize}
+    \item \textbf{Transition}: Updates the approval chain configuration based on the provided settings.
+    \item \textbf{Output}: Returns \texttt{true} if the update is successful or raises \texttt{InvalidChainConfigException}.
+\end{itemize}
+
+\noindent \texttt{editNotificationTemplate(templateID, newTemplate)}:
+\begin{itemize}
+    \item \textbf{Transition}: Updates the specified notification template with the new content.
+    \item \textbf{Output}: Returns \texttt{true} if the template is updated successfully or raises \texttt{TemplateNotFoundException}.
+\end{itemize}
+
+\noindent \texttt{viewLogs(timeframe)}:
+\begin{itemize}
+    \item \textbf{Output}: Returns log data for the specified timeframe.
+\end{itemize}
+
+\subsubsection{Local Functions}
+None.
+
 
 \newpage
 
@@ -236,13 +714,17 @@ The following table is taken directly from the Module Guide document for this pr
 
 \section{Appendix} \label{Appendix}
 
-\wss{Extra information if required}
+\wss{Extra information if required. Currently, none.}
+
+\newpage{}
+
+\section{Appendix} \label{Appendix}
+
+\wss{Extra information if required. Currently, none.}
 
 \newpage{}
 
 \section*{Appendix --- Reflection}
-
-\wss{Not required for CAS 741 projects}
 
 The information in this section will be used to evaluate the team members on the
 graduate attribute of Problem Analysis and Design.
@@ -250,20 +732,29 @@ graduate attribute of Problem Analysis and Design.
 \input{../../Reflection.tex}
 
 \begin{enumerate}
-  \item What went well while writing this deliverable? 
-  \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
-  \item Which of your design decisions stemmed from speaking to your client(s)
-  or a proxy (e.g. your peers, stakeholders, potential users)? For those that
-  were not, why, and where did they come from?
-  \item While creating the design doc, what parts of your other documents (e.g.
-  requirements, hazard analysis, etc), it any, needed to be changed, and why?
-  \item What are the limitations of your solution?  Put another way, given
-  unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)
-  \item Give a brief overview of other design solutions you considered.  What
-  are the benefits and tradeoffs of those other designs compared with the chosen
-  design?  From all the potential options, why did you select the documented design?
-  (LO\_Explores)
+  \item \textbf{What went well while writing this deliverable?}  
+  \newline
+  Rachid: Collaborating as a team was smooth, and we were able to divide the modules effectively, which streamlined the writing process.
+
+  \item \textbf{What pain points did you experience during this deliverable, and how did you resolve them?}  
+  \newline
+  Rachid: One challenge was ensuring consistency across modules. Regular team reviews and communication helped resolve any inconsistencies.
+
+  \item \textbf{Which of your design decisions stemmed from speaking to your client(s) or a proxy (e.g., your peers, stakeholders, potential users)? For those that were not, why, and where did they come from?}  
+  \newline
+  Rachid: Many decisions, like integrating notifications, came directly from stakeholder feedback. Others, like modular decomposition, were based on best practices and team experience.
+
+  \item \textbf{While creating the design doc, what parts of your other documents (e.g., requirements, hazard analysis, etc.), if any, needed to be changed, and why?}  
+  \newline
+  Rachid: The requirements document was updated to better align with the final design, specifically in the Reporting module to include export formats.
+
+  \item \textbf{What are the limitations of your solution? Put another way, given unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)}  
+  \newline
+  Rachid: With unlimited resources, we could enhance system scalability and user interface design, making it more robust and user-friendly.
+
+  \item \textbf{Give a brief overview of other design solutions you considered. What are the benefits and tradeoffs of those other designs compared with the chosen design? From all the potential options, why did you select the documented design? (LO\_Explores)}  
+  \newline
+  Rachid: We considered alternative approaches for managing the workflow logic, such as using external libraries, but chose an in-house solution for simplicity and better control over implementation.
 \end{enumerate}
 
 
