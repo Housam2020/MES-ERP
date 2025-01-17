@@ -689,6 +689,249 @@ Budget and Funding Management
 \subsubsection{Local Functions}
 None.
 
+
+\section{MIS of Disbursement \& Payment Processing Module}
+
+\subsection{Module}
+Disbursement \& Payment Processing
+
+\subsection{Uses}
+\begin{itemize}
+    \item Database Module
+    \item Budget and Funding Management Module
+    \item Notifications and Communication Module
+    \item Integration with Other University Systems Module
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+    \item PAYMENT\_METHODS: Available payment types ["direct\_deposit", "check", "e\_transfer"]
+    \item MAX\_PAYMENT\_AMOUNT: The maximum amount for a single payment.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+    \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        processPayment & paymentDetails (\texttt{Object}) & paymentID (\texttt{String}) & PaymentProcessingException \\
+        \hline
+        generatePaymentRecord & paymentID (\texttt{String}) & documentData (\texttt{Object}) & DocumentGenerationException \\
+        \hline
+        cancelPayment & paymentID (\texttt{String}), reason (\texttt{String}) & confirmation (\texttt{Boolean}) & PaymentCancellationException \\
+        \hline
+        getPaymentStatus & paymentID (\texttt{String}) & status (\texttt{Object}) & PaymentNotFoundException \\
+        \hline
+        initiateRefund & paymentID (\texttt{String}), amount (\texttt{Number}) & refundID (\texttt{String}) & RefundProcessingException \\
+        \hline
+        createBatchPayment & payments (\texttt{Array}) & batchID (\texttt{String}) & BatchProcessingException \\
+        \hline
+        verifyBankDetails & accountDetails (\texttt{Object}) & isValid (\texttt{Boolean}) & ValidationException \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+    \item payments: Record of all payment transactions and their states.
+    \item paymentDocuments: Generated payment records and documentation.
+    \item bankDetails: Cached bank account verification results.
+    \item auditTrail: Log of all payment-related actions.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+    \item Document Templates: Templates for payment records.
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item Payment processing is secure and compliant with financial regulations.
+    \item Payment records are generated and stored for auditing purposes.
+    \item Bank account details are validated before processing payments.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent \texttt{processPayment(paymentDetails)}:
+\begin{itemize}
+    \item Transition: Initiates payment processing through the specified method.
+    \item Output: Returns a unique paymentID on successful processing.
+    \item Exceptions: PaymentProcessingException if the payment fails or is invalid.
+    \item Precondition: Payment amount is approved and funds are available.
+    \item Postcondition: Payment is queued for processing and audit trail is updated.
+\end{itemize}
+
+\noindent \texttt{generatePaymentRecord(paymentID)}:
+\begin{itemize}
+    \item Transition: Creates official payment documentation.
+    \item Output: Returns payment record object including all relevant details.
+    \item Exceptions: DocumentGenerationException if the record cannot be generated.
+    \item Precondition: Payment exists and is valid.
+    \item Postcondition: Payment record is generated and stored.
+\end{itemize}
+
+\noindent \texttt{cancelPayment(paymentID, reason)}:
+\begin{itemize}
+    \item Transition: Cancels pending payment and reverses any related transactions.
+    \item Output: Returns confirmation of cancellation.
+    \item Exceptions: PaymentCancellationException if the payment cannot be cancelled.
+    \item Precondition: Payment is in a cancellable state.
+    \item Postcondition: Payment is cancelled and notification is sent.
+\end{itemize}
+
+\noindent \texttt{getPaymentStatus(paymentID)}:
+Includes: Processing stage, timestamps, confirmation numbers
+Raises: PaymentNotFoundException if invalid paymentID
+\begin{itemize}
+    \item Output: Returns the current status of the payment and processing details.
+    \item Exceptions: PaymentNotFoundException if the payment ID is invalid.
+    \item Postcondition: Payment status is retrieved and displayed.
+\end{itemize}
+
+\noindent \texttt{initiateRefund(paymentID, amount)}:
+\begin{itemize}
+    \item Transition: Creates a refund transaction for the specified payment.
+    \item Output: Returns a unique refundID on successful refund initiation.
+    \item Exceptions: RefundProcessingException if the refund fails or is invalid.
+    \item Precondition: Original payment exists and was successful.
+    \item Postcondition: Refund is initiated and audit trail is updated.
+\end{itemize}
+
+\noindent \texttt{createBatchPayment(payments)}:
+\begin{itemize}
+    \item Transition: Processes multiple payments as a single batch.
+    \item Output: Returns a unique batchID on successful batch creation.
+    \item Exceptions: BatchProcessingException if the batch fails or is invalid.
+    \item Precondition: All payments are valid and within processing limits.
+    \item Postcondition: Batch payment is queued for processing and audit trail is updated.
+\end{itemize}
+
+\noindent \texttt{verifyBankDetails(accountDetails)}:
+\begin{itemize}
+    \item Output: Returns validation status of provided bank details.
+    \item Precondition: Account details follow Canadian banking format.
+    \item Postcondition: Validation result is cached for future reference.
+\end{itemize}
+
+\subsubsection{Local Functions}
+\begin{itemize}
+    \item validatePaymentAmount(amount: Number) -> Boolean: Checks payment amount against limits
+    \item formatBankingDetails(details: Object) -> Object: Standardizes banking information format
+    \item generateAuditEntry(action: String, details: Object) -> void: Creates audit log entry
+    \item notifyPaymentStatus(paymentID: String, status: String) -> void: Triggers status notifications
+\end{itemize}
+
+\section{MIS of Notifications \& Communication Module}
+
+\subsection{Module}
+Notifications \& Communication
+
+\subsection{Uses}
+\begin{itemize}
+    \item Database Module
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+    \item NOTIFICATION\_TYPES: Available notification types ["email", "sms", "dashboard"]
+    \item PRIORITY\_LEVELS: Notification priority levels ["low", "medium", "high"]
+\end{itemize}
+
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+    \scriptsize
+    \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        sendNotification & recipientID (\texttt{String}), message (\texttt{Object}) & notificationID (\texttt{String}) & NotificationFailedException \\
+        \hline
+        sendBulkNotification & recipients (\texttt{Array}), message (\texttt{Object}) & batchID (\texttt{String}) & BulkSendException \\
+        \hline
+        getDashboardAlerts & userID (\texttt{String}) & alerts (\texttt{Array}) & UserNotFoundException \\
+        \hline
+        markAsRead & notificationID (\texttt{String}) & success (\texttt{Boolean}) & InvalidNotificationException \\
+        \hline
+        getUserPreferences & userID (\texttt{String}) & preferences (\texttt{Object}) & UserNotFoundException \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+    \item notifications: Record of all sent notifications.
+    \item userPreferences: User notification preferences.
+    \item dashboardAlerts: Active alerts for each user.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+    \item Email Service: For sending email notifications
+    \item SMS Gateway: For sending text messages
+    \item User Dashboard: For displaying alerts
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item Notification delivery is reliable and secure.
+    \item User preferences are stored securely and updated in real-time.
+    \item Dashboard alerts are displayed in a timely manner.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent \texttt{sendNotification(recipientID, message)}:
+\begin{itemize}
+    \item Transition: Sends a notification to the specified recipient through the preferred channel.
+    \item Output: Returns a unique notificationID on successful delivery.
+    \item Exceptions: NotificationFailedException if the message cannot be sent.
+    \item Precondition: Recipient has valid contact information and preferences.
+    \item Postcondition: Notification is sent and logged in the system.
+\end{itemize}
+
+\noindent \texttt{sendBulkNotification(recipients, message)}:
+\begin{itemize}
+    \item Transition: Sends the same notification to multiple recipients.
+    \item Output: Returns a unique batchID on successful delivery.
+    \item Exceptions: BulkSendException if the message cannot be sent to all recipients.
+    \item Precondition: Recipients have valid contact information and preferences.
+    \item Postcondition: Notifications are queued for all recipients and logged.
+\end{itemize}
+
+\noindent \texttt{getDashboardAlerts(userID)}:
+\begin{itemize}
+    \item Output: Returns a list of active alerts for the specified user.
+    \item Exceptions: UserNotFoundException if the user ID is invalid.
+    \item Postcondition: Alerts are retrieved and displayed on the user dashboard.
+\end{itemize}
+
+\noindent \texttt{markAsRead(notificationID)}:
+\begin{itemize}
+    \item Transition: Marks the specified notification as read.
+    \item Output: Returns \texttt{true} if successful.
+    \item Exceptions: InvalidNotificationException if the notification ID is invalid.
+\end{itemize}
+
+\noindent \texttt{getUserPreferences(userID)}:
+\begin{itemize}
+    \item Output: Returns the user's notification preferences.
+    \item Exceptions: UserNotFoundException if the user ID is invalid.
+    \item Postcondition: User preferences are retrieved and displayed.
+\end{itemize}
+
+\subsubsection{Local Functions}
+\begin{itemize}
+    \item \texttt{formatMessage(message: Object, template: String) -> String}: Formats notification content
+    \item \texttt{validateRecipient(recipientID: String) -> Boolean}: Verifies recipient exists
+    \item \texttt{logNotification(details: Object) -> void}: Records notification in audit log
+\end{itemize}
+
 \section{MIS of Reporting and Analytics Module}
 
 \subsection{Module}

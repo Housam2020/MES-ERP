@@ -1,6 +1,10 @@
 name: Build PDF
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'docs/VnVPlan/**/*.tex'
+      - 'docs/projMngmnt/**/*.tex'
 
 jobs:
   build:
@@ -14,6 +18,7 @@ jobs:
           submodules: recursive
 
       - name: Compile LaTeX document - VnVPlan
+        if: contains(github.event.head_commit.modified, 'docs/VnVPlan/')
         uses: xu-cheng/latex-action@v3
         with:
           root_file: VnVPlan.tex
@@ -25,6 +30,7 @@ jobs:
             pdflatex -interaction=nonstopmode VnVPlan.tex
 
       - name: Compile LaTeX document - POC Team Contribution
+        if: contains(github.event.head_commit.modified, 'docs/projMngmnt/')
         uses: xu-cheng/latex-action@v3
         with:
           root_file: POC_Team_Contrib.tex
