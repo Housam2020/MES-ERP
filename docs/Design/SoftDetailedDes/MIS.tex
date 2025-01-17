@@ -204,6 +204,352 @@ The modules in this system are divided into the following levels:
 \newpage
 ~\newpage
 
+\section{MIS of Database Module}
+
+\subsection{Module}
+Database
+
+\subsection{Uses}
+None (Hardware-Hiding Module).
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+    \item DATABASE\_URL: The URL for the database connection.
+    \item MAX\_BATCH\_SIZE: The maximum number of records to fetch in a single query.
+    \item MAX\_CONNECTIONS: The maximum number of concurrent database connections.
+    \item DATABASE\_CREDENTIALS: The username and password for database access.
+    \item DEFAULT\_TIMEOUT: The default timeout for database queries.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        query & queryString (\texttt{String}), params (\texttt{Object}) & results (\texttt{Array}) & QueryExecutionException \\
+        \hline
+        insert & collection (\texttt{String}), document (\texttt{Object}) & documentID (\texttt{String}) & InsertionException \\
+        \hline
+        update & collection (\texttt{String}), filter (\texttt{Object}), updates (\texttt{Object}) & modifiedCount (\texttt{Number}) & UpdateException \\
+        \hline
+        delete & collection (\texttt{String}), filter (\texttt{Object}) & deletedCount (\texttt{Number}) & DeletionException \\
+        \hline
+        transaction & operations (\texttt{Array}) & results (\texttt{Array}) & TransactionException \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+    %connections: Pool of active database connections
+    %transactions: Active transactions and their states
+    %collections: Schema and metadata for database collections
+    \item connections: Pool of active database connections.
+    \item collections: Schema and metadata for database collections.
+    \item queries: Record of executed queries and their results.
+    \item inserts: Record of inserted documents and their IDs.
+    \item updates: Record of updated documents and their modification counts.
+    \item deletions: Record of deleted documents and their deletion counts.
+    \item transactions: Record of transaction operations and their results.
+    \item collections: Record of database collections and their schemas.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+    \item Database Server: Hosts the database and provides access to stored data.
+    \item Database Client: Connects to the database server and executes queries.
+    \item Configuration: Database connection and optimization settings.
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item Database server is accessible and responsive.
+    \item Database schema is predefined and consistent across collections.
+    \item Database queries are validated before execution.
+    \item Authentication credentials are securely stored
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent \texttt{query(queryString)}:
+\begin{itemize}
+    \item \textbf{Transition}: Executes a database query with the provided parameters.
+    \item \textbf{Output}: Returns query results or raises QueryExecutionException.
+    \item \textbf{Precondition}: Query string is valid MongoDB syntax.
+    \item \textbf{Postcondition}: Results are properly sanitized and formatted.
+\end{itemize}
+
+\noindent \texttt{insert(collection, document)}:
+\begin{itemize}
+    \item \textbf{Transition}: Inserts a new document into the specified collection.
+    \item \textbf{Output}: Returns the unique identifier of the inserted document.
+    \item \textbf{Exceptions}: InsertionException if the document is invalid or the operation fails.
+    \item \textbf{Precondition}: Document matches the collection schema.
+\end{itemize}
+
+\noindent \texttt{update(collection, filter, updates)}:
+\begin{itemize}
+    \item \textbf{Transition}: Updates documents matching the filter criteria.
+    \item \textbf{Output}: Returns the count of modified documents.
+    \item \textbf{Exceptions}: UpdateException if the operation fails or the updates are invalid.
+    \item \textbf{Precondition}: Update operation is valid for the collection schema.
+    \item \textbf{Postcondition}: Matching documents are updated atomically.
+\end{itemize}
+
+\noindent \texttt{delete(collection, filter)}:
+\begin{itemize}
+    \item \textbf{Transition}: Removes documents matching the filter criteria.
+    \item \textbf{Output}: Returns the count of deleted documents.
+    \item \textbf{Precondition}: Filter is non-empty to prevent accidental collection deletion.
+    \item \textbf{Postcondition}: Matching documents are permanently removed.
+\end{itemize}
+
+\noindent \texttt{transaction(operations)}:
+\begin{itemize}
+    \item \textbf{Transition}: Executes multiple operations in a single transaction.
+    \item \textbf{Output}: Returns results of all operations or raises TransactionException.
+    \item \textbf{Precondition}: All operations are valid and follow the collection schema.
+    \item \textbf{Postcondition}: All operations succeed or all are rolled back.
+\end{itemize}
+
+\subsubsection{Local Functions}
+\begin{itemize}
+    \item \texttt{validateSchema(collection, document) -> Boolean}: Verifies document against collection schema.
+    \item \texttt{sanitizeQuery(query) -> String}: Prevents injection attacks by sanitizing query strings.
+    \item \texttt{manageConnections() -> void}: Monitors and manages database connection pool.
+    \item \texttt{logQuery(query, results) -> void}: Records executed queries and results.
+    \item \texttt{logInsert(collection, documentID) -> void}: Records inserted documents.
+    \item \texttt{logUpdate(collection, modifiedCount) -> void}: Records updated documents.
+    \item \texttt{logDelete(collection, deletedCount) -> void}: Records deleted documents.
+    \item \texttt{logTransaction(operations) -> void}: Records transaction operations and results.
+    \item \texttt{logCollection(collection, schema) -> void}: Records collection schema and metadata.
+\end{itemize}
+
+\section{MIS of User Authentication & Profile Management Module}
+
+\subsection{Module}
+User Authentication & Profile Management
+
+\subsection{Uses}
+\begin{itemize}
+    \item Database Module
+    \item Integration with Other University Systems Module
+    \item Notifications and Communication Module
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+    \item SESSION\_TIMEOUT: The duration (in minutes) before an inactive session expires.
+    \item MAX\_LOGIN\_ATTEMPTS: Maximum number of failed login attempts before account lockout.
+    \item LOCKOUT\_DURATION: Duration (in minutes) of account lockout after exceeding MAX\_LOGIN\_ATTEMPTS.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        authenticate & credentials (\texttt{Object}) & sessionToken (\texttt{String}) & AuthenticationFailedException \\
+        \hline
+        getProfile & userID (\texttt{String}) & profileData (\texttt{Object}) & UserNotFoundException \\
+        \hline
+        updateProfile & userID (\texttt{String}), updates (\texttt{Object}) & confirmation (\texttt{Boolean}) & InvalidProfileDataException \\
+        \hline
+        validateSession & sessionToken (\texttt{String}) & isValid (\texttt{Boolean}) & InvalidSessionException \\
+        \hline
+        getRolePermissions & userID (\texttt{String}) & permissions (\texttt{Object}) & RoleNotFoundException \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+\begin{itemize}
+    \item sessions: A mapping of active session tokens to user information and expiration times.
+    \item profiles: A mapping of user IDs to their profile information and preferences
+    \item loginAttempts: A record of failed login attempts per user.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+    \item Identity Provider: The university's SSO system for authentication.
+    \item User Database: Stores user profiles, roles, and authentication data.
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item The university's identity provider is available and functioning
+    \item Users have unique identifiers across the system
+    \item Profile data is validated before storage
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent \texttt{authenticate(credentials)}:
+\begin{itemize}
+    \item \textbf{Transition}: Validates credentials against the identity provider and creates a new session.
+    \item \textbf{Output}: Returns a session token if successful.
+    \item \textbf{Exceptions}: AuthenticationFailedException if the credentials are invalid.
+\end{itemize}
+
+\noindent \texttt{getProfile(userID)}:
+\begin{itemize}
+    \item \textbf{Output}: Returns the user's profile data.
+    \item \textbf{Exceptions}: UserNotFoundException if the user ID does not exist.
+\end{itemize}
+
+\noindent \texttt{updateProfile(userID, updates)}:
+\begin{itemize}
+    \item \textbf{Transition}: Updates the specified user's profile with new information.
+    \item \textbf{Output}: Returns \texttt{true} if successful.
+    \item \textbf{Exceptions}: InvalidProfileDataException if the updates are invalid.
+\end{itemize}
+
+\noindent \texttt{validateSession(sessionToken)}:
+\begin{itemize}
+    \item \textbf{Output}: Returns \texttt{true} if the session is valid and not expired
+    \item \textbf{Exceptions}: InvalidSessionException if the session token is invalid or expired.
+\end{itemize}
+
+\noindent \texttt{getRolePermissions(userID)}:
+\begin{itemize}
+    \item \textbf{Output}: Returns the permissions associated with the user's role.
+    \item \textbf{Exceptions}: RoleNotFoundException if the user's role is not found.
+\end{itemize}
+
+\subsubsection{Local Functions}
+None.
+
+\section{MIS of Expense Submission & Tracking Module}
+\subsection{Module}
+Expense Submission & Tracking
+
+\subsection{Uses}
+\begin{itemize}
+    \item Database Module
+    \item Budget and Funding Management Module
+    \item Notifications and Communication Module
+    \item Policy \& Compliance Management Module
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+    \item MAX\_RECEIPT\_SIZE: The maximum file size (in MB) for uploaded receipts.
+    \item ALLOWED\_FILE\_TYPES: List of accepted file formats for receipts ["pdf", "jpg", "png"].
+    \item EXPENSE\_CATEGORIES: Predefined expense categories ["conference", "travel", "supplies", "materials"].
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
+        \hline
+        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
+        \hline
+        submitExpense & expenseDetails (\texttt{Object}), attachments (\texttt{Array}) & requestID (\texttt{String}) & InvalidExpenseException \\
+        \hline
+        uploadAttachment & requestID (\texttt{String}), file (\texttt{File}) & fileID (\texttt{String}) & FileUploadException \\
+        \hline
+        getExpenseStatus & requestID (\texttt{String}) & status (\texttt{Object}) & RequestNotFoundException \\
+        \hline
+        updateExpenseDetails & requestID (\texttt{String}), updates (\texttt{Object}) & confirmation (\texttt{Boolean}) & InvalidUpdateException \\
+        \hline
+        searchExpenses & filters (\texttt{Object}) & expenseList (\texttt{Array}) & InvalidSearchException \\
+        \hline
+        categorizeExpense & expenseData (\texttt{Object}) & category (\texttt{String}) & CategorizationException \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+    \item expenses: A mapping of request IDs to their complete expense details and status.
+    \item attachments: A mapping of file IDs to their metadata and storage locations.
+    \item categories: A record of expense categorization rules and patterns.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+    \item File Storage: Stores uploaded receipts and attachments.
+    \item OCR Service: Extracts text data from uploaded receipts for processing.
+    \item ML Model: Assists in automatic expense categorization
+    \item Database: Stores expense records and tracking information
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item Receipts are uploaded in a standard format (PDF, JPG, PNG).
+    \item Expense categorization is based on predefined rules and ML models.
+    \item All monetary values are in Canadian dollars (CAD).
+    \item File storage system has sufficient capacity for attachments.
+    \item Users have necessary permissions to submit expenses.
+    \item Each expense request has at least one receipt attachment.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent \texttt{submitExpense(expenseDetails, attachments)}:
+\begin{itemize}
+    \item \textbf{Transition}: Creates a new expense request with the provided details and attachments.
+    \item \textbf{Output}: Returns the unique request ID if successful.
+    \item \textbf{Exceptions}: InvalidExpenseException if the expense details are incomplete or invalid.
+    \item \textbf{Precondition}: expenseDetails contains required fields (amount, date, purpose, funding source).
+    \item \textbf{Postcondition}: Expense request is created with "Submitted" status.
+\end{itemize}
+
+\noindent \texttt{uploadAttachment(requestID, file)}:
+\begin{itemize}
+    \item \textbf{Transition}: Validates and stores the provided file attachment.
+    \item \textbf{Output}: Returns a unique fileID if successful.
+    \item \textbf{Exceptions}: FileUploadException if the file size or type is invalid.
+    \item \textbf{Precondition}: File size and type meet system requirements.
+    \item \textbf{Postcondition}: File is stored and linked to the expense request.
+\end{itemize}
+
+\noindent \texttt{getExpenseStatus(requestID)}:
+\begin{itemize}
+    \item \textbf{Output}: Returns the current status and tracking information for the specified request.
+    \item \textbf{Exceptions}: RequestNotFoundException if the request ID is invalid.
+    \item \textbf{Postcondition}: Status information is retrieved for the request.
+\end{itemize}
+
+\noindent \texttt{updateExpenseDetails(requestID, updates)}:
+\begin{itemize}
+    \item \textbf{Transition}: Applies valid updates to the specified expense request.
+    \item \textbf{Output}: Returns \texttt{true} if successful.
+    \item \textbf{Exceptions}: InvalidUpdateException if the updates are invalid.
+    \item \textbf{Precondition}: Request is in an editable state.
+    \item \textbf{Postcondition}: Expense details are updated and audit trail is maintained.
+\end{itemize}
+
+\noindent \texttt{searchExpenses(filters)}:
+\begin{itemize}
+    \item \textbf{Output}: Returns a list of expense requests matching the specified filters.
+    \item \textbf{Exceptions}: InvalidSearchException if filter criteria are invalid.
+    \item \textbf{Postcondition}: Filtered expense list is returned based on search criteria.
+\end{itemize}
+
+\noindent \texttt{categorizeExpense(expenseData)}:
+\begin{itemize}
+    \item \textbf{Transition}: Analyzes expense details to determine the appropriate category.
+    \item \textbf{Output}: Returns the suggested category for the expense or raises CategorizationException.
+    \item \textbf{Postcondition}: Expense category is assigned based on ML model and predefined rules.
+    \item \textbf{Uses}: ML model and predefined rules for categorization.
+    \item \textbf{Updates}: Category confidence score in expense metadata.
+\end{itemize}
+
+\subsubsection{Local Functions}
+\begin{itemize}
+    \item \texttt{validateExpenseData(data: Object) -> Boolean}: Ensures all required fields are present and valid.
+    \item \texttt{sanitizeAttachment(file: File) -> File}: Processes uploaded files for security.
+    \item \texttt{calculateTotalAmount(items: Array) -> Number}: Computes total expense amount including all items.
+\end{itemize}
+
 \section{MIS of Approval Workflow and Review Module}
 
 \subsection{Module}
