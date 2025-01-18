@@ -158,43 +158,31 @@ change.
 
 \begin{description}
 \item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific
-  hardware on which the software is running.
-\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the
-  initial input data.
-\item ...
+  hardware on which the software is hosted (e.g., MES-provided laptops with Windows 10 and above-average specs).
+\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of input data, such as receipts uploaded by student groups.
+\item[\refstepcounter{acnum} \actheacnum \label{acNotifications}:] Notification methods (e.g., email, SMS, or app alerts).
+\item[\refstepcounter{acnum} \actheacnum \label{acWorkflow}:] Changes to the workflow for reimbursement request approvals.
+\item[\refstepcounter{acnum} \actheacnum \label{acAudit}:] Requirements for audit log duration and format.
 \end{description}
-
-\wss{Anticipated changes relate to changes that would be made in requirements,
-design or implementation choices.  They are not related to changes that are made
-at run-time, like the values of parameters.}
 
 \subsection{Unlikely Changes} \label{SecUchange}
 
-The module design should be as general as possible. However, a general system is
-more complex. Sometimes this complexity is not necessary. Fixing some design
-decisions at the system architecture stage can simplify the software design. If
-these decision should later need to be changed, then many parts of the design
-will potentially need to be modified. Hence, it is not intended that these
-decisions will be changed.
-
 \begin{description}
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucIO}:] Input/Output devices
-  (Input: File and/or Keyboard, Output: File, Memory, and/or Screen).
-\item ...
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucDevice}:] Supported devices (e.g., desktop, laptop, mobile).
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucTechStack}:] The technology stack used (e.g., TypeScript, Next.js).
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucPolicy}:] Legal or compliance policies (e.g., AODA or PIPEDA).
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
 
 This section provides an overview of the module design. Modules are summarized
-in a hierarchy decomposed by secrets in Table \ref{TblMH}. The modules listed
-below, which are leaves in the hierarchy tree, are the modules that will
-actually be implemented.
+in a hierarchy decomposed by secrets in Table \ref{TblMH}. 
 
 \begin{description}
 \item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
-\item ...
+\item [\refstepcounter{mnum} \mthemnum \label{mBH}:] Behaviour-Hiding Module
+\item [\refstepcounter{mnum} \mthemnum \label{mSD}:] Software Decision Module
 \end{description}
-
 
 \begin{table}[h!]
 \centering
@@ -206,19 +194,18 @@ actually be implemented.
 {Hardware-Hiding Module} & ~ \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\ 
-& ?\\
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & Reimbursement Submission\\
+& Reimbursement Review and Approval\\
+& Audit and Compliance Module\\
+& Budget Dashboard\\
+& Notification System\\
+& User Management\\ 
+& Financial Reporting\\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision Module} & {?}\\
-& ?\\
-& ?\\
+\multirow{3}{0.3\textwidth}{Software Decision Module} & CI/CD Integration\\
+& Test Automation Framework\\
+& Data Validation Module\\
 \bottomrule
 
 \end{tabular}
