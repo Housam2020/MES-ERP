@@ -143,34 +143,66 @@ other shows the relation between anticipated changes and the modules. Section
 
 \section{Anticipated and Unlikely Changes} \label{SecChange}
 
-This section lists possible changes to the system. According to the likeliness
-of the change, the possible changes are classified into two
-categories. Anticipated changes are listed in Section \ref{SecAchange}, and
-unlikely changes are listed in Section \ref{SecUchange}.
+This section lists possible changes to the system. The changes are categorized as either anticipated or unlikely, based on their probability and potential impact. Anticipated changes represent areas of the system expected to evolve due to regular updates or new requirements. Unlikely changes are those that would require significant rework and are less probable given the current context.
 
 \subsection{Anticipated Changes} \label{SecAchange}
 
-Anticipated changes are the source of the information that is to be hidden
-inside the modules. Ideally, changing one of the anticipated changes will only
-require changing the one module that hides the associated decision. The approach
-adapted here is called design for
-change.
+Anticipated changes are the source of information hidden within the modules. These changes are expected to occur as part of system updates or user feedback and are designed to be handled with minimal impact on the overall structure.
 
 \begin{description}
-\item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific
-  hardware on which the software is hosted (e.g., MES-provided laptops with Windows 10 and above-average specs).
-\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of input data, such as receipts uploaded by student groups.
-\item[\refstepcounter{acnum} \actheacnum \label{acNotifications}:] Notification methods (e.g., email, SMS, or app alerts).
-\item[\refstepcounter{acnum} \actheacnum \label{acWorkflow}:] Changes to the workflow for reimbursement request approvals.
-\item[\refstepcounter{acnum} \actheacnum \label{acAudit}:] Requirements for audit log duration and format.
+\item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific hardware on which the software is hosted. 
+\begin{itemize}
+    \item Examples include MES-provided laptops with Windows 10 and above-average specifications or the potential transition to cloud-hosted environments like Azure or AWS. 
+    \item Impact: Hardware dependencies are encapsulated in the hardware-hiding module to isolate changes and avoid propagation to higher-level modules.
+\end{itemize}
+
+\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of input data, such as receipts or invoices uploaded by student groups. 
+\begin{itemize}
+    \item Examples: Adding support for new file formats (e.g., PDFs, images, CSVs) or incorporating OCR (Optical Character Recognition) for scanned documents.
+    \item Impact: Changes to input formats affect only the Input Format and Data Validation Modules, which transform raw input into system-compatible data structures.
+\end{itemize}
+
+\item[\refstepcounter{acnum} \actheacnum \label{acNotifications}:] Notification methods, such as expanding delivery channels. 
+\begin{itemize}
+    \item Examples: Adding SMS notifications, push alerts via a mobile app, or integration with messaging platforms like Slack or Teams.
+    \item Impact: The Notifications System Module handles all updates to notification methods, ensuring other modules remain unaffected.
+\end{itemize}
+
+\item[\refstepcounter{acnum} \actheacnum \label{acWorkflow}:] Changes to the workflow for reimbursement request approvals. 
+\begin{itemize}
+    \item Examples: Modifying multi-level approval processes, incorporating dynamic routing based on the requester’s department, or enabling automated rejections for incomplete submissions.
+    \item Impact: The Approval Workflow Module encapsulates these decisions, minimizing disruptions to related modules.
+\end{itemize}
+
+\item[\refstepcounter{acnum} \actheacnum \label{acAudit}:] Requirements for audit log duration and format. 
+\begin{itemize}
+    \item Examples: Updating log retention policies from 6 months to 2 years or adding additional metadata to logs for enhanced traceability.
+    \item Impact: Changes are confined to the Audit and Compliance Module, ensuring audit functionality evolves independently.
+\end{itemize}
 \end{description}
 
 \subsection{Unlikely Changes} \label{SecUchange}
 
+Unlikely changes are less probable due to their disruptive nature or because they contradict established constraints and design principles. While the system design is modular, accommodating these changes would require significant rework across multiple modules.
+
 \begin{description}
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucDevice}:] Supported devices (e.g., desktop, laptop, mobile).
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucTechStack}:] The technology stack used (e.g., TypeScript, Next.js).
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucPolicy}:] Legal or compliance policies (e.g., AODA or PIPEDA).
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucDevice}:] Supported devices. 
+\begin{itemize}
+    \item Examples: Expanding compatibility to entirely new platforms like gaming consoles or wearables.
+    \item Impact: Extensive updates to the Graphical User Interface (GUI) and hardware-hiding modules would be required.
+\end{itemize}
+
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucTechStack}:] The technology stack used. 
+\begin{itemize}
+    \item Examples: Replacing TypeScript and Next.js with entirely different frameworks or programming languages.
+    \item Impact: This change would affect almost all modules, requiring a complete system overhaul and significant developer retraining.
+\end{itemize}
+
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucPolicy}:] Legal or compliance policies. 
+\begin{itemize}
+    \item Examples: Abandoning compliance with AODA (Accessibility for Ontarians with Disabilities Act) or PIPEDA (Personal Information Protection and Electronic Documents Act).
+    \item Impact: Changes would cascade through the Policy and Compliance Management Module, potentially invalidating existing processes and documentation.
+\end{itemize}
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
