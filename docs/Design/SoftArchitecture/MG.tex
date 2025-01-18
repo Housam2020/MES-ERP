@@ -101,157 +101,103 @@ hides represent likely future changes.  Design for change is valuable in SC,
 where modifications are frequent, especially during initial development as the
 solution space is explored.  
 
-Our design follows the rules layed out by \citet{ParnasEtAl1984}, as follows:
+Our design follows the principles laid out by \citet{ParnasEtAl1984}, as follows:
 \begin{itemize}
-\item System details that are likely to change independently should be the
-  secrets of separate modules.
-\item Each data structure is implemented in only one module.
-\item Any other program that requires information stored in a module's data
-  structures must obtain it by calling access programs belonging to that module.
+    \item System details that are likely to change independently are the secrets of separate modules.
+    \item Each data structure is implemented in only one module, ensuring clarity and responsibility for managing that structure.
+    \item Any program requiring information from a module's data structures must access it via well-defined interfaces.
 \end{itemize}
 
-After completing the first stage of the design, the Software Requirements
-Specification (SRS), the Module Guide (MG) is developed~\citep{ParnasEtAl1984}. The MG
-specifies the modular structure of the system and is intended to allow both
-designers and maintainers to easily identify the parts of the software.  The
-potential readers of this document are as follows:
-
+The MES-ERP financial platform's design focuses on:
 \begin{itemize}
-\item New project members: This document can be a guide for a new project member
-  to easily understand the overall structure and quickly find the
-  relevant modules they are searching for.
-\item Maintainers: The hierarchical structure of the module guide improves the
-  maintainers' understanding when they need to make changes to the system. It is
-  important for a maintainer to update the relevant sections of the document
-  after changes have been made.
-\item Designers: Once the module guide has been written, it can be used to
-  check for consistency, feasibility, and flexibility. Designers can verify the
-  system in various ways, such as consistency among modules, feasibility of the
-  decomposition, and flexibility of the design.
+    \item Modularity: Each functional requirement is encapsulated in a distinct module to isolate changes and enhance maintainability.
+    \item Scalability: Modules are designed to accommodate future enhancements, such as support for new input formats or integration with third-party systems.
+    \item Robustness: Validation and error-handling mechanisms ensure data integrity across all modules.
 \end{itemize}
 
-The rest of the document is organized as follows. Section
-\ref{SecChange} lists the anticipated and unlikely changes of the software
-requirements. Section \ref{SecMH} summarizes the module decomposition that
-was constructed according to the likely changes. Section \ref{SecConnection}
-specifies the connections between the software requirements and the
-modules. Section \ref{SecMD} gives a detailed description of the
-modules. Section \ref{SecTM} includes two traceability matrices. One checks
-the completeness of the design against the requirements provided in the SRS. The
-other shows the relation between anticipated changes and the modules. Section
-\ref{SecUse} describes the use relation between modules.
+After completing the Software Requirements Specification (SRS), the Module Guide (MG) was developed~\citep{ParnasEtAl1984}. The MG specifies the modular structure of the system and is intended to allow both designers and maintainers to easily identify and work on the system's components.
+
+The potential readers of this document include:
+\begin{itemize}
+    \item New Project Members: Provides an overview of the system's structure, allowing new members to quickly identify relevant modules.
+    \item Maintainers: Ensures maintainers can understand and update the system while minimizing the impact on unrelated modules.
+    \item Designers: Allows designers to verify consistency, feasibility, and flexibility of the system's architecture.
+\end{itemize}
 
 \section{Anticipated and Unlikely Changes} \label{SecChange}
 
-This section lists possible changes to the system. The changes are categorized as either anticipated or unlikely, based on their probability and potential impact. Anticipated changes represent areas of the system expected to evolve due to regular updates or new requirements. Unlikely changes are those that would require significant rework and are less probable given the current context.
+This section lists possible changes to the system, categorized as either anticipated or unlikely. These changes reflect both user-driven requirements and system-level constraints.
 
 \subsection{Anticipated Changes} \label{SecAchange}
 
-Anticipated changes are the source of information hidden within the modules. These changes are expected to occur as part of system updates or user feedback and are designed to be handled with minimal impact on the overall structure.
+Anticipated changes are those expected to occur due to user feedback, evolving requirements, or regular system updates. These changes are addressed by hiding information in the appropriate modules.
 
 \begin{description}
-\item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific hardware on which the software is hosted. 
+\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] Input Data Format 
 \begin{itemize}
-    \item Examples include MES-provided laptops with Windows 10 and above-average specifications or the potential transition to cloud-hosted environments like Azure or AWS. 
-    \item Impact: Hardware dependencies are encapsulated in the hardware-hiding module to isolate changes and avoid propagation to higher-level modules.
+    \item Impacted Modules: Input Format Module, Data Validation Module
+    \item Examples: Adding support for new formats (e.g., images, PDFs) or OCR for scanned receipts.
 \end{itemize}
 
-\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of input data, such as receipts or invoices uploaded by student groups. 
+\item[\refstepcounter{acnum} \actheacnum \label{acNotifications}:] Notification Methods
 \begin{itemize}
-    \item Examples: Adding support for new file formats (e.g., PDFs, images, CSVs) or incorporating OCR (Optical Character Recognition) for scanned documents.
-    \item Impact: Changes to input formats affect only the Input Format and Data Validation Modules, which transform raw input into system-compatible data structures.
+    \item Impacted Modules: Notification System
+    \item Examples: Adding SMS or push notification support.
 \end{itemize}
 
-\item[\refstepcounter{acnum} \actheacnum \label{acNotifications}:] Notification methods, such as expanding delivery channels. 
+\item[\refstepcounter{acnum} \actheacnum \label{acWorkflow}:] Reimbursement Workflow
 \begin{itemize}
-    \item Examples: Adding SMS notifications, push alerts via a mobile app, or integration with messaging platforms like Slack or Teams.
-    \item Impact: The Notifications System Module handles all updates to notification methods, ensuring other modules remain unaffected.
-\end{itemize}
-
-\item[\refstepcounter{acnum} \actheacnum \label{acWorkflow}:] Changes to the workflow for reimbursement request approvals. 
-\begin{itemize}
-    \item Examples: Modifying multi-level approval processes, incorporating dynamic routing based on the requester’s department, or enabling automated rejections for incomplete submissions.
-    \item Impact: The Approval Workflow Module encapsulates these decisions, minimizing disruptions to related modules.
-\end{itemize}
-
-\item[\refstepcounter{acnum} \actheacnum \label{acAudit}:] Requirements for audit log duration and format. 
-\begin{itemize}
-    \item Examples: Updating log retention policies from 6 months to 2 years or adding additional metadata to logs for enhanced traceability.
-    \item Impact: Changes are confined to the Audit and Compliance Module, ensuring audit functionality evolves independently.
+    \item Impacted Modules: Reimbursement Submission, Approval Workflow
+    \item Examples: Modifying approval rules or automating incomplete submission rejections.
 \end{itemize}
 \end{description}
 
 \subsection{Unlikely Changes} \label{SecUchange}
 
-Unlikely changes are less probable due to their disruptive nature or because they contradict established constraints and design principles. While the system design is modular, accommodating these changes would require significant rework across multiple modules.
+Unlikely changes are less probable due to their disruptive nature or misalignment with project goals.
 
 \begin{description}
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucDevice}:] Supported devices. 
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucTechStack}:] Technology Stack
 \begin{itemize}
-    \item Examples: Expanding compatibility to entirely new platforms like gaming consoles or wearables.
-    \item Impact: Extensive updates to the Graphical User Interface (GUI) and hardware-hiding modules would be required.
-\end{itemize}
-
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucTechStack}:] The technology stack used. 
-\begin{itemize}
-    \item Examples: Replacing TypeScript and Next.js with entirely different frameworks or programming languages.
-    \item Impact: This change would affect almost all modules, requiring a complete system overhaul and significant developer retraining.
-\end{itemize}
-
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucPolicy}:] Legal or compliance policies. 
-\begin{itemize}
-    \item Examples: Abandoning compliance with AODA (Accessibility for Ontarians with Disabilities Act) or PIPEDA (Personal Information Protection and Electronic Documents Act).
-    \item Impact: Changes would cascade through the Policy and Compliance Management Module, potentially invalidating existing processes and documentation.
+    \item Impacted Modules: All
+    \item Examples: Switching from TypeScript/Next.js to another framework.
 \end{itemize}
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
 
-This section provides an overview of the module design. Modules are organized in a hierarchy to encapsulate secrets and ensure clear boundaries of responsibilities, following the principles of information hiding. Each module is classified into one of three categories: Hardware-Hiding, Behaviour-Hiding, and Software Decision. The hierarchy reflects how modules interact and rely on one another, ensuring scalability, maintainability, and ease of future modifications. A detailed breakdown is provided in Table \ref{TblMH}.
+Modules are organized to encapsulate secrets and ensure clear responsibilities. The hierarchy reflects relationships between modules and their dependencies, as shown in Table \ref{TblMH}.
 
 \begin{description}
 \item [\refstepcounter{mnum} \mthemnum \label{mHH}:] 
-\textbf{Hardware-Hiding Module} \\
-\textbf{Secrets:} Abstracts the interaction with the underlying hardware components, including database connections and file I/O.\\
-\textbf{Responsibilities:} Provides foundational services such as data storage and retrieval, ensuring consistent access and isolation from hardware-specific details.\\
-\textbf{Implemented By:} Relational database systems (e.g., PostgreSQL) and middleware APIs.
-
+\textbf{Hardware-Hiding Module:} Abstracts database and file system interactions.
 \item [\refstepcounter{mnum} \mthemnum \label{mBH}:] 
-\textbf{Behaviour-Hiding Module} \\
-\textbf{Secrets:} Implements the core functional behaviors of the system, encapsulating workflows and interactions as defined by the SRS.\\
-\textbf{Responsibilities:} Manages user interactions, financial workflows, compliance auditing, and communication systems. Each submodule addresses specific business logic and user requirements.\\
-\textbf{Implemented By:} TypeScript-based backend services integrated with the frontend application.
-
+\textbf{Behaviour-Hiding Module:} Implements workflows for submissions, reviews, and dashboards.
 \item [\refstepcounter{mnum} \mthemnum \label{mSD}:] 
-\textbf{Software Decision Module} \\
-\textbf{Secrets:} Encapsulates design decisions that are based on algorithms, heuristics, or data structures, which are independent of user interactions.\\
-\textbf{Responsibilities:} Supports development and operational processes, including testing, validation, and CI/CD pipelines. Ensures system robustness through automated validation and testing mechanisms.\\
-\textbf{Implemented By:} GitHub Actions for CI/CD, Jest for test automation, and custom validation libraries.
+\textbf{Software Decision Module:} Encapsulates shared logic for validation, testing, and CI/CD.
 \end{description}
 
-\begin{table}[H] 
+\begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
 \toprule
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
-
-{Hardware-Hiding Module} & Database Interaction Layer \\ 
+Hardware-Hiding Module & Database Interaction Layer \\ 
 \midrule
-
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & Reimbursement Submission\\
-& Reimbursement Review and Approval\\
-& Audit and Compliance Module\\
-& Budget Dashboard\\
-& Notification System\\
-& User Management\\ 
-& Financial Reporting\\
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} 
+& Reimbursement Submission \\
+& Reimbursement Review and Approval \\
+& Budget Dashboard \\
+& Notification System \\
+& User Management \\
+& Financial Reporting \\
+& GUI Module \\
 \midrule
-
-\multirow{3}{0.3\textwidth}{Software Decision Module} & CI/CD Integration\\
-& Test Automation Framework\\
-& Data Validation Module\\
+Software Decision Module & CI/CD Integration \\
+& Data Validation Module \\
+& Test Automation Framework \\
 \bottomrule
 \end{tabular}
 \caption{Module Hierarchy}
