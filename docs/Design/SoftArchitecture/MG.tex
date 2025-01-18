@@ -207,23 +207,37 @@ Unlikely changes are less probable due to their disruptive nature or because the
 
 \section{Module Hierarchy} \label{SecMH}
 
-This section provides an overview of the module design. Modules are summarized
-in a hierarchy decomposed by secrets in Table \ref{TblMH}. 
+This section provides an overview of the module design. Modules are organized in a hierarchy to encapsulate secrets and ensure clear boundaries of responsibilities, following the principles of information hiding. Each module is classified into one of three categories: Hardware-Hiding, Behaviour-Hiding, and Software Decision. The hierarchy reflects how modules interact and rely on one another, ensuring scalability, maintainability, and ease of future modifications. A detailed breakdown is provided in Table \ref{TblMH}.
 
 \begin{description}
-\item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
-\item [\refstepcounter{mnum} \mthemnum \label{mBH}:] Behaviour-Hiding Module
-\item [\refstepcounter{mnum} \mthemnum \label{mSD}:] Software Decision Module
+\item [\refstepcounter{mnum} \mthemnum \label{mHH}:] 
+\textbf{Hardware-Hiding Module} \\
+\textbf{Secrets:} Abstracts the interaction with the underlying hardware components, including database connections and file I/O.\\
+\textbf{Responsibilities:} Provides foundational services such as data storage and retrieval, ensuring consistent access and isolation from hardware-specific details.\\
+\textbf{Implemented By:} Relational database systems (e.g., PostgreSQL) and middleware APIs.
+
+\item [\refstepcounter{mnum} \mthemnum \label{mBH}:] 
+\textbf{Behaviour-Hiding Module} \\
+\textbf{Secrets:} Implements the core functional behaviors of the system, encapsulating workflows and interactions as defined by the SRS.\\
+\textbf{Responsibilities:} Manages user interactions, financial workflows, compliance auditing, and communication systems. Each submodule addresses specific business logic and user requirements.\\
+\textbf{Implemented By:} TypeScript-based backend services integrated with the frontend application.
+
+\item [\refstepcounter{mnum} \mthemnum \label{mSD}:] 
+\textbf{Software Decision Module} \\
+\textbf{Secrets:} Encapsulates design decisions that are based on algorithms, heuristics, or data structures, which are independent of user interactions.\\
+\textbf{Responsibilities:} Supports development and operational processes, including testing, validation, and CI/CD pipelines. Ensures system robustness through automated validation and testing mechanisms.\\
+\textbf{Implemented By:} GitHub Actions for CI/CD, Jest for test automation, and custom validation libraries.
 \end{description}
 
-\begin{table}[h!]
+\begin{table}[H] 
 \centering
+\renewcommand{\arraystretch}{1.5}
 \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
 \toprule
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-{Hardware-Hiding Module} & ~ \\
+{Hardware-Hiding Module} & Database Interaction Layer \\ 
 \midrule
 
 \multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & Reimbursement Submission\\
@@ -239,11 +253,11 @@ in a hierarchy decomposed by secrets in Table \ref{TblMH}.
 & Test Automation Framework\\
 & Data Validation Module\\
 \bottomrule
-
 \end{tabular}
 \caption{Module Hierarchy}
 \label{TblMH}
 \end{table}
+
 
 \section{Connection Between Requirements and Design}
 
