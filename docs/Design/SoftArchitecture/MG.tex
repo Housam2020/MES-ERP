@@ -226,34 +226,175 @@ actually be implemented.
 \label{TblMH}
 \end{table}
 
-\section{Connection Between Requirements and Design} \label{SecConnection}
+\section{Connection Between Requirements and Design}
 
-The design of the system is intended to satisfy the requirements developed in
-the SRS. In this stage, the system is decomposed into modules. The connection
-between requirements and modules is listed in Table~\ref{TblRT}.
+The design of the MES-ERP system has been structured to ensure that the requirements outlined in the Software Requirements Specification (SRS) are met comprehensively. Table~\ref{tab:req-to-modules} illustrates the connection between the requirements and the modules designed to fulfill them.
 
-\wss{The intention of this section is to document decisions that are made
-  ``between'' the requirements and the design.  To satisfy some requirements,
-  design decisions need to be made.  Rather than make these decisions implicit,
-  they are explicitly recorded here.  For instance, if a program has security
-  requirements, a specific design decision may be made to satisfy those
-  requirements with a password.}
+\begin{table}[h!]
+\centering
+\caption{Connection Between Requirements and Modules}
+\label{tab:req-to-modules}
+\begin{tabular}{|p{4cm}|p{8cm}|}
+\hline
+\textbf{Requirement (R)} & \textbf{Modules} \\
+\hline
+R1: Secure Authentication & User Authentication \& Profile Management Module \\
+\hline
+R2: Expense Submission \& Tracking & Expense Submission \& Tracking Module \\
+\hline
+R3: Budget Validation & Budget and Funding Management Module \\
+\hline
+R4: Approval Workflow & Approval Workflow and Review Module \\
+\hline
+R5: Notifications & Notifications \& Communication Module \\
+\hline
+R6: Compliance & Policy \& Compliance Management Module \\
+\hline
+R7: Reporting & Reporting and Analytics Module \\
+\hline
+R8: Administrative Tools & Administrator and Configuration Panel Module \\
+\hline
+\end{tabular}
+\end{table}
 
-\section{Module Decomposition} \label{SecMD}
+\subsection{Design Decisions for Each Requirement}
 
-Modules are decomposed according to the principle of ``information hiding''
-proposed by \citet{ParnasEtAl1984}. The \emph{Secrets} field in a module
-decomposition is a brief statement of the design decision hidden by the
-module. The \emph{Services} field specifies \emph{what} the module will do
-without documenting \emph{how} to do it. For each module, a suggestion for the
-implementing software is given under the \emph{Implemented By} title. If the
-entry is \emph{OS}, this means that the module is provided by the operating
-system or by standard programming language libraries.  \emph{\progname{}} means the
-module will be implemented by the \progname{} software.
+\begin{itemize}
+    \item \textbf{R1: Secure Authentication}
+    \begin{itemize}
+        \item \textbf{Module}: User Authentication \& Profile Management Module
+        \item \textbf{Design Decision}: Implements secure login with session timeouts, role-based access control, and account lockout mechanisms.
+    \end{itemize}
+    
+    \item \textbf{R2: Expense Submission \& Tracking}
+    \begin{itemize}
+        \item \textbf{Module}: Expense Submission \& Tracking Module
+        \item \textbf{Design Decision}: Provides forms for submission, receipt uploads, and tracking expense status.
+    \end{itemize}
+    
+    \item \textbf{R3: Budget Validation}
+    \begin{itemize}
+        \item \textbf{Module}: Budget and Funding Management Module
+        \item \textbf{Design Decision}: Ensures expense requests do not exceed departmental budgets and integrates with the financial system.
+    \end{itemize}
+    
+    \item \textbf{R4: Approval Workflow}
+    \begin{itemize}
+        \item \textbf{Module}: Approval Workflow and Review Module
+        \item \textbf{Design Decision}: Implements dynamic routing for approvals and notifications for pending actions.
+    \end{itemize}
+    
+    \item \textbf{R5: Notifications}
+    \begin{itemize}
+        \item \textbf{Module}: Notifications \& Communication Module
+        \item \textbf{Design Decision}: Sends alerts via email, SMS, and dashboard notifications for system events.
+    \end{itemize}
+    
+    \item \textbf{R6: Compliance}
+    \begin{itemize}
+        \item \textbf{Module}: Policy \& Compliance Management Module
+        \item \textbf{Design Decision}: Validates expense requests against predefined policies to ensure compliance with regulations.
+    \end{itemize}
+    
+    \item \textbf{R7: Reporting}
+    \begin{itemize}
+        \item \textbf{Module}: Reporting and Analytics Module
+        \item \textbf{Design Decision}: Generates detailed reports in PDF/CSV format for expense tracking and system usage.
+    \end{itemize}
+    
+    \item \textbf{R8: Administrative Tools}
+    \begin{itemize}
+        \item \textbf{Module}: Administrator and Configuration Panel Module
+        \item \textbf{Design Decision}: Enables administrators to manage user roles, configure approval workflows, and access system logs.
+    \end{itemize}
+\end{itemize}
 
-Only the leaf modules in the hierarchy have to be implemented. If a dash
-(\emph{--}) is shown, this means that the module is not a leaf and will not have
-to be implemented.
+\section{Module Decomposition}
+
+The MES-ERP system is designed following the principle of \textit{information hiding}, which ensures that each module encapsulates decisions likely to change independently. The modules are organized into a hierarchy, with higher-level modules relying on lower-level ones for functionality. This hierarchy forms a directed acyclic graph (DAG). Figure~\ref{fig:module-decomposition} illustrates the module decomposition.
+
+\subsection{Module Levels}
+
+\begin{itemize}
+    \item \textbf{Hardware-Hiding Modules}
+    \begin{itemize}
+        \item \textbf{Database Module}: Provides a foundational interface for storing and retrieving data. It serves as the core data storage system, used by nearly all other modules.
+    \end{itemize}
+    
+    \item \textbf{Behavior-Hiding Modules}
+    \begin{itemize}
+        \item \textbf{User Authentication \& Profile Management Module}: Manages secure login, user sessions, and profiles.
+        \item \textbf{Expense Submission \& Tracking Module}: Handles expense submission, receipt uploads, and tracking.
+        \item \textbf{Policy \& Compliance Management Module}: Ensures submitted expenses comply with organizational policies.
+    \end{itemize}
+    
+    \item \textbf{Software Decision Modules}
+    \begin{itemize}
+        \item \textbf{Approval Workflow and Review Module}: Manages dynamic workflows for expense approvals.
+        \item \textbf{Budget and Funding Management Module}: Validates budgets and tracks funding.
+        \item \textbf{Reporting and Analytics Module}: Provides reporting tools and analytics for system data.
+    \end{itemize}
+    
+    \item \textbf{Presentation Layer Modules}
+    \begin{itemize}
+        \item \textbf{Graphical User Interface (GUI) Module}: Interacts with users by displaying data and capturing inputs.
+        \item \textbf{Notifications \& Communication Module}: Sends alerts and notifications to users via email, SMS, or the dashboard.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Use Relations Between Modules}
+
+\begin{itemize}
+    \item \textbf{Database Module}
+    \begin{itemize}
+        \item \textbf{Used By}: 
+        User Authentication \& Profile Management, Expense Submission \& Tracking, Budget and Funding Management, Approval Workflow and Review, Notifications \& Communication, Reporting and Analytics, Policy \& Compliance Management.
+        \item \textbf{Purpose}: Acts as the central data storage and retrieval system.
+    \end{itemize}
+    
+    \item \textbf{User Authentication \& Profile Management Module}
+    \begin{itemize}
+        \item \textbf{Used By}: Approval Workflow and Review, Notifications \& Communication, GUI Module.
+        \item \textbf{Purpose}: Provides secure access to the system and maintains user roles and profiles.
+    \end{itemize}
+    
+    \item \textbf{Expense Submission \& Tracking Module}
+    \begin{itemize}
+        \item \textbf{Used By}: Approval Workflow and Review, Budget and Funding Management, Notifications \& Communication, Reporting and Analytics.
+        \item \textbf{Purpose}: Handles expense submissions, categorization, and tracking.
+    \end{itemize}
+    
+    \item \textbf{Budget and Funding Management Module}
+    \begin{itemize}
+        \item \textbf{Used By}: Expense Submission \& Tracking, Approval Workflow and Review, Notifications \& Communication.
+        \item \textbf{Purpose}: Validates and updates budgets associated with submitted expenses.
+    \end{itemize}
+    
+    \item \textbf{Approval Workflow and Review Module}
+    \begin{itemize}
+        \item \textbf{Used By}: Notifications \& Communication, GUI Module.
+        \item \textbf{Purpose}: Implements dynamic routing and rules for approving expenses.
+    \end{itemize}
+    
+    \item \textbf{Notifications \& Communication Module}
+    \begin{itemize}
+        \item \textbf{Used By}: GUI Module, all other modules requiring alerts or updates.
+        \item \textbf{Purpose}: Sends notifications and alerts via email, SMS, or dashboard.
+    \end{itemize}
+    
+    \item \textbf{Reporting and Analytics Module}
+    \begin{itemize}
+        \item \textbf{Used By}: GUI Module, Administrator and Configuration Panel.
+        \item \textbf{Purpose}: Provides analytics and reporting tools for system data.
+    \end{itemize}
+    
+    \item \textbf{Graphical User Interface (GUI) Module}
+    \begin{itemize}
+        \item \textbf{Used By}: End users interacting with the system.
+        \item \textbf{Relies On}: Backend modules to fetch and display data.
+        \item \textbf{Purpose}: Displays system data and handles user interactions.
+    \end{itemize}
+\end{itemize}
 
 \subsection{Hardware Hiding Modules (\mref{mHH})}
 
@@ -307,59 +448,101 @@ to be implemented.
 
 \subsubsection{Etc.}
 
-\section{Traceability Matrix} \label{SecTM}
+\section{Traceability Matrix}
 
-This section shows two traceability matrices: between the modules and the
-requirements and between the modules and the anticipated changes.
+This section outlines the anticipated changes to the MES-ERP system and identifies the modules that would be impacted by each change. The traceability matrix maps these anticipated changes to the affected modules, ensuring alignment with the principle of \textit{information hiding}.
 
-% the table should use mref, the requirements should be named, use something
-% like fref
-\begin{table}[H]
+\subsection{Anticipated Changes to Modules}
+
+Table~\ref{tab:anticipated-changes} provides a traceability matrix that lists the anticipated changes and their associated modules.
+
+\begin{table}[h!]
 \centering
-\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
-\toprule
-\textbf{Req.} & \textbf{Modules}\\
-\midrule
-R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
-R2 & \mref{mInput}, \mref{mParams}\\
-R3 & \mref{mVerify}\\
-R4 & \mref{mOutput}, \mref{mControl}\\
-R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R9 & \mref{mVerifyOut}\\
-R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
-R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
-\bottomrule
+\caption{Traceability Matrix: Anticipated Changes to Modules}
+\label{tab:anticipated-changes}
+\begin{tabular}{|p{6cm}|p{8cm}|}
+\hline
+\textbf{Anticipated Change (AC)} & \textbf{Affected Modules} \\
+\hline
+AC1: Changes in Authentication Protocols & User Authentication \& Profile Management Module \\
+\hline
+AC2: New Expense Categories & Expense Submission \& Tracking Module \\
+\hline
+AC3: Budget Limits Adjustment & Budget and Funding Management Module \\
+\hline
+AC4: Workflow Modifications & Approval Workflow and Review Module \\
+\hline
+AC5: New Notification Methods & Notifications \& Communication Module \\
+\hline
+AC6: Policy Updates & Policy \& Compliance Management Module \\
+\hline
+AC7: Report Formats or Types & Reporting and Analytics Module \\
+\hline
+AC8: Additional Admin Features & Administrator and Configuration Panel Module \\
+\hline
 \end{tabular}
-\caption{Trace Between Requirements and Modules}
-\label{TblRT}
 \end{table}
 
-\begin{table}[H]
-\centering
-\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
-\toprule
-\textbf{AC} & \textbf{Modules}\\
-\midrule
-\acref{acHardware} & \mref{mHH}\\
-\acref{acInput} & \mref{mInput}\\
-\acref{acParams} & \mref{mParams}\\
-\acref{acVerify} & \mref{mVerify}\\
-\acref{acOutput} & \mref{mOutput}\\
-\acref{acVerifyOut} & \mref{mVerifyOut}\\
-\acref{acODEs} & \mref{mODEs}\\
-\acref{acEnergy} & \mref{mEnergy}\\
-\acref{acControl} & \mref{mControl}\\
-\acref{acSeqDS} & \mref{mSeqDS}\\
-\acref{acSolver} & \mref{mSolver}\\
-\acref{acPlot} & \mref{mPlot}\\
-\bottomrule
-\end{tabular}
-\caption{Trace Between Anticipated Changes and Modules}
-\label{TblACT}
-\end{table}
+\subsection{Impact of Anticipated Changes}
+
+\begin{itemize}
+    \item \textbf{AC1: Changes in Authentication Protocols}
+    \begin{itemize}
+        \item \textbf{Affected Module}: User Authentication \& Profile Management Module
+        \item \textbf{Impact}: Updates to the \texttt{authenticate()} function to support new protocols (e.g., multi-factor authentication) and modifications to constants like session timeouts.
+        \item \textbf{Mitigation}: Encapsulation of authentication logic minimizes impact on other modules.
+    \end{itemize}
+    
+    \item \textbf{AC2: New Expense Categories}
+    \begin{itemize}
+        \item \textbf{Affected Module}: Expense Submission \& Tracking Module
+        \item \textbf{Impact}: Updates to the \texttt{EXPENSE\_CATEGORIES} constant and adjustments to the \texttt{categorizeExpense()} function.
+        \item \textbf{Mitigation}: Modular handling of categories allows isolated changes without affecting other modules.
+    \end{itemize}
+    
+    \item \textbf{AC3: Budget Limits Adjustment}
+    \begin{itemize}
+        \item \textbf{Affected Module}: Budget and Funding Management Module
+        \item \textbf{Impact}: Modifications to the \texttt{MAX\_BUDGET} constant and related validation logic.
+        \item \textbf{Mitigation}: Centralized budget handling simplifies updates.
+    \end{itemize}
+    
+    \item \textbf{AC4: Workflow Modifications}
+    \begin{itemize}
+        \item \textbf{Affected Module}: Approval Workflow and Review Module
+        \item \textbf{Impact}: Updates to \texttt{routeRequest()} and \texttt{updateStatus()} functions for new workflow rules.
+        \item \textbf{Mitigation}: Dynamic routing logic supports flexible workflow updates.
+    \end{itemize}
+    
+    \item \textbf{AC5: New Notification Methods}
+    \begin{itemize}
+        \item \textbf{Affected Module}: Notifications \& Communication Module
+        \item \textbf{Impact}: Addition of new constants (e.g., \texttt{NOTIFICATION\_TYPES}) and updates to notification functions.
+        \item \textbf{Mitigation}: Modular notification handling allows easy integration of new methods.
+    \end{itemize}
+    
+    \item \textbf{AC6: Policy Updates}
+    \begin{itemize}
+        \item \textbf{Affected Module}: Policy \& Compliance Management Module
+        \item \textbf{Impact}: Updates to \texttt{validateRequest()} to handle new policy rules and thresholds.
+        \item \textbf{Mitigation}: Encapsulation of policy logic ensures minimal impact on unrelated modules.
+    \end{itemize}
+    
+    \item \textbf{AC7: Report Formats or Types}
+    \begin{itemize}
+        \item \textbf{Affected Module}: Reporting and Analytics Module
+        \item \textbf{Impact}: Modifications to \texttt{generateReport()} to support new formats or metrics.
+        \item \textbf{Mitigation}: Flexible report generation logic minimizes system-wide impact.
+    \end{itemize}
+    
+    \item \textbf{AC8: Additional Admin Features}
+    \begin{itemize}
+        \item \textbf{Affected Module}: Administrator and Configuration Panel Module
+        \item \textbf{Impact}: New access programs (e.g., \texttt{addFeature()}, \texttt{updateRolePermissions()}).
+        \item \textbf{Mitigation}: Well-defined admin tools enable straightforward updates.
+    \end{itemize}
+\end{itemize}
+
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
 
