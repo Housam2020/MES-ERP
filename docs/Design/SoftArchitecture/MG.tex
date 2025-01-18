@@ -652,23 +652,119 @@ because they use modules from the lower levels.
 \section{Timeline}
 
 \begin{itemize}
-  \item \textbf{Team Formed, Project Selected:} September 16 [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{Problem Statement, POC Plan, Development Plan:} September 23 [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{Requirements Document Revision 0:} October 9 [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{Hazard Analysis 0:} October 23 [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{V\&V Plan Revision 0:} November 1 [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{Proof of Concept Demonstration:} November 11--22 [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{Design Document Revision 0:} January 15 [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{Revision 0 Demonstration:} February 3--February 14 [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{V\&V Report Revision 0:} March 7 [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{Final Demonstration (Revision 1):} March 24--March 30 [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{Add Receipt Scanning/Image Processing:} March 24--March 30 [Omar, Rachid, Housam]
-  \item \textbf{Add User Manual to Application:} March 24--March 30 [Sufyan]
-  \item \textbf{Refine the UI, Functions, and Backend Connectivity:} March 24--March 30 [Taaha]
-  \item \textbf{Reach Out to MES Rep (Weekly):} March 24--March 30 [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{EXPO Demonstration:} April (TBD) [Omar, Taaha, Rachid, Sufyan, Housam]
-  \item \textbf{Final Documentation (Revision 1):} April 2 [Omar, Taaha, Rachid, Sufyan, Housam]
+  \item \textbf{Team Formed, Project Selected:} September 16 
+  \begin{itemize}
+    \item \textbf{All Team Members (Omar, Taaha, Rachid, Sufyan, Housam):} 
+    Establish initial roles, select project scope, and identify stakeholder needs.
+  \end{itemize}
+  
+  \item \textbf{Problem Statement, POC Plan, Development Plan:} September 23 
+  \begin{itemize}
+    \item \textbf{All Team Members:} 
+    Finalize the problem statement for the MES-ERP system. Outline Proof-of-Concept (POC) objectives and develop a high-level development plan. 
+    \item \textbf{Sufyan \& Omar:} Draft initial architecture sketches for key modules (Hardware-Hiding, Behaviour-Hiding, Software Decision).
+  \end{itemize}
+  
+  \item \textbf{Requirements Document Revision 0:} October 9 
+  \begin{itemize}
+    \item \textbf{Housam \& Rachid:} Gather and refine user stories for Reimbursement Submission, Reimbursement Review, Budget Management, and Notification System.
+    \item \textbf{Taaha:} Integrate feedback on Data Validation and Database Module requirements.
+    \item \textbf{All Team Members:} Review and finalize the Requirements Specification for Rev 0.
+  \end{itemize}
+  
+  \item \textbf{Hazard Analysis 0:} October 23 
+  \begin{itemize}
+    \item \textbf{Omar \& Sufyan:} Identify potential failure points for the Data Validation Module (e.g., corrupted or missing receipts) and the Database Module (e.g., concurrency issues).
+    \item \textbf{Rachid:} Document mitigations for critical hazards in the Reimbursement Submission workflow (e.g., incorrect approvals).
+  \end{itemize}
+  
+  \item \textbf{V\&V Plan Revision 0:} November 1 
+  \begin{itemize}
+    \item \textbf{Housam \& Taaha:} Draft initial testing approach for each module:
+    \begin{itemize}
+      \item \textbf{Hardware-Hiding Module:} Verify database connections and file I/O mocks.
+      \item \textbf{Behaviour-Hiding Module:} Unit tests for Reimbursement Submission, Notifications, and Budget Dashboard.
+      \item \textbf{Software Decision Module:} Automated tests for Data Validation, CI/CD, and Test Automation Framework.
+    \end{itemize}
+    \item \textbf{All Team Members:} Incorporate plan into the project schedule.
+  \end{itemize}
+  
+  \item \textbf{Proof of Concept Demonstration:} November 11--22 
+  \begin{itemize}
+    \item \textbf{Omar, Taaha, Housam:} Implement a simplified Reimbursement Submission + Data Validation flow (happy path) for the demonstration.
+    \item \textbf{Rachid \& Sufyan:} Set up the Database Module with mock data; create a minimal GUI prototype for user interaction.
+    \item \textbf{All Team Members:} Conduct internal testing before the demonstration.
+  \end{itemize}
+  
+  \item \textbf{Design Document Revision 0:} January 17
+  \begin{itemize}
+    \item \textbf{Omar \& Housam:} Document final architecture decisions for each module:
+    \begin{itemize}
+      \item \textbf{Hardware-Hiding Module:} Database and environment specifics.
+      \item \textbf{Behaviour-Hiding Module:} Detailed class diagrams for Reimbursement, Notifications, and GUI.
+      \item \textbf{Software Decision Module:} Data Validation logic and CI/CD pipeline configuration.
+    \end{itemize}
+    \item \textbf{Rachid \& Sufyan:} Cross-check design artifacts with SRS and POC feedback.
+    \item \textbf{Taaha:} Integrate all design sections into a cohesive Revision 0 document.
+  \end{itemize}
+  
+  \item \textbf{Revision 0 Demonstration:} February 3--February 14 
+  \begin{itemize}
+    \item \textbf{GUI Module (Rachid \& Sufyan):} Build an interactive front-end for Reimbursement Submission, including field-level validation feedback.
+    \item \textbf{Data Validation Module (Taaha):} Finalize core validation checks (e.g., correct file formats, mandatory receipt uploads).
+    \item \textbf{Reimbursement Review \& Approval (Omar):} Implement the basic approval workflow with role-based permissions.
+    \item \textbf{Budget Dashboard (Housam):} Provide partial functionality (view-only) and real-time data fetch from the Database Module.
+    \item \textbf{All Team Members:} Present Rev 0 to stakeholders, focusing on end-to-end demonstration of a reimbursement request.
+  \end{itemize}
+  
+  \item \textbf{V\&V Report Revision 0:} March 7 
+  \begin{itemize}
+    \item \textbf{Taaha \& Omar:} Compile test results from module-level tests, including pass/fail statistics and coverage metrics.
+    \item \textbf{Sufyan, Housam, Rachid:} Validate the correctness of reported bugs and retest major fixes in Reimbursement Submission and Budget Dashboard.
+  \end{itemize}
+
+  \item \textbf{Final Demonstration (Revision 1):} March 24--March 30 
+  \begin{itemize}
+    \item \textbf{All Team Members:} Incorporate feedback from Revision 0 and finalize all modules.
+    \item \textbf{GUI Enhancements (Sufyan \& Rachid):} Polish front-end UX and incorporate advanced form validations for user-friendly error handling.
+    \item \textbf{Notifications System (Housam):} Integrate push notifications and advanced triggers (e.g., overdue approvals).
+  \end{itemize}
+  
+  \item \textbf{Add Receipt Scanning/Image Processing:} March 24--March 30 
+  \begin{itemize}
+    \item \textbf{Omar, Rachid, Housam:} Incorporate an OCR (Optical Character Recognition) service in the Reimbursement Submission module. 
+    \item \textbf{Taaha:} Update the Data Validation Module to handle scanned data edge cases (e.g., partial text scans).
+  \end{itemize}
+  
+  \item \textbf{Add User Manual to Application:} March 24--March 30 
+  \begin{itemize}
+    \item \textbf{Sufyan:} Create comprehensive end-user documentation and how-to guides, focusing on reimbursements and approvals.
+    \item \textbf{All Team Members:} Review for clarity and completeness before final release.
+  \end{itemize}
+  
+  \item \textbf{Refine the UI, Functions, and Backend Connectivity:} March 24--March 30 
+  \begin{itemize}
+    \item \textbf{Taaha:} Implement advanced error handling across all modules and polish backend endpoints for reliability.
+    \item \textbf{All Team Members:} Conduct integration testing for the updated features.
+  \end{itemize}
+  
+  \item \textbf{Reach Out to MES Rep (Weekly):} March 24--March 30 
+  \begin{itemize}
+    \item \textbf{Omar, Taaha, Rachid, Sufyan, Housam:} Schedule status meetings, collect user feedback, and prioritize final tweaks for Rev 1.
+  \end{itemize}
+  
+  \item \textbf{EXPO Demonstration:} April (TBD) 
+  \begin{itemize}
+    \item \textbf{All Team Members:} Showcase the fully functional application, highlighting compliance auditing, budgeting, and user flows.
+  \end{itemize}
+
+  \item \textbf{Final Documentation (Revision 1):} April 2 
+  \begin{itemize}
+    \item \textbf{All Team Members:} Update the Design Document, MG, MIS, V\&V Report, and User Manual with final revisions and new features.
+    \item \textbf{Omar \& Taaha:} Proofread overall consistency and finalize submission to the department.
+  \end{itemize}
 \end{itemize}
+
 
 \bibliographystyle {plainnat}
 \bibliography{../../../refs/References}
