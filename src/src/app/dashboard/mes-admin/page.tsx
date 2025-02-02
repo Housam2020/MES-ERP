@@ -53,7 +53,7 @@ export default function MESAdminDashboard() {
 
       // Fetch all groups
       const { data: groupsData, error: groupsError } = await supabase
-        .from("Groups")
+        .from("groups")
         .select("id, name");
 
       if (!groupsError) setGroups(groupsData);
@@ -103,7 +103,7 @@ export default function MESAdminDashboard() {
     if (!newGroupName.trim()) return alert("Group name cannot be empty.");
 
     const { data, error } = await supabase
-      .from("Groups")
+      .from("groups")
       .insert([{ name: newGroupName }])
       .select();
 
