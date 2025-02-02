@@ -210,9 +210,9 @@ export default function MESAdminDashboard() {
                     {/* Group Dropdown */}
                     <td className="border border-gray-300 px-4 py-2">
                       <select
-                        defaultValue={user.group_id || ""}
+                        value={user.group_id || ""}
                         onChange={(e) => updateUserGroup(user.id, e.target.value)}
-                        className="p-1 border border-gray-300 rounded text-center"
+                        className="p-1 border border-gray-300 rounded text-center bg-white"
                       >
                         <option value="">None</option>
                         {groups.map((group) => (
