@@ -44,7 +44,7 @@ export default function LoginPage() {
         .single();
   
       let role;
-      
+  
       if (fetchError) {
         if (fetchError.code === "PGRST116") {
           const { error: insertError } = await supabase
@@ -61,8 +61,10 @@ export default function LoginPage() {
         role = userRecord.role;
       }
   
-      if (role === "admin") {
-        router.push("/dashboard/admin");
+      if (role === "mes_admin") {
+        router.push("/dashboard/mes-admin");
+      } else if (role === "club_admin") {
+        router.push("/dashboard/club-admin");
       } else {
         router.push("/dashboard/user");
       }
@@ -73,7 +75,7 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   if (!mounted) {
     return null;

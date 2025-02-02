@@ -10,29 +10,30 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    // Redirect to login if no user is logged in
     redirect("/login");
   }
 
-  // Fetch the user role
+  // Fetch user role
   const { data: userRecord, error } = await supabase
     .from("Users")
     .select("role")
     .eq("id", user.id)
     .single();
 
-  if (error) {
+  if (error || !userRecord) {
     console.error("Error fetching user role:", error);
     redirect("/login"); // Redirect to login if role fetch fails
   }
 
-  // Redirect based on user role
-  if (userRecord.role === "admin") {
-    redirect("/dashboard/admin");
-  } else if (userRecord.role === "user") {
+  // 🚀 Correct role-based redirects
+  if (userRecord.role === "mes_admin") {
+    redirect("/dashboard/mes-admin");
+  } else if (userRecord.role === "club_admin") {
+    redirect("/dashboard/club-admin");
+  } else {
     redirect("/dashboard/user");
   }
 
-  // If redirection is successful, this part will not execute
-  return null;
+  return null; // Prevent unnecessary rendering
 }
+
