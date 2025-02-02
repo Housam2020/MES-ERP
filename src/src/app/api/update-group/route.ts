@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
   // Update user's group
   const { error } = await supabase
-    .from("Users")
+    .from("users")
     .update({ group_id: newGroupId || null }) // Assign group or remove it (null)
     .eq("id", userId);
 

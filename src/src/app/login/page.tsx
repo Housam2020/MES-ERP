@@ -38,7 +38,7 @@ export default function LoginPage() {
       if (!userId) throw new Error("Login failed.");
   
       const { data: userRecord, error: fetchError } = await supabase
-        .from("Users")
+        .from("users")
         .select("role")
         .eq("id", userId)
         .single();
@@ -48,7 +48,7 @@ export default function LoginPage() {
       if (fetchError) {
         if (fetchError.code === "PGRST116") {
           const { error: insertError } = await supabase
-            .from("Users")
+            .from("users")
             .insert([{ id: userId, email, role: "user" }]);
   
           if (insertError) throw insertError;

@@ -16,7 +16,7 @@ export default async function ClubAdminDashboard() {
 
   // Fetch user role and club name
   const { data: userRole, error: roleError } = await supabase
-    .from("Users")
+    .from("users")
     .select("role, group_name")
     .eq("id", user.id)
     .single();

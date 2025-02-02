@@ -47,7 +47,7 @@ export async function updateSession(request: NextRequest) {
   let userRole = "user"; // Default to "user" if fetching role fails
   if (user) {
     const { data: userRecord, error } = await supabase
-      .from("Users")
+      .from("users")
       .select("role")
       .eq("id", user.id)
       .single();

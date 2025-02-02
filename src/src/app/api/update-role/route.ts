@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
   // Update user role in Supabase
   const { error } = await supabase
-    .from("Users")
+    .from("users")
     .update({ role: newRole })
     .eq("id", userId);
 

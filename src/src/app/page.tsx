@@ -15,7 +15,7 @@ export default async function Home() {
 
   // Fetch user role
   const { data: userRecord, error } = await supabase
-    .from("Users")
+    .from("users")
     .select("role")
     .eq("id", user.id)
     .single();

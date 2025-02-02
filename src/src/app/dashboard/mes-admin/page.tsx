@@ -25,7 +25,7 @@ export default function MESAdminDashboard() {
       }
 
       const { data: userRole, error: roleError } = await supabase
-        .from("Users")
+        .from("users")
         .select("role")
         .eq("id", user.id)
         .single();
@@ -46,7 +46,7 @@ export default function MESAdminDashboard() {
 
       // Fetch all users for role and group management
       const { data: usersData, error: usersError } = await supabase
-        .from("Users")
+        .from("users")
         .select("id, email, role, group_id");
 
       if (!usersError) setUsers(usersData);
