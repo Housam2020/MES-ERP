@@ -143,12 +143,14 @@ export default function MESAdminDashboard() {
           <table className="min-w-full bg-white text-center">
             <thead>
               <tr>
-                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Full Name</th>
-                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Who Are You</th>
-                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Amount Requested (CAD)</th>
-                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Group Name</th>
-                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Timestamp</th>
-                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Status</th>
+              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Full Name</th>
+              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Who Are You</th>
+              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Amount Requested (CAD)</th>
+              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Group Name</th>
+              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Payment Timeframe</th>
+              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Reimbursement or Payment</th>
+              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Timestamp</th>
+              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Status</th>
               </tr>
             </thead>
             <tbody>
