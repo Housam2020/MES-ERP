@@ -17,7 +17,7 @@ export default async function Home() {
 
   const { data: paymentRequests, error } = await supabase
     .from("payment_requests")
-    .select("*")
+    .select("*, groups(name)")
     .order("timestamp", { ascending: true }) 
     .eq("user_id", user.id);
 
@@ -54,7 +54,7 @@ export default async function Home() {
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Full Name</th>
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Who Are You</th>
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Amount Requested (CAD)</th>
-                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Group or Team Name</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Group Name</th>
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Payment Timeframe</th>
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Reimbursement or Payment</th>
                   <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Timestamp</th>
@@ -68,7 +68,7 @@ export default async function Home() {
                       <td className="py-2 px-4 border-b border-gray-200">{request.full_name}</td>
                       <td className="py-2 px-4 border-b border-gray-200">{request.who_are_you}</td>
                       <td className="py-2 px-4 border-b border-gray-200">{request.amount_requested_cad}</td>
-                      <td className="py-2 px-4 border-b border-gray-200">{request.group_or_team_name}</td>
+                      <td className="py-2 px-4 border-b border-gray-200">{request.groups?.name || "Unknown Group"}</td>
                       <td className="py-2 px-4 border-b border-gray-200">{request.payment_timeframe}</td>
                       <td className="py-2 px-4 border-b border-gray-200">{request.reimbursement_or_payment}</td>
                       <td className="py-2 px-4 border-b border-gray-200">{new Date(request.timestamp).toLocaleString()}</td>

@@ -39,10 +39,14 @@ export default function MESAdminDashboard() {
       // Fetch all payment requests
       const { data: requests, error: requestsError } = await supabase
         .from("payment_requests")
-        .select("*")
+        .select("*, groups(name)") // Join groups table
         .order("timestamp", { ascending: true });
 
-      if (!requestsError) setPaymentRequests(requests);
+      if (requestsError) {
+        console.error("Error fetching payment requests:", requestsError);
+      } else {
+        setPaymentRequests(requests);
+      }
 
       // Fetch all users for role and group management
       const { data: usersData, error: usersError } = await supabase
@@ -142,7 +146,7 @@ export default function MESAdminDashboard() {
                 <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Full Name</th>
                 <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Who Are You</th>
                 <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Amount Requested (CAD)</th>
-                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Group</th>
+                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Group Name</th>
                 <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Timestamp</th>
                 <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Status</th>
               </tr>

@@ -14,41 +14,37 @@ export default async function ClubAdminDashboard() {
     redirect("/login");
   }
 
-  // Fetch user role and club name
-  const { data: userRole, error: roleError } = await supabase
+  // Fetch user role and group ID
+  const { data: userData, error: userError } = await supabase
     .from("users")
-    .select("role, group_name")
+    .select("role, group_id")
     .eq("id", user.id)
     .single();
 
-  if (roleError || !userRole || userRole.role !== "club_admin") {
+  if (userError || !userData || userData.role !== "club_admin") {
     console.error("Access denied: User is not a Club Admin");
-    redirect("/dashboard/user"); // Redirect unauthorized users
+    redirect("/dashboard/user");
   }
 
-  const { group_name } = userRole;
-  const username = user.email.split("@")[0];
+  const groupId = userData.group_id;
 
-  // Fetch reimbursement requests for the Club Admin's specific club
-  const { data: paymentRequests, error } = await supabase
+  // Fetch reimbursement requests for the Club Admin's group
+  const { data: paymentRequests, error: requestsError } = await supabase
     .from("payment_requests")
-    .select("*")
-    .eq("group_or_team_name", group_name)
+    .select("*, groups(name)") // Join with groups table to get the name
+    .eq("group_id", groupId)
     .order("timestamp", { ascending: true });
 
-  if (error) {
-    console.error("Error fetching payment requests:", error);
+  if (requestsError) {
+    console.error("Error fetching payment requests:", requestsError);
     return <div>Error loading payment requests.</div>;
   }
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
       <header className="w-full bg-blue-600 text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-lg font-semibold">
-            Club Admin Dashboard - {group_name}
-          </h1>
+          <h1 className="text-lg font-semibold">Club Admin Dashboard</h1>
           <form action="/signout" method="post">
             <button className="rounded-full border border-solid border-white/[.2] transition-colors flex items-center justify-center hover:bg-blue-700 text-sm h-10 px-4">
               Sign out
@@ -57,10 +53,9 @@ export default async function ClubAdminDashboard() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="flex-grow flex flex-col items-center justify-center bg-gray-100 p-10">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-          Reimbursement Requests for {group_name}
+          Reimbursement Requests
         </h2>
 
         <div className="w-full overflow-x-auto mb-10">
@@ -89,7 +84,7 @@ export default async function ClubAdminDashboard() {
               ) : (
                 <tr>
                   <td colSpan="4" className="py-4 text-center text-gray-600">
-                    No payment requests found for {group_name}.
+                    No payment requests found.
                   </td>
                 </tr>
               )}

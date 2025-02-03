@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const cookieStore = await cookies(); // ✅ Await cookies()
+  const cookieStore = await cookies();
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     {
       cookies: {
         get(name) {
-          return cookieStore.get(name)?.value || ""; // ✅ Ensure value is properly returned
+          return cookieStore.get(name)?.value || "";
         },
       },
     }
