@@ -1,4 +1,3 @@
-// src/components/dashboard/AdminHeader.tsx
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,6 +7,7 @@ export default function AdminHeader() {
 
   const navItems = [
     { href: '/dashboard/mes-admin', label: 'Dashboard' },
+    { href: '/dashboard/mes-admin/organization', label: 'Organization' },
     { href: '/dashboard/mes-admin/roles', label: 'Roles' },
     { href: '/dashboard/mes-admin/analytics', label: 'Analytics' }
   ];
@@ -34,7 +34,7 @@ export default function AdminHeader() {
               ))}
             </nav>
           </div>
-          <form action="/signout" method="post">
+          <form action="/auth/signout" method="post">
             <button className="rounded-full border border-solid border-white/[.2] transition-colors flex items-center justify-center hover:bg-blue-700 text-sm h-10 px-4">
               Sign out
             </button>

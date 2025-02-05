@@ -14,15 +14,19 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    setError(null);
+    setSuccess(null);
 
     try {
       const supabase = createClient();
+
+      // Sign up user
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -30,14 +34,37 @@ export default function RegisterPage() {
 
       if (error) throw error;
 
-      if (data.user && !data.session) {
-        setError("Please check your email to confirm your registration.");
-      } else {
-        router.push("/dashboard/user"); // should probably redirect to login and there notify to check email
+      const userId = data.user?.id;
+      if (!userId) {
+        setError("Registration failed. Please try again.");
+        return;
       }
-    } catch (error) {
+
+      // Assign default role (`member`) to new users
+      const { data: memberRole, error: roleError } = await supabase
+        .from("roles")
+        .select("id")
+        .eq("name", "member")
+        .single();
+
+      if (roleError) throw roleError;
+
+      await supabase.from("users").insert([
+        {
+          id: userId,
+          email,
+          role_id: memberRole.id,
+        },
+      ]);
+
+      // Notify user about email confirmation requirement
+      setSuccess("Check your email to confirm your registration.");
+      setTimeout(() => {
+        router.push("/login"); // Redirect to login page
+      }, 3000);
+    } catch (error: any) {
       console.error("Error registering user:", error);
-      setError("Error registering user. Please try again.");
+      setError(error.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -51,6 +78,8 @@ export default function RegisterPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleRegister} className="space-y-4">
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+            {success && <p className="text-green-500 text-sm text-center">{success}</p>}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -71,7 +100,6 @@ export default function RegisterPage() {
                 required
               />
             </div>
-            {error && <p className="text-red-500 text-sm">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Loading..." : "Register"}
             </Button>

@@ -15,6 +15,8 @@ export default function AnalyticsPage() {
   const [paymentRequests, setPaymentRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userPermissions, setUserPermissions] = useState([]);
+  const [userGroupId, setUserGroupId] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -28,20 +30,54 @@ export default function AnalyticsPage() {
           return;
         }
 
-        // Fetch all payment requests
-        const { data: requests, error: requestsError } = await supabase
+        // Get user's group and permissions
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('group_id')
+          .eq('id', user.id)
+          .single();
+
+        if (userError) throw userError;
+        setUserGroupId(userData.group_id);
+
+        const { data: permData, error: permError } = await supabase
+          .from('role_permissions')
+          .select(`
+            permissions (name),
+            roles!inner (
+              users!inner (id)
+            )
+          `)
+          .eq('roles.users.id', user.id);
+
+        if (permError) throw permError;
+        const permissions = permData.map(p => p.permissions.name);
+        setUserPermissions(permissions);
+
+        // Check if user has permission to view analytics
+        if (!permissions.includes('view_all_requests') && !permissions.includes('view_club_requests')) {
+          router.push("/dashboard/mes-admin");
+          return;
+        }
+
+        // Fetch payment requests based on permissions
+        let requestsQuery = supabase
           .from("payment_requests")
           .select("*, groups(name)")
           .order("timestamp", { ascending: true });
 
-        if (requestsError) {
-          console.error("Error fetching payment requests:", requestsError);
-          setError(requestsError);
-        } else {
-          setPaymentRequests(requests);
+        // If user only has club-level access, filter by their group
+        if (!permissions.includes('view_all_requests') && userData.group_id) {
+          requestsQuery = requestsQuery.eq('group_id', userData.group_id);
         }
+
+        const { data: requests, error: requestsError } = await requestsQuery;
+
+        if (requestsError) throw requestsError;
+        setPaymentRequests(requests);
+
       } catch (err) {
-        console.error("Unexpected error:", err);
+        console.error("Error:", err);
         setError(err);
       } finally {
         setLoading(false);
@@ -79,27 +115,29 @@ export default function AnalyticsPage() {
       }))
       .value();
 
-    // Group distribution
-    const groupData = _.chain(paymentRequests)
-      .groupBy(req => req.groups?.name || 'Unassigned')
-      .map((requests, group) => ({
-        group,
-        value: _.sumBy(requests, 'amount_requested_cad'),
-        count: requests.length
-      }))
-      .orderBy(['value'], ['desc'])
-      .value();
+    // Group distribution (only for MES admins)
+    const groupData = userPermissions.includes('view_all_requests') 
+      ? _.chain(paymentRequests)
+        .groupBy(req => req.groups?.name || 'Unassigned')
+        .map((requests, group) => ({
+          group,
+          value: _.sumBy(requests, 'amount_requested_cad'),
+          count: requests.length
+        }))
+        .orderBy(['value'], ['desc'])
+        .value()
+      : [];
 
     // Average request by timeframe
     const timeframeData = _.chain(paymentRequests)
-    .filter(req => req.amount_requested_cad > 0 && req.payment_timeframe) // Only include requests with amount and timeframe
-    .groupBy('payment_timeframe')
-    .map((requests, timeframe) => ({
+      .filter(req => req.amount_requested_cad > 0 && req.payment_timeframe)
+      .groupBy('payment_timeframe')
+      .map((requests, timeframe) => ({
         timeframe: timeframe || 'Unspecified',
         averageAmount: _.meanBy(requests, 'amount_requested_cad'),
         count: requests.length
-    }))
-    .value();
+      }))
+      .value();
 
     return {
       monthlyData,
@@ -107,7 +145,7 @@ export default function AnalyticsPage() {
       groupData,
       timeframeData
     };
-  }, [paymentRequests]);
+  }, [paymentRequests, userPermissions]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading data: {error.message}</div>;
@@ -122,7 +160,11 @@ export default function AnalyticsPage() {
           {/* Monthly Trends */}
           <Card className="col-span-2">
             <CardHeader>
-              <CardTitle>Monthly Payment Trends</CardTitle>
+              <CardTitle>
+                {userPermissions.includes('view_all_requests') 
+                  ? 'Monthly Payment Trends (All Organizations)'
+                  : 'Monthly Payment Trends (Your Organization)'}
+              </CardTitle>
             </CardHeader>
             <CardContent className="h-80">
               <ResponsiveContainer width="100%" height="100%">
@@ -166,36 +208,38 @@ export default function AnalyticsPage() {
             </CardContent>
           </Card>
 
-          {/* Group Distribution */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Spending by Group</CardTitle>
-            </CardHeader>
-            <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={analytics.groupData}
-                    dataKey="value"
-                    nameKey="group"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    label={({ name, value }) => `${name}: $${Number(value).toFixed(2)}`}
-                  >
-                    {analytics.groupData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => `$${Number(value).toFixed(2)}`} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          {/* Group Distribution - Only show for MES admins */}
+          {userPermissions.includes('view_all_requests') && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Spending by Organization</CardTitle>
+              </CardHeader>
+              <CardContent className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={analytics.groupData}
+                      dataKey="value"
+                      nameKey="group"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      label={({ name, value }) => `${name}: $${Number(value).toFixed(2)}`}
+                    >
+                      {analytics.groupData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => `$${Number(value).toFixed(2)}`} />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Payment Timeframe Analysis */}
-          <Card className="col-span-2">
+          <Card className={userPermissions.includes('view_all_requests') ? "col-span-2" : ""}>
             <CardHeader>
               <CardTitle>Average Request Amount by Payment Timeframe</CardTitle>
             </CardHeader>

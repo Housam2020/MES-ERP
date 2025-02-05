@@ -13,22 +13,34 @@ export default async function Home() {
     redirect("/login");
   }
 
-  // Fetch user role
-  const { data: userRecord, error } = await supabase
+  // Fetch user role_id
+  const { data: userRecord, error: userError } = await supabase
     .from("users")
-    .select("role")
+    .select("role_id")
     .eq("id", user.id)
     .single();
 
-  if (error || !userRecord) {
-    console.error("Error fetching user role:", error);
+  if (userError || !userRecord?.role_id) {
+    console.error("Error fetching user role:", userError);
     redirect("/login"); // Redirect to login if role fetch fails
   }
 
-  // 🚀 Correct role-based redirects
-  if (userRecord.role === "mes_admin") {
+  // Fetch role name from the roles table
+  const { data: roleData, error: roleError } = await supabase
+    .from("roles")
+    .select("name")
+    .eq("id", userRecord.role_id)
+    .single();
+
+  if (roleError || !roleData?.name) {
+    console.error("Error fetching role name:", roleError);
+    redirect("/login");
+  }
+
+  // 🚀 Role-based redirection
+  if (roleData.name === "mes_admin") {
     redirect("/dashboard/mes-admin");
-  } else if (userRecord.role === "club_admin") {
+  } else if (roleData.name === "club_admin") {
     redirect("/dashboard/club-admin");
   } else {
     redirect("/dashboard/user");
@@ -36,4 +48,3 @@ export default async function Home() {
 
   return null; // Prevent unnecessary rendering
 }
-
