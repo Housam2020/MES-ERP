@@ -1,43 +1,73 @@
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-import EditableStatusRow from "./EditableStatusRow";
+"use client";
+import { useState, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
+import EditableStatusRow from "@/components/dashboard/EditableStatusRow";
+import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
 
-export default async function ClubAdminDashboard() {
-  const supabase = await createClient();
+export default function ClubAdminDashboard() {
+  const [paymentRequests, setPaymentRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Check user authentication
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  useEffect(() => {
+    async function fetchData() {
+      const supabase = createClient();
+      
+      // Check user authentication
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/login");
-  }
+      if (!user) {
+        window.location.href = "/login";
+        return;
+      }
 
-  // Fetch user role and group ID
-  const { data: userData, error: userError } = await supabase
-    .from("users")
-    .select("role, group_id")
-    .eq("id", user.id)
-    .single();
+      // Fetch user role and group ID
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("role, group_id")
+        .eq("id", user.id)
+        .single();
 
-  if (userError || !userData || userData.role !== "club_admin") {
-    console.error("Access denied: User is not a Club Admin");
-    redirect("/dashboard/user");
-  }
+      if (userError || !userData || userData.role !== "club_admin") {
+        console.error("Access denied: User is not a Club Admin");
+        window.location.href = "/dashboard/user";
+        return;
+      }
 
-  const groupId = userData.group_id;
+      const groupId = userData.group_id;
 
-  // Fetch reimbursement requests for the Club Admin's group
-  const { data: paymentRequests, error: requestsError } = await supabase
-    .from("payment_requests")
-    .select("*, groups(name)") // Join with groups table to get the name
-    .eq("group_id", groupId)
-    .order("timestamp", { ascending: true });
+      // Fetch reimbursement requests for the Club Admin's group
+      const { data: requests, error: requestsError } = await supabase
+        .from("payment_requests")
+        .select("*, groups(name)")
+        .eq("group_id", groupId)
+        .order("timestamp", { ascending: true });
 
-  if (requestsError) {
-    console.error("Error fetching payment requests:", requestsError);
-    return <div>Error loading payment requests.</div>;
+      if (requestsError) {
+        console.error("Error fetching payment requests:", requestsError);
+      } else {
+        setPaymentRequests(requests);
+      }
+      
+      setLoading(false);
+    }
+
+    fetchData();
+  }, []);
+
+  const updatePaymentRequestStatus = (requestId, newStatus) => {
+    setPaymentRequests(currentRequests =>
+      currentRequests.map(request =>
+        request.request_id === requestId
+          ? { ...request, status: newStatus }
+          : request
+      )
+    );
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -54,6 +84,9 @@ export default async function ClubAdminDashboard() {
       </header>
 
       <main className="flex-grow flex flex-col items-center justify-center bg-gray-100 p-10">
+        {/* Analytics Dashboard */}
+        <DashboardAnalytics paymentRequests={paymentRequests} />
+
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
           Reimbursement Requests
         </h2>
@@ -75,11 +108,15 @@ export default async function ClubAdminDashboard() {
             <tbody>
               {paymentRequests.length > 0 ? (
                 paymentRequests.map((request) => (
-                  <EditableStatusRow key={request.request_id} request={request} />
+                  <EditableStatusRow 
+                    key={request.request_id} 
+                    request={request}
+                    onStatusUpdate={updatePaymentRequestStatus}
+                  />
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="py-4 text-center text-gray-600">
+                  <td colSpan="8" className="py-4 text-center text-gray-600">
                     No payment requests found.
                   </td>
                 </tr>

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 
-export default function EditableStatusRow({ request }) {
+export default function EditableStatusRow({ request, onStatusUpdate }) {
   const [status, setStatus] = useState(request.status);
 
   const handleStatusChange = async (newStatus) => {
@@ -20,6 +20,9 @@ export default function EditableStatusRow({ request }) {
         throw new Error("Failed to update status");
       }
 
+      // Add this line to update the parent's state
+      onStatusUpdate(request.request_id, newStatus);
+      
       alert("Status updated successfully!");
     } catch (error) {
       console.error("Error updating status:", error);

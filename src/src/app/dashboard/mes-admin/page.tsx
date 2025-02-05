@@ -1,20 +1,28 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-import EditableStatusRow from "./EditableStatusRow";
+import AdminHeader from "@/components/dashboard/AdminHeader";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { 
+  DollarSign, 
+  Users, 
+  CheckCircle, 
+  Clock, 
+  PieChart, 
+  FileText 
+} from 'lucide-react';
+import _ from 'lodash';
 
 export default function MESAdminDashboard() {
   const supabase = createClient();
   const router = useRouter();
   const [paymentRequests, setPaymentRequests] = useState([]);
   const [users, setUsers] = useState([]);
-  const [groups, setGroups] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [newGroupName, setNewGroupName] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
+    async function checkAdminAccessAndFetchData() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -36,203 +44,144 @@ export default function MESAdminDashboard() {
         return;
       }
 
-      // Fetch all payment requests
+      // Fetch payment requests
       const { data: requests, error: requestsError } = await supabase
         .from("payment_requests")
-        .select("*, groups(name)") // Join groups table
+        .select("*, groups(name)")
         .order("timestamp", { ascending: true });
 
-      if (requestsError) {
-        console.error("Error fetching payment requests:", requestsError);
-      } else {
-        setPaymentRequests(requests);
-      }
-
-      // Fetch all users for role and group management
+      // Fetch users
       const { data: usersData, error: usersError } = await supabase
         .from("users")
         .select("id, email, role, group_id");
 
+      if (!requestsError) setPaymentRequests(requests);
       if (!usersError) setUsers(usersData);
 
-      // Fetch all groups
-      const { data: groupsData, error: groupsError } = await supabase
-        .from("groups")
-        .select("id, name");
-
-      if (!groupsError) setGroups(groupsData);
+      setLoading(false);
     }
 
-    fetchData();
+    checkAdminAccessAndFetchData();
   }, []);
 
-  // Function to update user roles
-  const updateUserRole = async (userId, newRole) => {
-    setLoading(true);
-    const res = await fetch("/api/update-role", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, newRole }),
-    });
+  // Calculate dashboard metrics
+  const dashboardMetrics = useMemo(() => {
+    if (!paymentRequests.length || !users.length) return null;
 
-    if (!res.ok) {
-      alert("Failed to update role");
-    } else {
-      alert("Role updated successfully!");
-      setUsers(users.map((user) => (user.id === userId ? { ...user, role: newRole } : user)));
-    }
-    setLoading(false);
-  };
+    // Total amount requested
+    const totalAmountRequested = _.sumBy(paymentRequests, 'amount_requested_cad');
 
-  // Function to update user groups
-  const updateUserGroup = async (userId, newGroupId) => {
-    setLoading(true);
-    const res = await fetch("/api/update-group", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, newGroupId }),
-    });
+    // Pending requests
+    const pendingRequests = paymentRequests.filter(req => req.status === 'pending');
 
-    if (!res.ok) {
-      alert("Failed to update group");
-    } else {
-      alert("Group updated successfully!");
-      setUsers(users.map((user) => (user.id === userId ? { ...user, group_id: newGroupId } : user)));
-    }
-    setLoading(false);
-  };
+    // Average request amount
+    const averageRequestAmount = totalAmountRequested / paymentRequests.length;
 
-  // Function to create a new group
-  const createGroup = async () => {
-    if (!newGroupName.trim()) return alert("Group name cannot be empty.");
+    // User distribution
+    const userRoleDistribution = _.countBy(users, 'role');
 
-    const { data, error } = await supabase
-      .from("groups")
-      .insert([{ name: newGroupName }])
-      .select();
+    return {
+      totalAmountRequested,
+      pendingRequestsCount: pendingRequests.length,
+      averageRequestAmount,
+      userRoleDistribution,
+      totalRequests: paymentRequests.length,
+      totalUsers: users.length
+    };
+  }, [paymentRequests, users]);
 
-    if (error) {
-      console.error("Error creating group:", error);
-      alert("Failed to create group.");
-    } else {
-      alert("Group created successfully!");
-      setGroups([...groups, ...data]);
-      setNewGroupName("");
-    }
-  };
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="w-full bg-blue-600 text-white p-4 shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-lg font-semibold">MES Admin Dashboard</h1>
-          <form action="/signout" method="post">
-            <button className="rounded-full border border-solid border-white/[.2] transition-colors flex items-center justify-center hover:bg-blue-700 text-sm h-10 px-4">
-              Sign out
-            </button>
-          </form>
-        </div>
-      </header>
+      <AdminHeader />
+      
+      <main className="container mx-auto px-4 py-8">
+        {dashboardMetrics && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Total Amount Requested */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Amount Requested</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  ${dashboardMetrics.totalAmountRequested.toFixed(2)}
+                </div>
+              </CardContent>
+            </Card>
 
-      {/* Main Content */}
-      <main className="flex-grow flex flex-col items-center justify-center bg-gray-100 p-10">
-        {/* Reimbursement Requests Table */}
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">All Reimbursement Requests</h2>
-        <div className="w-full overflow-x-auto mb-10">
-          <table className="min-w-full bg-white text-center">
-            <thead>
-              <tr>
-              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Full Name</th>
-              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Who Are You</th>
-              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Amount Requested (CAD)</th>
-              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Group Name</th>
-              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Payment Timeframe</th>
-              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Reimbursement or Payment</th>
-              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Timestamp</th>
-              <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paymentRequests.length > 0 ? (
-                paymentRequests.map((request) => (
-                  <EditableStatusRow key={request.request_id} request={request} />
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" className="py-4 text-center text-gray-600">
-                    No payment requests found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+            {/* Pending Requests */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
+                <Clock className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {dashboardMetrics.pendingRequestsCount}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  out of {dashboardMetrics.totalRequests} total requests
+                </p>
+              </CardContent>
+            </Card>
 
-        {/* Create Group Section */}
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Create a New Group</h2>
-        <div className="flex space-x-2 mb-8">
-          <input
-            type="text"
-            value={newGroupName}
-            onChange={(e) => setNewGroupName(e.target.value)}
-            placeholder="Enter group name"
-            className="border border-gray-300 p-2 rounded"
-          />
-          <button onClick={createGroup} className="bg-green-500 text-white px-4 py-2 rounded">
-            Create
-          </button>
-        </div>
+            {/* Average Request Amount */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Avg Request Amount</CardTitle>
+                <FileText className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  ${dashboardMetrics.averageRequestAmount.toFixed(2)}
+                </div>
+              </CardContent>
+            </Card>
 
-        {/* Manage Users Section */}
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Manage Users</h2>
-        <div className="w-full overflow-x-auto">
-          <table className="min-w-full bg-white text-center">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border border-gray-300 px-4 py-2">Email</th>
-                <th className="border border-gray-300 px-4 py-2">Role</th>
-                <th className="border border-gray-300 px-4 py-2">Group</th>
-              </tr>
-            </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td className="border border-gray-300 px-4 py-2">{user.email}</td>
+            {/* User Role Distribution */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">User Roles</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {dashboardMetrics.totalUsers} Total Users
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {Object.entries(dashboardMetrics.userRoleDistribution).map(([role, count]) => (
+                    <div key={role}>{role}: {count}</div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
-                    {/* Role Dropdown */}
-                    <td className="border border-gray-300 px-4 py-2">
-                      <select
-                        defaultValue={user.role}
-                        onChange={(e) => updateUserRole(user.id, e.target.value)}
-                        className="p-1 border border-gray-300 rounded text-center"
-                      >
-                        <option value="user">User</option>
-                        <option value="club_admin">Club Admin</option>
-                        <option value="mes_admin">MES Admin</option>
-                      </select>
-                    </td>
-
-                    {/* Group Dropdown */}
-                    <td className="border border-gray-300 px-4 py-2">
-                      <select
-                        value={user.group_id || ""}
-                        onChange={(e) => updateUserGroup(user.id, e.target.value)}
-                        className="p-1 border border-gray-300 rounded text-center bg-white"
-                      >
-                        <option value="">None</option>
-                        {groups.map((group) => (
-                          <option key={group.id} value={group.id}>
-                            {group.name}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-          </table>
-        </div>
+            {/* Quick Links */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Quick Links</CardTitle>
+                <PieChart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <a 
+                  href="/dashboard/mes-admin/analytics" 
+                  className="block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-center"
+                >
+                  View Full Analytics
+                </a>
+                <a 
+                  href="/dashboard/mes-admin/roles" 
+                  className="block bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-center"
+                >
+                  Manage Roles
+                </a>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </main>
     </div>
   );
