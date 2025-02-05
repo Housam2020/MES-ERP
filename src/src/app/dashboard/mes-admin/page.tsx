@@ -2,16 +2,15 @@
 import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-import AdminHeader from "@/components/dashboard/AdminHeader";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { 
   DollarSign, 
   Users, 
-  CheckCircle, 
   Clock, 
-  PieChart, 
   FileText 
 } from 'lucide-react';
+import AdminHeader from "@/components/dashboard/AdminHeader";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import EditableStatusRow from "@/components/dashboard/EditableStatusRow";
 import _ from 'lodash';
 
 export default function MESAdminDashboard() {
@@ -19,6 +18,7 @@ export default function MESAdminDashboard() {
   const router = useRouter();
   const [paymentRequests, setPaymentRequests] = useState([]);
   const [users, setUsers] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,19 +44,25 @@ export default function MESAdminDashboard() {
         return;
       }
 
-      // Fetch payment requests
+      // Fetch all payment requests
       const { data: requests, error: requestsError } = await supabase
         .from("payment_requests")
         .select("*, groups(name)")
         .order("timestamp", { ascending: true });
 
-      // Fetch users
+      // Fetch all users for role and group management
       const { data: usersData, error: usersError } = await supabase
         .from("users")
         .select("id, email, role, group_id");
 
+      // Fetch all groups
+      const { data: groupsData, error: groupsError } = await supabase
+        .from("groups")
+        .select("id, name");
+
       if (!requestsError) setPaymentRequests(requests);
       if (!usersError) setUsers(usersData);
+      if (!groupsError) setGroups(groupsData);
 
       setLoading(false);
     }
@@ -72,7 +78,7 @@ export default function MESAdminDashboard() {
     const totalAmountRequested = _.sumBy(paymentRequests, 'amount_requested_cad');
 
     // Pending requests
-    const pendingRequests = paymentRequests.filter(req => req.status === 'pending');
+    const pendingRequests = paymentRequests.filter(req => req.status === 'Submitted');
 
     // Average request amount
     const averageRequestAmount = totalAmountRequested / paymentRequests.length;
@@ -90,15 +96,27 @@ export default function MESAdminDashboard() {
     };
   }, [paymentRequests, users]);
 
+  // Update payment request status
+  const updatePaymentRequestStatus = (requestId, newStatus) => {
+    setPaymentRequests(currentRequests =>
+      currentRequests.map(request =>
+        request.request_id === requestId
+          ? { ...request, status: newStatus }
+          : request
+      )
+    );
+  };
+
   if (loading) return <div>Loading...</div>;
 
   return (
     <div className="min-h-screen flex flex-col">
       <AdminHeader />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 space-y-8">
+        {/* Metrics Section */}
         {dashboardMetrics && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {/* Total Amount Requested */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -141,15 +159,15 @@ export default function MESAdminDashboard() {
               </CardContent>
             </Card>
 
-            {/* User Role Distribution */}
+            {/* Total Users */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">User Roles</CardTitle>
+                <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {dashboardMetrics.totalUsers} Total Users
+                  {dashboardMetrics.totalUsers} Users
                 </div>
                 <div className="text-xs text-muted-foreground">
                   {Object.entries(dashboardMetrics.userRoleDistribution).map(([role, count]) => (
@@ -158,30 +176,48 @@ export default function MESAdminDashboard() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Quick Links */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Quick Links</CardTitle>
-                <PieChart className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <a 
-                  href="/dashboard/mes-admin/analytics" 
-                  className="block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-center"
-                >
-                  View Full Analytics
-                </a>
-                <a 
-                  href="/dashboard/mes-admin/roles" 
-                  className="block bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-center"
-                >
-                  Manage Roles
-                </a>
-              </CardContent>
-            </Card>
           </div>
         )}
+
+        {/* Reimbursement Requests Section */}
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+            All Reimbursement Requests
+          </h2>
+          <div className="w-full overflow-x-auto">
+            <table className="min-w-full bg-white text-center">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Full Name</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Who Are You</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Amount Requested (CAD)</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Group Name</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Payment Timeframe</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Reimbursement or Payment</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Timestamp</th>
+                  <th className="py-2 px-4 border-b border-gray-200 bg-gray-50">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paymentRequests.length > 0 ? (
+                  paymentRequests.map((request) => (
+                    <EditableStatusRow 
+                      key={request.request_id} 
+                      request={request}
+                      onStatusUpdate={updatePaymentRequestStatus}
+                    />
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" className="py-4 text-center text-gray-600">
+                      No payment requests found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </main>
     </div>
   );
