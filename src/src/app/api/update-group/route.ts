@@ -28,32 +28,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Fetch the current user's role_id
-  const { data: userRecord, error: userError } = await supabase
+  // Ensure only MES Admins can update groups
+  const { data: userRole, error: roleError } = await supabase
     .from("users")
-    .select("role_id")
+    .select("role")
     .eq("id", user.id)
     .single();
 
-  if (userError || !userRecord?.role_id) {
-    console.error("Error fetching user role_id:", userError);
-    return NextResponse.json({ error: "Access denied" }, { status: 403 });
-  }
-
-  // Fetch role name from the roles table
-  const { data: roleData, error: roleError } = await supabase
-    .from("roles")
-    .select("name")
-    .eq("id", userRecord.role_id)
-    .single();
-
-  if (roleError || !roleData?.name) {
-    console.error("Error fetching role name:", roleError);
-    return NextResponse.json({ error: "Access denied" }, { status: 403 });
-  }
-
-  // Ensure only MES Admins can update groups
-  if (roleData.name !== "mes_admin") {
+  if (roleError || !userRole || userRole.role !== "mes_admin") {
     return NextResponse.json({ error: "Access denied" }, { status: 403 });
   }
 

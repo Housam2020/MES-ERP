@@ -14,7 +14,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -24,65 +23,59 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
-
+  
     try {
       const supabase = createClient();
-
-      // Authenticate user
+  
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
+  
       if (error) throw error;
-
+  
       const userId = data.user?.id;
       if (!userId) throw new Error("Login failed.");
-
-      // Fetch the user's role_id from the database
+  
       const { data: userRecord, error: fetchError } = await supabase
         .from("users")
-        .select("role_id")
+        .select("role")
         .eq("id", userId)
         .single();
-
-      if (fetchError) throw fetchError;
-
-      const roleId = userRecord?.role_id;
-
-      // Redirect based on role
-      if (!roleId) {
-        throw new Error("No role assigned to this user.");
+  
+      let role;
+  
+      if (fetchError) {
+        if (fetchError.code === "PGRST116") {
+          const { error: insertError } = await supabase
+            .from("users")
+            .insert([{ id: userId, email, role: "user" }]);
+  
+          if (insertError) throw insertError;
+  
+          role = "user";
+        } else {
+          throw fetchError;
+        }
+      } else {
+        role = userRecord.role;
       }
-
-      // Fetch role name from the roles table
-      const { data: roleData, error: roleFetchError } = await supabase
-        .from("roles")
-        .select("name")
-        .eq("id", roleId)
-        .single();
-
-      if (roleFetchError) throw roleFetchError;
-
-      const roleName = roleData?.name;
-
-      if (roleName === "mes_admin") {
+  
+      if (role === "mes_admin") {
         router.push("/dashboard/mes-admin");
-      } else if (roleName === "club_admin") {
+      } else if (role === "club_admin") {
         router.push("/dashboard/club-admin");
       } else {
         router.push("/dashboard/user");
       }
-
+  
       router.refresh();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error logging in:", error);
-      setError(error.message || "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   if (!mounted) {
     return null;
@@ -96,11 +89,6 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
-            {error && (
-              <div className="text-red-500 text-sm text-center">
-                {error}
-              </div>
-            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

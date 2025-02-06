@@ -43,49 +43,37 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // Fetch user role_id
-  let roleName = "member"; // Default to "member" if fetching role fails
+  // Fetch user role
+  let userRole = "user"; // Default to "user" if fetching role fails
   if (user) {
-    const { data: userRecord, error: userError } = await supabase
+    const { data: userRecord, error } = await supabase
       .from("users")
-      .select("role_id")
+      .select("role")
       .eq("id", user.id)
       .single();
 
-    if (userError || !userRecord?.role_id) {
-      console.error("Error fetching user role:", userError);
+    if (error) {
+      console.error("Error fetching user role:", error);
       return NextResponse.redirect(new URL("/login", request.url)); // Redirect to login if role fetch fails
     }
 
-    // Fetch the actual role name
-    const { data: roleData, error: roleError } = await supabase
-      .from("roles")
-      .select("name")
-      .eq("id", userRecord.role_id)
-      .single();
-
-    if (roleError || !roleData?.name) {
-      console.error("Error fetching role name:", roleError);
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-
-    roleName = roleData.name;
+    userRole = userRecord.role;
   }
 
   // Define access control for different dashboards
   const mesAdminOnlyPaths = ["/dashboard/mes-admin"];
   const clubAdminOnlyPaths = ["/dashboard/club-admin"];
-  const memberPaths = ["/dashboard/user"];
+  const userOnlyPaths = ["/dashboard/user"];
 
   // Restrict access based on roles
-  if (mesAdminOnlyPaths.includes(path) && roleName !== "mes_admin") {
-    return NextResponse.redirect(new URL("/dashboard/user", request.url));
+  if (mesAdminOnlyPaths.includes(path) && userRole !== "mes_admin") {
+    return NextResponse.redirect(new URL("/dashboard/user", request.url)); // Redirect unauthorized users
   }
-  if (clubAdminOnlyPaths.includes(path) && roleName !== "club_admin") {
-    return NextResponse.redirect(new URL("/dashboard/user", request.url));
+  if (clubAdminOnlyPaths.includes(path) && userRole !== "club_admin") {
+    return NextResponse.redirect(new URL("/dashboard/user", request.url)); // Redirect unauthorized users
   }
-  if (memberPaths.includes(path) && roleName === "mes_admin") {
-    return NextResponse.redirect(new URL("/dashboard/mes-admin", request.url));
+  if (userOnlyPaths.includes(path) && userRole !== "user") {
+    return NextResponse.redirect(new URL("/dashboard/user", request.url)); // Redirect unauthorized users
   }
 
   return supabaseResponse;
