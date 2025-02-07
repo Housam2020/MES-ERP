@@ -2,7 +2,8 @@ export type ProtectedPermission =
   | 'manage_all_users'
   | 'manage_all_roles'
   | 'view_all_requests'
-  | 'manage_all_requests';  
+  | 'manage_all_requests'
+  | 'manage_groups';
 
 export type ClubPermission =
   | 'manage_club_users'
@@ -19,5 +20,6 @@ export const PROTECTED_PERMISSIONS: ProtectedPermission[] = [
   'manage_all_users',
   'manage_all_roles',
   'view_all_requests',
-  'manage_all_requests'
+  'manage_all_requests',
+  'manage_groups'
 ];

@@ -32,6 +32,11 @@ export default function DashboardHeader() {
       permission: ['manage_all_users', 'manage_club_users']
     },
     { 
+      href: '/dashboard/groups', // New groups page
+      label: 'Groups',
+      permission: ['manage_groups']
+    },
+    { 
       href: '/dashboard/analytics', 
       label: 'Analytics',
       permission: ['view_all_requests', 'view_club_requests']
