@@ -34,27 +34,28 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
-    --background: 0 0% 3.9%;
+    --background: 222 47% 11%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
+    --card: 222 47% 15%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
+    --popover: 222 47% 15%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
+    --primary: 210 70% 50%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 210 70% 40%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
+    --muted: 222 47% 20%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 210 70% 45%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
+    --border: 222 47% 20%;
+    --input: 222 47% 20%;
+    --ring: 210 70% 50%;
+    --chart-1: 210 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
@@ -69,4 +70,105 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.dark {
+  background-color: hsl(222, 47%, 11%);
+  color: hsl(0, 0%, 98%);
+}
+
+.dark .dark\:bg-blue-800 {
+  background-color: hsl(222, 47%, 20%);
+}
+
+.dark .dark\:bg-blue-900 {
+  background-color: hsl(222, 47%, 15%);
+}
+
+.dark .dark\:text-blue-500 {
+  color: hsl(210, 70%, 50%);
+}
+
+.dark .dark\:text-blue-100 {
+  color: hsl(210, 70%, 90%);
+}
+
+.dark .dark\:hover\:bg-blue-800:hover {
+  background-color: hsl(222, 47%, 20%);
+}
+
+.dark table thead th {
+  background-color: hsl(222, 47%, 20%);
+  color: hsl(0, 0%, 98%);
+  border-color: hsl(222, 47%, 30%);
+}
+
+.dark table tbody td {
+  background-color: hsl(222, 47%, 15%);
+  color: hsl(0, 0%, 98%);
+  border-color: hsl(222, 47%, 20%);
+}
+
+.dark table tbody tr:hover td {
+  background-color: hsl(222, 47%, 20%);
+}
+
+.dark table select {
+  background-color: hsl(222, 47%, 20%);
+  color: hsl(0, 0%, 98%);
+  border-color: hsl(222, 47%, 30%);
+}
+
+.dark table select:hover {
+  background-color: hsl(222, 47%, 25%);
+}
+
+.dark table select:focus {
+  outline: none;
+  border-color: hsl(210, 70%, 50%);
+}
+
+.dark table select option {
+  background-color: hsl(222, 47%, 20%);
+  color: hsl(0, 0%, 98%);
+}
+
+.dark header {
+  background-color: hsl(222, 47%, 15%);
+  color: hsl(0, 0%, 98%);
+}
+
+.dark header nav a {
+  color: hsl(0, 0%, 98%);
+}
+
+.dark header nav a:hover {
+  background-color: hsl(222, 47%, 20%);
+}
+
+.dark header nav a.active {
+  background-color: hsl(210, 70%, 50%);
+  color: hsl(0, 0%, 98%);
+}
+
+.dark header .dropdown {
+  background-color: hsl(222, 47%, 20%);
+  color: hsl(0, 0%, 98%);
+}
+
+.dark header .dropdown button {
+  color: hsl(0, 0%, 98%);
+}
+
+.dark header .dropdown button:hover {
+  background-color: hsl(222, 47%, 25%);
+}
+
+.dark header .dropdown-content {
+  background-color: hsl(222, 47%, 20%);
+  color: hsl(0, 0%, 98%);
+}
+
+.dark header .dropdown-content a:hover {
+  background-color: hsl(222, 47%, 25%);
 }

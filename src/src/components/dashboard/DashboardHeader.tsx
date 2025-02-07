@@ -3,15 +3,31 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
 import { createClient } from "@/utils/supabase/client";
-import { useState } from "react";
-import { UserCircleIcon } from "@heroicons/react/24/outline"; // Import the user icon
+import { useState, useEffect } from "react";
+import { UserCircleIcon, SunIcon, MoonIcon } from "@heroicons/react/24/outline";
 
 export default function DashboardHeader() {
   const pathname = usePathname();
   const { permissions, loading } = usePermissions();
   const router = useRouter();
   const supabase = createClient();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to manage dropdown visibility
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") setDarkMode(true);
+  }, []);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -19,9 +35,11 @@ export default function DashboardHeader() {
   };
 
   const handleAccountClick = () => {
-    router.push('/dashboard/accountInfo'); // Redirect to account info page
-    setIsDropdownOpen(false); // Close the dropdown
+    router.push('/dashboard/accountInfo');
+    setIsDropdownOpen(false);
   };
+
+  const toggleDarkMode = () => setDarkMode(!darkMode);
 
   const navItems = [
     { 
@@ -40,7 +58,7 @@ export default function DashboardHeader() {
       permission: ['manage_all_users', 'manage_club_users']
     },
     { 
-      href: '/dashboard/groups', // New groups page
+      href: '/dashboard/groups',
       label: 'Groups',
       permission: ['manage_groups']
     },
@@ -59,11 +77,11 @@ export default function DashboardHeader() {
   if (loading) return null;
 
   return (
-    <header className="bg-blue-600">
+    <header className="bg-blue-600 dark:bg-[#1A365D]">
       <nav className="container mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <span className="text-white font-medium px-6 py-4">MES Admin</span>
+            <span className="text-white dark:text-white font-medium px-6 py-4">MES Admin</span>
             <div className="flex space-x-1">
               {navItems.map((item) => {
                 const visible = !item.permission || 
@@ -77,8 +95,8 @@ export default function DashboardHeader() {
                     href={item.href}
                     className={`px-4 py-4 text-sm font-medium transition-colors ${
                       pathname === item.href
-                        ? "bg-blue-700 text-white"
-                        : "text-white hover:bg-blue-700"
+                        ? "bg-blue-700 dark:bg-[#2C5282] text-white"
+                        : "text-white hover:bg-blue-700 dark:hover:bg-[#2C5282]"
                     }`}
                   >
                     {item.label}
@@ -87,29 +105,41 @@ export default function DashboardHeader() {
               })}
             </div>
           </div>
-          <div className="relative">
+          <div className="flex items-center gap-4">
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="px-6 py-4 text-sm font-medium text-white hover:bg-blue-700 flex items-center"
+              onClick={toggleDarkMode}
+              className="p-2 text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] rounded-full"
             >
-              <UserCircleIcon className="h-6 w-6" /> {/* User icon */}
+              {darkMode ? (
+                <SunIcon className="h-6 w-6" />
+              ) : (
+                <MoonIcon className="h-6 w-6" />
+              )}
             </button>
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg">
-                <div
-                  onClick={handleAccountClick} // Use handleAccountClick here
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  Account
+            <div className="relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="px-6 py-4 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] flex items-center"
+              >
+                <UserCircleIcon className="h-6 w-6" />
+              </button>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1A365D] rounded-md shadow-lg">
+                  <div
+                    onClick={handleAccountClick}
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C5282] cursor-pointer"
+                  >
+                    Account
+                  </div>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C5282]"
+                  >
+                    Sign Out
+                  </button>
                 </div>
-                <button
-                  onClick={handleSignOut}
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Sign Out
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </nav>
