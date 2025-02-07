@@ -69,20 +69,17 @@ export default function UsersPage() {
             )
           `);
         
-        // Transform the data to include permissions directly
         const rolesWithPerms = rolesData?.map(role => ({
           ...role,
           permissions: role.role_permissions?.map(rp => rp.permissions.name) || []
         })) || [];
 
-        // Always show all roles, but control access through the disabled prop
         setRoles(rolesWithPerms);
 
         // Fetch groups
         const { data: groupsData } = await supabase
           .from("groups")
           .select("*");
-        console.log('Fetched groups:', groupsData); // Debug log
         setGroups(groupsData || []);
 
         // Base query for users
@@ -108,11 +105,9 @@ export default function UsersPage() {
             )
           `);
 
-        // If user only has club-level access, filter users
-        if (!permissions.includes('manage_all_users')) {
-          if (currentUser?.group_id) {
-            usersQuery = usersQuery.or(`group_id.eq.${currentUser.group_id},group_id.is.null`);
-          }
+        // If user only has club-level access, show users from their group AND users with no group
+        if (!permissions.includes('manage_all_users') && userData?.group_id) {
+          usersQuery = usersQuery.or(`group_id.eq.${userData.group_id},group_id.is.null`);
         }
 
         const { data: usersData, error: usersError } = await usersQuery;
@@ -136,8 +131,6 @@ export default function UsersPage() {
 
   const updateUserRole = async (userId: string, newRoleId: string) => {
     try {
-      console.log('Sending update:', { userId, newRoleId });
-
       const response = await fetch("/api/update-role", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -145,8 +138,7 @@ export default function UsersPage() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json(); // Get the error details
-        console.error('Server response:', errorData); // Debug log
+        const errorData = await response.json();
         throw new Error(errorData.error || "Failed to update role");
       }
 
@@ -199,13 +191,6 @@ export default function UsersPage() {
   });
 
   if (loading || permissionsLoading) return <div>Loading...</div>;
-
-  console.log('Render state:', {
-    users,
-    groups,
-    currentUserGroup,
-    availableGroups
-  });
 
   return (
     <div>
