@@ -18,6 +18,11 @@ export default function DashboardHeader() {
     router.push('/login');
   };
 
+  const handleAccountClick = () => {
+    router.push('/dashboard/accountInfo'); // Redirect to account info page
+    setIsDropdownOpen(false); // Close the dropdown
+  };
+
   const navItems = [
     { 
       href: '/dashboard/home', 
@@ -91,13 +96,12 @@ export default function DashboardHeader() {
             </button>
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg">
-                <Link
-                  href="/dashboard/account"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setIsDropdownOpen(false)}
+                <div
+                  onClick={handleAccountClick} // Use handleAccountClick here
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                 >
                   Account
-                </Link>
+                </div>
                 <button
                   onClick={handleSignOut}
                   className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
