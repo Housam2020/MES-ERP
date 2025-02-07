@@ -3,12 +3,15 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
 import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
+import { UserCircleIcon } from "@heroicons/react/24/outline"; // Import the user icon
 
 export default function DashboardHeader() {
   const pathname = usePathname();
   const { permissions, loading } = usePermissions();
   const router = useRouter();
   const supabase = createClient();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to manage dropdown visibility
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -79,12 +82,31 @@ export default function DashboardHeader() {
               })}
             </div>
           </div>
-          <button
-            onClick={handleSignOut}
-            className="px-6 py-4 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            Sign Out
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="px-6 py-4 text-sm font-medium text-white hover:bg-blue-700 flex items-center"
+            >
+              <UserCircleIcon className="h-6 w-6" /> {/* User icon */}
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg">
+                <Link
+                  href="/dashboard/account"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  Account
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
     </header>
