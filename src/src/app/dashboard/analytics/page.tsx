@@ -2,7 +2,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-import AdminHeader from "@/components/dashboard/AdminHeader";
+import { usePermissions } from "@/hooks/usePermissions";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
 import _ from 'lodash';
@@ -12,6 +13,7 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF99E6', '#AA80FF'
 export default function AnalyticsPage() {
   const supabase = createClient();
   const router = useRouter();
+  const { permissions, loading: permissionsLoading, error: permissionsError } = usePermissions();
   const [paymentRequests, setPaymentRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,39 +21,58 @@ export default function AnalyticsPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) {
           router.push("/login");
           return;
         }
 
-        // Fetch all payment requests
-        const { data: requests, error: requestsError } = await supabase
+        // Check if user can view analytics
+        const canViewAnalytics = permissions.includes('view_all_requests') || 
+                               permissions.includes('view_club_requests');
+
+        if (!canViewAnalytics) {
+          router.push("/dashboard/home");
+          return;
+        }
+
+        // Base query for payment requests
+        let requestsQuery = supabase
           .from("payment_requests")
           .select("*, groups(name)")
           .order("timestamp", { ascending: true });
 
-        if (requestsError) {
-          console.error("Error fetching payment requests:", requestsError);
-          setError(requestsError);
-        } else {
-          setPaymentRequests(requests);
+        // Filter by group if club-level access
+        if (!permissions.includes('view_all_requests')) {
+          const { data: userData } = await supabase
+            .from('users')
+            .select('group_id')
+            .eq('id', user.id)
+            .single();
+            
+          if (userData?.group_id) {
+            requestsQuery = requestsQuery.eq('group_id', userData.group_id);
+          }
         }
+
+        const { data: requests, error: requestsError } = await requestsQuery;
+
+        if (requestsError) throw requestsError;
+        setPaymentRequests(requests || []);
       } catch (err) {
-        console.error("Unexpected error:", err);
-        setError(err);
+        setError(err instanceof Error ? err : new Error('Failed to fetch data'));
       } finally {
         setLoading(false);
       }
     }
 
-    fetchData();
-  }, []);
+    if (!permissionsLoading && !permissionsError) {
+      fetchData();
+    }
+  }, [permissions, permissionsLoading, permissionsError]);
 
-  // Calculate various analytics
+  // Calculate analytics using useMemo to prevent unnecessary recalculations
   const analytics = useMemo(() => {
     if (!paymentRequests?.length) return null;
 
@@ -92,14 +113,14 @@ export default function AnalyticsPage() {
 
     // Average request by timeframe
     const timeframeData = _.chain(paymentRequests)
-    .filter(req => req.amount_requested_cad > 0 && req.payment_timeframe) // Only include requests with amount and timeframe
-    .groupBy('payment_timeframe')
-    .map((requests, timeframe) => ({
+      .filter(req => req.amount_requested_cad > 0 && req.payment_timeframe)
+      .groupBy('payment_timeframe')
+      .map((requests, timeframe) => ({
         timeframe: timeframe || 'Unspecified',
         averageAmount: _.meanBy(requests, 'amount_requested_cad'),
         count: requests.length
-    }))
-    .value();
+      }))
+      .value();
 
     return {
       monthlyData,
@@ -109,13 +130,13 @@ export default function AnalyticsPage() {
     };
   }, [paymentRequests]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error loading data: {error.message}</div>;
+  if (loading || permissionsLoading) return <div>Loading...</div>;
+  if (error || permissionsError) return <div>Error loading data: {(error || permissionsError)?.message}</div>;
   if (!analytics) return <div>No data available</div>;
 
   return (
     <div className="min-h-screen flex flex-col">
-      <AdminHeader />
+      <DashboardHeader />
       
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

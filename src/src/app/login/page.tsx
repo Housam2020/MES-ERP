@@ -1,3 +1,4 @@
+// Login Page
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -23,6 +25,7 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
   
     try {
       const supabase = createClient();
@@ -37,41 +40,56 @@ export default function LoginPage() {
       const userId = data.user?.id;
       if (!userId) throw new Error("Login failed.");
   
+      // Fetch user with their role details
       const { data: userRecord, error: fetchError } = await supabase
         .from("users")
-        .select("role")
+        .select(`
+          id, 
+          email, 
+          role_id,
+          roles (
+            name,
+            role_permissions (
+              permissions (
+                name
+              )
+            )
+          )
+        `)
         .eq("id", userId)
         .single();
   
-      let role;
-  
       if (fetchError) {
-        if (fetchError.code === "PGRST116") {
-          const { error: insertError } = await supabase
-            .from("users")
-            .insert([{ id: userId, email, role: "user" }]);
+        // If user doesn't exist in users table, create with default role
+        const { data: defaultRole } = await supabase
+          .from("roles")
+          .select("id")
+          .eq("name", "user")
+          .single();
   
-          if (insertError) throw insertError;
+        const { error: insertError } = await supabase
+          .from("users")
+          .insert([{ 
+            id: userId, 
+            email, 
+            role_id: defaultRole?.id
+          }]);
   
-          role = "user";
-        } else {
-          throw fetchError;
-        }
-      } else {
-        role = userRecord.role;
+        if (insertError) throw insertError;
+  
+        // Redirect to dashboard
+        router.push("/dashboard/home");
+        router.refresh();
+        return;
       }
   
-      if (role === "mes_admin") {
-        router.push("/dashboard/mes-admin");
-      } else if (role === "club_admin") {
-        router.push("/dashboard/club-admin");
-      } else {
-        router.push("/dashboard/user");
-      }
-  
+      // Optional: You could store role and permissions in local storage or context
+      // For now, just redirect to dashboard
+      router.push("/dashboard/home");
       router.refresh();
     } catch (error) {
       console.error("Error logging in:", error);
+      setError("Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -109,6 +127,7 @@ export default function LoginPage() {
                 required
               />
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Loading..." : "Login"}
             </Button>

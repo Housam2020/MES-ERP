@@ -1,28 +1,29 @@
 "use client";
 import React, { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export default function EditableStatusRow({ request, onStatusUpdate }) {
   const [status, setStatus] = useState(request.status);
+  const { permissions } = usePermissions();
+  const supabase = createClient();
+
+  const canEdit = permissions.includes('manage_all_requests') || 
+                 permissions.includes('manage_club_requests');
 
   const handleStatusChange = async (newStatus) => {
+    if (!canEdit) return;
+    
     setStatus(newStatus);
-    console.log(newStatus);
     try {
-      const supabase = await createClient();
       const { error } = await supabase
         .from("payment_requests")
         .update({ status: newStatus })
         .eq("request_id", request.request_id);
 
-      if (error) {
-        console.log(error);
-        throw new Error("Failed to update status");
-      }
+      if (error) throw error;
 
-      // Add this line to update the parent's state
       onStatusUpdate(request.request_id, newStatus);
-      
       alert("Status updated successfully!");
     } catch (error) {
       console.error("Error updating status:", error);
@@ -40,19 +41,10 @@ export default function EditableStatusRow({ request, onStatusUpdate }) {
       <td className="py-2 px-4 border-b border-gray-200">{request.reimbursement_or_payment}</td>
       <td className="py-2 px-4 border-b border-gray-200">{new Date(request.timestamp).toLocaleString()}</td>
       <td className="py-2 px-4 border-b border-gray-200">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleStatusChange(status);
-          }}
-        >
+        {canEdit ? (
           <select
             value={status}
-            onChange={(e) => {
-              const newValue = e.target.value;
-              setStatus(newValue);
-              handleStatusChange(newValue);
-            }}
+            onChange={(e) => handleStatusChange(e.target.value)}
             className="border border-gray-300 rounded p-1"
           >
             <option value="Submitted">Submitted</option>
@@ -60,7 +52,9 @@ export default function EditableStatusRow({ request, onStatusUpdate }) {
             <option value="Reimbursed">Reimbursed</option>
             <option value="In Progress">In Progress</option>
           </select>
-        </form>
+        ) : (
+          <span>{status}</span>
+        )}
       </td>
     </tr>
   );

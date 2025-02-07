@@ -30,10 +30,32 @@ export default function RegisterPage() {
 
       if (error) throw error;
 
-      if (data.user && !data.session) {
-        setError("Please check your email to confirm your registration.");
-      } else {
-        router.push("/dashboard/user"); // should probably redirect to login and there notify to check email
+      if (data.user) {
+        // Fetch the default 'user' role
+        const { data: defaultRole } = await supabase
+          .from("roles")
+          .select("id")
+          .eq("name", "user")
+          .single();
+
+        // Insert the new user into our users table with default role
+        const { error: insertError } = await supabase
+          .from("users")
+          .insert([
+            { 
+              id: data.user.id, 
+              email: data.user.email,
+              role_id: defaultRole?.id // Use the fetched default role ID
+            }
+          ]);
+
+        if (insertError) throw insertError;
+
+        if (!data.session) {
+          setError("Please check your email to confirm your registration.");
+        } else {
+          router.push("/dashboard/home");
+        }
       }
     } catch (error) {
       console.error("Error registering user:", error);

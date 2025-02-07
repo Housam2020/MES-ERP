@@ -13,26 +13,29 @@ export default async function Home() {
     redirect("/login");
   }
 
-  // Fetch user role
-  const { data: userRecord, error } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", user.id)
+  // Fetch user permissions
+  const { data: permissions, error } = await supabase
+    .from('users')
+    .select(`
+      role_id,
+      roles!inner (
+        role_permissions!inner (
+          permissions!inner (
+            name
+          )
+        )
+      )
+    `)
+    .eq('id', user.id)
     .single();
 
-  if (error || !userRecord) {
-    console.error("Error fetching user role:", error);
-    redirect("/login"); // Redirect to login if role fetch fails
+  if (error) {
+    console.error("Error fetching user permissions:", error);
+    redirect("/login");
   }
 
-  // 🚀 Correct role-based redirects
-  if (userRecord.role === "mes_admin") {
-    redirect("/dashboard/mes-admin");
-  } else if (userRecord.role === "club_admin") {
-    redirect("/dashboard/club-admin");
-  } else {
-    redirect("/dashboard/user");
-  }
+  // All users now go to the same dashboard
+  redirect("/dashboard/home");
 
   return null; // Prevent unnecessary rendering
 }
