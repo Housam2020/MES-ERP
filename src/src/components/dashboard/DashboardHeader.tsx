@@ -12,22 +12,18 @@ export default function DashboardHeader() {
   const router = useRouter();
   const supabase = createClient();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") setDarkMode(true);
+    if (savedTheme) setTheme(savedTheme);
   }, []);
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -39,53 +35,31 @@ export default function DashboardHeader() {
     setIsDropdownOpen(false);
   };
 
-  const toggleDarkMode = () => setDarkMode(!darkMode);
+  const cycleTheme = () => {
+    if (theme === "light") setTheme("dark");
+    else setTheme("light");
+  };
 
   const navItems = [
-    { 
-      href: '/dashboard/home', 
-      label: 'Home',
-      permission: null
-    },
-    { 
-      href: '/dashboard/requests', 
-      label: 'Requests',
-      permission: ['create_requests']
-    },
-    { 
-      href: '/dashboard/users', 
-      label: 'Users',
-      permission: ['manage_all_users', 'manage_club_users']
-    },
-    { 
-      href: '/dashboard/groups',
-      label: 'Groups',
-      permission: ['manage_groups']
-    },
-    { 
-      href: '/dashboard/analytics', 
-      label: 'Analytics',
-      permission: ['view_all_requests', 'view_club_requests']
-    },
-    { 
-      href: '/dashboard/roles', 
-      label: 'Roles',
-      permission: ['manage_all_roles', 'manage_club_roles']
-    }
+    { href: '/dashboard/home', label: 'Home', permission: null },
+    { href: '/dashboard/requests', label: 'Requests', permission: ['create_requests'] },
+    { href: '/dashboard/users', label: 'Users', permission: ['manage_all_users', 'manage_club_users'] },
+    { href: '/dashboard/groups', label: 'Groups', permission: ['manage_groups'] },
+    { href: '/dashboard/analytics', label: 'Analytics', permission: ['view_all_requests', 'view_club_requests'] },
+    { href: '/dashboard/roles', label: 'Roles', permission: ['manage_all_roles', 'manage_club_roles'] },
   ];
 
   if (loading) return null;
 
   return (
-    <header className="bg-blue-600 dark:bg-[#1A365D]">
+    <header className="bg-blue-600 dark:bg-[#1A365D] mcmaster:bg-[#7A003C]">
       <nav className="container mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <span className="text-white dark:text-white font-medium px-6 py-4">MES Admin</span>
             <div className="flex space-x-1">
               {navItems.map((item) => {
-                const visible = !item.permission || 
-                  (item.permission && item.permission.some(p => permissions.includes(p)));
+                const visible = !item.permission || item.permission.some((p) => permissions.includes(p));
 
                 if (!visible) return null;
 
@@ -95,8 +69,8 @@ export default function DashboardHeader() {
                     href={item.href}
                     className={`px-4 py-4 text-sm font-medium transition-colors ${
                       pathname === item.href
-                        ? "bg-blue-700 dark:bg-[#2C5282] text-white"
-                        : "text-white hover:bg-blue-700 dark:hover:bg-[#2C5282]"
+                        ? "bg-blue-700 dark:bg-[#2C5282] mcmaster:bg-[#FDBF57] text-white mcmaster:text-[#7A003C]"
+                        : "text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] mcmaster:hover:text-[#7A003C]"
                     }`}
                   >
                     {item.label}
@@ -107,34 +81,28 @@ export default function DashboardHeader() {
           </div>
           <div className="flex items-center gap-4">
             <button
-              onClick={toggleDarkMode}
-              className="p-2 text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] rounded-full"
+              onClick={cycleTheme}
+              className="p-2 text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] rounded-full"
             >
-              {darkMode ? (
-                <SunIcon className="h-6 w-6" />
-              ) : (
+              {theme === "light" ? (
                 <MoonIcon className="h-6 w-6" />
+              ) :(
+                <SunIcon className="h-6 w-6" />
               )}
             </button>
             <div className="relative">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="px-6 py-4 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] flex items-center"
+                className="px-6 py-4 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] flex items-center"
               >
                 <UserCircleIcon className="h-6 w-6" />
               </button>
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1A365D] rounded-md shadow-lg">
-                  <div
-                    onClick={handleAccountClick}
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C5282] cursor-pointer"
-                  >
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1A365D] mcmaster:bg-[#495965] rounded-md shadow-lg">
+                  <div onClick={handleAccountClick} className="block px-4 py-2 text-sm text-gray-700 dark:text-white mcmaster:text-white hover:bg-gray-100 dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] cursor-pointer">
                     Account
                   </div>
-                  <button
-                    onClick={handleSignOut}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C5282]"
-                  >
+                  <button onClick={handleSignOut} className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-white mcmaster:text-white hover:bg-gray-100 dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57]">
                     Sign Out
                   </button>
                 </div>
