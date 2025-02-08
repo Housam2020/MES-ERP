@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
 import { createClient } from "@/utils/supabase/client";
 import { useState, useEffect } from "react";
-import { UserCircleIcon, SunIcon, MoonIcon } from "@heroicons/react/24/outline";
+import { UserCircleIcon, SunIcon, MoonIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 
 export default function DashboardHeader() {
   const pathname = usePathname();
@@ -43,6 +43,10 @@ export default function DashboardHeader() {
   const cycleTheme = () => {
     if (theme === "light") setTheme("dark");
     else setTheme("light");
+  };
+
+  const handleGuideClick = () => {
+    router.push('/dashboard/guide');
   };
 
   const navItems = [
@@ -94,6 +98,12 @@ export default function DashboardHeader() {
               ) :(
                 <SunIcon className="h-6 w-6" />
               )}
+            </button>
+            <button
+              onClick={handleGuideClick}
+              className="p-2 text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] rounded-full"
+            >
+              <QuestionMarkCircleIcon className="h-6 w-6" />
             </button>
             <div className="relative">
               <button
