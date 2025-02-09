@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { createClient } from "@/utils/supabase/client";
 import { v4 as uuidv4 } from 'uuid';
@@ -41,8 +41,39 @@ type FormData = {
 };
 
 const ReimbursementForm: React.FC = () => {
-  const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>();
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>();
   const [formStep, setFormStep] = useState(0);
+
+  // Auto-fill the form with user defaults (if they exist)
+  useEffect(() => {
+    const fetchUserDefaults = async () => {
+      const supabase = createClient();
+      // Get the authenticated user.
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        console.error("Error fetching user:", authError);
+        return;
+      }
+      // Fetch selected fields from the "users" table.
+      const { data: userData, error } = await supabase
+        .from("users")
+        .select("email, fullName, phoneNum, reimbursment_or_payment")
+        .eq("id", user.id)
+        .single();
+      if (error) {
+        console.error("Error fetching user defaults:", error);
+      } else if (userData) {
+        if (userData.email) setValue("email_address", userData.email);
+        if (userData.fullName) setValue("full_name", userData.fullName);
+        if (userData.phoneNum) setValue("contact_phone_number", userData.phoneNum);
+        if (userData.reimbursment_or_payment) {
+          setValue("reimbursment_or_payment", userData.reimbursment_or_payment);
+        }
+      }
+    };
+
+    fetchUserDefaults();
+  }, [setValue]);
 
   const onSubmit = async (data: FormData) => {
     const supabase = await createClient();
@@ -72,7 +103,6 @@ const ReimbursementForm: React.FC = () => {
       
       const group_id = userData.group_id;
       const request_id = uuidv4();
-      const user_id = user.id;
       const newData = {
         request_id: request_id,
         user_id: user.id,
@@ -86,7 +116,7 @@ const ReimbursementForm: React.FC = () => {
         .insert([newData]);
   
       if (error) {
-        if (error.code === '23505') { // Unique violation error code for PostgreSQL
+        if (error.code === '23505') {
           alert('A record with this information already exists.');
         } else {
           alert(`Failed to submit the form: ${error.message}`);
@@ -123,13 +153,14 @@ const ReimbursementForm: React.FC = () => {
                   <option value="Ratified Club, Team, or Program Society">Ratified Club, Team, or Program Society</option>
                   <option value="Student Projects and New Club Seed Funding">Student Projects and New Club Seed Funding</option>
                   <option value="Intramurals Funding">Intramurals Funding</option>
-                  <option value="Conference/Competition Delegate (Open or Affiliate)">Conference/Competition Delegate (Open or Affiliate)</option>
+                  <option value="Conference/Competition Delegate (Open or Affiliate)">
+                    Conference/Competition Delegate (Open or Affiliate)
+                  </option>
                 </select>
                 {errors.who_are_you && (
                   <p className="text-red-500 text-sm dark:text-red-400">{errors.who_are_you.message}</p>
                 )}
               </div>
-
               <div className="mb-4">
                 <label htmlFor="email_address" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Email Address
@@ -143,7 +174,6 @@ const ReimbursementForm: React.FC = () => {
                   <p className="text-red-500 text-sm dark:text-red-400">{errors.email_address.message}</p>
                 )}
               </div>
-
               <div className="mb-4">
                 <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Full Name
@@ -157,7 +187,6 @@ const ReimbursementForm: React.FC = () => {
                   <p className="text-red-500 text-sm dark:text-red-400">{errors.full_name.message}</p>
                 )}
               </div>
-
               <div className="mb-4">
                 <label htmlFor="contact_phone_number" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Contact Phone Number
@@ -171,16 +200,16 @@ const ReimbursementForm: React.FC = () => {
                   <p className="text-red-500 text-sm dark:text-red-400">{errors.contact_phone_number.message}</p>
                 )}
               </div>
-
               <button
                 type="button"
-                className="bg-blue-600 text-white py-2 px-4 rounded mt-4 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
                 onClick={() => setFormStep(1)}
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
               >
                 Next
               </button>
             </>
           )}
+
 
           {formStep === 1 && (
             <>
@@ -533,43 +562,49 @@ const ReimbursementForm: React.FC = () => {
             </>
           )} 
 
-          {formStep === 5 && (
-            <>
-              <div className="mb-4">
-                <label htmlFor="reimbursement_or_payment" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Reimbursement or Payment?
-                </label>
-                <select
-                  {...register('reimbursement_or_payment', { required: 'Selection Required' })}
-                  className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
-                >
-                  <option value="">Select Option</option>
-                  <option value="Reimbursement Request">Reimbursement Request</option>
-                  <option value="Payment Request">Payment Request</option>
-                </select>
-                {errors.reimbursement_or_payment && (
-                  <p className="text-red-500 text-sm dark:text-red-400">{errors.reimbursement_or_payment.message}</p>
-                )}
-              </div>
+{formStep === 5 && (
+  <>
+    <div className="mb-4">
+      <label
+        htmlFor="reimbursment_or_payment"
+        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+      >
+        Reimbursement or Payment?
+      </label>
+      <select
+        {...register('reimbursment_or_payment', { required: 'Selection Required' })}
+        className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
+      >
+        <option value="">Select Option</option>
+        <option value="Reimbursement">Reimbursement</option>
+        <option value="Payment">Payment</option>
+      </select>
+      {errors.reimbursment_or_payment && (
+        <p className="text-red-500 text-sm dark:text-red-400">
+          {errors.reimbursment_or_payment.message}
+        </p>
+      )}
+    </div>
 
-              <div className="flex justify-between">
-                <button
-                  type="button"
-                  className="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
-                  onClick={() => setFormStep(4)}
-                >
-                  Previous
-                </button>
-                <button
-                  type="button"
-                  className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                  onClick={() => setFormStep(6)}
-                >
-                  Next
-                </button>
-              </div>
-            </>
-          )} 
+    <div className="flex justify-between">
+      <button
+        type="button"
+        className="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
+        onClick={() => setFormStep(4)}
+      >
+        Previous
+      </button>
+      <button
+        type="button"
+        className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+        onClick={() => setFormStep(6)}
+      >
+        Next
+      </button>
+    </div>
+  </>
+)}
+
 
           {formStep === 6 && (
             <>
