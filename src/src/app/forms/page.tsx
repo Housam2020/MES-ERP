@@ -40,8 +40,8 @@ type FormData = {
   province_state: string;
   country: string;
   postal_code: string;
-  // New field to store the receipt binary data
-  receipt?: Uint8Array;
+  // New field now stores a string (e.g., a URL) instead of binary data.
+  receipt?: string;
 };
 
 const ReimbursementForm: React.FC = () => {
@@ -145,7 +145,8 @@ const ReimbursementForm: React.FC = () => {
       const group_id = userData.group_id;
       const request_id = uuidv4();
 
-      // Create the new data object.
+      // Create the new data object. Note that the receipt field is populated
+      // via the new text input (if provided) and NOT from the file upload.
       const newData: FormData = {
         request_id,
         user_id: user.id,
@@ -153,12 +154,7 @@ const ReimbursementForm: React.FC = () => {
         ...data,
       };
 
-      // If a receipt file was uploaded, convert it to binary and add it.
-      if (receiptFile) {
-        const arrayBuffer = await receiptFile.arrayBuffer();
-        // Convert the ArrayBuffer into a Uint8Array.
-        newData.receipt = new Uint8Array(arrayBuffer);
-      }
+      // Removed code that previously set 'receipt' from the uploaded file.
 
       const { error } = await supabase
         .from("payment_requests")
@@ -273,6 +269,19 @@ const ReimbursementForm: React.FC = () => {
                   }
                 }}
               />
+              {/* New Text Input for linking the receipt image */}
+              <div className="mt-4">
+                <label htmlFor="receipt_link" className="block text-lg font-medium text-gray-700 dark:text-gray-300">
+                  Link an image to your receipt
+                </label>
+                <input
+                  {...register("receipt")}
+                  type="text"
+                  id="receipt_link"
+                  placeholder="Enter image URL"
+                  className="mt-2 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
+                />
+              </div>
             </div>
           </div>
 
