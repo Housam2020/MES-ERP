@@ -56,8 +56,8 @@ export default function DashboardHeader() {
     { href: '/dashboard/groups', label: 'Groups', permission: ['manage_groups'] },
     { href: '/dashboard/analytics', label: 'Analytics', permission: ['view_all_requests', 'view_club_requests'] },
     { href: '/dashboard/roles', label: 'Roles', permission: ['manage_all_roles'] },
-    { href: '/dashboard/annual_form', label: 'Annual Form', permission: ['manage_all_roles', 'manage_club_roles'] },
     { href: '/dashboard/operating_budget', label: 'Operating Budget', permission: ['manage_all_roles', 'manage_club_roles'] },
+    { href: '/dashboard/annual_form', label: 'Annual Form', permission: ['manage_all_roles', 'manage_club_roles'] },
   ];
 
   if (loading) return null;
