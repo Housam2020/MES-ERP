@@ -7,6 +7,14 @@ export async function POST(request: Request) {
   try {
     const { requestId, newStatus, amount, userEmail } = await request.json();
 
+    // Skip sending email if required data is missing
+    if (!userEmail || !requestId || !newStatus) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
     const msg = {
       to: userEmail,
       from: process.env.SENDGRID_FROM_EMAIL!,
@@ -16,7 +24,13 @@ export async function POST(request: Request) {
         <p>Your payment request (ID: ${requestId}) has been updated:</p>
         <ul>
           <li><strong>New Status:</strong> ${newStatus}</li>
-          <li><strong>Amount:</strong> $${amount.toFixed(2)} CAD</li>
+          ${
+            amount
+              ? `<li><strong>Amount:</strong> $${Number(amount).toFixed(
+                  2
+                )} CAD</li>`
+              : ""
+          }
         </ul>
         <p>If you have any questions, please contact your club administrator.</p>
       `,
