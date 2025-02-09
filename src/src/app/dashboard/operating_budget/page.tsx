@@ -1,4 +1,5 @@
 import React from "react";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 const BudgetSummaryTable = () => {
   const data = {
@@ -52,6 +53,7 @@ const BudgetSummaryTable = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
+      <DashboardHeader />
       <div className="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-lg">
         {data.summary.map((section, index) => (
           <div key={index} className="mb-8">
