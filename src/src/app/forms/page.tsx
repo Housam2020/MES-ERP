@@ -181,7 +181,7 @@ const ReimbursementForm: React.FC = () => {
       <div className="container mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow-md">
         <button
                 type="button"
-                onClick={() => router.push("/dashboard/home")}
+                onClick={() => router.push("/dashboard/requests")}
                 className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
               >
                 Back to Dashboard
