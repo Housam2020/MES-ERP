@@ -502,7 +502,7 @@ const ReimbursementForm: React.FC = () => {
                 <option value="Badminton - Down Bad-Minton">Badminton - Down Bad-Minton</option>
                 <option value="Badminton - Feather Fighters">Badminton - Feather Fighters</option>
                 <option value="Basketball - Hungry Marauders">Basketball - Hungry Marauders</option>
-                <option value="Basketball - idk?">Basketball - idk?</option>
+                <option value="Basketball - Other">Basketball - Other</option>
                 <option value="Basketball - Places">Basketball - Places</option>
                 <option value="Ice Hockey - Iron Ringers">Ice Hockey - Iron Ringers</option>
                 <option value="Ice Hockey - The Steel Beams">Ice Hockey - The Steel Beams</option>
