@@ -94,7 +94,7 @@ const ReimbursementForm: React.FC = () => {
         throw error;
       }
       alert('Form submitted successfully');
-      window.location.href = "http://localhost:3000/dashboard/user";
+      window.location.href = "http://localhost:3000/dashboard/home";
   
     } catch (error) {
       console.error('Error submitting form:', error);
