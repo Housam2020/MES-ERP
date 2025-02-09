@@ -192,6 +192,7 @@ const BudgetSummaryTable = () => {
                           key={cellIndex}
                           className="border p-2 bg-gray-50"
                           contentEditable
+                          suppressContentEditableWarning
                         >
                           {cell}
                         </td>
@@ -215,6 +216,7 @@ const BudgetSummaryTable = () => {
                           key={cellIndex}
                           className="border p-2 bg-gray-50"
                           contentEditable
+                          suppressContentEditableWarning
                         >
                           {cell}
                         </td>
