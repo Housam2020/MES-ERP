@@ -7,7 +7,7 @@ export default function GuidesPage() {
   const router = useRouter();
 
   // YouTube video ID extracted from the link (e.g., "z-C6HFe31yA" from "https://www.youtube.com/watch?v=z-C6HFe31yA")
-  const youtubeVideoId = "-dY2IBPzJhI";
+  const youtubeVideoId = "XuNeBVetBiw";
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
