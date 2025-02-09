@@ -67,7 +67,7 @@ export default function DashboardHeader() {
       <nav className="container mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <span className="text-white dark:text-white font-medium px-6 py-4">MES Admin</span>
+            <span className="text-white dark:text-white font-medium px-6 py-4">MESERP</span>
             <div className="flex space-x-1">
               {navItems.map((item) => {
                 const visible = !item.permission || item.permission.some((p) => permissions.includes(p));
