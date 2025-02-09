@@ -384,7 +384,7 @@ const ReimbursementForm: React.FC = () => {
                 <button
                   type="button"
                   className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                  onClick={() => setFormStep(4)}
+                  onClick={() => setFormStep(3)}
                 >
                   Next
                 </button>
@@ -456,7 +456,7 @@ const ReimbursementForm: React.FC = () => {
                 <button
                   type="button"
                   className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                  onClick={() => setFormStep(5)}
+                  onClick={() => setFormStep(4)}
                 >
                   Next
                 </button>
@@ -525,7 +525,7 @@ const ReimbursementForm: React.FC = () => {
                 <button
                   type="button"
                   className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                  onClick={() => setFormStep(6)}
+                  onClick={() => setFormStep(5)}
                 >
                   Next
                 </button>
@@ -563,7 +563,7 @@ const ReimbursementForm: React.FC = () => {
                 <button
                   type="button"
                   className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                  onClick={() => setFormStep(7)}
+                  onClick={() => setFormStep(6)}
                 >
                   Next
                 </button>
@@ -572,54 +572,6 @@ const ReimbursementForm: React.FC = () => {
           )} 
 
           {formStep === 6 && (
-            <>
-              <div className="mb-4">
-                <label htmlFor="amount_requested_cad" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Please enter the amount requested in CAD.
-                </label>
-                <input
-                  {...register('amount_requested_cad', { required: 'Amount is required' })}
-                  type="text"
-                  className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
-                />
-                {errors.amount_requested_cad && (
-                  <p className="text-red-500 text-sm dark:text-red-400">{errors.amount_requested_cad.message}</p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="payment_timeframe" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Payment Timeframe Date
-                </label>
-                <input
-                  type="date"
-                  {...register('payment_timeframe', { required: 'Date is required' })}
-                  className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
-                />
-                {errors.payment_timeframe && (
-                  <p className="text-red-500 text-sm dark:text-red-400">{errors.payment_timeframe.message}</p>
-                )}
-              </div>
-
-              <div className="flex justify-between">
-                <button
-                  type="button"
-                  className="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
-                  onClick={() => setFormStep(5)}
-                >
-                  Previous
-                </button>
-                <button
-                  type="submit"
-                  className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
-                >
-                  Submit
-                </button>
-              </div>
-            </>
-          )} 
-
-          {formStep === 7 && (
             <>
               <div className="mb-4">
                 <label
@@ -753,14 +705,160 @@ const ReimbursementForm: React.FC = () => {
               <button
                 type="button"
                 className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
-                onClick={() => setFormStep(1)}
+                onClick={() => setFormStep(5)}
               >
                 Previous
               </button>
               <button
                 type="button"
                 className="bg-blue-600 text-white py-2 px-4 rounded mt-4 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                onClick={() => setFormStep(3)}
+                onClick={() => setFormStep(11)}
+              >
+                Next
+              </button>
+            </>
+          )}
+
+          {formStep === 7 && (
+            <>
+              <div className="mb-4">
+                <label
+                  htmlFor="budget_line"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Relevant Budget Line
+                </label>
+                <select
+                  {...register('budget_line', { required: 'Budget line is required' })}
+                  className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
+                >
+                  <option value="">Select budget line</option>
+                  <option value="Academic Events & Info Sessions">
+                    Academic Events & Info Sessions
+                  </option>
+                  <option value="Academic Resources">Academic Resources</option>
+                  <option value="Accounting Software">Accounting Software</option>
+                  <option value="Advertising">Advertising</option>
+                  <option value="Audit">Audit</option>
+                  <option value="Awards">Awards</option>
+                  <option value="B2S Week">B2S Week</option>
+                  <option value="Bank Fees">Bank Fees</option>
+                  <option value="Bookkeeper">Bookkeeper</option>
+                  <option value="Capstone Fund">Capstone Fund</option>
+                  <option value="CFES Membership">CFES Membership</option>
+                  <option value="CFES Presidents' Meeting">CFES Presidents' Meeting</option>
+                  <option value="Closed Conferences & Competitions">
+                    Closed Conferences & Competitions
+                  </option>
+                  <option value="Clubfest">Clubfest</option>
+                  <option value="Community Outreach">Community Outreach</option>
+                  <option value="Coordinator Retention">Coordinator Retention</option>
+                  <option value="Council Operations">Council Operations</option>
+                  <option value="Culture">Culture</option>
+                  <option value="Director of Events">Director of Events</option>
+                  <option value="ECCS Fees">ECCS Fees</option>
+                  <option value="Elections">Elections</option>
+                  <option value="Engineering Competition Delegate Funding">
+                    Engineering Competition Delegate Funding
+                  </option>
+                  <option value="Engineering Help Centre">
+                    Engineering Help Centre
+                  </option>
+                  <option value="ESSCO Membership">ESSCO Membership</option>
+                  <option value="ESSCO Ontario Engineering Competition">
+                    ESSCO Ontario Engineering Competition
+                  </option>
+                  <option value="Executive Operations">Executive Operations</option>
+                  <option value="Executive Planning Weekend">
+                    Executive Planning Weekend
+                  </option>
+                  <option value="Faculty Frenzy">Faculty Frenzy</option>
+                  <option value="Fireball">Fireball</option>
+                  <option value="First Year Society">First Year Society</option>
+                  <option value="Frequency">Frequency</option>
+                  <option value="Frost Week">Frost Week</option>
+                  <option value="Fundraising Donations">Fundraising Donations</option>
+                  <option value="Handbook">Handbook</option>
+                  <option value="Hatch Student Spaces">Hatch Student Spaces</option>
+                  <option value="Hatch Student Workshop">Hatch Student Workshop</option>
+                  <option value="Intramurals">Intramurals</option>
+                  <option value="IT">IT</option>
+                  <option value="Jumpsuit Initiative">Jumpsuit Initiative</option>
+                  <option value="Kennedy (formerly called Iron Ring)">
+                    Kennedy (formerly called Iron Ring)
+                  </option>
+                  <option value="Leadership Development Conference">
+                    Leadership Development Conference
+                  </option>
+                  <option value="Long Term Investments">Long Term Investments</option>
+                  <option value="Lounge">Lounge</option>
+                  <option value="McMaster Engineering Competition">
+                    McMaster Engineering Competition
+                  </option>
+                  <option value="Mentorship Program">Mentorship Program</option>
+                  <option value="MES Branding">MES Branding</option>
+                  <option value="MES Card Supplies">MES Card Supplies</option>
+                  <option value="National Engineering Month">
+                    National Engineering Month
+                  </option>
+                  <option value="Office Supplies">Office Supplies</option>
+                  <option value="Oksoberfest">Oksoberfest</option>
+                  <option value="Open Conferences & Competitions">
+                    Open Conferences & Competitions
+                  </option>
+                  <option value="Operational Contingency">
+                    Operational Contingency
+                  </option>
+                  <option value="Operations">Operations</option>
+                  <option value="Professional Development">
+                    Professional Development
+                  </option>
+                  <option value="Semi Annual General Meeting">
+                    Semi Annual General Meeting
+                  </option>
+                  <option value="Sports Events">Sports Events</option>
+                  <option value="Spread the Love Week">
+                    Spread the Love Week
+                  </option>
+                  <option value="Student Group Leadership Training">
+                    Student Group Leadership Training
+                  </option>
+                  <option value="Student Projects">Student Projects</option>
+                  <option value="Sustainability">Sustainability</option>
+                  <option value="Talent Show">Talent Show</option>
+                  <option value="The Drain">The Drain</option>
+                  <option value="The Event">The Event</option>
+                  <option value="Town Halls">Town Halls</option>
+                  <option value="Trailer">Trailer</option>
+                  <option value="Trivia Night">Trivia Night</option>
+                  <option value="Tutoring Program">Tutoring Program</option>
+                  <option value="Two Way Radio Frequency License">
+                    Two Way Radio Frequency License
+                  </option>
+                  <option value="Website / InfraTech">
+                    Website / InfraTech
+                  </option>
+                  <option value="Welcome Week">Welcome Week</option>
+                  <option value="Wellness">Wellness</option>
+                </select>
+                {errors.budget_line && (
+                  <p className="text-red-500 text-sm dark:text-red-400">
+                    {errors.budget_line.message}
+                  </p>
+                )}
+              </div>
+              {/* Additional sections... */}
+              <button
+                type="button"
+                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
+                onClick={() => setFormStep(6)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                onClick={() => setFormStep(11)}
               >
                 Next
               </button>
@@ -899,14 +997,14 @@ const ReimbursementForm: React.FC = () => {
               <button
                 type="button"
                 className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
-                onClick={() => setFormStep(1)}
+                onClick={() => setFormStep(7)}
               >
                 Previous
               </button>
               <button
                 type="button"
                 className="bg-blue-600 text-white py-2 px-4 rounded mt-4 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                onClick={() => setFormStep(3)}
+                onClick={() => setFormStep(9)}
               >
                 Next
               </button>
@@ -1045,14 +1143,14 @@ const ReimbursementForm: React.FC = () => {
               <button
                 type="button"
                 className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
-                onClick={() => setFormStep(1)}
+                onClick={() => setFormStep(8)}
               >
                 Previous
               </button>
               <button
                 type="button"
                 className="bg-blue-600 text-white py-2 px-4 rounded mt-4 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                onClick={() => setFormStep(3)}
+                onClick={() => setFormStep(10)}
               >
                 Next
               </button>
@@ -1191,164 +1289,70 @@ const ReimbursementForm: React.FC = () => {
               <button
                 type="button"
                 className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
-                onClick={() => setFormStep(1)}
+                onClick={() => setFormStep(9)}
               >
                 Previous
               </button>
               <button
                 type="button"
-                className="bg-blue-600 text-white py-2 px-4 rounded mt-4 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                onClick={() => setFormStep(3)}
+                className="bg-green-600 text-white py-2 px-4 rounded mt-4 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+                onClick={() => setFormStep(11)}
+
               >
                 Next
               </button>
             </>
           )}
 
-          {formStep === 11 && (
+        
+{formStep === 11 && (
             <>
               <div className="mb-4">
-                <label
-                  htmlFor="budget_line"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Relevant Budget Line
+                <label htmlFor="amount_requested_cad" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Please enter the amount requested in CAD.
                 </label>
-                <select
-                  {...register('budget_line', { required: 'Budget line is required' })}
+                <input
+                  {...register('amount_requested_cad', { required: 'Amount is required' })}
+                  type="text"
                   className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
-                >
-                  <option value="">Select budget line</option>
-                  <option value="Academic Events & Info Sessions">
-                    Academic Events & Info Sessions
-                  </option>
-                  <option value="Academic Resources">Academic Resources</option>
-                  <option value="Accounting Software">Accounting Software</option>
-                  <option value="Advertising">Advertising</option>
-                  <option value="Audit">Audit</option>
-                  <option value="Awards">Awards</option>
-                  <option value="B2S Week">B2S Week</option>
-                  <option value="Bank Fees">Bank Fees</option>
-                  <option value="Bookkeeper">Bookkeeper</option>
-                  <option value="Capstone Fund">Capstone Fund</option>
-                  <option value="CFES Membership">CFES Membership</option>
-                  <option value="CFES Presidents' Meeting">CFES Presidents' Meeting</option>
-                  <option value="Closed Conferences & Competitions">
-                    Closed Conferences & Competitions
-                  </option>
-                  <option value="Clubfest">Clubfest</option>
-                  <option value="Community Outreach">Community Outreach</option>
-                  <option value="Coordinator Retention">Coordinator Retention</option>
-                  <option value="Council Operations">Council Operations</option>
-                  <option value="Culture">Culture</option>
-                  <option value="Director of Events">Director of Events</option>
-                  <option value="ECCS Fees">ECCS Fees</option>
-                  <option value="Elections">Elections</option>
-                  <option value="Engineering Competition Delegate Funding">
-                    Engineering Competition Delegate Funding
-                  </option>
-                  <option value="Engineering Help Centre">
-                    Engineering Help Centre
-                  </option>
-                  <option value="ESSCO Membership">ESSCO Membership</option>
-                  <option value="ESSCO Ontario Engineering Competition">
-                    ESSCO Ontario Engineering Competition
-                  </option>
-                  <option value="Executive Operations">Executive Operations</option>
-                  <option value="Executive Planning Weekend">
-                    Executive Planning Weekend
-                  </option>
-                  <option value="Faculty Frenzy">Faculty Frenzy</option>
-                  <option value="Fireball">Fireball</option>
-                  <option value="First Year Society">First Year Society</option>
-                  <option value="Frequency">Frequency</option>
-                  <option value="Frost Week">Frost Week</option>
-                  <option value="Fundraising Donations">Fundraising Donations</option>
-                  <option value="Handbook">Handbook</option>
-                  <option value="Hatch Student Spaces">Hatch Student Spaces</option>
-                  <option value="Hatch Student Workshop">Hatch Student Workshop</option>
-                  <option value="Intramurals">Intramurals</option>
-                  <option value="IT">IT</option>
-                  <option value="Jumpsuit Initiative">Jumpsuit Initiative</option>
-                  <option value="Kennedy (formerly called Iron Ring)">
-                    Kennedy (formerly called Iron Ring)
-                  </option>
-                  <option value="Leadership Development Conference">
-                    Leadership Development Conference
-                  </option>
-                  <option value="Long Term Investments">Long Term Investments</option>
-                  <option value="Lounge">Lounge</option>
-                  <option value="McMaster Engineering Competition">
-                    McMaster Engineering Competition
-                  </option>
-                  <option value="Mentorship Program">Mentorship Program</option>
-                  <option value="MES Branding">MES Branding</option>
-                  <option value="MES Card Supplies">MES Card Supplies</option>
-                  <option value="National Engineering Month">
-                    National Engineering Month
-                  </option>
-                  <option value="Office Supplies">Office Supplies</option>
-                  <option value="Oksoberfest">Oksoberfest</option>
-                  <option value="Open Conferences & Competitions">
-                    Open Conferences & Competitions
-                  </option>
-                  <option value="Operational Contingency">
-                    Operational Contingency
-                  </option>
-                  <option value="Operations">Operations</option>
-                  <option value="Professional Development">
-                    Professional Development
-                  </option>
-                  <option value="Semi Annual General Meeting">
-                    Semi Annual General Meeting
-                  </option>
-                  <option value="Sports Events">Sports Events</option>
-                  <option value="Spread the Love Week">
-                    Spread the Love Week
-                  </option>
-                  <option value="Student Group Leadership Training">
-                    Student Group Leadership Training
-                  </option>
-                  <option value="Student Projects">Student Projects</option>
-                  <option value="Sustainability">Sustainability</option>
-                  <option value="Talent Show">Talent Show</option>
-                  <option value="The Drain">The Drain</option>
-                  <option value="The Event">The Event</option>
-                  <option value="Town Halls">Town Halls</option>
-                  <option value="Trailer">Trailer</option>
-                  <option value="Trivia Night">Trivia Night</option>
-                  <option value="Tutoring Program">Tutoring Program</option>
-                  <option value="Two Way Radio Frequency License">
-                    Two Way Radio Frequency License
-                  </option>
-                  <option value="Website / InfraTech">
-                    Website / InfraTech
-                  </option>
-                  <option value="Welcome Week">Welcome Week</option>
-                  <option value="Wellness">Wellness</option>
-                </select>
-                {errors.budget_line && (
-                  <p className="text-red-500 text-sm dark:text-red-400">
-                    {errors.budget_line.message}
-                  </p>
+                />
+                {errors.amount_requested_cad && (
+                  <p className="text-red-500 text-sm dark:text-red-400">{errors.amount_requested_cad.message}</p>
                 )}
               </div>
-              {/* Additional sections... */}
-              <button
-                type="button"
-                className="bg-gray-400 text-white py-2 px-4 rounded mt-4 mr-2 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
-                onClick={() => setFormStep(1)}
-              >
-                Previous
-              </button>
-              <button
-                type="submit"
-                className="bg-green-600 text-white py-2 px-4 rounded mt-4 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
-              >
-                Submit
-              </button>
+
+              <div className="mb-4">
+                <label htmlFor="payment_timeframe" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Payment Timeframe Date
+                </label>
+                <input
+                  type="date"
+                  {...register('payment_timeframe', { required: 'Date is required' })}
+                  className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
+                />
+                {errors.payment_timeframe && (
+                  <p className="text-red-500 text-sm dark:text-red-400">{errors.payment_timeframe.message}</p>
+                )}
+              </div>
+
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  className="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
+                  onClick={() => setFormStep(6)}
+                >
+                  Previous
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
+              </div>
             </>
-          )}
+          )} 
 
         </form>
       </div>
