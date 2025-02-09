@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { createClient } from "@/utils/supabase/client";
 import { v4 as uuidv4 } from "uuid";
 import Tesseract from "tesseract.js";
+import { useRouter } from "next/navigation";
 
 type FormData = {
   who_are_you: string;
@@ -49,6 +50,7 @@ const ReimbursementForm: React.FC = () => {
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const router = useRouter();
 
   // Helper function to extract total price using heuristics.
   const extractTotalPriceFromText = (text: string): number | null => {
@@ -168,7 +170,7 @@ const ReimbursementForm: React.FC = () => {
         throw error;
       }
       alert("Form submitted successfully");
-      window.location.href = "http://localhost:3000/dashboard/home";
+      window.location.href = "/dashboard/home";
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -177,6 +179,13 @@ const ReimbursementForm: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
       <div className="container mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow-md">
+        <button
+                type="button"
+                onClick={() => router.push("/dashboard/home")}
+                className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+              >
+                Back to Dashboard
+        </button>
         <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
           MES Payment and Reimbursement Form
         </h1>
