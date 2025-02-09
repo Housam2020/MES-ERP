@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { DollarSign, Users, Clock, FileText } from 'lucide-react';
+import { Users, Clock, FileText } from 'lucide-react';
+import Link from "next/link";
 
 export default function HomePage() {
   const supabase = createClient();
@@ -130,11 +131,12 @@ export default function HomePage() {
 
   return (
     <div>
-      <DashboardHeader />
-      <div className="container mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-6">Dashboard Overview</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Always show user's personal requests */}
+    <DashboardHeader />
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">Dashboard Overview</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Always show user's personal requests */}
+        <Link href="/dashboard/requests">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Your Requests</CardTitle>
@@ -145,11 +147,13 @@ export default function HomePage() {
               <p className="text-xs text-muted-foreground">Total Amount: ${stats.userAmount.toFixed(2)}</p>
             </CardContent>
           </Card>
+        </Link>
 
-          {/* Conditionally render broader stats based on permissions */}
-          {(permissions.includes('view_club_requests') || permissions.includes('view_all_requests')) && (
-            <>
-              <Card>
+        {/* Conditionally render broader stats based on permissions */}
+        {(permissions.includes('view_club_requests') || permissions.includes('view_all_requests')) && (
+          <>
+            <Link href="/dashboard/requests">
+              <Card className="cursor-pointer">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     {permissions.includes('view_all_requests') 
@@ -163,8 +167,10 @@ export default function HomePage() {
                   <p className="text-xs text-muted-foreground">Total Amount: ${stats.totalAmount.toFixed(2)}</p>
                 </CardContent>
               </Card>
+            </Link>
 
-              <Card>
+            <Link href="/dashboard/requests">
+              <Card className="cursor-pointer">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
                   <Clock className="h-4 w-4 text-muted-foreground" />
@@ -173,8 +179,9 @@ export default function HomePage() {
                   <div className="text-2xl font-bold">{stats.pendingRequests}</div>
                 </CardContent>
               </Card>
-            </>
-          )}
+            </Link>
+          </>
+        )}
 
           {/* Admin-only stat */}
           {permissions.includes('view_all_requests') && (
