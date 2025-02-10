@@ -15,6 +15,20 @@ export async function POST(request: Request) {
       );
     }
 
+    const getEtaMessage = (status: string) => {
+      switch (status.toLowerCase()) {
+        case "in progress":
+          return "<p>Your request is now being reviewed. You can expect a decision (approval or rejection) within 1 business day.</p>";
+        case "submitted":
+          return '<p>Your request will be reviewed soon. Requests typically move to "In Progress" within 2-3 business days.</p>';
+        case "approved":
+        case "rejected":
+          return "<p>This is the final status for your request.</p>";
+        default:
+          return "";
+      }
+    };
+
     const msg = {
       to: userEmail,
       from: process.env.SENDGRID_FROM_EMAIL!,
@@ -32,6 +46,7 @@ export async function POST(request: Request) {
               : ""
           }
         </ul>
+        ${getEtaMessage(newStatus)}
         <p>If you have any questions, please contact your club administrator.</p>
       `,
     };
