@@ -27,13 +27,30 @@ Demo.  The time period of interest is the time between the POC demo and the Rev
 For our upcoming Proof of Concept (POC) demo, we will showcase the core functionalities of the website, building on the features demonstrated previously. The goal is to highlight both the established and newly added functionalities, ensuring a user-friendly and efficient design. The demo will include the following features:
 
 \begin{itemize}
-    \item \textbf{Authentication System:} Users will be able to register, log in, and be assigned a role (user or admin) to access their respective dashboards.
-    
-    \item \textbf{User and Admin Dashboards:}
+    \item \textbf{Authentication and Role-Based Access:} Users will be able to register, log in, and be assigned specific permissions. These permissions will dynamically control which pages and functionalities they can access.
+
+    \item \textbf{Requests and Approval Workflow:}
     \begin{itemize}
-        \item \textbf{User Dashboard:} The user will have access to a form for submitting reimbursement requests. Once a form is submitted, the user can view the status of their request, which will be updated as the request progresses.
-        \item \textbf{Admin Dashboard:} The admin will be able to view all reimbursement requests submitted by users. Admins can update the status of each request (in progress, accepted, rejected), and these status changes will be reflected on the user's dashboard.
+        \item Users can submit reimbursement or payment requests via a structured form.
+        \item Admins or authorized personnel can review submitted requests and update their status.
+        \item Status updates will be reflected dynamically, allowing users to track their requests in real time.
+        \item Approved requests will automatically update the corresponding group's budget allocation.
+        \item The system will provide real-time feedback to admins, displaying the remaining budget after each approval.
     \end{itemize}
+
+    \item \textbf{Analytics and Reporting:}
+    \begin{itemize}
+        \item The Analytics Page will provide visual insights into various financial and operational metrics, helping administrators and users track key trends and activity.
+        \item Graphs and charts will help admins monitor financial health and make data-driven decisions.
+    \end{itemize}
+
+    \item \textbf{Role and Group Management:}
+    \begin{itemize}
+        \item The Roles Page allows admins to create, edit, and assign roles with customized permissions.
+        \item The Groups Page enables the management of different groups, linking them to specific users and budget allocations.
+        \item These tools ensure flexible user management and controlled access to system functionalities.
+    \end{itemize}
+
     
     \item \textbf{New Features:}
     \begin{itemize}
