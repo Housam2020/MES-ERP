@@ -186,7 +186,7 @@ Maintenance users play a vital role in the long-term success of the platform:
 \subsection{Relevant Facts}
 \begin{itemize}
   \item There is no current application built for this project.
-  \item The project will be built primarily in Typescript and NextJS.
+  \item The project will be built primarily in JavaScript and React.
   \item There are 60 student groups to account for.
   \item The current process for submitting checks is manual, which takes far too long.
   \item The input should be generalized, with no differentiation between student groups.
@@ -208,7 +208,7 @@ Maintenance users play a vital role in the long-term success of the platform:
 \begin{itemize}
   \item Student groups and the MES are in contact and know the ground rules of what to expect from purchases.
   \item We are expecting the MES to provide us with a server to run our software.
-  \item The system will be coded in Typescript and NextJS.
+  \item The system will be coded in JavaScript and NextJS.
   \item The system will be built from scratch.
   \item The MES is expected to provide us with data for test cases.
   \item Internet is expected to be provided, as well as a suitable system with enough RAM/storage for the app. 
@@ -264,33 +264,46 @@ The MES-ERP system will handle various types of financial and user-related data,
 \begin{itemize}
     \item \textbf{User Entity:}
     \begin{itemize}
-        \item \textbf{Attributes:} UserID, Name, Email, Role (Student Group Leader, Administrator, Financial Officer), Login Credentials
+        \item \textbf{Attributes:} UserID, Name, Email, Group, Role (Student Group Leader, Administrator, Financial Officer), Login Credentials, Phone Number, Reimbursement Choice 
         \item \textbf{Relationship:} A user can submit many reimbursement requests and manage budgets.
     \end{itemize}
     
     \item \textbf{Reimbursement Request Entity:}
     \begin{itemize}
-        \item \textbf{Attributes:} RequestID, SubmitterID (links to UserID), Date of Submission, Amount, Status (Submitted, Approved, Rejected, Paid), Attached Receipts
+        \item \textbf{Attributes:} RequestID, Timestamp, Email Address, SubmitterID (links to UserID), Identification, Full name, Phone Number, Email, Role, Budget Line, Approved Individual, Team name, Conference or competition name/type, Head Delegate, Amount, Status (Submitted, Approved, Rejected, Paid), Attached Receipts, Reimbursement Choice, Payment timeframe
         \item \textbf{Relationship:} Each reimbursement request is submitted by one user but can be reviewed by multiple administrators.
     \end{itemize}
     
     \item \textbf{Budget Entity:}
     \begin{itemize}
-        \item \textbf{Attributes:} BudgetID, GroupID (identifies the student group), Total Amount Allocated, Amount Spent, Category (e.g., Event, Travel, Supplies)
+        \item \textbf{Attributes:} BudgetID, GroupID (identifies the student group), Total Amount Allocated, Amount Spent, Category (e.g., Event, Travel, Supplies), Additional group information
         \item \textbf{Relationship:} A student group manages one budget per financial year, and each budget can have multiple expense reports linked to it.
     \end{itemize}
-    
-    \item \textbf{Ledger Entity:}
+
+    \item \textbf{Group Entity:}
     \begin{itemize}
-        \item \textbf{Attributes:} LedgerID, Date of Transaction, GroupID, Amount, Category, ReimbursementRequestID (optional)
-        \item \textbf{Relationship:} Each ledger entry corresponds to an individual financial transaction, either linked to a reimbursement request or manually entered by the MES administration.
+        \item \textbf{Attributes:} ID, Name, Created at, Created by
+        \item \textbf{Relationship:} A group will identify a bunch of individuals to a specific group which they take part of 
     \end{itemize}
     
-    \item \textbf{Audit Log Entity:}
+    \item \textbf{Permission Entity:}
     \begin{itemize}
-        \item \textbf{Attributes:} AuditLogID, Action, PerformedBy (links to UserID), Date and Time, Entity Affected (e.g., ReimbursementRequestID or BudgetID)
-        \item \textbf{Relationship:} The audit log tracks all actions related to budget management, reimbursement requests, and financial approvals, ensuring compliance with MES regulations.
+        \item \textbf{Attributes:} ID, Name
+        \item \textbf{Relationship:} The permission entity will allow a user to have different roles on the site based off their permissions
     \end{itemize}
+
+    \item \textbf{Role Permission Entity:}
+    \begin{itemize}
+        \item \textbf{Attributes:} ID, Permission ID
+        \item \textbf{Relationship:} This links role IDs to permission IDs
+    \end{itemize}
+
+    \item \textbf{Role Entity:}
+    \begin{itemize}
+        \item \textbf{Attributes:} ID, Name
+        \item \textbf{Relationship:} This creates roles for a user.
+    \end{itemize}
+
 \end{itemize}
 
 \subsection{Data Dictionary}
@@ -305,12 +318,7 @@ The product boundary defines the scope of the McMaster Engineering Society (MES)
     \item \textbf{Automated Functions:}
     \begin{itemize}
         \item Streamlining reimbursement requests for student groups.
-        \item Managing payment requests efficiently.
-        \item Facilitating intramural funding applications with a clear workflow.
-        \item Saving repetitive information, such as void cheques and e-transfer email addresses.
-        \item Customizing approval workflows to fit different organizational needs.
-        \item Implementing audit tracking for compliance with financial regulations.
-        \item Automating ledger tracking for real-time financial monitoring.
+        \item Saving repetitive information.
         \item Sending SMS and automated emails for updates and notifications to users.
         \item Processing invoices, receipts, payment notices, and remittance advice effectively.
     \end{itemize}
@@ -319,6 +327,11 @@ The product boundary defines the scope of the McMaster Engineering Society (MES)
         \item Initial data entry for historical records and previous expense submissions.
         \item User training and support for navigating the new platform.
         \item Handling of any non-digital submissions or documents.
+        \item Submitting reimbursement receipts.
+        \item Handling payment requests. 
+        \item Creating roles and groups. 
+        \item Managing users and groups. 
+        \item Creating budget lines. 
     \end{itemize}
 \end{itemize}
 
@@ -388,7 +401,7 @@ This section details the individual product use cases listed in the Product Use 
 \textbf{Scenario:} The student saves repetitive financial information for future use.
 \begin{itemize}
     \item The student navigates to the settings section.
-    \item They enter and save their bank details and contact information.
+    \item They enter and save their personal information.
     \item The information is stored for future reimbursement requests.
 \end{itemize}
 
@@ -457,23 +470,12 @@ This section details the individual product use cases listed in the Product Use 
   \item \textbf{Originator}: System Administrators
   
   \bigskip
-  
-  \item \textbf{Requirement Number}: 005
-  \item \textbf{Description}: The system must allow users to view a reason for rejection when a reimbursement request is rejected.
-  \item \textbf{Rationale}: To help users correct issues with their requests.
-  \item \textbf{Fit Criterion}: On rejection, the system must display or notify the user of the rejection reason.
-  \item \textbf{Priority}: Medium
-  \item \textbf{Originator}: Club Financial Managers
 
 \end{itemize}
 
 \section{Look and Feel Requirements}
 \subsection{Appearance Requirements}
 \begin{enumerate}
-  \item The platform must adhere to the established MES color scheme of maroon, white, and red to ensure a consistent visual identity across all MES platforms. \\
-  Rationale: This creates a seamless brand experience for users who are familiar with MES's website and other communications.
-  \item The platform must be fully responsive to adjust seamlessly to various screen sizes including desktop, tablet, and mobile devices. \\
-  Rationale: Many users, especially students, are likely to access the platform from mobile devices. A responsive design ensures the platform is accessible to all users.
   \item  Animations should be kept minimal and used only when necessary to avoid distractions. \\
   Rationale: Minimal animation improves the user experience through feedback, without being very distracting, hence keeping the focus on the functionality of the platform.
 \end{enumerate}
@@ -505,31 +507,25 @@ This section details the individual product use cases listed in the Product Use 
 
 \begin{enumerate}
   
-  \item Users will have the ability to organize reimbursement claims based on date. \\
-  Rationale: Being able to organize the claims will allow user to quickly navigate and find claims made in the past, ultimately saving time.
+  \item Users will have the ability to create an account and update their information to their liking. \\
+  Rationale: This will allow users to save time for any future reimbursement requests.
 \end{enumerate}
 \subsection{Learning Requirements}
 
 \begin{enumerate}
-  \item Users will be provided instructions and a follow along process when making their first claim \\
+  \item Users will be provided instructions if they go to a tutorial page. \\
   Rationale: Walking the user through the reimbursement request process would effectively and efficiently teach the user on how to create requests in the future, saving time and minimizing confusion.
   
 \end{enumerate}
 \subsection{Understandability and Politeness Requirements}
 
 \begin{enumerate}
-  
-  \item There will be small help pop-ups available to users that will provide brief explanations of certain terminology or brief descriptions of what to input. \\
-  Rationale: Providing such information would allow users to understand what is being asked without having to determine it themselves.
   \item Any error messages on the platform will provide information regarding why the error is showing. \\
   Rationale: Having detailed error messages will help users to quickly troubleshoot the problem and fix their mistakes.
 \end{enumerate}
 \subsection{Accessibility Requirements}
 
 \begin{enumerate}
-  
-  \item The product shall have an option for increased font sizes for those with visual impairments. \\
-  Rationale: Allowing an adjustable font size would accomodate for users who have bad vision.
   \item The product shall have an option for adjusting colour themes and will avoid colour combinations that are not supported for those with colour blindness. \\
   Rationale: Allowing customizable colour themes would accomodate for users who are colour blind.
 \end{enumerate}
@@ -597,7 +593,6 @@ The longevity of the platform is crucial for ensuring a return on investment and
 
 \begin{itemize}
     \item The product shall be expected to operate effectively for an extended period within the defined maintenance budget.
-    \item The system must be designed with upgrade paths to accommodate future technology advancements without complete replacement.
     \item All components of the system must be built with durability and support in mind, with the expectation of routine maintenance.
 \end{itemize}
 
@@ -606,7 +601,7 @@ The longevity of the platform is crucial for ensuring a return on investment and
 \begin{enumerate}
   \item The system will be in an office room.
   \item The system will be located in the McMaster Campus. 
-  \item The system will be useable in any natural environment for a laptop/phone/desktop. 
+  \item The system will be useable in any natural environment for a laptop or desktop. 
 \end{enumerate}
 \subsection{Wider Environment Requirements}
 \begin{enumerate}
@@ -615,7 +610,7 @@ The longevity of the platform is crucial for ensuring a return on investment and
 
 \subsection{Requirements for Interfacing with Adjacent Systems}
 \begin{enumerate}
-  \item The app will be useable on a desktop, laptop or phone.
+  \item The app will be useable on a desktop and laptop.
   \item The app will be running on Windows, Mac and Linux. 
   \item The app will work on the last 4 versions of Chrome, Firefox and Edge. 
 \end{enumerate}
@@ -679,7 +674,6 @@ The longevity of the platform is crucial for ensuring a return on investment and
 
 \begin{enumerate}
     \item The system must ensure that all financial data, such as budgets, expense reports, and reimbursement requests, remain accurate and have not been tampered with. This includes preventing inaccurate or unauthorized modifications to any financial records. This is to ensure that submitted data is valid and consistent with the system's requirements.
-    \item The product must protect itself from attacks coming from external sources and from unintentional mistakes by authorized users. If an external attack occurs, the system should log the attempt and prevent any changes to financial data.
     \item The system shall prevent internal misuse, such as incorrect data entry, through validation rules and error handling mechanisms.
     \item To maintain data integrity, the system must perform automated backups of all important financial data. In the event of system failure, data corruption, or accidental deletion, these backups should allow the system to recover with minimal data loss. Recovery processes should be tested regularly to ensure reliability.
     \item The system shall maintain detailed logs of all actions taken within the platform, such as data modifications, approvals, or deletions. These logs will be immutable and can be used to restore data or identify the source of an error if data becomes corrupted or tampered with.
@@ -689,7 +683,6 @@ The longevity of the platform is crucial for ensuring a return on investment and
 
 \begin{enumerate}
   \item The system must comply with all relevant privacy laws and regulations to ensure that personal data is handled in accordance with these laws.
-  \item Before collecting any personal information, the system must inform users of the types of data collected, how it will be used, and who will have access to it.
   \item The system must obtain consent from users before collecting personal information. Users must have the ability to revoke data collection consent at any time, and the system must stop processing or storing the data on the user.
   \item Users must be able to view, edit, or request corrections to their personal data stored in the system.
   \item The system must notify users of any changes to its information or privacy policy. Users should have the opportunity to review and give feedback or consent to the changes before any further processing of their data.
@@ -700,9 +693,6 @@ The longevity of the platform is crucial for ensuring a return on investment and
 
 \begin{enumerate}
   \item The system must retain detailed records of all user transactions, including financial submissions, approvals, modifications, and deletions, ensuring that all actions can be traced back to the responsible user.
-  \item Audit logs must record the date and time of each transaction, the user involved, and the specific actions taken, ensuring full traceability of the system's usage.
-  \item The audit logs must be immutable, ensuring that no user can modify or delete the audit records.
-  \item The system must retain audit logs for a minimum period of one year, or as required by applicable financial regulations.
   \item The system must record login attempts, both successful and unsuccessful, to provide a complete history of user access to the system.
   \item Access to the audit logs must be restricted to authorized users, such as administrators and auditors, ensuring confidentiality of the audit data.
   \item The system must ensure that audit data is protected from unauthorized access or tampering, using security measures such as encryption and access control.
@@ -711,10 +701,6 @@ The longevity of the platform is crucial for ensuring a return on investment and
 \subsection{Immunity Requirements}
 
 \begin{enumerate}
-  \item The system must implement protective measures against unauthorized programs such as viruses, malwares, and spywares, ensuring that the system remains secure from threats.
-  \item The system must regularly scan for potential security vulnerabilities and unauthorized software, using antivirus and anti-malware tools to detect threats.
-  \item The system must be capable of eliminating any detected malicious software to prevent it from affecting the integrity of the system or its data.
-  \item The system must provide real-time monitoring for suspicious activities that show attempted infections.
   \item The system must ensure that all software components and libraries used in the product are regularly updated with the latest security patches to reduce the risk of infection by known vulnerabilities.
 \end{enumerate}
 
@@ -727,8 +713,6 @@ The longevity of the platform is crucial for ensuring a return on investment and
   Rationale: As the application is for use within McMaster University, the predominant spelling method is using British spelling.
   \item The system must be designed to be inclusive and usable by people from diverse cultural, linguistic, and social backgrounds. This includes ensuring gender-neutral language and avoiding culturally biased terms. \\
   Rationale:  MES is a diverse community composed of students and staff from various cultural and linguistic backgrounds. The platform must reflect this diversity by avoiding assumptions about users' cultural norms or preferences.
-  \item The platform should allow users to input and view dates and times in different time zones and formats (e.g., 24-hour vs 12-hour clock, day-month-year vs month-day-year formats). \\
-  Rationale: MES includes international students and staff who may be accustomed to different time zones and date formats. Flexibility in how time and dates are presented enhances the usability for these diverse users.
 \end{enumerate}
 
 \section{Compliance Requirements}
@@ -781,12 +765,6 @@ To ensure the quality and reliability of the platform, it must comply with vario
 
   \bigskip
 
-  \item \textbf{Issue Number}: 004
-  \item \textbf{Cross-reference}: Affects Look and Feel Requirements.
-  \item \textbf{Summary}: It has not yet been determined how the platform's responsiveness will be prioritized across desktop, tablet, and mobile.
-  \item \textbf{Stakeholders Involved}: Project Team.
-  \item \textbf{Action}: Stakeholders will be meeting to perform UI/UX design mockups to determine design priorities.
-  \item \textbf{Resolution}: Expected decision within two weeks.
 \end{itemize}
 
 \section{Off-the-Shelf Solutions}
@@ -821,7 +799,6 @@ The goal is to identify potential conflicts early to minimize disruption during 
 The new platform will interface with existing systems at MES, and understanding these interactions is critical:
 
 \begin{itemize}
-    \item \textbf{Interface Requirements:} The new system will need to interact with existing financial software for data exchange. Specifications for data formats and protocols must be clearly defined.
     \item \textbf{Compatibility:} Ensure that the platform is compatible with existing hardware and software, minimizing the risk of conflicts or failures during operation.
     \item \textbf{Legacy System Considerations:} Users may need access to legacy systems during the transition phase, requiring well-defined procedures for accessing both systems without confusion.
 \end{itemize}
@@ -912,7 +889,6 @@ The total estimated labor cost is based on the following:
 \subsection{Monetary Costs}
 While the development and testing are measured in hours, the following are expected to have real monetary costs:
 \begin{itemize}
-    \item \textbf{SMS Notification Costs}: Since the system will send SMS notifications, each SMS sent will have a cost. Based on typical SMS rates, the estimated cost is \$0.01 to \$0.05 per SMS, depending on the service provider. For 1,000 notifications, the cost would be in the range of \$10 to \$50.
     \item \textbf{Server Operating Costs}: The system will be hosted on a local server provided by MES. Although there is no cloud storage cost, running the server will have electricity and maintenance costs. These are expected to be minimal and can be estimated at approximately \$10 to \$20 per month.
 \end{itemize}
 
@@ -937,7 +913,7 @@ While the development and testing are measured in hours, the following are expec
 \end{enumerate}
 
 \section{Ideas for Solution}
-A solution for this will be a web-based finance and accounting system using Typescript, NextJS, React, and Git to address the MES's challenges in managing reimbursement requests for 60 student groups. This system will streamline financial operations by allowing students to submit reimbursement requests with modular receipt uploads, real-time status tracking, and automated notifications. It will also feature live ledger tracking, custom budget creation, and support for multiple approval levels, ensuring transparency and reducing delays in request processing. This solution will greatly increase the efficiency of the old system the MES uses (excel files). Typescript will be used as the primary programming language. NextJS will serve as the framework for both front-end and back-end. React will also be used to create a responsive and interactive experience for the app. Git will manage version control, allowing the development team to share code, track changes, and collaborate efficiently without overwriting each other’s work. 
+A solution for this will be a web-based finance and accounting system using JavaScript, NextJS, React, and Git to address the MES's challenges in managing reimbursement requests for 60 student groups. This system will streamline financial operations by allowing students to submit reimbursement requests with modular receipt uploads, real-time status tracking, and automated notifications. It will also feature live ledger tracking, custom budget creation, and support for multiple approval levels, ensuring transparency and reducing delays in request processing. This solution will greatly increase the efficiency of the old system the MES uses (excel files). Typescript will be used as the primary programming language. NextJS will serve as the framework for both front-end and back-end. React will also be used to create a responsive and interactive experience for the app. Git will manage version control, allowing the development team to share code, track changes, and collaborate efficiently without overwriting each other’s work. 
 \newpage{}
 \section*{Appendix --- Reflection}
 
