@@ -1,4 +1,3 @@
-// Add this at the very top of the file
 "use client";
 
 import { useState, useEffect } from "react";
@@ -10,9 +9,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import EditableStatusRow from "@/components/dashboard/EditableStatusRow";
-
-// Your component code remains the same below...
-
 
 export default function RequestsPage() {
   const supabase = createClient();
@@ -56,8 +52,8 @@ export default function RequestsPage() {
 
         // Base query for budget requests
         let budgetRequestsQuery = supabase
-          .from("annual_budget_form") // Fetch from the annual_budget_form table
-          .select("id, club_name, requested_mes_funding, created_at") // Select only the required fields
+          .from("annual_budget_form")
+          .select("id, club_name, requested_mes_funding, created_at, status")
           .order("created_at", { ascending: false });
 
         // Determine request visibility based on permissions
@@ -66,7 +62,6 @@ export default function RequestsPage() {
         } else if (permissions.includes("view_club_requests")) {
           // Club leaders/admins see requests from their group
           if (userData?.group_id) {
-            // Filter by club_name instead of group_id
             budgetRequestsQuery = budgetRequestsQuery.eq("club_name", userData.groups.name);
           }
         } else {
@@ -82,10 +77,7 @@ export default function RequestsPage() {
 
         // Fetch budget requests
         const { data: budgetRequestsData, error: budgetRequestsError } = await budgetRequestsQuery;
-        if (budgetRequestsError) {
-          console.error("Error fetching budget requests:", budgetRequestsError);
-          throw budgetRequestsError;
-        }
+        if (budgetRequestsError) throw budgetRequestsError;
         setBudgetRequests(budgetRequestsData || []);
       } catch (error) {
         console.error("Error in fetchData:", error);
@@ -99,8 +91,7 @@ export default function RequestsPage() {
     }
   }, [permissions, permissionsLoading, permissionsError]);
 
-  const handleStatusUpdate = async (requestId: string, newStatus: string) => {
-    // Update UI immediately
+  const handleStatusUpdate = async (requestId, newStatus) => {
     setPaymentRequests(
       paymentRequests.map((request) =>
         request.request_id === requestId
@@ -109,13 +100,9 @@ export default function RequestsPage() {
       )
     );
 
-    // Find the request to get its details
     const request = paymentRequests.find((r) => r.request_id === requestId);
-
-    // Print params on request to console for debugging
     console.log("Request:", request);
 
-    // Send email notification
     try {
       await fetch("/api/send-email-notif", {
         method: "POST",
@@ -210,6 +197,7 @@ export default function RequestsPage() {
                   <tr>
                     <th className="py-2 px-4 bg-gray-50 text-left">Club Name</th>
                     <th className="py-2 px-4 bg-gray-50 text-left">Requested MES Funding</th>
+                    <th className="py-2 px-4 bg-gray-50 text-left">Status</th>
                     <th className="py-2 px-4 bg-gray-50 text-left">Date</th>
                   </tr>
                 </thead>
@@ -218,6 +206,7 @@ export default function RequestsPage() {
                     <tr key={request.id}>
                       <td className="py-2 px-4 border-b">{request.club_name}</td>
                       <td className="py-2 px-4 border-b">${request.requested_mes_funding}</td>
+                      <td className="py-2 px-4 border-b">{request.status}</td>
                       <td className="py-2 px-4 border-b">
                         {new Date(request.created_at).toLocaleDateString()}
                       </td>
