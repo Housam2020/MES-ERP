@@ -4,7 +4,13 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from "@/components/ui/card";
 import {
   LineChart,
   Line,
@@ -50,6 +56,7 @@ export default function AnalyticsPage() {
     error: permissionsError,
   } = usePermissions();
   const [paymentRequests, setPaymentRequests] = useState([]);
+  const [budgetData, setBudgetData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -97,7 +104,25 @@ export default function AnalyticsPage() {
         const { data: requests, error: requestsError } = await requestsQuery;
 
         if (requestsError) throw requestsError;
+
+        // Fetch budget data
+        const { data: budgetRows, error: budgetError } = await supabase
+          .from("annual_budget_form_rows")
+          .select(
+            `
+            id,
+            col_values,
+            annual_budget_form_groups (
+              group_title
+            )
+          `
+          )
+          .order("order_index");
+
+        if (budgetError) throw budgetError;
+
         setPaymentRequests(requests || []);
+        setBudgetData(budgetRows || []);
       } catch (err) {
         setError(
           err instanceof Error ? err : new Error("Failed to fetch data")
@@ -216,6 +241,64 @@ export default function AnalyticsPage() {
       .take(10)
       .value();
 
+    // Budget vs Actual Spending
+    const budgetComparison = _.chain(paymentRequests)
+      .groupBy("budget_line")
+      .map((requests, budgetLine) => {
+        const actualSpent = _.sumBy(
+          requests,
+          (req) => req.amount_requested_cad || 0
+        );
+        // Get corresponding budget allocation
+        const budgetRow = budgetData?.find(
+          (row) => row.col_values?.line_label === budgetLine
+        );
+        const allocated = budgetRow?.col_values?.col_2024_2025 || 0;
+
+        return {
+          budgetLine: budgetLine || "Unspecified",
+          actualSpent,
+          allocated: Number(allocated),
+          utilizationRate: allocated ? (actualSpent / allocated) * 100 : 0,
+        };
+      })
+      .orderBy(["utilizationRate"], ["desc"])
+      .value();
+
+    // Seasonal Analysis
+    const seasonalAnalysis = _.chain(paymentRequests)
+      .groupBy((req) => {
+        const date = new Date(req.timestamp);
+        const month = date.getMonth();
+        // Group into seasons
+        if (month >= 8 && month <= 11) return "Fall";
+        if (month >= 0 && month <= 3) return "Winter";
+        return "Spring/Summer";
+      })
+      .map((requests, season) => ({
+        season,
+        count: requests.length,
+        totalAmount: _.sumBy(requests, (req) => req.amount_requested_cad || 0),
+      }))
+      .value();
+
+    // Budget Utilization Timeline
+    const budgetTimeline = _.chain(paymentRequests)
+      .orderBy(["timestamp"], ["asc"])
+      .reduce((acc, req) => {
+        const amount = req.amount_requested_cad || 0;
+        const lastTotal = acc.length ? acc[acc.length - 1].cumulativeTotal : 0;
+        return [
+          ...acc,
+          {
+            date: req.timestamp,
+            amount,
+            cumulativeTotal: lastTotal + amount,
+          },
+        ];
+      }, [])
+      .value();
+
     return {
       monthlyData,
       statusData,
@@ -225,8 +308,11 @@ export default function AnalyticsPage() {
       paymentMethodData,
       dayOfWeekData,
       topRequesters,
+      budgetComparison,
+      seasonalAnalysis,
+      budgetTimeline,
     };
-  }, [paymentRequests]);
+  }, [paymentRequests, budgetData]);
 
   if (loading || permissionsLoading) return <div>Loading...</div>;
   if (error || permissionsError)
@@ -508,6 +594,129 @@ export default function AnalyticsPage() {
                         name="Number of Requests"
                       />
                     </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Budget Utilization vs Allocation */}
+              <Card className="col-span-2">
+                <CardHeader>
+                  <CardTitle>Budget Line Utilization</CardTitle>
+                  <CardDescription>
+                    Comparison of actual spending against allocated budget
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={analytics.budgetComparison}
+                      layout="vertical"
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" />
+                      <YAxis dataKey="budgetLine" type="category" width={150} />
+                      <Tooltip
+                        formatter={(value, name) => [
+                          `$${Number(value).toFixed(2)}`,
+                          name === "utilizationRate" ? "Utilization %" : name,
+                        ]}
+                      />
+                      <Legend />
+                      <Bar
+                        dataKey="allocated"
+                        fill="#8884d8"
+                        name="Allocated Budget"
+                      />
+                      <Bar
+                        dataKey="actualSpent"
+                        fill="#82ca9d"
+                        name="Actual Spent"
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="utilizationRate"
+                        stroke="#ff7300"
+                        name="Utilization Rate %"
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Seasonal Spending Analysis */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Seasonal Spending Patterns</CardTitle>
+                </CardHeader>
+                <CardContent className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={analytics.seasonalAnalysis}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="season" />
+                      <YAxis
+                        yAxisId="left"
+                        orientation="left"
+                        stroke="#8884d8"
+                      />
+                      <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        stroke="#82ca9d"
+                      />
+                      <Tooltip
+                        formatter={(value) => `$${Number(value).toFixed(2)}`}
+                      />
+                      <Legend />
+                      <Bar
+                        yAxisId="left"
+                        dataKey="totalAmount"
+                        fill="#8884d8"
+                        name="Total Amount ($)"
+                      />
+                      <Bar
+                        yAxisId="right"
+                        dataKey="count"
+                        fill="#82ca9d"
+                        name="Number of Requests"
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Cumulative Spending Timeline */}
+              <Card className="col-span-2">
+                <CardHeader>
+                  <CardTitle>Cumulative Spending Timeline</CardTitle>
+                  <CardDescription>
+                    Running total of expenses over time
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={analytics.budgetTimeline}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="date"
+                        tickFormatter={(date) =>
+                          new Date(date).toLocaleDateString()
+                        }
+                      />
+                      <YAxis />
+                      <Tooltip
+                        formatter={(value) => `$${Number(value).toFixed(2)}`}
+                        labelFormatter={(date) =>
+                          new Date(date).toLocaleDateString()
+                        }
+                      />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="cumulativeTotal"
+                        stroke="#8884d8"
+                        name="Cumulative Spending ($)"
+                      />
+                    </LineChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
