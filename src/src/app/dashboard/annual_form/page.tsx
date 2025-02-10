@@ -3,28 +3,57 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import { usePermissions } from "@/hooks/usePermissions";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+
+// If your user is not truly "admin" but some other permission (like "view_all_requests"),
+// then update the checks below from "admin" to the permission you want to require.
 
 const BudgetForm = () => {
   const supabase = createClient();
   const router = useRouter();
+  const { permissions, loading: permissionsLoading } = usePermissions();
+
   const [formData, setFormData] = useState({
-    club_name: "", // Matches `club_name` in the database
-    requested_mes_funding: "", // Matches `requested_mes_funding` in the database
-    total_income: 0, // Matches `total_income` in the database
-    total_expense: 0, // Matches `total_expense` in the database
-    surplus_deficit: 0, // Matches `surplus_deficit` in the database
-    fall_2024_expenses: "", // Matches `fall_2024_expenses` in the database
-    winter_2025_expenses: "", // Matches `winter_2025_expenses` in the database
-    full_year_expenses: "", // Matches `full_year_expenses` in the database
-    income: Array(5).fill({ source: "", projected: "", comments: "" }), // Matches `income` JSONB column
-    expenses: Array(5).fill({ event: "", source: "", projected: "", term: "", comments: "" }), // Matches `expenses` JSONB column
+    club_name: "",
+    requested_mes_funding: "",
+    total_income: 0,
+    total_expense: 0,
+    surplus_deficit: 0,
+    fall_2024_expenses: "",
+    winter_2025_expenses: "",
+    full_year_expenses: "",
+    income: Array(5).fill({ source: "", projected: "", comments: "" }),
+    expenses: Array(5).fill({
+      event: "",
+      source: "",
+      projected: "",
+      term: "",
+      comments: "",
+    }),
   });
 
-  // Calculate totals whenever income or expenses change
+  // 1) Check permissions. If user is not admin, push them away.
   useEffect(() => {
-    const totalIncome = formData.income.reduce((sum, item) => sum + (parseFloat(item.projected) || 0), 0);
-    const totalExpense = formData.expenses.reduce((sum, item) => sum + (parseFloat(item.projected) || 0), 0);
+    if (!permissionsLoading) {
+      console.log("User permissions:", permissions); // Log perms to console
+      if (!permissions.includes("view_all_requests")) {
+        // If "admin" is truly not in the array, block access
+        router.push("/dashboard/home");
+      }
+    }
+  }, [permissions, permissionsLoading, router]);
+
+  // 2) Recalculate totals if income or expenses change
+  useEffect(() => {
+    const totalIncome = formData.income.reduce(
+      (sum, item) => sum + (parseFloat(item.projected) || 0),
+      0
+    );
+    const totalExpense = formData.expenses.reduce(
+      (sum, item) => sum + (parseFloat(item.projected) || 0),
+      0
+    );
     setFormData((prev) => ({
       ...prev,
       total_income: totalIncome,
@@ -33,24 +62,32 @@ const BudgetForm = () => {
     }));
   }, [formData.income, formData.expenses]);
 
-  // Handle form changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, field: string, index?: number, subfield?: string) => {
+  // 3) Handle form changes
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: string,
+    index?: number,
+    subfield?: string
+  ) => {
     if (index !== undefined && subfield) {
+      // For array fields
       setFormData((prev) => {
-        const updatedArray = [...prev[field]];
-        updatedArray[index] = { ...updatedArray[index], [subfield]: e.target.value };
-        return { ...prev, [field]: updatedArray };
+        const clonedField = [...(prev as any)[field]];
+        clonedField[index] = {
+          ...clonedField[index],
+          [subfield]: e.target.value,
+        };
+        return { ...prev, [field]: clonedField };
       });
     } else {
       setFormData({ ...formData, [field]: e.target.value });
     }
   };
 
-  // Handle Form Submission
+  // 4) Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Prepare data for submission
+    // Prepare data
     const submissionData = {
       club_name: formData.club_name,
       requested_mes_funding: parseFloat(formData.requested_mes_funding) || 0,
@@ -62,12 +99,14 @@ const BudgetForm = () => {
       full_year_expenses: parseFloat(formData.full_year_expenses) || 0,
       income: formData.income,
       expenses: formData.expenses,
-      total_income_calculated: formData.total_income, // Matches `total_income_calculated` in the database
-      total_expenses_calculated: formData.total_expense, // Matches `total_expenses_calculated` in the database
+      total_income_calculated: formData.total_income,
+      total_expenses_calculated: formData.total_expense,
     };
 
-    // Insert data into Supabase
-    const { data, error } = await supabase.from("annual_budget_form").insert([submissionData]);
+    // Insert in DB
+    const { data, error } = await supabase
+      .from("annual_budget_form")
+      .insert([submissionData]);
 
     if (error) {
       console.error("Error submitting form:", error);
@@ -82,17 +121,21 @@ const BudgetForm = () => {
       <DashboardHeader />
       <main className="pt-8 p-6">
         <div className="relative max-w-7xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-        <button
-          onClick={() => router.push("/dashboard/home")}
-          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-        >
-          Back to Dashboard
-        </button>
-          <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 text-center">Budget Form</h1>
+          <button
+            onClick={() => router.push("/dashboard/home")}
+            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+          >
+            Back to Dashboard
+          </button>
+          <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 text-center">
+            Budget Form
+          </h1>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Club Name */}
+            {/* Club / Team / Group */}
             <div>
-              <label className="font-bold text-gray-700 dark:text-gray-300">Club / Team / Group:</label>
+              <label className="font-bold text-gray-700 dark:text-gray-300">
+                Club / Team / Group:
+              </label>
               <input
                 type="text"
                 value={formData.club_name}
@@ -104,7 +147,9 @@ const BudgetForm = () => {
 
             {/* Requested MES Funding */}
             <div>
-              <label className="font-bold text-gray-700 dark:text-gray-300">Requested MES Funding:</label>
+              <label className="font-bold text-gray-700 dark:text-gray-300">
+                Requested MES Funding:
+              </label>
               <input
                 type="text"
                 value={formData.requested_mes_funding}
@@ -116,7 +161,9 @@ const BudgetForm = () => {
 
             {/* Fall 2024 Expenses */}
             <div>
-              <label className="font-bold text-gray-700 dark:text-gray-300">Fall 2024 Expenses:</label>
+              <label className="font-bold text-gray-700 dark:text-gray-300">
+                Fall 2024 Expenses:
+              </label>
               <input
                 type="text"
                 value={formData.fall_2024_expenses}
@@ -128,7 +175,9 @@ const BudgetForm = () => {
 
             {/* Winter 2025 Expenses */}
             <div>
-              <label className="font-bold text-gray-700 dark:text-gray-300">Winter 2025 Expenses:</label>
+              <label className="font-bold text-gray-700 dark:text-gray-300">
+                Winter 2025 Expenses:
+              </label>
               <input
                 type="text"
                 value={formData.winter_2025_expenses}
@@ -140,7 +189,9 @@ const BudgetForm = () => {
 
             {/* Full Year Expenses */}
             <div>
-              <label className="font-bold text-gray-700 dark:text-gray-300">Full Year Expenses:</label>
+              <label className="font-bold text-gray-700 dark:text-gray-300">
+                Full Year Expenses:
+              </label>
               <input
                 type="text"
                 value={formData.full_year_expenses}
@@ -152,7 +203,9 @@ const BudgetForm = () => {
 
             {/* Income Table */}
             <div>
-              <h3 className="font-bold text-lg border-b pb-2 text-gray-800 dark:text-gray-200">Income:</h3>
+              <h3 className="font-bold text-lg border-b pb-2 text-gray-800 dark:text-gray-200">
+                Income:
+              </h3>
               <table className="w-full mt-4 border">
                 <thead>
                   <tr className="bg-gray-200 dark:bg-gray-700">
@@ -168,7 +221,9 @@ const BudgetForm = () => {
                         <input
                           type="text"
                           value={row.source}
-                          onChange={(e) => handleChange(e, "income", index, "source")}
+                          onChange={(e) =>
+                            handleChange(e, "income", index, "source")
+                          }
                           className="w-full border-none bg-transparent"
                           placeholder="Enter source"
                         />
@@ -177,7 +232,9 @@ const BudgetForm = () => {
                         <input
                           type="text"
                           value={row.projected}
-                          onChange={(e) => handleChange(e, "income", index, "projected")}
+                          onChange={(e) =>
+                            handleChange(e, "income", index, "projected")
+                          }
                           className="w-full border-none bg-transparent"
                           placeholder="$"
                         />
@@ -186,7 +243,9 @@ const BudgetForm = () => {
                         <input
                           type="text"
                           value={row.comments}
-                          onChange={(e) => handleChange(e, "income", index, "comments")}
+                          onChange={(e) =>
+                            handleChange(e, "income", index, "comments")
+                          }
                           className="w-full border-none bg-transparent"
                           placeholder="Comments"
                         />
@@ -199,7 +258,9 @@ const BudgetForm = () => {
 
             {/* Expenses Table */}
             <div>
-              <h3 className="font-bold text-lg border-b pb-2 text-gray-800 dark:text-gray-200">Expenses:</h3>
+              <h3 className="font-bold text-lg border-b pb-2 text-gray-800 dark:text-gray-200">
+                Expenses:
+              </h3>
               <table className="w-full mt-4 border">
                 <thead>
                   <tr className="bg-gray-200 dark:bg-gray-700">
@@ -217,7 +278,9 @@ const BudgetForm = () => {
                         <input
                           type="text"
                           value={row.event}
-                          onChange={(e) => handleChange(e, "expenses", index, "event")}
+                          onChange={(e) =>
+                            handleChange(e, "expenses", index, "event")
+                          }
                           className="w-full border-none bg-transparent"
                           placeholder="Enter event"
                         />
@@ -226,7 +289,9 @@ const BudgetForm = () => {
                         <input
                           type="text"
                           value={row.source}
-                          onChange={(e) => handleChange(e, "expenses", index, "source")}
+                          onChange={(e) =>
+                            handleChange(e, "expenses", index, "source")
+                          }
                           className="w-full border-none bg-transparent"
                           placeholder="Source"
                         />
@@ -235,7 +300,9 @@ const BudgetForm = () => {
                         <input
                           type="text"
                           value={row.projected}
-                          onChange={(e) => handleChange(e, "expenses", index, "projected")}
+                          onChange={(e) =>
+                            handleChange(e, "expenses", index, "projected")
+                          }
                           className="w-full border-none bg-transparent"
                           placeholder="$"
                         />
@@ -244,7 +311,9 @@ const BudgetForm = () => {
                         <input
                           type="text"
                           value={row.term}
-                          onChange={(e) => handleChange(e, "expenses", index, "term")}
+                          onChange={(e) =>
+                            handleChange(e, "expenses", index, "term")
+                          }
                           className="w-full border-none bg-transparent"
                           placeholder="Term"
                         />
@@ -253,7 +322,9 @@ const BudgetForm = () => {
                         <input
                           type="text"
                           value={row.comments}
-                          onChange={(e) => handleChange(e, "expenses", index, "comments")}
+                          onChange={(e) =>
+                            handleChange(e, "expenses", index, "comments")
+                          }
                           className="w-full border-none bg-transparent"
                           placeholder="Comments"
                         />
@@ -273,7 +344,10 @@ const BudgetForm = () => {
 
             {/* Submit Button */}
             <div className="text-center">
-              <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
                 Submit Budget
               </button>
             </div>

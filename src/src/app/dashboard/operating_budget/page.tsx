@@ -3,24 +3,27 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import { usePermissions } from "@/hooks/usePermissions";
 
-// 1) DB shapes
+// Database shapes
 interface BudgetColumn {
   id: number;
   column_key: string;
   display_label: string;
   sort_order: number;
 }
+
 interface GroupRecord {
-  id: string; // uuid
-  name: string | null;
-  group_order: number;
-  total_budget?: string | number; // The new budget field
+  id: string;                // uuid in DB
+  name: string | null;       // from 'groups' table
+  group_order: number;       
+  total_budget?: number | string;  // the new budget field
 }
+
 interface BudgetRow {
-  id?: number;
-  group_id: string; // references groups.id
-  row_type: string;
+  id?: number;        
+  group_id: string;   // references groups.id
+  row_type: string;   
   order_index: number;
   col_values: Record<string, string>;
 }
@@ -29,30 +32,44 @@ export default function OperatingBudgetPage() {
   const supabase = createClient();
   const router = useRouter();
 
+  // Hook that fetches user permissions
+  const { permissions, loading: permissionsLoading } = usePermissions();
+
   const [columns, setColumns] = useState<BudgetColumn[]>([]);
   const [groups, setGroups] = useState<GroupRecord[]>([]);
   const [rows, setRows] = useState<BudgetRow[]>([]);
 
   const [dragRow, setDragRow] = useState<BudgetRow | null>(null);
 
-  // ================== Fetch data ==================
+  // 1) If user is not admin, redirect away
+  useEffect(() => {
+    if (!permissionsLoading) {
+      // If the user doesn't have the "admin" permission,
+      // or however you detect an admin
+      if (!permissions.includes("view_all_requests")) {
+        router.push("/dashboard/home");
+      }
+    }
+  }, [permissions, permissionsLoading, router]);
+
+  // 2) Fetch columns, groups, rows
   useEffect(() => {
     const loadData = async () => {
-      // fetch columns
+      // columns
       const { data: colData } = await supabase
         .from("annual_budget_form_columns")
         .select("*")
         .order("sort_order", { ascending: true });
       if (colData) setColumns(colData);
 
-      // fetch groups (including total_budget)
+      // groups (including total_budget)
       const { data: grpData } = await supabase
         .from("groups")
         .select("id, name, group_order, total_budget")
         .order("group_order", { ascending: true });
       if (grpData) setGroups(grpData);
 
-      // fetch budget rows
+      // budget rows
       const { data: rowData } = await supabase
         .from("annual_budget_form_rows")
         .select("*")
@@ -62,25 +79,23 @@ export default function OperatingBudgetPage() {
     loadData();
   }, [supabase]);
 
-  // ================== Helpers ==================
+  // Helpers to parse/format currency
   const parseCurrency = (val: string): number => {
     if (!val) return 0;
     const cleaned = val.replace(/[^\d.-]/g, "");
-    return parseFloat(cleaned) || 0;
+    const parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? 0 : parsed;
   };
 
-  const formatCurrency = (num: number) =>
-    new Intl.NumberFormat("en-CA", {
+  const formatCurrency = (num: number) => {
+    return new Intl.NumberFormat("en-CA", {
       style: "currency",
       currency: "CAD",
     }).format(num);
+  };
 
-  // ================== Row editing ==================
-  const handleCellChange = (
-    row: BudgetRow,
-    columnKey: string,
-    newValue: string
-  ) => {
+  // Row editing: auto-calc col_change
+  const handleCellChange = (row: BudgetRow, columnKey: string, newValue: string) => {
     setRows((prev) =>
       prev.map((r) => {
         if (r !== row) return r;
@@ -101,14 +116,19 @@ export default function OperatingBudgetPage() {
     setRows((prev) =>
       prev.map((r) =>
         r === row
-          ? { ...r, col_values: { ...r.col_values, line_label: newLabel } }
+          ? {
+              ...r,
+              col_values: { ...r.col_values, line_label: newLabel },
+            }
           : r
       )
     );
   };
 
-  // ================== Drag & drop ==================
-  const handleDragStart = (row: BudgetRow) => setDragRow(row);
+  // Drag & Drop
+  const handleDragStart = (row: BudgetRow) => {
+    setDragRow(row);
+  };
 
   const handleDragOver = (
     e: React.DragEvent<HTMLTableRowElement>,
@@ -145,7 +165,7 @@ export default function OperatingBudgetPage() {
     setDragRow(null);
   };
 
-  // ================== Groups ==================
+  // Groups
   const handleAddGroup = () => {
     const tempId = `temp-${Date.now()}`;
     setGroups((prev) => [
@@ -167,7 +187,7 @@ export default function OperatingBudgetPage() {
     setRows((prev) => prev.filter((r) => r.group_id !== g.id));
   };
 
-  // ================== Rows ==================
+  // Rows
   const handleAddRow = (groupId: string) => {
     const groupRows = rows.filter((r) => r.group_id === groupId);
     const newIndex = groupRows.length + 1;
@@ -193,17 +213,17 @@ export default function OperatingBudgetPage() {
     setRows((prev) => {
       const filtered = prev.filter((r) => r !== row);
       const groupRows = filtered.filter((r) => r.group_id === row.group_id);
-      groupRows.forEach((r, idx) => {
-        r.order_index = idx + 1;
+      groupRows.forEach((rr, idx) => {
+        rr.order_index = idx + 1;
       });
       return filtered;
     });
   };
 
-  // ================== Save All ==================
+  // Save All
   const handleSaveAll = async () => {
     try {
-      // 1) Insert/update groups
+      // Insert/update groups
       for (const g of groups) {
         if (g.id.startsWith("temp-")) {
           // Insert
@@ -241,7 +261,7 @@ export default function OperatingBudgetPage() {
         }
       }
 
-      // 2) Insert/update rows
+      // Insert/update rows
       for (const r of rows) {
         if (!r.id) {
           // Insert
@@ -281,7 +301,7 @@ export default function OperatingBudgetPage() {
     }
   };
 
-  // ================== Group rows by group_id ==================
+  // Group rows for display
   const rowsByGroup = useMemo(() => {
     const map: Record<string, BudgetRow[]> = {};
     for (const row of rows) {
@@ -294,9 +314,10 @@ export default function OperatingBudgetPage() {
     return map;
   }, [rows]);
 
-  // ================== Render ==================
+  // Render
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      {/* Basic top bar */}
       <div className="p-4 flex items-center justify-between">
         <button
           onClick={() => router.push("/dashboard/home")}
@@ -305,7 +326,7 @@ export default function OperatingBudgetPage() {
           Back to Dashboard
         </button>
         <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
-          Operating Budget
+          Operating Budget (Admin Only)
         </h1>
         <div />
       </div>
@@ -335,7 +356,7 @@ export default function OperatingBudgetPage() {
                         )
                       }
                     />
-                    {/* Show the total_budget here */}
+                    {/* total_budget input */}
                     <label className="ml-4 font-semibold">Budget:</label>
                     <input
                       type="number"
@@ -401,7 +422,11 @@ export default function OperatingBudgetPage() {
                                 className="w-full p-1 rounded border dark:bg-gray-700 dark:text-gray-200"
                                 value={row.col_values[col.column_key] || ""}
                                 onChange={(e) =>
-                                  handleCellChange(row, col.column_key, e.target.value)
+                                  handleCellChange(
+                                    row,
+                                    col.column_key,
+                                    e.target.value
+                                  )
                                 }
                                 readOnly={col.column_key === "col_change"}
                               />
@@ -419,7 +444,7 @@ export default function OperatingBudgetPage() {
                       );
                     })}
 
-                    {/* add row */}
+                    {/* Add row */}
                     <tr>
                       <td colSpan={columns.length + 2} className="border p-2 bg-gray-50">
                         <button
