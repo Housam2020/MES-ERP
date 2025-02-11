@@ -105,18 +105,22 @@ export default function AnalyticsPage() {
 
         if (requestsError) throw requestsError;
 
-        // Fetch budget data
+        // Update budget data fetch to use new schema
         const { data: budgetRows, error: budgetError } = await supabase
           .from("annual_budget_form_rows")
           .select(
             `
             id,
+            row_type,
             col_values,
-            annual_budget_form_groups (
-              group_title
+            groups (
+              id,
+              name,
+              total_budget
             )
           `
           )
+          .eq("row_type", "data") // Only get data rows, not totals
           .order("order_index");
 
         if (budgetError) throw budgetError;
@@ -249,17 +253,27 @@ export default function AnalyticsPage() {
           requests,
           (req) => req.amount_requested_cad || 0
         );
-        // Get corresponding budget allocation
+
+        // Find matching budget row using the new schema
         const budgetRow = budgetData?.find(
           (row) => row.col_values?.line_label === budgetLine
         );
-        const allocated = budgetRow?.col_values?.col_2024_2025 || 0;
+
+        // Get allocated amount from the new col_values structure
+        const allocated = Number(budgetRow?.col_values?.col_2024_2025) || 0;
+
+        // Calculate group total budget if available
+        const groupTotalBudget = budgetRow?.groups?.total_budget || 0;
 
         return {
           budgetLine: budgetLine || "Unspecified",
           actualSpent,
-          allocated: Number(allocated),
+          allocated,
           utilizationRate: allocated ? (actualSpent / allocated) * 100 : 0,
+          groupBudget: groupTotalBudget,
+          groupUtilization: groupTotalBudget
+            ? (actualSpent / groupTotalBudget) * 100
+            : 0,
         };
       })
       .orderBy(["utilizationRate"], ["desc"])
@@ -717,6 +731,64 @@ export default function AnalyticsPage() {
                         name="Cumulative Spending ($)"
                       />
                     </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Group Budget Overview */}
+              <Card className="col-span-2">
+                <CardHeader>
+                  <CardTitle>Group Budget Overview</CardTitle>
+                  <CardDescription>
+                    Total budget allocation and utilization by group
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={_.chain(analytics.budgetComparison)
+                        .groupBy((item) => item.groups?.name || "Unassigned")
+                        .map((items, groupName) => ({
+                          groupName,
+                          totalBudget: _.sumBy(items, "groupBudget"),
+                          actualSpent: _.sumBy(items, "actualSpent"),
+                          utilizationRate:
+                            (_.sumBy(items, "actualSpent") /
+                              _.sumBy(items, "groupBudget")) *
+                            100,
+                        }))
+                        .value()}
+                      layout="vertical"
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" />
+                      <YAxis dataKey="groupName" type="category" width={150} />
+                      <Tooltip
+                        formatter={(value, name) => [
+                          name.includes("Rate")
+                            ? `${Number(value).toFixed(1)}%`
+                            : `$${Number(value).toFixed(2)}`,
+                          name,
+                        ]}
+                      />
+                      <Legend />
+                      <Bar
+                        dataKey="totalBudget"
+                        fill="#8884d8"
+                        name="Total Budget"
+                      />
+                      <Bar
+                        dataKey="actualSpent"
+                        fill="#82ca9d"
+                        name="Actual Spent"
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="utilizationRate"
+                        stroke="#ff7300"
+                        name="Utilization Rate %"
+                      />
+                    </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
