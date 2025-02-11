@@ -37,7 +37,7 @@ const BudgetForm = () => {
   useEffect(() => {
     if (!permissionsLoading) {
       console.log("User permissions:", permissions); // Log perms to console
-      if (!permissions.includes("view_all_requests")) {
+      if (!permissions.includes("view_club_requests")) {
         // If "admin" is truly not in the array, block access
         router.push("/dashboard/home");
       }
