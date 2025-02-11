@@ -211,14 +211,14 @@ export default function AnalyticsPage() {
       .value();
 
     // Payment Method Distribution
-    const paymentMethodData = _.chain(paymentRequests)
+    /* const paymentMethodData = _.chain(paymentRequests)
       .groupBy("preferred_payment_form")
       .map((requests, method) => ({
         name: method || "Unspecified",
         value: _.sumBy(requests, (req) => req.amount_requested_cad || 0),
         count: requests.length,
       }))
-      .value();
+      .value(); */
 
     // Request Volume by Day of Week
     const dayOfWeekData = _.chain(paymentRequests)
@@ -319,7 +319,6 @@ export default function AnalyticsPage() {
       groupData,
       timeframeData,
       budgetLineData,
-      paymentMethodData,
       dayOfWeekData,
       topRequesters,
       budgetComparison,
@@ -580,8 +579,9 @@ export default function AnalyticsPage() {
                 </CardContent>
               </Card>
 
+              {/* Temporarily disabled */}
               {/* Payment Method Distribution */}
-              <Card className="col-span-2">
+              {/* <Card className="col-span-2">
                 <CardHeader>
                   <CardTitle>Payment Method Distribution</CardTitle>
                 </CardHeader>
@@ -610,7 +610,7 @@ export default function AnalyticsPage() {
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* Budget Utilization vs Allocation */}
               <Card className="col-span-2">
@@ -735,8 +735,9 @@ export default function AnalyticsPage() {
                 </CardContent>
               </Card>
 
+              {/* Commented out until budget data structure is finalized */}
               {/* Group Budget Overview */}
-              <Card className="col-span-2">
+              {/* <Card className="col-span-2">
                 <CardHeader>
                   <CardTitle>Group Budget Overview</CardTitle>
                   <CardDescription>
@@ -791,7 +792,7 @@ export default function AnalyticsPage() {
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
           </TabsContent>
         </Tabs>
