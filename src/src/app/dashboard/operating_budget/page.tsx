@@ -326,7 +326,7 @@ export default function OperatingBudgetPage() {
           Back to Dashboard
         </button>
         <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
-          Operating Budget (Admin Only)
+          Operating Budget
         </h1>
         <div />
       </div>
