@@ -42,18 +42,30 @@ Date 2 & 1.1 & Notes\\
 
 ~\newpage
 
-\section{Symbols, Abbreviations and Acronyms}
+\section{Symbols, Abbreviations, and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{l l} 
-  \toprule		
-  \textbf{symbol} & \textbf{description}\\
-  \midrule 
-  T & Test\\
-  \bottomrule
-\end{tabular}\\
+\begin{tabular}{|p{3cm}|p{10cm}|}
+    \hline
+    \textbf{Abbreviation} & \textbf{Description} \\
+    \hline
+    MES & McMaster Engineering Society \\
+    \hline
+    V\&V & Verification and Validation \\
+    \hline
+    SRS & Software Requirements Specification \\
+    \hline
+    UI & User Interface \\
+    \hline
+    API & Application Programming Interface \\
+    \hline
+    CI/CD & Continuous Integration / Continuous Deployment \\
+    \hline
+\end{tabular}
 
-\wss{symbols, abbreviations or acronyms -- you can reference the SRS tables if needed}
+\bigskip
+
+This section defines the symbols, abbreviations, and acronyms used throughout the document to ensure clarity and consistency.
 
 \newpage
 
@@ -232,7 +244,65 @@ These refinements maintain consistency with our planned VnV approach while \emph
 	
 \section{Comparison to Existing Implementation}	
 
-This section will not be appropriate for every project.
+The MES-ERP system represents a significant advancement over the previous implementation, which relied on Google Forms for expense submissions and spreadsheets for budget tracking and reimbursement processing. This section compares the two implementations across several key dimensions.
+
+\subsection{Process Efficiency}
+
+\begin{itemize}
+    \item \textbf{Previous Implementation:} The Google Forms and spreadsheets approach required manual data transfer between systems. Staff had to copy information from form submissions into tracking spreadsheets, manually update status changes, and communicate updates via separate email threads.
+    
+    \item \textbf{MES-ERP:} The new system provides an end-to-end digital workflow where data flows automatically through the system. Once a request is submitted, it remains in the database and can be tracked, updated, and processed without manual data re-entry.
+\end{itemize}
+
+\subsection{User Experience}
+
+\begin{itemize}
+    \item \textbf{Previous Implementation:} Users had to navigate to different Google Forms for different types of requests. After submission, they had limited visibility into the status of their requests and often had to follow up via email.
+    
+    \item \textbf{MES-ERP:} Users now have a centralized dashboard where they can submit different types of requests, track the status of all their submissions, and receive automatic email notifications when their request status changes.
+\end{itemize}
+
+\subsection{Role-Based Access Control}
+
+\begin{itemize}
+    \item \textbf{Previous Implementation:} Access control was limited to basic Google permissions. Different spreadsheets were shared with different stakeholders, creating information silos and making it difficult to maintain a comprehensive view of financial activities.
+    
+    \item \textbf{MES-ERP:} The system implements a sophisticated role-based access control system that allows for fine-grained permission management. Users can be assigned specific roles (e.g., club admin, MES executive) with appropriate permissions, ensuring they can access only the information and functions relevant to their responsibilities.
+\end{itemize}
+
+\subsection{Budget Management}
+
+\begin{itemize}
+    \item \textbf{Previous Implementation:} Budget tracking was done in separate spreadsheets, making it difficult to get real-time insights into spending patterns or remaining budgets. Annual budget planning was a separate process with limited integration to actual spending.
+    
+    \item \textbf{MES-ERP:} The system integrates budget planning and expense tracking in a single platform. The operating budget module allows for detailed budget planning, while the analytics dashboard provides real-time visibility into spending patterns, budget utilization, and financial trends.
+\end{itemize}
+
+\subsection{Notification System}
+
+\begin{itemize}
+    \item \textbf{Previous Implementation:} Status updates and approvals were communicated manually via email, leading to delays and sometimes missed communications.
+    
+    \item \textbf{MES-ERP:} The system includes an automated notification system that sends emails to users when their request status changes, providing clear information about the current status and expected next steps.
+\end{itemize}
+
+\subsection{Group Management}
+
+\begin{itemize}
+    \item \textbf{Previous Implementation:} Group affiliations were tracked manually in spreadsheets, making it difficult to enforce group-specific budget limits or permissions.
+    
+    \item \textbf{MES-ERP:} The system includes dedicated group management functionality, allowing administrators to create and manage groups, assign users to groups, and enforce group-specific budget allocations and permissions.
+\end{itemize}
+
+\subsection{Analytics and Reporting}
+
+\begin{itemize}
+    \item \textbf{Previous Implementation:} Generating reports or analytics required manual data extraction and processing from multiple spreadsheets.
+    
+    \item \textbf{MES-ERP:} The system includes a built-in analytics dashboard that provides visualizations of spending patterns, budget utilization, request volumes, and other key metrics, enabling data-driven decision making.
+\end{itemize}
+
+The MES-ERP system has successfully addressed the key limitations of the previous implementation, providing a more efficient, transparent, and user-friendly platform for managing the MES financial processes. The integration of reimbursement requests, budget planning, user role management, and automated notifications into a single system has significantly improved the overall experience for both users submitting requests and administrators managing the financial processes.
 
 \section{Unit Testing}
 
