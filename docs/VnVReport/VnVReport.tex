@@ -35,8 +35,11 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+March 10 & 1.0 & Sufyan added Comparison to Existing Implementation and Automated Testing\\
+March 10 & 1.1 & Housam added Functional Requirements Evaluation and  Trace to Modules\\
+March 10 & 1.2 & Taaha added Nonfunctional Requirements Evaluation and Trace to Requirements\\
+March 10 & 1.3 & Rachid Added Unit Testing and Changes Due to Testing\\
+March 10 & 1.3 & Omar added Symbols, Abbreviations and Acronyms and Code Coverage Metrics\\
 \bottomrule
 \end{tabularx}
 
@@ -238,7 +241,7 @@ This section summarizes the results of our nonfunctional requirements testing (T
 
 \noindent
 \textbf{Overview:}  
-Although no specific usability tests were defined in Tests~7--10, we did conduct informal user trials where new users (e.g., club leaders unfamiliar with the system) performed basic tasks such as budget creation and reimbursement submission. Our goal was to gauge ease of navigation, clarity of interface elements, and overall user satisfaction.
+We conducted informal user trials where new users (e.g., club leaders unfamiliar with the system) performed basic tasks such as budget creation and reimbursement submission. Our goal was to gauge ease of navigation, clarity of interface elements, and overall user satisfaction.
 
 \noindent
 \textbf{Findings and Improvements:}
@@ -269,7 +272,7 @@ We simulated multiple users (15 concurrent) simultaneously submitting reimbursem
 \textbf{Code Improvements:}  
 \begin{itemize}
   \item We added an in-memory cache for frequently accessed club/budget data, reducing repeated database lookups.
-  \item Improved concurrency handling in the \texttt{ReimbursementController}, ensuring that read-write locks do not block each other unnecessarily.
+  \item Improved concurrency handling in the our reimbursement controller, ensuring that read-write locks do not block each other unnecessarily.
 \end{itemize}
 These optimizations helped keep the average response times near 2 seconds, even under moderate stress, aligning with our performance requirements from the SRS.
 
