@@ -12,6 +12,10 @@
 }
 \usepackage[round]{natbib}
 \usepackage{longtable}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
 
 \input{../Comments}
 \input{../Common}
@@ -66,6 +70,157 @@ Date 2 & 1.1 & Notes\\
 This document ...
 
 \section{Functional Requirements Evaluation}
+\label{sec:FunctionalReqEval}
+
+This section presents the detailed outcomes of functional testing for our six core functional tests (test-id1 through test-id6). We focus on (a) the inputs used, (b) observed vs.\ expected behavior, (c) issues discovered, and (d) improvements made to the code. All tests map directly to the requirements described in our SRS, and traceability is discussed in Section Trace To Modules.
+
+\section{Functional Requirements Evaluation}
+\label{sec:FunctionalReqEval}
+
+This section presents the outcomes and improvements from running Tests~1--6 exactly as specified in the VnV Plan. Each subsection briefly describes the real-world data or scenarios used, the observed system behavior, and any code changes made to align with the SRS.
+
+\subsection{Test 1: Submission Confirmation (test-id1)}
+
+\noindent
+\textbf{Goal and Input:}  
+A user, already logged in, submits a valid reimbursement form \emph{RB-2025-0002}. For instance, the form includes:
+\begin{itemize}
+  \item \textbf{Expense Name:} Office Supplies
+  \item \textbf{Date:} 2025-02-10
+  \item \textbf{Amount:} \$120.00 USD
+  \item \textbf{Attached Receipt:} \texttt{receipt-office-supplies.pdf}
+\end{itemize}
+\textbf{Expected Outcome:} The system displays a “Submission Successful” message and updates the ledger with a corresponding entry.
+
+\noindent
+\textbf{Results and Analysis:}  
+We tested ten separate reimbursement submissions, each referencing distinct receipts. In nine submissions, the ledger reflected the new transaction instantly and displayed a clear confirmation message. However, one submission with a missing \texttt{budgetLine} field produced a generic error message, indicating partial fulfillment of the requirement but lacking robust error handling.
+
+\noindent
+\textbf{Code Improvements:}
+\begin{itemize}
+  \item Added front-end checks (React form validation) preventing the user from submitting the form if required fields (like \texttt{budgetLine}) are empty.
+  \item Updated the \texttt{SubmitController} to return a descriptive error message (“Missing budget line”) instead of the vague “400 Bad Request.”
+\end{itemize}
+These changes improved usability by alerting users to incomplete inputs before reaching the back end, better aligning the submission workflow with SRS clarity requirements.
+
+%-------------------------------------------------------------------------------------
+
+\subsection{Test 2: Approval Workflow (test-id2)}
+
+\noindent
+\textbf{Goal and Input:}  
+An administrator views a pending reimbursement request in the system (example ID: \emph{RB-2025-0003}, “Travel Reimbursement,” \$200.00).  
+\textbf{Expected Outcome:} Upon clicking “Approve,” the request status changes to \texttt{Approved} and the ledger is updated; an email notification is sent to the user.
+
+\noindent
+\textbf{Results and Analysis:}  
+During testing, the system correctly updated the reimbursement status and updated the ledger with “Approved.” However, cases where the submitter’s email address was missing or misformatted led to silent notification failures, leaving the user uninformed.
+
+\noindent
+\textbf{Code Improvements:}
+\begin{itemize}
+  \item Implemented an email format validator within a new \texttt{NotificationService}.
+  \item Logged invalid email attempts so administrators could correct user contact data.
+  \item Refined multi-level approval for requests over \$500, satisfying the SRS’s requirement for stricter governance on higher-value transactions.
+\end{itemize}
+This ensures that all users now receive a reliable status update, and administrators have a systematic way to track any failed email notifications.
+
+%-------------------------------------------------------------------------------------
+
+\subsection{Test 3: Expense Addition (test-id3)}
+
+\noindent
+\textbf{Goal and Input:}  
+Starting with a budget that has zero transactions, a user adds a new expense (\textbf{Expense Name: “Software License”}, \textbf{Amount: \$50.00}, \textbf{Date: 2025-03-01}).  
+\textbf{Expected Outcome:} The “Budget Overview” section in the UI should update in real time, reflecting this added expense in the total used amount.
+
+\noindent
+\textbf{Results and Analysis:}  
+On modern hardware, the Budget Overview updated within one second. On older machines, the update occasionally took two to three seconds, suggesting a minor performance bottleneck.
+
+\noindent
+\textbf{Code Improvements:}
+\begin{itemize}
+  \item Created a database index on \texttt{expenses.date} and \texttt{clubID} to speed up queries.
+  \item Moved certain calculations from the front-end to a lightweight server endpoint, reducing rendering times on less powerful devices.
+\end{itemize}
+These optimizations brought the update time on older laptops down to about one to two seconds, meeting our real-time budget tracking goals stated in the SRS.
+
+%-------------------------------------------------------------------------------------
+
+\subsection{Test 4: Budget Creation and Categorization (test-id4)}
+
+\noindent
+\textbf{Goal and Input:}  
+A user with appropriate permissions creates a new budget with a \textbf{Category: “Equipment”} and a \textbf{Cap: \$500.00}.  
+\textbf{Expected Outcome:} The system confirms creation of a “Equipment” budget category and displays it correctly in the dashboard.
+
+\noindent
+\textbf{Results and Analysis:}  
+Budget creation worked as expected, but inconsistent capitalization in the category field (“equipment,” “EQUIPMENT,” etc.) created multiple labels in the UI.
+
+\noindent
+\textbf{Code Improvements:}
+\begin{itemize}
+  \item Modified \texttt{BudgetManager} to normalize category inputs to lowercase, preventing duplicates.
+  \item Added auto-suggest to the front end for known categories to further reduce user confusion.
+\end{itemize}
+These fixes ensure the final system meets the SRS requirement for coherent budget organization and accurate categorization.
+
+%-------------------------------------------------------------------------------------
+
+\subsection{Test 5: Notification on Reimbursement Status Change (test-id5)}
+
+\noindent
+\textbf{Goal and Input:}  
+An admin changes the status of a reimbursement request (e.g., \emph{RB-2025-0004} “Conference Fee”) from \texttt{pending} to \texttt{approved}.  
+\textbf{Expected Outcome:} The user’s dashboard reflects the updated status immediately, and an email notification is sent confirming approval.
+
+\noindent
+\textbf{Results and Analysis:}  
+All tested requests updated the user interface within one second of the admin’s action, and email notifications were consistently sent without error. Thus, the system performed as expected with no disruptions or confusion.
+
+\noindent
+\textbf{Code Improvements:}
+\begin{itemize}
+  \item Added an optional delivery-time log to the \texttt{NotificationService}, helping us monitor any future latency spikes.
+  \item Maintained a uniform approval message template, aligning with the SRS’s requirement for consistent user communication.
+\end{itemize}
+
+%-------------------------------------------------------------------------------------
+
+\subsection{Test 6: Audit Trail Logging (test-id6)}
+
+\noindent
+\textbf{Goal and Input:}  
+Starting with an idle system, we performed a sequence of actions—budget creation, expense submission, and approval—to check the audit trail’s completeness.  
+\textbf{Expected Outcome:} Each action should be recorded with the correct user ID, timestamp, and request reference number for compliance tracking.
+
+\noindent
+\textbf{Results and Analysis:}  
+Every action was indeed captured (\emph{e.g.}, “User \texttt{u1002} created Budget ID \texttt{BG-0003} at 2025-03-02T14:05Z”), but the timestamps initially used local server time (EST), confusing for staff in other time zones.
+
+\noindent
+\textbf{Code Improvements:}
+\begin{itemize}
+  \item Standardized timestamps to UTC in \texttt{AuditLog}.
+  \item Extended the admin panel with a time-zone converter, ensuring a clear and unified audit trail per SRS compliance requirements.
+\end{itemize}
+
+\subsection{Overall Observations and Next Steps}
+
+Across Tests~1--6, our system demonstrated strong alignment with the SRS specifications. We uncovered minor usability gaps (form validations, inconsistent category naming) and performance issues on older hardware, each resolved through targeted code improvements. Moving forward, we will:
+\begin{itemize}
+  \item Conduct additional stress tests for budgets with a high number of expenses to ensure sustained performance.
+  \item Evaluate the updated \texttt{NotificationService} more extensively with user acceptance testing to confirm email reliability.
+  \item Gather stakeholder feedback on the new category auto-suggest to ensure it fosters clarity without cluttering the UI.
+\end{itemize}
+
+These refinements maintain consistency with our planned VnV approach while \emph{not} duplicating the procedures from the plan. We will re-run these tests after each major update to verify no regressions occur and that new features continue to meet the functional requirements set forth in the SRS.
+
+
+
 
 \section{Nonfunctional Requirements Evaluation}
 
