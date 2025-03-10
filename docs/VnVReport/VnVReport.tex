@@ -11,6 +11,7 @@
     urlcolor=blue
 }
 \usepackage[round]{natbib}
+\usepackage{longtable}
 
 \input{../Comments}
 \input{../Common}
@@ -80,12 +81,134 @@ This section will not be appropriate for every project.
 
 \section{Unit Testing}
 
+Unit testing was conducted using a combination of automated and manual testing to ensure key functionalities worked as expected. The primary objectives were:
+
+\begin{itemize}
+    \item Verify that critical features, such as reimbursement submissions and approvals, group creation, and user management work correctly.
+    \item Identify and resolve potential errors early in the development cycle.
+    \item Ensure that the system remains stable after modifications.
+\end{itemize}
+
+\subsection{Testing Approach}
+The team used \textbf{Jest} for automated testing of frontend logic and API calls, and \textbf{manual testing} for real-world scenario validation. The approach included:
+
+\begin{itemize}
+    \item Writing unit tests for key functions such as group creation, deletion, and authentication handling.
+    \item Conducting manual test runs where team members acted as users submitting and approving reimbursement requests.
+    \item Gathering feedback from a small group of MES student leaders who tested the platform and provided insights.
+    \item Running scenario-based testing sessions to simulate real-world usage, such as handling multiple reimbursement requests at once.
+\end{itemize}
+
+\subsection{Unit Test Cases}
+The test cases covered core functionalities, including validation checks and API interactions:
+
+\begin{longtable}{|p{0.45\textwidth}|p{0.45\textwidth}|}
+  \caption{Sample Unit Test Cases} \label{tab:sample_tests} \\
+  \hline
+  \textbf{Test Case} & \textbf{Expected Output} \\
+  \hline
+  \endfirsthead
+  
+  \multicolumn{2}{c}%
+  {\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+  \hline
+  \textbf{Test Case} & \textbf{Expected Output} \\
+  \hline
+  \endhead
+  
+  \hline \multicolumn{2}{r}{\textit{Continued on next page}} \\
+  \endfoot
+  
+  \hline
+  \endlastfoot
+  
+  Create a group with a unique name & Group is successfully created \\
+  \hline
+  Attempt to create a group with an existing name & System displays an error message \\
+  \hline
+  Unauthorized user attempts to access group management & Access is denied with error message \\
+  \hline
+  Delete a group with no assigned users & Group is successfully deleted \\
+  \hline
+  Attempt to delete a group with assigned users & System prevents deletion and notifies the user \\
+  \hline
+  Handle failed database connection during group fetch & Error is logged, and fallback UI is displayed \\
+  \hline
+  Register a new user with valid credentials & User is successfully created and logged in \\
+  \hline
+  Attempt to register with an existing email & System displays an error message \\
+  \hline
+  Login with correct credentials & User is authenticated and redirected to the dashboard \\
+  \hline
+  Login with incorrect credentials & System displays an error message \\
+  \hline
+  Assign a role to a user & User is successfully assigned the role \\
+  \hline
+  Remove a role from a user & User no longer has the role permissions \\
+  \hline
+  Attempt to assign an invalid role & System displays an error message \\
+  \hline
+  Submit a payment request with valid details & Request is successfully submitted \\
+  \hline
+  Submit a payment request missing required fields & System displays an error message \\
+  \hline
+  View all payment requests as an admin & Admin sees all requests \\
+  \hline
+  View only personal payment requests as a user & User sees only their own requests \\
+  \hline
+  Attempt to approve a request without proper permissions & Access is denied with an error message \\
+  \hline
+  Update request status successfully & Request status is updated \\
+  \hline
+  Handle failed database connection when fetching requests & Error is logged, and fallback UI is displayed \\
+  \hline
+  
+  \end{longtable}
+
+
+\subsection{Edge Cases Tested}
+
+\begin{itemize}
+  \item Submitting a reimbursement request without required fields.
+  \item Uploading incorrect file formats for receipts.
+  \item Attempting to create a duplicate group.
+  \item Handling multiple users modifying the same data simultaneously.
+  \item Ensuring database rollback occurs when a transaction fails.
+  \item Registering a user with an invalid email format.
+  \item Assigning multiple roles to a user and verifying access control.
+  \item Submitting a payment request with an incorrect amount format.
+  \item Preventing unauthorized users from updating request statuses.
+  \item Ensuring bulk request approvals work correctly.
+\end{itemize}
+
 \section{Changes Due to Testing}
 
-\wss{This section should highlight how feedback from the users and from 
-the supervisor (when one exists) shaped the final product.  In particular 
-the feedback from the Rev 0 demo to the supervisor (or to potential users) 
-should be highlighted.}
+Based on the testing process and feedback from users, the following modifications were made to the system:
+
+\subsection{Bug Fixes}
+\begin{itemize}
+  \item Fixed an issue where reimbursements submitted without attachments were still being processed.
+  \item Addressed a bug where users could submit duplicate requests.
+  \item Resolved a login issue where incorrect error messages were displayed.
+  \item Fixed a bug where request status updates were not properly reflected in the UI.
+  \item Added the ability for users to be in multiple groups.
+\end{itemize}
+
+\subsection{User Feedback and Enhancements}
+\begin{itemize}
+  \item Improved the \textbf{receipt upload system} by making the file upload process clearer.
+  \item Enhanced \textbf{audit logging} for better tracking of request status changes.
+  \item Added a clearer role management interface to reduce confusion when assigning roles.
+  \item Improved user experience by adding filters to search for specific payment requests.
+\end{itemize}
+
+\subsection{Performance and Security Improvements}
+\begin{itemize}
+  \item Implemented basic input validation to prevent incorrect data submissions.
+  \item Reduced system load times by optimizing database queries.
+  \item Strengthened authentication by enforcing stricter password requirements.
+  \item Enhanced role-based access control to prevent unauthorized modifications.
+\end{itemize}
 
 \section{Automated Testing}
 		
