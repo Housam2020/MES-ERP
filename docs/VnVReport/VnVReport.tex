@@ -35,8 +35,11 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+March 10 & 1.0 & Sufyan added Comparison to Existing Implementation and Automated Testing\\
+March 10 & 1.1 & Housam added Functional Requirements Evaluation and  Trace to Modules\\
+March 10 & 1.2 & Taaha added Nonfunctional Requirements Evaluation and Trace to Requirements\\
+March 10 & 1.3 & Rachid Added Unit Testing and Changes Due to Testing\\
+March 10 & 1.4 & Omar added Symbols, Abbreviations and Acronyms and Code Coverage Metrics\\
 \bottomrule
 \end{tabularx}
 
@@ -85,11 +88,6 @@ This document ...
 \label{sec:FunctionalReqEval}
 
 This section presents the detailed outcomes of functional testing for our six core functional tests (test-id1 through test-id6). We focus on (a) the inputs used, (b) observed vs.\ expected behavior, (c) issues discovered, and (d) improvements made to the code. All tests map directly to the requirements described in our SRS, and traceability is discussed in Section Trace To Modules.
-
-\section{Functional Requirements Evaluation}
-\label{sec:FunctionalReqEval}
-
-This section presents the outcomes and improvements from running Tests~1--6 exactly as specified in the VnV Plan. Each subsection briefly describes the real-world data or scenarios used, the observed system behavior, and any code changes made to align with the SRS.
 
 \subsection{Test 1: Submission Confirmation (test-id1)}
 
@@ -243,7 +241,7 @@ This section summarizes the results of our nonfunctional requirements testing (T
 
 \noindent
 \textbf{Overview:}  
-Although no specific usability tests were defined in Tests~7--10, we did conduct informal user trials where new users (e.g., club leaders unfamiliar with the system) performed basic tasks such as budget creation and reimbursement submission. Our goal was to gauge ease of navigation, clarity of interface elements, and overall user satisfaction.
+We conducted informal user trials where new users (e.g., club leaders unfamiliar with the system) performed basic tasks such as budget creation and reimbursement submission. Our goal was to gauge ease of navigation, clarity of interface elements, and overall user satisfaction.
 
 \noindent
 \textbf{Findings and Improvements:}
@@ -274,7 +272,7 @@ We simulated multiple users (15 concurrent) simultaneously submitting reimbursem
 \textbf{Code Improvements:}  
 \begin{itemize}
   \item We added an in-memory cache for frequently accessed club/budget data, reducing repeated database lookups.
-  \item Improved concurrency handling in the \texttt{ReimbursementController}, ensuring that read-write locks do not block each other unnecessarily.
+  \item Improved concurrency handling in the our reimbursement controller, ensuring that read-write locks do not block each other unnecessarily.
 \end{itemize}
 These optimizations helped keep the average response times near 2 seconds, even under moderate stress, aligning with our performance requirements from the SRS.
 
@@ -568,24 +566,266 @@ Tests included key functions such as:
 		
 \section{Trace to Requirements}
 		
-\section{Trace to Modules}		
+\section{Trace to Modules}
+\label{sec:TraceToModules}
+
+In alignment with our VnV Plan, this section shows how our final VnV Report
+matches the planned approach. We provide clear traceability between
+the documented tests, requirements, and modules from the MIS and SRS –
+without duplicating unnecessary details. Hence, there is no redundant
+information in both documents, and each reference here aligns with the
+original plan.
+
+\subsection{Requirement-to-Module Mapping}
+
+\textbf{Functional Requirements:}
+\begin{itemize}
+  \item \textbf{Reimbursement Submission (FR1)} 
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Responsible for form submissions, receipt attachments, and updating the ledger.
+      \item \emph{Database Module} – Persists newly created reimbursement records.
+      \item \emph{GUI Module} – Displays the submission interface and final success or error state.
+    \end{itemize}
+
+  \item \textbf{Approval Workflow (FR2)}
+    \begin{itemize}
+      \item \emph{Approval Workflow \& Review Module} – Orchestrates multi-level approval checks.
+      \item \emph{Notifications \& Communication Module} – Sends email notifications once a request’s status is changed.
+    \end{itemize}
+
+  \item \textbf{Expense Addition (FR3)}
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Allows adding new line items to an existing request.
+      \item \emph{Budget \& Funding Management Module} – Checks whether the updated total exceeds allocated funds.
+    \end{itemize}
+
+  \item \textbf{Budget Creation \& Categorization (FR4)}
+    \begin{itemize}
+      \item \emph{Budget \& Funding Management Module} – Supports creating new budgets and categorizing them by department or expense type.
+      \item \emph{GUI Module} – Gives authorized users (e.g., admins) the interface to define categories and set budget limits.
+    \end{itemize}
+
+  \item \textbf{Notification on Status Change (FR5)}
+    \begin{itemize}
+      \item \emph{Approval Workflow \& Review Module} – Initiates the status update event (e.g., from “pending” to “approved”).
+      \item \emph{Notifications \& Communication Module} – Dispatches email confirmations to users regarding the updated status.
+    \end{itemize}
+
+  \item \textbf{Audit Trail Logging (FR6)}
+    \begin{itemize}
+      \item \emph{Policy \& Compliance Management Module} – Logs every action for audit and compliance reviews.
+      \item \emph{Database Module} – Stores the time-stamped actions and relevant user or module IDs.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Nonfunctional Requirements:}
+\begin{itemize}
+  \item \textbf{Performance Under Load (test-id7 \& test-id9)}
+    \begin{itemize}
+      \item \emph{Database Module} – Manages concurrency and indexes for faster queries.
+      \item \emph{Expense Submission \& Tracking Module} – Processes multiple requests in parallel.
+      \item \emph{Notifications \& Communication Module} – Ensures that message-sending queues do not overload the system.
+    \end{itemize}
+
+  \item \textbf{Security \& Access Control (test-id8)}
+    \begin{itemize}
+      \item \emph{User Authentication \& Profile Management Module} – Validates user sessions, enforces lockouts, and password rules.
+      \item \emph{Approval Workflow \& Review Module} – Verifies user roles for privileged operations on high-value requests.
+      \item \emph{Database Module} – Restricts direct data writes and logs unauthorized attempts.
+    \end{itemize}
+
+  \item \textbf{Data Integrity \& Security (test-id10)}
+    \begin{itemize}
+      \item \emph{Policy \& Compliance Management Module} – Monitors manipulations or invalid changes in requests, raising alerts if policy breaches occur.
+      \item \emph{Database Module} – Manages transactional integrity and rollbacks, preventing data corruption or unauthorized changes.
+    \end{itemize}
+
+  \item \textbf{Usability (Informal Trials)}
+    \begin{itemize}
+      \item \emph{GUI Module} – Provides tooltips, labeled fields, and consistent visuals for new users.
+      \item \emph{Notifications \& Communication Module} – Reinforces system feedback (e.g., success toast) to build user confidence.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Test-to-Module Mapping}
+
+\textbf{Functional Tests (test-id1 through test-id6):}
+
+\begin{itemize}
+  \item \textbf{test-id1 (Submission Confirmation)}
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Receives the new submission and triggers ledger updates.
+      \item \emph{Database Module} – Persists the new request data.
+      \item \emph{GUI Module} – Reflects a successful or failed submission state to the user.
+    \end{itemize}
+
+  \item \textbf{test-id2 (Approval Workflow)}
+    \begin{itemize}
+      \item \emph{Approval Workflow \& Review Module} – Manages the request’s status transition (pending \(\rightarrow\) approved).
+      \item \emph{Notifications \& Communication Module} – Dispatches an email upon approval or rejection.
+      \item \emph{Database Module} – Stores the updated status for record-keeping.
+    \end{itemize}
+
+  \item \textbf{test-id3 (Expense Addition)}
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Enables multiple line items to be added.
+      \item \emph{Budget \& Funding Management Module} – Checks for sufficient funds and rejects if the limit is exceeded.
+    \end{itemize}
+
+  \item \textbf{test-id4 (Budget Creation \& Categorization)}
+    \begin{itemize}
+      \item \emph{Budget \& Funding Management Module} – Creates new budgets and enforces category rules.
+      \item \emph{GUI Module} – Presents a form for budget creation and category assignment.
+    \end{itemize}
+
+  \item \textbf{test-id5 (Notification on Reimbursement Status Change)}
+    \begin{itemize}
+      \item \emph{Approval Workflow \& Review Module} – Updates the request’s status.
+      \item \emph{Notifications \& Communication Module} – Sends out the corresponding “Approved” or “Rejected” email.
+    \end{itemize}
+
+  \item \textbf{test-id6 (Audit Trail Logging)}
+    \begin{itemize}
+      \item \emph{Policy \& Compliance Management Module} – Ensures compliance logs are written for each action.
+      \item \emph{Database Module} – Stores the logs with timestamps and user IDs.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Nonfunctional Tests (test-id7 through test-id10):}
+
+\begin{itemize}
+  \item \textbf{test-id7 (Response Time Under Load)}
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Processes the bulk of concurrent requests.
+      \item \emph{Database Module} – Must handle high insert/update throughput.
+      \item \emph{GUI Module} – Observes any slow-down from a user perspective.
+    \end{itemize}
+
+  \item \textbf{test-id8 (Security \& Access Control)}
+    \begin{itemize}
+      \item \emph{User Authentication \& Profile Management Module} – Restricts access to certain features if the user lacks privileges.
+      \item \emph{Approval Workflow \& Review Module} – Enforces multi-level checks for high-value reimbursements.
+    \end{itemize}
+
+  \item \textbf{test-id9 (Load Handling)}
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Manages concurrency for form submissions.
+      \item \emph{Notifications \& Communication Module} – Ensures no message backlog when multiple updates happen simultaneously.
+      \item \emph{Database Module} – Uses indexing to keep queries within acceptable performance under peak loads.
+    \end{itemize}
+
+  \item \textbf{test-id10 (Data Integrity \& Security)}
+    \begin{itemize}
+      \item \emph{Policy \& Compliance Management Module} – Logs and verifies any changes to amounts or statuses to detect tampering.
+      \item \emph{Database Module} – Implements atomic transactions, preventing partial commits.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Conclusion: VnV Report Matches VnV Plan}
+
+By mapping each requirement and test to the \textbf{modules} specified
+in the MIS (and referencing the SRS requirements), we affirm that:
+\begin{itemize}
+  \item The \textbf{VnV Report matches} what was planned in the \textbf{VnV Plan}, with
+  no extraneous repetition. 
+  \item Every test ID is tied directly to the relevant module(s), ensuring
+  \emph{clear traceability} between the design artifacts (MIS) and the SRS.
+  \item All requirements and tests defined in the VnV Plan are accounted for in
+  the final implementation, thus fulfilling the project’s original goals without
+  duplicating content across both documents.
+\end{itemize}
+
+Therefore, the system is comprehensively covered by our verification and validation
+activities, upholding the consistency and alignment anticipated in the VnV Plan. 
+
 
 \section{Code Coverage Metrics}
 
 To ensure the robustness and reliability of the \progname{} system, we will use a combination of code coverage metrics to evaluate the effectiveness of our testing. The goal of code coverage analysis is to measure the extent to which the source code is tested, helping identify untested paths and potential vulnerabilities.
 
 \subsection{Code Coverage Measurement Approach}
-The following strategies were used to assess the coverage of our codebase:
+The following strategies were used to assess the coverage of our codebase, they were implemented using the tests listed above in the document or if neccessary, manually:
 
 \begin{itemize}
-    \item \textbf{Statement Coverage}: Verifies that each executable statement in the code has been executed at least once.
     \item \textbf{Branch Coverage}: Ensures that both the expected inputs and the expected alerts for wrong inputs are executed (if/else).
     \item \textbf{Function Coverage}: Confirms that all functions and methods in the system have been called at least once.
     \item \textbf{Line Coverage}: Measures the percentage of total lines of code executed during testing.
+    \item \textbf{File Coverage}: Ensures that all files and folders in the project are utilized somewhere in the website.
 \end{itemize}
 
+\subsection{Coverage Results}
+
+To evaluate our testing rigor, we measured code coverage. Additionally, we conducted  
+manual testing in several UI-intensive areas where automated test tools provided  
+limited utility (such as receipt uploads and interactive budget charts).
+
+\noindent
+\textbf{Current Coverage Status:}
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|c|}
+      \hline
+      \textbf{Category} & \textbf{Coverage} \\
+      \hline
+      All Files Accessed & Yes \\
+      All Folders Utilized & Yes \\
+      Expected Inputs and Alerts Tested & Yes \\
+      All Functions utilized & Yes \\
+      Approximate Percent of Code Covered & 50\% \\
+      \hline
+  \end{tabular}
+  \caption{File and Folder Coverage Verification}
+  \label{tab:file_coverage}
+  \end{table}
+
+  
+\paragraph{Manual UI Verification:}
+Certain interactive features require visual feedback or user-driven flows, making them less  
+amenable to purely automated testing. For example:
+\begin{itemize}
+  \item \textbf{Dashboard Interactions:} Confirmed that dynamic charts (e.g., pie charts  
+    showing budget allocations) render correctly and update with user actions.
+  \item \textbf{Form Validation Messages:} Ensured error tooltips and “success”  
+    confirmations are correctly displayed, especially under slow network or older devices.
+\end{itemize}
+While we aim to automate more of these UI tests using Cypress and React Testing Library,  
+some usability-driven elements \emph{naturally demand} human oversight to guarantee 
+intuitive design and workflow correctness.
+
+\subsection{Test Case Effectiveness}
+
+Although our automated test suite currently covers around 50\% of the code (Table 2),  
+it focuses on the \emph{most critical} functionalities, ensuring robustness in:
+\begin{itemize}
+    \item \textbf{Core Workflows:} Authentication, reimbursement submissions, approvals,  
+          and audit trails, where system failure would severely impact users.
+    \item \textbf{Key Roles:} Testing scenarios for students, financial officers, and  
+          administrators, including multi-level approvals for high-value requests.
+    \item \textbf{Edge Cases:} Invalid file uploads, incomplete fields, conflicting requests,  
+          and concurrency checks for expense additions.
+\end{itemize}
+
+\noindent
+\textbf{Future Improvements:}
+\begin{itemize}
+    \item \textbf{Increased UI Automation:} Expand end-to-end tests to  
+          systematically cover more of the front-end logic, especially around dynamic  
+          interactions (e.g., real-time budget updates).
+    \item \textbf{Refinement of Low-Priority Paths:} Add coverage for lesser-used  
+          functionalities, such as export-to-PDF or advanced filtering features.
+    \item \textbf{Accessibility and Compatibility Tests:} Perform manual checks on  
+          screen-reader compliance and cross-browser support in addition to automated  
+          scanning tools (e.g., Lighthouse).
+\end{itemize}
+
+\noindent
+Since our coverage strategy prioritizes high-impact areas, we are confident that the test suite provides a strong measure of overall system reliability. Future improvements will focus on expanding coverage for lesser-used components and non-critical paths. By concentrating on high-value and high-risk areas first, our current test suite confidently  
+mitigates the most critical failures. In tandem with manual UI checks, this approach provides  
+a strong foundation for reliability. We will continue to refine our coverage metrics and  
+introduce additional automated tests—particularly for complex UI workflows—as the  
+project evolves.
+
 \bibliographystyle{plainnat}
-\bibliography{../../refs/References}
 
 \newpage{}
 \section*{Appendix --- Reflection}
