@@ -218,6 +218,18 @@ Based on the testing process and feedback from users, the following modification
 
 \section{Code Coverage Metrics}
 
+To ensure the robustness and reliability of the \progname{} system, we will use a combination of code coverage metrics to evaluate the effectiveness of our testing. The goal of code coverage analysis is to measure the extent to which the source code is tested, helping identify untested paths and potential vulnerabilities.
+
+\subsection{Code Coverage Measurement Approach}
+The following strategies were used to assess the coverage of our codebase:
+
+\begin{itemize}
+    \item \textbf{Statement Coverage}: Verifies that each executable statement in the code has been executed at least once.
+    \item \textbf{Branch Coverage}: Ensures that both the expected inputs and the expected alerts for wrong inputs are executed (if/else).
+    \item \textbf{Function Coverage}: Confirms that all functions and methods in the system have been called at least once.
+    \item \textbf{Line Coverage}: Measures the percentage of total lines of code executed during testing.
+\end{itemize}
+
 \bibliographystyle{plainnat}
 \bibliography{../../refs/References}
 
@@ -230,11 +242,17 @@ graduate attribute of Reflection.
 \input{../Reflection.tex}
 
 \begin{enumerate}
-  \item What went well while writing this deliverable? 
+  \item What went well while writing this deliverable? \\
+  \textbf{Omar:} What went well while writing this deliverable was the structured approach we took from the beginning. By clearly defining our Verification and Validation (VnV) strategy early on, we were able to efficiently organize the document and ensure all necessary components were included. 
+
   \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
+    did you resolve them? \\
+    \textbf{Omar:} One of the main pain points I experienced during this deliverable was ensuring that the VnV plan aligned with our actual testing process and our original VnV plan. To accomodate for this I just went back and forth between documents and talked to my team to ensure I did not mix anything up.
+
   \item Which parts of this document stemmed from speaking to your client(s) or
-  a proxy (e.g. your peers)? Which ones were not, and why?
+  a proxy (e.g. your peers)? Which ones were not, and why? \\
+    \textbf{Team:} The majority of this document stemmed from discussions with my peers, as we collectively determined the best approach for verification and validation. Specific sections, such as requirements and changes due to testing all stem from our stakeholders. We built upon what we know from our stakeholders for those sections. Other sections were built upon feedback received from stakeholders as well as the TA/Professor, we made sure to account for all information provided to us to ensure a complete report. 
+
   \item In what ways was the Verification and Validation (VnV) Plan different
   from the activities that were actually conducted for VnV?  If there were
   differences, what changes required the modification in the plan?  Why did
@@ -242,7 +260,10 @@ graduate attribute of Reflection.
   projects?  If there weren't any differences, how was your team able to clearly
   predict a feasible amount of effort and the right tasks needed to build the
   evidence that demonstrates the required quality?  (It is expected that most
-  teams will have had to deviate from their original VnV Plan.)
+  teams will have had to deviate from their original VnV Plan.) \\
+  \textbf{Team: } The actual VnV activities differed slightly from the original plan, primarily due to adjustments made during the development cycle. Some test cases had to be modified or expanded as we encountered new scenarios that were not initially anticipated, such as specific security vulnerabilities and data integrity concerns. The biggest change was in prioritizing additional integration tests over certain lower-priority unit tests, since we found that issues were more likely to arise in cross-module interactions. These changes occurred because real-world implementation often reveals gaps in planning, and some verification methods turned out to be less effective than expected. In future projects, I would anticipate these changes by leaving more flexibility in the VnV plan and incorporating iterative updates based on early testing feedback.
+
+
 \end{enumerate}
 
 \end{document}
