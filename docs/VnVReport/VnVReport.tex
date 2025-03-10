@@ -554,7 +554,169 @@ Based on the testing process and feedback from users, the following modification
 		
 \section{Trace to Requirements}
 		
-\section{Trace to Modules}		
+\section{Trace to Modules}
+\label{sec:TraceToModules}
+
+This section maps each requirement and test (as defined in the SRS, MG, and VnV Plan) to the specific modules that implement or support it. In doing so, we confirm that our MES-ERP design provides complete coverage of all requirements and that each module’s responsibilities are clearly delineated.
+
+\subsection{Requirement-to-Module Mapping}
+
+\noindent
+\textbf{Functional Requirements:}
+\begin{itemize}
+  \item \textbf{Reimbursement Submission (FR1):} 
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Handles form submissions, attachments, and ledger updates.
+      \item \emph{Database Module} – Persists the reimbursement records.
+      \item \emph{GUI Module} – Presents the submission form and success/failure messages.
+    \end{itemize}
+
+  \item \textbf{Approval Workflow (FR2):}
+    \begin{itemize}
+      \item \emph{Approval Workflow and Review Module} – Implements the routing and multi-level approval rules.
+      \item \emph{Notifications \& Communication Module} – Sends email notifications to requestors when status changes.
+    \end{itemize}
+
+  \item \textbf{Expense Addition (FR3):}
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Allows users to add line items and re-check the budget.
+      \item \emph{Budget \& Funding Management Module} – Validates funds and updates relevant budget lines.
+    \end{itemize}
+
+  \item \textbf{Budget Creation \& Categorization (FR4):}
+    \begin{itemize}
+      \item \emph{Budget \& Funding Management Module} – Creates new budgets, enforces budget caps, and supports category definitions.
+      \item \emph{GUI Module} – Provides the interface for authorized users (e.g., admins) to create or edit budget lines.
+    \end{itemize}
+
+  \item \textbf{Notification on Reimbursement Status Change (FR5):}
+    \begin{itemize}
+      \item \emph{Notifications \& Communication Module} – Checks the relevant roles and sends out email notifications when a request’s status is updated.
+      \item \emph{Approval Workflow and Review Module} – Triggers the sending of status updates.
+    \end{itemize}
+
+  \item \textbf{Audit Trail Logging (FR6):}
+    \begin{itemize}
+      \item \emph{Policy \& Compliance Management Module} – Logs activity to ensure compliance with MES rules.
+      \item \emph{Database Module} – Stores the record of every action, including time stamps and user IDs.
+    \end{itemize}
+\end{itemize}
+
+\noindent
+\textbf{Nonfunctional Requirements:}
+\begin{itemize}
+  \item \textbf{Performance Under Load (NFR: Performance, test-id7 \& test-id9):}
+    \begin{itemize}
+      \item \emph{Database Module} – Indexed queries, concurrency handling.
+      \item \emph{Expense Submission \& Tracking Module} – Receives multiple simultaneous requests.
+      \item \emph{Notifications \& Communication Module} – Queues or throttles outgoing messages to avoid timeouts.
+    \end{itemize}
+
+  \item \textbf{Security and Access Control (NFR: Security, test-id8):}
+    \begin{itemize}
+      \item \emph{User Authentication \& Profile Management Module} – Validates user credentials, manages sessions.
+      \item \emph{Approval Workflow and Review Module} – Enforces role-based checks for high-value approvals.
+      \item \emph{Database Module} – Restricts direct data access, logs unauthorized attempts.
+    \end{itemize}
+
+  \item \textbf{Data Integrity and Security (NFR: Data Integrity, test-id10):}
+    \begin{itemize}
+      \item \emph{Database Module} – Transaction atomicity and rollbacks.
+      \item \emph{Policy \& Compliance Management Module} – Ensures requests conform to MES rules, logs attempted tampering.
+    \end{itemize}
+
+  \item \textbf{Usability (NFR: Usability):}
+    \begin{itemize}
+      \item \emph{GUI Module} – Provides clarity with tooltips, placeholders, and “Success!” confirmations.
+      \item \emph{Notifications \& Communication Module} – Furnishes immediate feedback to keep users informed.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Test-to-Module Mapping}
+
+\noindent
+\textbf{Functional Tests (IDs 1--6):}
+\begin{itemize}
+  \item \textbf{Test-id1 (Submission Confirmation):}
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Receives and stores new submissions.
+      \item \emph{Database Module} – Persists ledger updates for newly submitted expenses.
+      \item \emph{GUI Module} – Displays success/failure to the end user.
+    \end{itemize}
+
+  \item \textbf{Test-id2 (Approval Workflow):}
+    \begin{itemize}
+      \item \emph{Approval Workflow and Review Module} – Executes the approval logic.
+      \item \emph{Notifications \& Communication Module} – Notifies the requestor upon approval.
+      \item \emph{Database Module} – Records the changed status in persistent storage.
+    \end{itemize}
+
+  \item \textbf{Test-id3 (Expense Addition):}
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Adds new line items to an existing request.
+      \item \emph{Budget \& Funding Management Module} – Checks that the updated total does not exceed the available budget.
+    \end{itemize}
+
+  \item \textbf{Test-id4 (Budget Creation \& Categorization):}
+    \begin{itemize}
+      \item \emph{Budget \& Funding Management Module} – Generates new budgets and enforces budget category constraints.
+      \item \emph{GUI Module} – Allows an authorized user to set or adjust category limits.
+    \end{itemize}
+
+  \item \textbf{Test-id5 (Notification on Status Change):}
+    \begin{itemize}
+      \item \emph{Approval Workflow and Review Module} – Initiates the state change event for a request.
+      \item \emph{Notifications \& Communication Module} – Dispatches email alerts to the user once the request is approved/denied.
+    \end{itemize}
+
+  \item \textbf{Test-id6 (Audit Trail Logging):}
+    \begin{itemize}
+      \item \emph{Policy \& Compliance Management Module} – Writes a log entry for each update or action.
+      \item \emph{Database Module} – Stores audit records with timestamps and user identifiers.
+    \end{itemize}
+\end{itemize}
+
+\noindent
+\textbf{Nonfunctional Tests (IDs 7--10):}
+\begin{itemize}
+  \item \textbf{Test-id7 (Response Time Under Load):}
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Responsible for receiving the bulk of the requests during the load test.
+      \item \emph{Database Module} – Must handle a high concurrency of inserts/updates.
+      \item \emph{GUI Module} – Observes if response times degrade from the user perspective.
+    \end{itemize}
+
+  \item \textbf{Test-id8 (Security and Access Control):}
+    \begin{itemize}
+      \item \emph{User Authentication \& Profile Management Module} – Verifies session validity, enforces lockouts on repeated failures.
+      \item \emph{Approval Workflow and Review Module} – Checks roles and denies access if the user lacks privileges.
+    \end{itemize}
+
+  \item \textbf{Test-id9 (Load Handling):}
+    \begin{itemize}
+      \item \emph{Expense Submission \& Tracking Module} – Supports multiple concurrent user sessions.
+      \item \emph{Notifications \& Communication Module} – Sends a burst of email messages, verifying no backlog or failures.
+      \item \emph{Database Module} – Verifies indexing and concurrency are robust under near-peak loads.
+    \end{itemize}
+
+  \item \textbf{Test-id10 (Data Integrity and Security):}
+    \begin{itemize}
+      \item \emph{Policy \& Compliance Management Module} – Ensures no tampering of amounts or request status changes can happen without being logged.
+      \item \emph{Database Module} – Maintains transaction integrity (e.g., rollbacks for partial failures), ensures data is unaltered without authorization.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Conclusion}
+
+Through the above \emph{Trace to Modules}, we verify that:
+\begin{itemize}
+  \item Every functional requirement (FR1--FR6) and nonfunctional requirement (performance, security, data integrity, usability) is addressed by one or more modules.
+  \item Every test (IDs~1--10) directly maps to the relevant module(s) that implement or facilitate that functionality.
+  \item We have no orphan requirements (i.e., every requirement is accounted for) and no orphan modules (i.e., each module fulfills an SRS-defined purpose).
+\end{itemize}
+
+This clear mapping minimizes duplication, ensures maintainability, and provides stakeholders and developers confidence that the MES-ERP system’s architecture adheres to the specifications laid out in the SRS, MG, and VnV Plan.
+		
 
 \section{Code Coverage Metrics}
 
