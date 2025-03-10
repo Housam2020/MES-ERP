@@ -561,17 +561,50 @@ Based on the testing process and feedback from users, the following modification
 To ensure the robustness and reliability of the \progname{} system, we will use a combination of code coverage metrics to evaluate the effectiveness of our testing. The goal of code coverage analysis is to measure the extent to which the source code is tested, helping identify untested paths and potential vulnerabilities.
 
 \subsection{Code Coverage Measurement Approach}
-The following strategies were used to assess the coverage of our codebase:
+The following strategies were used to assess the coverage of our codebase, they were implemented using the tests listed above in the document or if neccessary, manually:
 
 \begin{itemize}
-    \item \textbf{Statement Coverage}: Verifies that each executable statement in the code has been executed at least once.
     \item \textbf{Branch Coverage}: Ensures that both the expected inputs and the expected alerts for wrong inputs are executed (if/else).
     \item \textbf{Function Coverage}: Confirms that all functions and methods in the system have been called at least once.
     \item \textbf{Line Coverage}: Measures the percentage of total lines of code executed during testing.
+    \item \textbf{File Coverage}: Ensures that all files and folders in the project are utilized somewhere in the website.
 \end{itemize}
 
+\subsection{Coverage Results}
+
+The overall code coverage percentage or verification was determined at an approximate number from our tests. Additionally, we verified that all files and folders used in the project are correctly accessed within the website:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|}
+    \hline
+    \textbf{Category} & \textbf{Coverage} \\
+    \hline
+    All Files Accessed & Yes \\
+    All Folders Utilized & Yes \\
+    Expected Inputs and Alerts Tested & Yes \\
+    All Functions utilized & Yes \\
+    Approximate Percent of Code Covered & 50\% \\
+    \hline
+\end{tabular}
+\caption{File and Folder Coverage Verification}
+\label{tab:file_coverage}
+\end{table}
+
+\subsection{Test Case Effectiveness}
+
+Although the test cases listed above cover only approximately 50\% of the total site code, they accurately represent the entire system by focusing on:
+
+\begin{itemize}
+    \item Core functionalities such as authentication, reimbursement submissions, and approvals.
+    \item Important workflows involving multiple user roles (students, admins, and finance officers).
+    \item Edge cases, including incorrect data entries, invalid file uploads, and simultaneous database transactions.
+\end{itemize}
+
+Since our coverage strategy prioritizes high-impact areas, we are confident that the test suite provides a strong measure of overall system reliability. Future improvements will focus on expanding coverage for lesser-used components and non-critical paths.
+
+
 \bibliographystyle{plainnat}
-\bibliography{../../refs/References}
 
 \newpage{}
 \section*{Appendix --- Reflection}
