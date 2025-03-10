@@ -235,12 +235,129 @@ These refinements maintain consistency with our planned VnV approach while \emph
 
 
 \section{Nonfunctional Requirements Evaluation}
+\label{sec:NonfunctionalReqEval}
+
+This section summarizes the results of our nonfunctional requirements testing (Tests~7--10). As before, we do not restate each test procedure from the VnV Plan, but rather highlight the observed outcomes, any issues discovered, and the improvements made to address them. 
 
 \subsection{Usability}
-		
-\subsection{Performance}
 
-\subsection{etc.}
+\noindent
+\textbf{Overview:}  
+Although no specific usability tests were defined in Tests~7--10, we did conduct informal user trials where new users (e.g., club leaders unfamiliar with the system) performed basic tasks such as budget creation and reimbursement submission. Our goal was to gauge ease of navigation, clarity of interface elements, and overall user satisfaction.
+
+\noindent
+\textbf{Findings and Improvements:}
+\begin{itemize}
+  \item \textbf{Clarity of Labels:} Some users found certain labels ambiguous (e.g., “Add Reimbursement” vs.\ “Submit Request”). We updated form labels to match simpler, more intuitive phrasing (``Submit Reimbursement'').
+  \item \textbf{Tooltip Guidance:} We added short tooltips over key fields (like “Budget Line”) to reduce confusion, especially for first-time users.
+  \item \textbf{Success Indicators:} After an action, a quick “Success!” toast message is now displayed in the corner of the screen, reinforcing the system’s responsiveness and user confidence.
+\end{itemize}
+Overall, feedback was positive, indicating that the interface was straightforward to learn and navigate. Further structured usability testing is planned with a larger group of student leaders in future sprints.
+
+\subsection{Performance (Tests 7 \& 9)}
+
+\subsubsection{Test 7: Response Time Under Load (test-id7)}
+
+\noindent
+\textbf{Goal and Input:}  
+We simulated multiple users (15 concurrent) simultaneously submitting reimbursement requests.  
+\textbf{Expected Outcome:} The system should respond within our target threshold (under 3 seconds for form submission) despite heavy load.
+
+\noindent
+\textbf{Results and Analysis:}  
+\begin{itemize}
+  \item Average response time was about 2.2\,s under 15 concurrent submissions, which meets our 3\,s goal.
+  \item A small fraction (about 8\%) of requests took slightly longer (3.5\,s) when older machines joined the test.
+\end{itemize}
+
+\noindent
+\textbf{Code Improvements:}  
+\begin{itemize}
+  \item We added an in-memory cache for frequently accessed club/budget data, reducing repeated database lookups.
+  \item Improved concurrency handling in the \texttt{ReimbursementController}, ensuring that read-write locks do not block each other unnecessarily.
+\end{itemize}
+These optimizations helped keep the average response times near 2 seconds, even under moderate stress, aligning with our performance requirements from the SRS.
+
+\subsubsection{Test 9: Load Handling (test-id9)}
+
+\noindent
+\textbf{Goal and Input:}  
+We manually simulated multiple users filling out various forms (expense addition, budget creation) simultaneously.  
+\textbf{Expected Outcome:} The system should maintain functional integrity and acceptable performance (i.e., not degrade significantly under up to 20 concurrent sessions).
+
+\noindent
+\textbf{Results and Analysis:}  
+During a 20-user concurrency spike:
+\begin{itemize}
+  \item CPU usage on the hosting server peaked at about 70\%.  
+  \item Response times remained under 4 seconds for all but one outlier, which took 5 seconds due to a large image upload.
+  \item No crashes or data inconsistencies occurred.
+\end{itemize}
+
+\noindent
+\textbf{Code Improvements:}
+\begin{itemize}
+  \item We introduced a file-size check for receipt uploads to warn users if the attachment is too large, preventing slowdowns from oversize images.
+  \item Split the monolithic \texttt{AppService} into smaller modules, allowing better scaling in future container-based deployments.
+\end{itemize}
+These measures help ensure that the system scales gracefully under typical usage levels expected by the MES.
+
+\subsection{Security and Access Control (Test 8)}
+
+\noindent
+\textbf{Goal and Input:}  
+An unauthorized user attempts to access restricted sections (e.g., admin panel or high-value approval screens) using guessed URLs or direct links.  
+\textbf{Expected Outcome:} The user is denied access and any unauthorized attempt is logged.
+
+\noindent
+\textbf{Results and Analysis:}  
+\begin{itemize}
+  \item All restricted endpoints properly returned \texttt{403 Forbidden} or redirected to the login page.
+  \item Attempts were logged under the “Security Log” with the user’s IP address, time, and requested endpoint.
+\end{itemize}
+
+\noindent
+\textbf{Code Improvements:}
+\begin{itemize}
+  \item Added an optional “Lockout” mechanism—if an IP attempts 5 consecutive invalid logins or access attempts within 10 minutes, that IP is temporarily blocked.
+  \item Clarified error messages to avoid giving hints about admin URL structures or user roles.
+\end{itemize}
+These changes reinforce alignment with the SRS’s confidentiality and integrity requirements, mitigating unauthorized access attempts.
+
+\subsection{Data Integrity and Security (Test 10)}
+
+\noindent
+\textbf{Goal and Input:}  
+Under normal usage with data integrity checks enabled, multiple transactions and database updates are performed across different user sessions.  
+\textbf{Expected Outcome:} The data remains consistent, properly linked to the correct user and budget lines, and no unauthorized modifications go undetected.
+
+\noindent
+\textbf{Results and Analysis:}  
+\begin{itemize}
+  \item We performed 50 consecutive transactions, including expense additions, reimbursements, and budget edits. All fields remained consistent, with no partial or duplicated entries.
+  \item The system’s hash-based verification on critical fields (e.g., amounts) detected one deliberate attempt at direct DB manipulation, logging it and rolling back changes.
+\end{itemize}
+
+\noindent
+\textbf{Code Improvements:}  
+\begin{itemize}
+  \item Strengthened the DB layer to disallow direct updates to amount fields without valid session tokens.
+  \item Enhanced the \texttt{DataValidator} class to maintain an immutable transaction ID log, preventing silent tampering of posted reimbursements.
+\end{itemize}
+Hence, the SRS’s requirement for secure and tamper-evident records is fulfilled, ensuring high confidence in the system’s data integrity.
+
+\subsection{Conclusion on Nonfunctional Testing}
+
+Tests~7 through 10 confirm that our system addresses key nonfunctional aspects: 
+\begin{itemize}
+  \item \emph{Usability:} While not a specific test ID, our informal checks indicated a straightforward user experience, supported by better labeling and tooltips.
+  \item \emph{Performance:} Simultaneous submissions and multiple concurrent sessions did not significantly degrade response times, thanks to caching, concurrency tuning, and partial modularization.
+  \item \emph{Security and Access Control:} Unauthorized attempts were fully denied and logged, meeting the SRS requirement for robust access controls.
+  \item \emph{Data Integrity:} Hash-based verifications and stronger DB rules ensured that transaction data remained correct and tamper-evident.
+\end{itemize}
+
+Future work includes more aggressive load testing with greater concurrency to reflect final deployment usage and a formal usability study with a broader user base. Overall, the system’s nonfunctional performance and security posture align well with SRS mandates, ensuring reliability for the McMaster Engineering Society’s financial management needs.
+
 	
 \section{Comparison to Existing Implementation}	
 
