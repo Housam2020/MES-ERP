@@ -82,8 +82,6 @@ This section defines the symbols, abbreviations, and acronyms used throughout th
 
 \pagenumbering{arabic}
 
-This document ...
-
 \section{Functional Requirements Evaluation}
 \label{sec:FunctionalReqEval}
 
@@ -110,7 +108,7 @@ We tested ten separate reimbursement submissions, each referencing distinct rece
 \textbf{Code Improvements:}
 \begin{itemize}
   \item Added front-end checks (React form validation) preventing the user from submitting the form if required fields (like \texttt{budgetLine}) are empty.
-  \item Updated the \texttt{SubmitController} to return a descriptive error message (“Missing budget line”) instead of the vague “400 Bad Request.”
+  \item Updated the submit controller to return a descriptive error message (“Missing budget line”) instead of the vague “400 Bad Request.”
 \end{itemize}
 These changes improved usability by alerting users to incomplete inputs before reaching the back end, better aligning the submission workflow with SRS clarity requirements.
 
@@ -272,7 +270,7 @@ We simulated multiple users (15 concurrent) simultaneously submitting reimbursem
 \textbf{Code Improvements:}  
 \begin{itemize}
   \item We added an in-memory cache for frequently accessed club/budget data, reducing repeated database lookups.
-  \item Improved concurrency handling in the our reimbursement controller, ensuring that read-write locks do not block each other unnecessarily.
+  \item Improved concurrency handling in our reimbursement controller, ensuring that read-write locks do not block each other unnecessarily.
 \end{itemize}
 These optimizations helped keep the average response times near 2 seconds, even under moderate stress, aligning with our performance requirements from the SRS.
 
