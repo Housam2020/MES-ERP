@@ -530,7 +530,7 @@ Unit testing was conducted using a combination of automated and manual testing t
 \end{itemize}
 
 \subsection{Testing Approach}
-The team used \textbf{Jest} for automated testing of frontend logic and API calls, and \textbf{manual testing} for real-world scenario validation. The approach included:
+We used \textbf{Jest} for automated testing of frontend logic and API calls, and \textbf{manual testing} for real-world scenario validation. The approach included:
 
 \begin{itemize}
     \item Writing unit tests for key functions such as group creation, deletion, and authentication handling.
@@ -562,47 +562,38 @@ The test cases covered core functionalities, including validation checks and API
   \hline
   \endlastfoot
   
-  Create a group with a unique name & Group is successfully created \\
+  Authenticated user redirection test & User remains on current page \\
   \hline
-  Attempt to create a group with an existing name & System displays an error message \\
+  Unauthenticated user redirection test & User is redirected to login page \\
   \hline
-  Unauthorized user attempts to access group management & Access is denied with error message \\
+  Insufficient permissions redirection test & User is redirected to dashboard home \\
   \hline
-  Delete a group with no assigned users & Group is successfully deleted \\
+  Loading state rendering test & Loading indicator is displayed during data fetch \\
   \hline
-  Attempt to delete a group with assigned users & System prevents deletion and notifies the user \\
+  User Management component rendering test & User Management interface is properly displayed \\
   \hline
-  Handle failed database connection during group fetch & Error is logged, and fallback UI is displayed \\
+  Dashboard Overview rendering test & Dashboard displays correct metrics and cards \\
   \hline
-  Register a new user with valid credentials & User is successfully created and logged in \\
+  Analytics permissions validation test & Access is granted only to authorized users \\
   \hline
-  Attempt to register with an existing email & System displays an error message \\
+  Group Management interface rendering test & Group management controls are accessible \\
   \hline
-  Login with correct credentials & User is authenticated and redirected to the dashboard \\
+  Payment Request status update test & Request status is successfully updated \\
   \hline
-  Login with incorrect credentials & System displays an error message \\
+  Admin view rendering test & All system-wide data is visible to admin users \\
   \hline
-  Assign a role to a user & User is successfully assigned the role \\
+  Club leader view rendering test & Only club-specific data is visible to club leaders \\
   \hline
-  Remove a role from a user & User no longer has the role permissions \\
+  Regular user view rendering test & Only user-specific data is visible to regular users \\
   \hline
-  Attempt to assign an invalid role & System displays an error message \\
+  Data visualization rendering test & Charts and graphs accurately render analytics data \\
   \hline
-  Submit a payment request with valid details & Request is successfully submitted \\
+  User role assignment test & User roles are successfully updated in the system \\
   \hline
-  Submit a payment request missing required fields & System displays an error message \\
+  Group assignment test & Users are successfully assigned to appropriate groups \\
   \hline
-  View all payment requests as an admin & Admin sees all requests \\
+  Error handling during data fetch test & System displays appropriate error messages \\
   \hline
-  View only personal payment requests as a user & User sees only their own requests \\
-  \hline
-  Attempt to approve a request without proper permissions & Access is denied with an error message \\
-  \hline
-  Update request status successfully & Request status is updated \\
-  \hline
-  Handle failed database connection when fetching requests & Error is logged, and fallback UI is displayed \\
-  \hline
-  
   \end{longtable}
 
 
@@ -651,6 +642,41 @@ Based on the testing process and feedback from users, the following modification
 \end{itemize}
 
 \section{Automated Testing}
+
+\subsection*{Unit Testing}
+The project utilized \textbf{Jest} for automated testing of frontend logic and API calls.
+
+\subsection*{Functional Coverage}
+Tests included key functions such as:
+\begin{itemize}
+    \item Group creation, deletion, and authentication handling.
+    \item Submitting and approving reimbursement requests.
+    \item Verifying user roles and permissions.
+\end{itemize}
+
+\subsection*{Scenario-Based Testing}
+We conducted tests simulating real-world usage, such as handling multiple reimbursement requests simultaneously.
+
+\subsection*{Edge Cases Tested}
+\begin{itemize}
+    \item Submitting a reimbursement request without required fields.
+    \item Uploading incorrect file formats for receipts.
+    \item Preventing unauthorized users from updating request statuses.
+    \item Ensuring database rollback occurs when a transaction fails.
+\end{itemize}
+
+\section*{Code Coverage Metrics}
+To assess the thoroughness of testing, we measured:
+
+\begin{itemize}
+    \item \textbf{Statement Coverage} -- Ensuring every executable statement was tested.
+    \item \textbf{Branch Coverage} -- Validating both success and failure conditions.
+    \item \textbf{Function Coverage} -- Confirming that all methods were executed at least once.
+    \item \textbf{Line Coverage} -- Measuring the percentage of lines executed during testing.
+\end{itemize}
+
+These methods ensured high test coverage and helped in identifying untested paths and potential vulnerabilities.
+
 		
 \section{Trace to Requirements}
 		
