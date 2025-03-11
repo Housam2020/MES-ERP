@@ -531,7 +531,7 @@ Unit testing was conducted using a combination of automated and manual testing t
 We used \textbf{Jest} for automated testing of frontend logic and API calls, and \textbf{manual testing} for real-world scenario validation. The approach included:
 
 \begin{itemize}
-    \item Writing unit tests for key functions such as group creation, deletion, and authentication handling.
+    \item Writing unit tests for important pages such as Home, Groups, Users, Analytics, and Requests.
     \item Conducting manual test runs where team members acted as users submitting and approving reimbursement requests.
     \item Gathering feedback from a small group of MES student leaders who tested the platform and provided insights.
     \item Running scenario-based testing sessions to simulate real-world usage, such as handling multiple reimbursement requests at once.
@@ -593,22 +593,6 @@ The test cases covered core functionalities, including validation checks and API
   Error handling during data fetch test & System displays appropriate error messages \\
   \hline
   \end{longtable}
-
-
-\subsection{Edge Cases Tested}
-
-\begin{itemize}
-  \item Submitting a reimbursement request without required fields.
-  \item Uploading incorrect file formats for receipts.
-  \item Attempting to create a duplicate group.
-  \item Handling multiple users modifying the same data simultaneously.
-  \item Ensuring database rollback occurs when a transaction fails.
-  \item Registering a user with an invalid email format.
-  \item Assigning multiple roles to a user and verifying access control.
-  \item Submitting a payment request with an incorrect amount format.
-  \item Preventing unauthorized users from updating request statuses.
-  \item Ensuring bulk request approvals work correctly.
-\end{itemize}
 
 \section{Changes Due to Testing}
 
@@ -989,11 +973,15 @@ graduate attribute of Reflection.
 
 \begin{enumerate}
   \item What went well while writing this deliverable? \\
-  \textbf{Omar:} What went well while writing this deliverable was the structured approach we took from the beginning. By clearly defining our Verification and Validation (VnV) strategy early on, we were able to efficiently organize the document and ensure all necessary components were included. 
+  \textbf{Omar:} What went well while writing this deliverable was the structured approach we took from the beginning. By clearly defining our Verification and Validation (VnV) strategy early on, we were able to efficiently organize the document and ensure all necessary components were included. \\
+  \textbf{Rachid:} One thing that went well was how smoothly everything came together once we had a clear plan. Since we mapped out our approach early, we didn't have to scramble last minute or redo large sections. The structured process helped us stay on track and made writing this a lot easier. \\
+  \textbf{Sufyan:} The best part was that the team had a solid workflow. Everyone focused on their sections, and we kept checking in with each other to make sure things were aligned. That teamwork made a big difference in keeping things moving without unnecessary delays. \\
 
   \item What pain points did you experience during this deliverable, and how
     did you resolve them? \\
-    \textbf{Omar:} One of the main pain points I experienced during this deliverable was ensuring that the VnV plan aligned with our actual testing process and our original VnV plan. To accomodate for this I just went back and forth between documents and talked to my team to ensure I did not mix anything up.
+    \textbf{Omar:} One of the main pain points I experienced during this deliverable was ensuring that the VnV plan aligned with our actual testing process and our original VnV plan. To accomodate for this I just went back and forth between documents and talked to my team to ensure I did not mix anything up. \\
+    \textbf{Rachid:} One challenge was keeping the test results clear and well-organized. At first, some sections felt messy, and it was hard to compare different tests. We ended up creating a simple template for documenting results, which made everything much easier to follow and more consistent. \\
+    \textbf{Sufyan:} Time management was tricky because different sections depended on each other, so some parts couldn't be written until others were finished. To fix this, we set earlier deadlines for drafts and made sure to review things in smaller chunks rather than all at once at the end.\\
 
   \item Which parts of this document stemmed from speaking to your client(s) or
   a proxy (e.g. your peers)? Which ones were not, and why? \\
