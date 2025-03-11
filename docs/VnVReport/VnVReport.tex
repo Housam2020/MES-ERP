@@ -592,7 +592,17 @@ The test cases covered core functionalities, including validation checks and API
   \hline
   Error handling during data fetch test & System displays appropriate error messages \\
   \hline
-  \end{longtable}
+  Login with valid credentials & User is authenticated and redirected to dashboard \\
+  \hline
+  Login with invalid credentials & System displays error message and remains on login page \\
+  \hline
+  Register with new email & User account is created and user is redirected to dashboard \\
+  \hline
+  Register with existing email & System prevents duplicate registration with error message \\
+  \hline
+  Email confirmation flow & System prompts user to check email when confirmation is required \\
+  \hline
+\end{longtable}
 
 \section{Changes Due to Testing}
 
@@ -603,23 +613,17 @@ the V\&V process improved the project’s overall quality.
 
 \subsection{Bug Fixes}
 \begin{itemize}
-  \item Fixed an issue where reimbursements submitted without attachments were 
-  still being processed 
-  \emph{(discovered in Test 1 feedback; we added mandatory checks for 
-  attached files)}.
-  \item Addressed a bug where users could submit duplicate requests 
-  \emph{(observed during stress testing; implemented session-level 
-  anti-duplicate measures)}.
-  \item Resolved a login issue where incorrect error messages were displayed 
-  \emph{(Test 2 revealed mismatched error codes; refined front-end and 
-  \texttt{NotificationService} messaging)}.
-  \item Fixed a bug where request status updates were not properly reflected in 
-  the UI \emph{(Test 5 showed stale data; implemented real-time status syncing)}.
-  \item Added the ability for users to be in multiple groups 
-  \emph{(user interviews highlighted multi-club roles; updated schema and 
-  role-handling)}.
+\item Fixed an issue where authentication redirect wasn't working correctly for users with expired sessions
+\emph{(discovered during redirect testing; implemented proper token validation)}.
+\item Addressed a bug where permission checks were not correctly filtering dashboard content
+\emph{(observed during permissions testing; refined access control implementation)}.
+\item Resolved an issue where loading states would persist indefinitely under certain conditions
+\emph{(discovered during component mount testing; improved error boundary handling)}.
+\item Fixed UI rendering inconsistencies in group management interfaces
+\emph{(component tests revealed incorrect state updates; implemented proper React state management)}.
+\item Corrected the behavior of user role assignment when users belong to multiple groups
+\emph{(unit tests highlighted logic errors; updated permission assignment logic)}.
 \end{itemize}
-
 
 
 \subsection{User Feedback and Enhancements}
