@@ -699,6 +699,66 @@ These methods ensured high test coverage and helped in identifying untested path
 
 		
 \section{Trace to Requirements}
+This section establishes traceability between the functional and nonfunctional requirements defined in the SRS and the verification and validation activities conducted in this report. Each requirement is mapped to the corresponding test(s) that validate its implementation, ensuring full coverage and alignment with the system’s goals.
+
+\subsection{Traceability Matrix}
+
+The table below outlines the relationship between system requirements and the tests performed:
+
+\begin{longtable}{|p{0.4\textwidth}|p{0.4\textwidth}|}
+  \caption{Requirement-to-Test Mapping} \label{tab:traceability-matrix} \\
+
+  \hline
+  \textbf{Requirement ID} & \textbf{Validated by Test(s)} \\
+  \hline
+  \endfirsthead
+
+  \multicolumn{2}{c}%
+  {\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+  \hline
+  \textbf{Requirement ID} & \textbf{Validated by Test(s)} \\
+  \hline
+  \endhead
+
+  \hline \multicolumn{2}{r}{\textit{Continued on next page}} \\
+  \endfoot
+
+  \hline
+  \endlastfoot
+
+  FR1 - The system must allow club financial managers to submit reimbursement requests. & Test 1: Submission Confirmation \\
+  \hline
+  FR2 - The system must allow MES staff to approve or reject reimbursement requests. & Test 2: Approval Workflow \\
+  \hline
+  FR3 - The system must notify MES financial managers of reimbursement request status updates. & Test 5: Notification on Status Change \\
+  \hline
+  FR4 - The system must allow users to track their reimbursement request status. & Test 5: Notification on Status Change \\
+  \hline
+  FR5 - The system must allow administrators to access financial records and audit logs. & Test 6: Audit Trail Logging \\
+  \hline
+  FR6 - The system must support budget creation and categorization. & Test 4: Budget Creation and Categorization \\
+  \hline
+  NFR1 - The system should process reimbursement requests in under 3 seconds. & Test 7: Response Time Under Load \\
+  \hline
+  NFR2 - Unauthorized users should not be able to access restricted areas. & Test 8: Security and Access Control \\
+  \hline
+  NFR3 - The system should prevent data tampering and maintain financial integrity. & Test 10: Data Integrity and Security \\
+  \hline
+  NFR4 - The user interface should be intuitive and easy to navigate. & Usability Testing (Section \ref{sec:usability-proof}) \\
+  \hline
+  NFR5 - The system should handle at least 20 concurrent reimbursement requests without degradation. & Test 9: Load Handling \\
+  \hline
+
+\end{longtable}
+
+\subsection{Coverage Analysis}
+
+The traceability matrix confirms that all functional and nonfunctional requirements outlined in the SRS have been validated through dedicated tests. Functional requirements were primarily verified via direct system tests (e.g., submission, approval, notifications, budget handling), while nonfunctional requirements, such as performance, security, and usability, were tested through load testing, access control validation, and user trials.
+
+\subsection{Conclusion}
+
+The validation and verification process ensures that the MES financial system meets its specified requirements. All critical functionalities have been tested, and the system's performance, security, and usability align with the expected goals. Any minor refinements identified during testing have been incorporated, and no major requirements remain unverified.
+
 		
 \section{Trace to Modules}
 \label{sec:TraceToModules}
