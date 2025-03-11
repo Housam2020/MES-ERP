@@ -2,9 +2,9 @@ name: Unit Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
@@ -31,11 +31,3 @@ jobs:
 
       - name: Run Jest Tests
         run: npm test
-
-      - name: Upload Test Coverage
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: coverage-report
-          path: ./src/coverage
-          retention-days: 30
