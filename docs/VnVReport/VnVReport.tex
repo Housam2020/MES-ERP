@@ -626,33 +626,20 @@ the V\&V process improved the project’s overall quality.
 \begin{itemize}
   \item Improved the \textbf{receipt upload system} by making the file upload 
   process clearer 
-  \emph{(responded to confusion in Test 1\slash user trials)}.
   \item Enhanced \textbf{audit logging} for better tracking of request status 
   changes 
-  \emph{(Test 6 required date-range filtering; we added advanced logging filters)}.
   \item Added a clearer role management interface to reduce confusion when 
   assigning roles 
-  \emph{(addressed repeated admin questions from Test 2 \& 8 scenarios)}.
   \item Improved user experience by adding filters to search for specific 
-  payment requests 
-  \emph{(high-volume testers requested quick filtering; integrated in the 
-  main dashboard)}.
+  payment requests
 \end{itemize}
 
 \subsection{Performance and Security Improvements}
 \begin{itemize}
   \item Implemented basic input validation to prevent incorrect data submissions 
-  \emph{(Tests 7 \& 10 indicated forms allowed invalid fields; 
-  added stricter checks)}.
   \item Reduced system load times by optimizing database queries 
-  \emph{(profiling from Test 7 load scenario led us to add indexes and 
-  caching)}.
   \item Strengthened authentication by enforcing stricter password requirements 
-  \emph{(security review in Test 8 revealed frequent weak passwords; 
-  introduced complexity rules)}.
-  \item Enhanced role-based access control to prevent unauthorized modifications 
-  \emph{(further locked down privileged endpoints after discovering URL 
-  manipulations in user acceptance tests)}.
+  \item Enhanced role-based access control to prevent unauthorized modifications
 \end{itemize}
 
 \noindent
@@ -667,6 +654,17 @@ community’s requirements.
 
 \subsection*{Unit Testing}
 The project utilized \textbf{Jest} for automated testing of frontend logic and API calls.
+
+\subsection*{CI/CD Workflows}
+We implemented several GitHub Actions workflows to automate testing and quality assurance:
+
+\begin{itemize}
+    \item \textbf{Unit Tests Workflow} -- Automatically runs Jest tests on every push to main and pull requests, generating and storing coverage reports.
+    \item \textbf{Lint and Format Workflow} -- Enforces code quality by running ESLint and Prettier on all pushed code.
+    \item \textbf{Build PDF Workflow} -- Automatically compiles LaTeX documentation when changes are made to ensure documentation remains up-to-date.
+\end{itemize}
+
+These workflows ensure that code quality is maintained throughout development and that tests are consistently run without manual intervention.
 
 \subsection*{Functional Coverage}
 Tests included key functions such as:
@@ -977,7 +975,8 @@ graduate attribute of Reflection.
   \textbf{Rachid:} One thing that went well was how smoothly everything came together once we had a clear plan. Since we mapped out our approach early, we didn't have to scramble last minute or redo large sections. The structured process helped us stay on track and made writing this a lot easier. \\
   \textbf{Sufyan:} The best part was that the team had a solid workflow. Everyone focused on their sections, and we kept checking in with each other to make sure things were aligned. That teamwork made a big difference in keeping things moving without unnecessary delays. \\
   \textbf{Housam:} Writing the Functional Requirements Evaluation and Trace to Modules went smoothly because I had a clear understanding of the system’s requirements and how they mapped to our implementation. The structured testing process helped ensure that each module was properly evaluated and verified.\\
-
+  \textbf{Taaha:} What went well while working on this deliverable was being able to determine who was working on what right from the beginning. Having this confirmed made it easy to ask questions to the correct group members, ultimately resulting in more efficient communication.
+  
 
   \item What pain points did you experience during this deliverable, and how
     did you resolve them? \\
@@ -985,7 +984,7 @@ graduate attribute of Reflection.
     \textbf{Rachid:} One challenge was keeping the test results clear and well-organized. At first, some sections felt messy, and it was hard to compare different tests. We ended up creating a simple template for documenting results, which made everything much easier to follow and more consistent. \\
     \textbf{Sufyan:} Time management was tricky because different sections depended on each other, so some parts couldn't be written until others were finished. To fix this, we set earlier deadlines for drafts and made sure to review things in smaller chunks rather than all at once at the end.\\
     \textbf{Housam:} One challenge was ensuring full traceability between the requirements and the actual implementation. Some modules had minor discrepancies that required adjustments, so I cross-checked with the SRS and discussed with teammates to ensure consistency.\\
-
+    \textbf{Taaha:} One major pain point was having to recall and make sure our vnv report matched with our initial vnv plan. How I resolved this was by looking back and reviewing our initial plan and discussing any questions with my group mates to avoid any misunderstandings.
     
 
   \item Which parts of this document stemmed from speaking to your client(s) or
