@@ -1006,15 +1006,12 @@ amenable to purely automated testing. For example:
   \item \textbf{Dashboard Interactions:} Confirmed that dynamic charts (e.g., pie charts  
     showing budget allocations) render correctly and update with user actions.
   \item \textbf{Form Validation Messages:} Ensured error tooltips and “success”  
-    confirmations are correctly displayed, especially under slow network or older devices.
+    confirmations are correctly displayed.
 \end{itemize}
-While we aim to automate more of these UI tests using Cypress and React Testing Library,  
-some usability-driven elements \emph{naturally demand} human oversight to guarantee 
-intuitive design and workflow correctness.
 
 \subsection{Test Case Effectiveness}
 
-Although our automated test suite currently covers around 50\% of the code (Table 2),  
+Although our automated test suite currently covers around 10-20\% of the code (Table 2),  
 it focuses on the \emph{most critical} functionalities, ensuring robustness in:
 \begin{itemize}
     \item \textbf{Core Workflows:} Authentication, reimbursement submissions, approvals,  
@@ -1041,9 +1038,7 @@ it focuses on the \emph{most critical} functionalities, ensuring robustness in:
 \noindent
 Since our coverage strategy prioritizes high-impact areas, we are confident that the test suite provides a strong measure of overall system reliability. Future improvements will focus on expanding coverage for lesser-used components and non-critical paths. By concentrating on high-value and high-risk areas first, our current test suite confidently  
 mitigates the most critical failures. In tandem with manual UI checks, this approach provides  
-a strong foundation for reliability. We will continue to refine our coverage metrics and  
-introduce additional automated tests—particularly for complex UI workflows—as the  
-project evolves.
+a strong foundation for reliability. 
 
 \bibliographystyle{plainnat}
 
