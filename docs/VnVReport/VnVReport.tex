@@ -612,32 +612,72 @@ The test cases covered core functionalities, including validation checks and API
 
 \section{Changes Due to Testing}
 
-Based on the testing process and feedback from users, the following modifications were made to the system:
+The following modifications were made in direct response to issues discovered
+or feedback received during our verification and validation activities. Each
+change is tied to specific test findings or user input, underscoring how
+the V\&V process improved the project’s overall quality.
 
 \subsection{Bug Fixes}
 \begin{itemize}
-  \item Fixed an issue where reimbursements submitted without attachments were still being processed.
-  \item Addressed a bug where users could submit duplicate requests.
-  \item Resolved a login issue where incorrect error messages were displayed.
-  \item Fixed a bug where request status updates were not properly reflected in the UI.
-  \item Added the ability for users to be in multiple groups.
+  \item Fixed an issue where reimbursements submitted without attachments were 
+  still being processed 
+  \emph{(discovered in Test 1 feedback; we added mandatory checks for 
+  attached files)}.
+  \item Addressed a bug where users could submit duplicate requests 
+  \emph{(observed during stress testing; implemented session-level 
+  anti-duplicate measures)}.
+  \item Resolved a login issue where incorrect error messages were displayed 
+  \emph{(Test 2 revealed mismatched error codes; refined front-end and 
+  \texttt{NotificationService} messaging)}.
+  \item Fixed a bug where request status updates were not properly reflected in 
+  the UI \emph{(Test 5 showed stale data; implemented real-time status syncing)}.
+  \item Added the ability for users to be in multiple groups 
+  \emph{(user interviews highlighted multi-club roles; updated schema and 
+  role-handling)}.
 \end{itemize}
+
+
 
 \subsection{User Feedback and Enhancements}
 \begin{itemize}
-  \item Improved the \textbf{receipt upload system} by making the file upload process clearer.
-  \item Enhanced \textbf{audit logging} for better tracking of request status changes.
-  \item Added a clearer role management interface to reduce confusion when assigning roles.
-  \item Improved user experience by adding filters to search for specific payment requests.
+  \item Improved the \textbf{receipt upload system} by making the file upload 
+  process clearer 
+  \emph{(responded to confusion in Test 1\slash user trials)}.
+  \item Enhanced \textbf{audit logging} for better tracking of request status 
+  changes 
+  \emph{(Test 6 required date-range filtering; we added advanced logging filters)}.
+  \item Added a clearer role management interface to reduce confusion when 
+  assigning roles 
+  \emph{(addressed repeated admin questions from Test 2 \& 8 scenarios)}.
+  \item Improved user experience by adding filters to search for specific 
+  payment requests 
+  \emph{(high-volume testers requested quick filtering; integrated in the 
+  main dashboard)}.
 \end{itemize}
 
 \subsection{Performance and Security Improvements}
 \begin{itemize}
-  \item Implemented basic input validation to prevent incorrect data submissions.
-  \item Reduced system load times by optimizing database queries.
-  \item Strengthened authentication by enforcing stricter password requirements.
-  \item Enhanced role-based access control to prevent unauthorized modifications.
+  \item Implemented basic input validation to prevent incorrect data submissions 
+  \emph{(Tests 7 \& 10 indicated forms allowed invalid fields; 
+  added stricter checks)}.
+  \item Reduced system load times by optimizing database queries 
+  \emph{(profiling from Test 7 load scenario led us to add indexes and 
+  caching)}.
+  \item Strengthened authentication by enforcing stricter password requirements 
+  \emph{(security review in Test 8 revealed frequent weak passwords; 
+  introduced complexity rules)}.
+  \item Enhanced role-based access control to prevent unauthorized modifications 
+  \emph{(further locked down privileged endpoints after discovering URL 
+  manipulations in user acceptance tests)}.
 \end{itemize}
+
+\noindent
+\textbf{Overall Impact:} 
+By acting on the test results and user suggestions, we directly improved the
+system’s reliability, security, and user experience. Each fix or feature
+above corresponds to a specific test or stakeholder comment, illustrating 
+how the V\&V process shaped the final product to better meet the MES 
+community’s requirements.
 
 \section{Automated Testing}
 
