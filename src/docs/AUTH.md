@@ -210,22 +210,3 @@ When a new user registers:
       (SELECT id FROM roles WHERE name = 'user'), 
       true);
    ```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Permissions not loading**
-   - Check Supabase connection
-   - Verify user is properly authenticated
-   - Check for database schema issues in user_roles or role_permissions
-
-2. **User unable to access routes**
-   - Verify correct role assignments in user_roles table
-   - Check permission assignments in role_permissions table
-   - Ensure middleware is correctly checking permissions
-
-3. **Group-specific permissions not working**
-   - Verify the is_global flag is set correctly
-   - Check that group_id is properly set in user_roles
-   - Ensure queries are filtering by both user and group
