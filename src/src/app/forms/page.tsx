@@ -545,36 +545,74 @@ const ReimbursementForm: React.FC = () => {
             </div>
           </div>
 
-          {/* SECTION 6: Payment Details */}
-          <div className="mb-6">
-            <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Payment Details</h2>
-            <div className="mb-4">
-              <label htmlFor="amount_requested_cad" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Please enter the amount requested in CAD.
-              </label>
-              <input
-                {...register("amount_requested_cad", { required: "Amount is required" })}
-                type="text"
-                className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
-              />
-              {errors.amount_requested_cad && (
-                <p className="text-red-500 text-sm dark:text-red-400">{errors.amount_requested_cad.message}</p>
-              )}
-            </div>
-            <div className="mb-4">
-              <label htmlFor="payment_timeframe" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Payment Timeframe Date
-              </label>
-              <input
-                type="date"
-                {...register("payment_timeframe", { required: "Date is required" })}
-                className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
-              />
-              {errors.payment_timeframe && (
-                <p className="text-red-500 text-sm dark:text-red-400">{errors.payment_timeframe.message}</p>
-              )}
-            </div>
-          </div>
+{/* SECTION 6: Payment Details */}
+<div className="mb-6">
+  <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Payment Details</h2>
+
+  {/* Currency Type */}
+  <div className="mb-4">
+    <label
+      htmlFor="currency_type"
+      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+    >
+      Select the currency type
+    </label>
+    <select
+      {...register("currency_type", { required: "Currency type is required" })}
+      defaultValue="CAD"
+      className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
+    >
+      <option value="CAD">CAD</option>
+      <option value="USD">USD</option>
+    </select>
+    {errors.currency_type && (
+      <p className="text-red-500 text-sm dark:text-red-400">
+        {errors.currency_type.message}
+      </p>
+    )}
+  </div>
+
+  {/* Amount Requested */}
+  <div className="mb-4">
+    <label
+      htmlFor="amount_requested_cad"
+      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+    >
+      Please enter the amount requested in the currency you chose
+    </label>
+    <input
+      {...register("amount_requested_cad", { required: "Amount is required" })}
+      type="text"
+      className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
+    />
+    {errors.amount_requested_cad && (
+      <p className="text-red-500 text-sm dark:text-red-400">
+        {errors.amount_requested_cad.message}
+      </p>
+    )}
+  </div>
+
+  {/* Payment Timeframe */}
+  <div className="mb-4">
+    <label
+      htmlFor="payment_timeframe"
+      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+    >
+      Payment Timeframe Date
+    </label>
+    <input
+      type="date"
+      {...register("payment_timeframe", { required: "Date is required" })}
+      className="mt-1 p-2 border rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
+    />
+    {errors.payment_timeframe && (
+      <p className="text-red-500 text-sm dark:text-red-400">
+        {errors.payment_timeframe.message}
+      </p>
+    )}
+  </div>
+</div>
+
 
           <div className="flex justify-end">
             <button
