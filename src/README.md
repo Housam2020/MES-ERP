@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MES-ERP Reimbursement System
+
+A comprehensive system for managing reimbursement requests, user roles, and group/club permissions.
+
+## Project Overview
+
+The MES-ERP system is designed to allow students in university groups/clubs to submit reimbursement requests. The system features a sophisticated role-based access control system where:
+
+- Users can belong to multiple groups
+- Each user can have different roles in different groups
+- Permissions are determined by roles
+- Different pages are accessible based on permissions
+
+## Technology Stack
+
+- **Frontend**: React with Next.js
+- **UI Components**: Shadcn/ui component library
+- **Backend/Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Styling**: Tailwind CSS
+
+## Key Features
+
+- **Multi-Group Support**: Users can belong to multiple groups with different roles in each
+- **Role-Based Permissions**: Granular access control based on user roles
+- **Reimbursement Requests**: Submit and track payment requests
+- **Budget Management**: Track and approve budget allocations
+- **Analytics Dashboard**: Visualize spending and request data
+- **User Management**: Add and manage users and their roles
+
+## Documentation Structure
+
+For more detailed documentation on specific components, please refer to:
+
+- [Database Schema](docs/DATABASE.md) - Detailed information about tables and relationships
+- [Authentication System](docs/AUTH.md) - Authentication and authorization flow
+- [Analytics Dashboard](components/analytics/README.md) - Analytics visualizations and data processing
+- [Reimbursement Forms](components/reimbursement/README.md) - Form components and workflow
+- [Role Management](components/roles/README.md) - Role creation and permission system
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js
+- npm
+
+### Installation
+
+1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-org/mes-erp.git
+cd mes-erp
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables
+```bash
+cp .env.local
+```
+Update the `.env.local` file with Supabase credentials.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Run development server
+```bash
+npm run dev
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+/
+├── app/                  # Next.js pages and app router
+│   ├── (auth)/           # Authentication pages
+│   ├── dashboard/        # Dashboard pages
+│   └── api/              # API endpoints
+├── components/           # React components
+│   ├── analytics/        # Analytics components & charts
+│   ├── dashboard/        # Dashboard UI components
+│   ├── reimbursement/    # Reimbursement form components
+│   ├── roles/            # Role management components
+│   ├── ui/               # Shadcn UI components
+│   └── users/            # User management components
+├── hooks/                # Custom React hooks
+├── utils/                # Utility functions
+│   └── supabase/         # Supabase client utilities
+├── config/               # Configuration files
+└── docs/                 # Additional documentation
+```
