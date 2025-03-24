@@ -23,6 +23,7 @@ export default function RequestsPage() {
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [userGroups, setUserGroups] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -46,15 +47,25 @@ export default function RequestsPage() {
         setCurrentUser(userData);
 
         // Fetch user's groups through the user_roles table
-        const { data: userGroupsData } = await supabase
+        const { data: userGroupsData, error: groupsError } = await supabase
           .from("user_roles")
           .select("group_id, groups(id, name)")
           .eq("user_id", user.id)
           .not("group_id", "is", null);
 
+        if (groupsError) {
+          console.error("Error fetching user groups:", groupsError);
+          setError(groupsError.message);
+        }
+
         // Extract unique groups
         const groups = userGroupsData
-          ? [...new Map(userGroupsData.map(item => [item.group_id, item.groups])).values()]
+          ? userGroupsData
+              .filter(item => item.groups) // Filter out any null groups
+              .map(item => item.groups)
+              .filter((group, index, self) => 
+                index === self.findIndex(g => g.id === group.id)
+              )
           : [];
         
         setUserGroups(groups);
@@ -65,12 +76,6 @@ export default function RequestsPage() {
           .select("*, groups(name)")
           .order("timestamp", { ascending: false });
 
-        // Base query for budget requests
-        let budgetRequestsQuery = supabase
-          .from("annual_budget_form")
-          .select("id, club_name, requested_mes_funding, created_at, status")
-          .order("created_at", { ascending: false });
-
         // Determine request visibility based on permissions
         if (permissions.includes("view_all_requests")) {
           // Admin can see all requests
@@ -79,29 +84,61 @@ export default function RequestsPage() {
           if (groups.length > 0) {
             const groupIds = groups.map(group => group.id);
             paymentRequestsQuery = paymentRequestsQuery.in("group_id", groupIds);
-            
-            // For budget requests, we need to filter by club name
-            // This might need adjustment if budget requests have group_id instead of club_name
-            const groupNames = groups.map(group => group.name);
-            budgetRequestsQuery = budgetRequestsQuery.in("club_name", groupNames);
           }
         } else {
           // Regular users see only their own requests
           paymentRequestsQuery = paymentRequestsQuery.eq("user_id", user.id);
-          budgetRequestsQuery = budgetRequestsQuery.eq("user_id", user.id);
         }
 
         // Fetch payment requests
         const { data: paymentRequestsData, error: paymentRequestsError } = await paymentRequestsQuery;
-        if (paymentRequestsError) throw paymentRequestsError;
-        setPaymentRequests(paymentRequestsData || []);
+        
+        if (paymentRequestsError) {
+          console.error("Error fetching payment requests:", paymentRequestsError);
+          setError(paymentRequestsError.message);
+        } else {
+          setPaymentRequests(paymentRequestsData || []);
+        }
 
-        // Fetch budget requests
-        const { data: budgetRequestsData, error: budgetRequestsError } = await budgetRequestsQuery;
-        if (budgetRequestsError) throw budgetRequestsError;
-        setBudgetRequests(budgetRequestsData || []);
+        // Only fetch budget requests for admins or club admins
+        if (permissions.includes("view_all_requests") || permissions.includes("view_club_requests")) {
+          try {
+            // Base query for budget requests
+            let budgetRequestsQuery = supabase
+              .from("annual_budget_form")
+              .select("id, club_name, requested_mes_funding, created_at, status, group_id")
+              .order("created_at", { ascending: false });
+
+            if (permissions.includes("view_all_requests")) {
+              // Admin can see all budget requests
+            } else if (permissions.includes("view_club_requests")) {
+              // Club leaders/admins see budget requests from their groups
+              if (groups.length > 0) {
+                const groupIds = groups.map(group => group.id);
+                // First check if group_id column exists
+                budgetRequestsQuery = budgetRequestsQuery.in("group_id", groupIds);
+              }
+            }
+
+            const { data: budgetRequestsData, error: budgetRequestsError } = await budgetRequestsQuery;
+            
+            if (budgetRequestsError) {
+              console.error("Error fetching budget requests:", budgetRequestsError);
+              // Don't fail the whole page if just budget requests fail
+              setBudgetRequests([]);
+            } else {
+              setBudgetRequests(budgetRequestsData || []);
+            }
+          } catch (budgetError) {
+            console.error("Error in budget requests section:", budgetError);
+            // Don't fail the whole page if just budget requests fail
+            setBudgetRequests([]);
+          }
+        }
+        
       } catch (error) {
         console.error("Error in fetchData:", error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -143,6 +180,8 @@ export default function RequestsPage() {
   if (loading || permissionsLoading) return <div>Loading...</div>;
   if (permissionsError)
     return <div>Error loading permissions: {permissionsError.message}</div>;
+  if (error)
+    return <div>Error loading data: {error}</div>;
 
   // Get a display name for user's groups
   const userGroupsDisplay = userGroups.length > 0 
@@ -172,77 +211,91 @@ export default function RequestsPage() {
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead>
-                  <tr>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Name</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Role</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Amount</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Group</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Timeframe</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Type</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Date</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paymentRequests.map((request) => (
-                    <EditableStatusRow
-                      key={request.request_id}
-                      request={request}
-                      onStatusUpdate={handleStatusUpdate}
-                    />
-                  ))}
-                </tbody>
-              </table>
+              {paymentRequests.length > 0 ? (
+                <table className="min-w-full">
+                  <thead>
+                    <tr>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Name</th>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Role</th>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Amount</th>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Group</th>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Timeframe</th>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Type</th>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Date</th>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paymentRequests.map((request) => (
+                      <EditableStatusRow
+                        key={request.request_id}
+                        request={request}
+                        onStatusUpdate={handleStatusUpdate}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  No payment requests found.
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Budget Requests Table */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>
-              {permissions.includes("view_all_requests")
-                ? "All Budget Requests"
-                : permissions.includes("view_club_requests")
-                ? `Budget Requests for ${userGroupsDisplay}`
-                : "Your Budget Requests"}
-            </CardTitle>
-            {(permissions.includes("create_budget_requests") ||
-              permissions.includes("view_all_requests")) && (
-              <Link href="/budget-forms">
-                <Button>Create New Budget Request</Button>
-              </Link>
-            )}
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead>
-                  <tr>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Club Name</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Requested MES Funding</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Status</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {budgetRequests.map((request) => (
-                    <tr key={request.id}>
-                      <td className="py-2 px-4 border-b">{request.club_name}</td>
-                      <td className="py-2 px-4 border-b">${request.requested_mes_funding}</td>
-                      <td className="py-2 px-4 border-b">{request.status}</td>
-                      <td className="py-2 px-4 border-b">
-                        {new Date(request.created_at).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Budget Requests Table - Only show for admins or club admins */}
+        {(permissions.includes("view_all_requests") || permissions.includes("view_club_requests")) && (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>
+                {permissions.includes("view_all_requests")
+                  ? "All Budget Requests"
+                  : permissions.includes("view_club_requests")
+                  ? `Budget Requests for ${userGroupsDisplay}`
+                  : "Your Budget Requests"}
+              </CardTitle>
+              {(permissions.includes("create_budget_requests") ||
+                permissions.includes("view_all_requests")) && (
+                <Link href="/budget-forms">
+                  <Button>Create New Budget Request</Button>
+                </Link>
+              )}
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                {budgetRequests.length > 0 ? (
+                  <table className="min-w-full">
+                    <thead>
+                      <tr>
+                        <th className="py-2 px-4 bg-gray-50 text-left">Club Name</th>
+                        <th className="py-2 px-4 bg-gray-50 text-left">Requested MES Funding</th>
+                        <th className="py-2 px-4 bg-gray-50 text-left">Status</th>
+                        <th className="py-2 px-4 bg-gray-50 text-left">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {budgetRequests.map((request) => (
+                        <tr key={request.id}>
+                          <td className="py-2 px-4 border-b">{request.club_name}</td>
+                          <td className="py-2 px-4 border-b">${request.requested_mes_funding}</td>
+                          <td className="py-2 px-4 border-b">{request.status}</td>
+                          <td className="py-2 px-4 border-b">
+                            {new Date(request.created_at).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No budget requests found.
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
