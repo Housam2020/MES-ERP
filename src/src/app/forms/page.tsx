@@ -43,6 +43,7 @@ type FormData = {
   postal_code: string;
   // New field now stores a string (e.g., a URL) instead of binary data.
   receipt?: string;
+  currency_type: string;
 };
 
 const ReimbursementForm: React.FC = () => {
