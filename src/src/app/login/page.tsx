@@ -40,42 +40,43 @@ export default function LoginPage() {
       const userId = data.user?.id;
       if (!userId) throw new Error("Login failed.");
   
-      // Fetch user with their role details
+      // Fetch user with from the users table
       const { data: userRecord, error: fetchError } = await supabase
         .from("users")
-        .select(`
-          id, 
-          email, 
-          role_id,
-          roles (
-            name,
-            role_permissions (
-              permissions (
-                name
-              )
-            )
-          )
-        `)
+        .select("id, email, fullName")
         .eq("id", userId)
         .single();
   
       if (fetchError) {
-        // If user doesn't exist in users table, create with default role
+        // If user doesn't exist in users table, create the user
+        const { error: insertError } = await supabase
+          .from("users")
+          .insert([{ 
+            id: userId, 
+            email
+          }]);
+  
+        if (insertError) throw insertError;
+        
+        // Get the default user role
         const { data: defaultRole } = await supabase
           .from("roles")
           .select("id")
           .eq("name", "user")
           .single();
-  
-        const { error: insertError } = await supabase
-          .from("users")
-          .insert([{ 
-            id: userId, 
-            email, 
-            role_id: defaultRole?.id
-          }]);
-  
-        if (insertError) throw insertError;
+          
+        if (defaultRole) {
+          // Assign default role to new user
+          const { error: roleAssignError } = await supabase
+            .from("user_roles")
+            .insert([{
+              user_id: userId,
+              role_id: defaultRole.id,
+              is_global: true
+            }]);
+            
+          if (roleAssignError) throw roleAssignError;
+        }
   
         // Redirect to dashboard
         router.push("/dashboard/home");
@@ -83,8 +84,7 @@ export default function LoginPage() {
         return;
       }
   
-      // Optional: You could store role and permissions in local storage or context
-      // For now, just redirect to dashboard
+      // User exists, just redirect to dashboard
       router.push("/dashboard/home");
       router.refresh();
     } catch (error) {

@@ -31,6 +31,18 @@ export default function RegisterPage() {
       if (error) throw error;
 
       if (data.user) {
+        // Create the basic user record
+        const { error: insertError } = await supabase
+          .from("users")
+          .insert([
+            { 
+              id: data.user.id, 
+              email: data.user.email
+            }
+          ]);
+
+        if (insertError) throw insertError;
+
         // Fetch the default 'user' role
         const { data: defaultRole } = await supabase
           .from("roles")
@@ -38,18 +50,18 @@ export default function RegisterPage() {
           .eq("name", "user")
           .single();
 
-        // Insert the new user into our users table with default role
-        const { error: insertError } = await supabase
-          .from("users")
-          .insert([
-            { 
-              id: data.user.id, 
-              email: data.user.email,
-              role_id: defaultRole?.id // Use the fetched default role ID
-            }
-          ]);
-
-        if (insertError) throw insertError;
+        if (defaultRole) {
+          // Assign the default role to the new user
+          const { error: roleAssignError } = await supabase
+            .from("user_roles")
+            .insert([{
+              user_id: data.user.id,
+              role_id: defaultRole.id,
+              is_global: true // This is a global role assignment
+            }]);
+            
+          if (roleAssignError) throw roleAssignError;
+        }
 
         if (!data.session) {
           setError("Please check your email to confirm your registration.");
