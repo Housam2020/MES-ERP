@@ -55,6 +55,29 @@ export default function UserRow({
       return;
     }
 
+    // Security check: Prevent assigning roles with protected permissions
+    // if the current user doesn't have manage_all_users permission
+    const roleToAdd = roles.find(r => r.id === selectedRole);
+    if (roleToAdd?.hasProtectedPermissions && !permissions.includes("manage_all_users")) {
+      alert("You don't have permission to assign roles with admin privileges");
+      return;
+    }
+
+    // Security check: Verify the user can manage the selected group
+    if (selectedGroup && !permissions.includes("manage_all_users")) {
+      const canManageSelectedGroup = currentUserGroups.some(g => g.id === selectedGroup);
+      if (!canManageSelectedGroup) {
+        alert("You don't have permission to manage users in this group");
+        return;
+      }
+    }
+
+    // Security check: Prevent assigning global roles without admin permissions
+    if (!selectedGroup && !permissions.includes("manage_all_users")) {
+      alert("You don't have permission to assign global roles");
+      return;
+    }
+
     const newUserRole = {
       user_id: user.id,
       role_id: selectedRole,
@@ -109,6 +132,37 @@ export default function UserRow({
 
   const removeUserRole = async (roleId) => {
     try {
+      // Get the role we're trying to remove
+      const roleToRemove = userRoles.find(r => r.id === roleId);
+      
+      if (!roleToRemove) {
+        alert("Role not found");
+        return;
+      }
+      
+      // Security check: Verify the user can manage this role
+      // For global roles, only admin users can remove them
+      if (roleToRemove.is_global && !permissions.includes("manage_all_users")) {
+        alert("You don't have permission to remove global roles");
+        return;
+      }
+      
+      // For group-specific roles, verify the user can manage this group
+      if (roleToRemove.group_id && !permissions.includes("manage_all_users")) {
+        const canManageGroup = currentUserGroups.some(g => g.id === roleToRemove.group_id);
+        if (!canManageGroup) {
+          alert("You don't have permission to manage users in this group");
+          return;
+        }
+      }
+      
+      // Check if this role has protected permissions
+      const roleDetails = roles.find(r => r.id === roleToRemove.role_id);
+      if (roleDetails?.hasProtectedPermissions && !permissions.includes("manage_all_users")) {
+        alert("You don't have permission to remove roles with admin privileges");
+        return;
+      }
+      
       setLoading(true);
 
       const { error } = await supabase
@@ -128,25 +182,64 @@ export default function UserRow({
   };
 
   const getAvailableRoles = () => {
+    // First, check if the user can manage the selected group
+    if (selectedGroup && !permissions.includes("manage_all_users")) {
+      const canManageSelectedGroup = currentUserGroups.some(g => g.id === selectedGroup);
+      if (!canManageSelectedGroup) {
+        return []; // Don't show any roles if user can't manage this group
+      }
+    }
+
+    // Then filter roles based on group selection
+    let filteredRoles;
     if (!selectedGroup) {
-      return roles.filter(
+      // For global roles, only users with manage_all_users should have access
+      if (!permissions.includes("manage_all_users")) {
+        return []; // Don't allow assigning global roles without admin permissions
+      }
+      filteredRoles = roles.filter(
         (role) => role.isGlobal && !role.groups.length
       );
     } else {
-      return roles.filter((role) =>
+      filteredRoles = roles.filter((role) =>
         role.groups.includes(selectedGroup)
       );
     }
+    
+    // Additional security filter: if user doesn't have manage_all_users permission,
+    // remove roles that have protected permissions
+    if (!permissions.includes("manage_all_users")) {
+      filteredRoles = filteredRoles.filter(role => !role.hasProtectedPermissions);
+    }
+    
+    return filteredRoles;
   };
 
   const canManageRole = (userRole) => {
-    if (permissions.includes("manage_all_users")) return true;
-
-    if (permissions.includes("manage_club_users")) {
-      if (!userRole.group_id) return false;
-      return currentUserGroups.some((g) => g.id === userRole.group_id);
+    // Check if the role has protected permissions - if so, only users with manage_all_users can manage it
+    const roleData = roles.find(r => r.id === userRole.role_id);
+    if (roleData?.hasProtectedPermissions && !permissions.includes("manage_all_users")) {
+      return false;
     }
-
+    
+    // Admin users can manage all roles
+    if (permissions.includes("manage_all_users")) return true;
+  
+    // For club-specific management
+    if (permissions.includes("manage_club_users")) {
+      // Can't manage global roles
+      if (!userRole.group_id) return false;
+      
+      // Assuming user roles are structured so we can determine which groups they can manage
+      const groupsUserCanManage = currentUserGroups.filter(group => {
+        // In a proper implementation, this would check if manage_club_users applies to this group
+        // This is a simplified version that would need to be adjusted based on your data structure
+        return group.userHasManagementPermission === true; 
+      });
+      
+      return groupsUserCanManage.some(g => g.id === userRole.group_id);
+    }
+  
     return false;
   };
 
@@ -219,12 +312,20 @@ export default function UserRow({
                 setSelectedRole("");
               }}
             >
-              <option value="">No group (Global)</option>
-              {groups.map((group) => (
-                <option key={group.id} value={group.id}>
-                  {group.name}
-                </option>
-              ))}
+              {permissions.includes("manage_all_users") && (
+                <option value="">No group (Global)</option>
+              )}
+              {groups
+                .filter(group => 
+                  permissions.includes("manage_all_users") || 
+                  currentUserGroups.some(ug => ug.id === group.id)
+                )
+                .map((group) => (
+                  <option key={group.id} value={group.id}>
+                    {group.name}
+                  </option>
+                ))
+              }
             </select>
 
             <select

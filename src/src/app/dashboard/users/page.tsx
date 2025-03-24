@@ -71,12 +71,15 @@ export default function UsersPage() {
         
         setCurrentUserGroups(currentGroups);
 
-        // Fetch all roles
+        // Fetch all roles with their permissions
         const { data: rolesData } = await supabase
           .from("roles")
           .select(`
             id,
-            name
+            name,
+            role_permissions(
+              permissions(name)
+            )
           `);
 
         // Fetch group roles mapping
@@ -91,6 +94,16 @@ export default function UsersPage() {
 
         // Create structured available roles data
         const formattedRoles = rolesData.map(role => {
+          // Extract permissions from the role
+          const rolePermissions = role.role_permissions?.map(rp => 
+            rp.permissions?.name
+          ).filter(Boolean) || [];
+          
+          // Check if this role has any protected permissions
+          const hasProtectedPermissions = rolePermissions.some(
+            permission => PROTECTED_PERMISSIONS.includes(permission)
+          );
+          
           // Find all group role entries for this role
           const roleEntries = groupRolesData.filter(gr => gr.role_id === role.id);
           
@@ -99,7 +112,9 @@ export default function UsersPage() {
             return {
               ...role,
               isGlobal: true,
-              groups: []
+              groups: [],
+              permissions: rolePermissions,
+              hasProtectedPermissions
             };
           }
           
@@ -114,7 +129,9 @@ export default function UsersPage() {
           return {
             ...role,
             isGlobal,
-            groups: groupIds
+            groups: groupIds,
+            permissions: rolePermissions,
+            hasProtectedPermissions
           };
         });
         
