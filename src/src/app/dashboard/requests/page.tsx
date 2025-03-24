@@ -22,6 +22,7 @@ export default function RequestsPage() {
   const [budgetRequests, setBudgetRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
+  const [userGroups, setUserGroups] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -35,14 +36,28 @@ export default function RequestsPage() {
           return;
         }
 
-        // Fetch user details including group
+        // Fetch user details
         const { data: userData } = await supabase
           .from("users")
-          .select("id, group_id, groups(id, name)")
+          .select("id, email, fullName")
           .eq("id", user.id)
           .single();
 
         setCurrentUser(userData);
+
+        // Fetch user's groups through the user_roles table
+        const { data: userGroupsData } = await supabase
+          .from("user_roles")
+          .select("group_id, groups(id, name)")
+          .eq("user_id", user.id)
+          .not("group_id", "is", null);
+
+        // Extract unique groups
+        const groups = userGroupsData
+          ? [...new Map(userGroupsData.map(item => [item.group_id, item.groups])).values()]
+          : [];
+        
+        setUserGroups(groups);
 
         // Base query for payment requests
         let paymentRequestsQuery = supabase
@@ -60,9 +75,15 @@ export default function RequestsPage() {
         if (permissions.includes("view_all_requests")) {
           // Admin can see all requests
         } else if (permissions.includes("view_club_requests")) {
-          // Club leaders/admins see requests from their group
-          if (userData?.group_id) {
-            budgetRequestsQuery = budgetRequestsQuery.eq("club_name", userData.groups.name);
+          // Club leaders/admins see requests from their groups
+          if (groups.length > 0) {
+            const groupIds = groups.map(group => group.id);
+            paymentRequestsQuery = paymentRequestsQuery.in("group_id", groupIds);
+            
+            // For budget requests, we need to filter by club name
+            // This might need adjustment if budget requests have group_id instead of club_name
+            const groupNames = groups.map(group => group.name);
+            budgetRequestsQuery = budgetRequestsQuery.in("club_name", groupNames);
           }
         } else {
           // Regular users see only their own requests
@@ -123,6 +144,11 @@ export default function RequestsPage() {
   if (permissionsError)
     return <div>Error loading permissions: {permissionsError.message}</div>;
 
+  // Get a display name for user's groups
+  const userGroupsDisplay = userGroups.length > 0 
+    ? userGroups.map(g => g.name).join(", ")
+    : "Your Clubs";
+
   return (
     <div>
       <DashboardHeader />
@@ -134,7 +160,7 @@ export default function RequestsPage() {
               {permissions.includes("view_all_requests")
                 ? "All Payment Requests"
                 : permissions.includes("view_club_requests")
-                ? `Payment Requests for ${currentUser?.groups?.name || "Your Club"}`
+                ? `Payment Requests for ${userGroupsDisplay}`
                 : "Your Payment Requests"}
             </CardTitle>
             {(permissions.includes("create_requests") ||
@@ -180,7 +206,7 @@ export default function RequestsPage() {
               {permissions.includes("view_all_requests")
                 ? "All Budget Requests"
                 : permissions.includes("view_club_requests")
-                ? `Budget Requests for ${currentUser?.groups?.name || "Your Club"}`
+                ? `Budget Requests for ${userGroupsDisplay}`
                 : "Your Budget Requests"}
             </CardTitle>
             {(permissions.includes("create_budget_requests") ||
