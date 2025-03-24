@@ -19,6 +19,9 @@ export default function UsersPage() {
   const [currentUserGroups, setCurrentUserGroups] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
 
+  // Helper function to check if user is admin
+  const isAdmin = () => permissions.includes('manage_all_users');
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -49,27 +52,52 @@ export default function UsersPage() {
         
         setCurrentUser(userData);
 
-        // Get current user's groups
-        const { data: userGroupsData } = await supabase
+        // Get current user's manageable groups - only those where they have manage_club_users permission
+        const { data: userRolesWithPermissions } = await supabase
           .from('user_roles')
           .select(`
+            id,
             group_id,
             groups (
               id,
               name
+            ),
+            roles (
+              id,
+              name,
+              role_permissions (
+                permissions (name)
+              )
             )
           `)
           .eq('user_id', user.id)
           .not('group_id', 'is', null);
         
-        // Extract unique groups
-        const currentGroups = userGroupsData
-          ? [...new Map(userGroupsData.map(item => 
-              [item.group_id, item.groups]
-            )).values()]
-          : [];
+        // Filter to only include groups where user has manage_club_users permission
+        const manageableGroups = [];
         
-        setCurrentUserGroups(currentGroups);
+        if (userRolesWithPermissions) {
+          userRolesWithPermissions.forEach(userRole => {
+            if (!userRole.groups) return;
+            
+            // Extract permissions for this role
+            const permissions = userRole.roles?.role_permissions?.map(rp => 
+              rp.permissions?.name
+            ).filter(Boolean) || [];
+            
+            // If user has manage_club_users permission for this group, add it
+            if (permissions.includes('manage_club_users')) {
+              manageableGroups.push(userRole.groups);
+            }
+          });
+        }
+        
+        // Create unique list of groups
+        const uniqueGroups = [...new Map(
+          manageableGroups.map(group => [group.id, group])
+        ).values()];
+        
+        setCurrentUserGroups(uniqueGroups);
 
         // Fetch all roles with their permissions
         const { data: rolesData } = await supabase
@@ -94,7 +122,7 @@ export default function UsersPage() {
 
         // Create structured available roles data
         const formattedRoles = rolesData.map(role => {
-          // Extract permissions from the role
+          // Extract permissions
           const rolePermissions = role.role_permissions?.map(rp => 
             rp.permissions?.name
           ).filter(Boolean) || [];
@@ -143,49 +171,54 @@ export default function UsersPage() {
           .select("*");
         setGroups(groupsData || []);
 
-        // Fetch basic user info
-        let usersQuery = supabase
-          .from("users")
-          .select('id, email');
-
-        const { data: usersData, error: usersError } = await usersQuery;
-        
-        if (usersError) {
-          console.error("Error fetching users:", usersError.message);
-          return;
-        }
-
-        // Filter users based on permission
-        let filteredUsers = usersData;
-        
-        if (!permissions.includes('manage_all_users') && currentGroups.length > 0) {
-          // Club managers can only see users in their groups
-          // We'll do the actual filtering after getting user-role data
+        // Fetch users based on permissions
+        if (isAdmin()) {
+          // Admins can see all users
+          const { data: allUsers } = await supabase
+            .from("users")
+            .select('id, email');
           
-          // Get all user-group relationships
+          setUsers(allUsers || []);
+        } else {
+          // Club managers can only see users in their groups
+          const manageableGroupIds = uniqueGroups.map(g => g.id);
+          
+          if (manageableGroupIds.length === 0) {
+            setUsers([]);
+            setLoading(false);
+            return;
+          }
+          
+          // Get all users who are members of groups the current user can manage
           const { data: userGroupRelations } = await supabase
             .from("user_roles")
             .select("user_id, group_id")
-            .not("group_id", "is", null);
+            .in("group_id", manageableGroupIds);
             
-          // Get group IDs that current user can manage
-          const manageableGroupIds = currentGroups.map(g => g.id);
+          if (!userGroupRelations || userGroupRelations.length === 0) {
+            setUsers([]);
+            setLoading(false);
+            return;
+          }
           
-          // Filter users who are in the current user's groups
-          const usersInMyGroups = userGroupRelations
-            .filter(ugr => manageableGroupIds.includes(ugr.group_id))
-            .map(ugr => ugr.user_id);
-            
           // Get unique user IDs
-          const uniqueUserIds = [...new Set(usersInMyGroups)];
+          const uniqueUserIds = [...new Set(
+            userGroupRelations.map(ugr => ugr.user_id)
+          )];
           
-          // Filter users
-          filteredUsers = usersData.filter(u => 
-            uniqueUserIds.includes(u.id) || u.id === user.id
-          );
+          // Always include current user
+          if (!uniqueUserIds.includes(user.id)) {
+            uniqueUserIds.push(user.id);
+          }
+          
+          // Fetch user details
+          const { data: filteredUsers } = await supabase
+            .from("users")
+            .select('id, email')
+            .in('id', uniqueUserIds);
+            
+          setUsers(filteredUsers || []);
         }
-        
-        setUsers(filteredUsers);
       } catch (error) {
         console.error("Error in fetchData:", error);
       } finally {
@@ -197,15 +230,6 @@ export default function UsersPage() {
       fetchData();
     }
   }, [permissions, permissionsLoading]);
-
-  // Filter available groups based on permissions
-  const availableGroups = groups.filter(group => {
-    if (permissions.includes('manage_all_users')) {
-      return true; // MES admins can assign any group
-    }
-    // Club leaders can only assign to their own groups
-    return currentUserGroups.some(ug => ug.id === group.id);
-  });
 
   if (loading || permissionsLoading) return <div>Loading...</div>;
 
@@ -232,7 +256,7 @@ export default function UsersPage() {
                     <UserRow 
                       key={user.id}
                       user={user}
-                      groups={availableGroups}
+                      groups={groups}
                       roles={availableRoles}
                       currentUserGroups={currentUserGroups}
                       permissions={permissions}

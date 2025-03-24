@@ -20,6 +20,25 @@ export default function UserRow({
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
 
+  // Simple helper functions for permission checks
+  const isAdmin = () => permissions.includes("manage_all_users");
+  const canManageClubUsers = () => permissions.includes("manage_club_users");
+  const isUserInGroup = (groupId) => currentUserGroups.some(g => g.id === groupId);
+  const hasProtectedPermissions = (roleId) => {
+    const role = roles.find(r => r.id === roleId);
+    return role?.hasProtectedPermissions || false;
+  };
+
+  // Auto-select the first/only available group on component mount
+  useEffect(() => {
+    const availableGroups = groups.filter(group => isAdmin() || isUserInGroup(group.id));
+    
+    // If there's only one group available and no group is currently selected, select it automatically
+    if (availableGroups.length === 1 && !selectedGroup) {
+      setSelectedGroup(availableGroups[0].id);
+    }
+  }, [groups, selectedGroup, isAdmin, isUserInGroup]);
+
   useEffect(() => {
     async function fetchUserRoles() {
       try {
@@ -49,31 +68,72 @@ export default function UserRow({
     fetchUserRoles();
   }, [user.id]);
 
+  // Check if current user can manage this specific user role
+  const canManageUserRole = (userRole) => {
+    // Admin can manage any role
+    if (isAdmin()) return true;
+    
+    // Can't manage global roles unless admin
+    if (userRole.is_global) return false;
+    
+    // Need club management permission
+    if (!canManageClubUsers()) return false;
+    
+    // Can only manage roles in groups you're authorized for
+    return isUserInGroup(userRole.group_id);
+  };
+
+  // Get available roles for the selected group/global context
+  const getAvailableRoles = () => {
+    // Admin check for global roles
+    if (!selectedGroup && !isAdmin()) {
+      return []; // Only admins can assign global roles
+    }
+    
+    // Group permission check
+    if (selectedGroup && !isAdmin() && !isUserInGroup(selectedGroup)) {
+      return []; // Can't assign roles in groups you don't manage
+    }
+    
+    // Filter by global/group
+    let filteredRoles;
+    if (!selectedGroup) {
+      // Global roles
+      filteredRoles = roles.filter(role => role.isGlobal);
+    } else {
+      // Group roles - might need to check both the groups array and isGlobal flag
+      filteredRoles = roles.filter(role => 
+        role.groups.includes(selectedGroup) || 
+        (role.groups.length === 0 && !role.isGlobal)
+      );
+    }
+    
+    // Filter out protected roles for non-admins
+    if (!isAdmin()) {
+      filteredRoles = filteredRoles.filter(role => !role.hasProtectedPermissions);
+    }
+    
+    return filteredRoles;
+  };
+
   const addUserRole = async () => {
     if (!selectedRole) {
       alert("Please select a role");
       return;
     }
 
-    // Security check: Prevent assigning roles with protected permissions
-    // if the current user doesn't have manage_all_users permission
-    const roleToAdd = roles.find(r => r.id === selectedRole);
-    if (roleToAdd?.hasProtectedPermissions && !permissions.includes("manage_all_users")) {
+    // Security checks
+    if (hasProtectedPermissions(selectedRole) && !isAdmin()) {
       alert("You don't have permission to assign roles with admin privileges");
       return;
     }
 
-    // Security check: Verify the user can manage the selected group
-    if (selectedGroup && !permissions.includes("manage_all_users")) {
-      const canManageSelectedGroup = currentUserGroups.some(g => g.id === selectedGroup);
-      if (!canManageSelectedGroup) {
-        alert("You don't have permission to manage users in this group");
-        return;
-      }
+    if (selectedGroup && !isAdmin() && !isUserInGroup(selectedGroup)) {
+      alert("You don't have permission to manage users in this group");
+      return;
     }
 
-    // Security check: Prevent assigning global roles without admin permissions
-    if (!selectedGroup && !permissions.includes("manage_all_users")) {
+    if (!selectedGroup && !isAdmin()) {
       alert("You don't have permission to assign global roles");
       return;
     }
@@ -140,25 +200,18 @@ export default function UserRow({
         return;
       }
       
-      // Security check: Verify the user can manage this role
-      // For global roles, only admin users can remove them
-      if (roleToRemove.is_global && !permissions.includes("manage_all_users")) {
+      // Security checks
+      if (roleToRemove.is_global && !isAdmin()) {
         alert("You don't have permission to remove global roles");
         return;
       }
       
-      // For group-specific roles, verify the user can manage this group
-      if (roleToRemove.group_id && !permissions.includes("manage_all_users")) {
-        const canManageGroup = currentUserGroups.some(g => g.id === roleToRemove.group_id);
-        if (!canManageGroup) {
-          alert("You don't have permission to manage users in this group");
-          return;
-        }
+      if (roleToRemove.group_id && !isAdmin() && !isUserInGroup(roleToRemove.group_id)) {
+        alert("You don't have permission to manage users in this group");
+        return;
       }
       
-      // Check if this role has protected permissions
-      const roleDetails = roles.find(r => r.id === roleToRemove.role_id);
-      if (roleDetails?.hasProtectedPermissions && !permissions.includes("manage_all_users")) {
+      if (hasProtectedPermissions(roleToRemove.role_id) && !isAdmin()) {
         alert("You don't have permission to remove roles with admin privileges");
         return;
       }
@@ -179,68 +232,6 @@ export default function UserRow({
     } finally {
       setLoading(false);
     }
-  };
-
-  const getAvailableRoles = () => {
-    // First, check if the user can manage the selected group
-    if (selectedGroup && !permissions.includes("manage_all_users")) {
-      const canManageSelectedGroup = currentUserGroups.some(g => g.id === selectedGroup);
-      if (!canManageSelectedGroup) {
-        return []; // Don't show any roles if user can't manage this group
-      }
-    }
-
-    // Then filter roles based on group selection
-    let filteredRoles;
-    if (!selectedGroup) {
-      // For global roles, only users with manage_all_users should have access
-      if (!permissions.includes("manage_all_users")) {
-        return []; // Don't allow assigning global roles without admin permissions
-      }
-      filteredRoles = roles.filter(
-        (role) => role.isGlobal && !role.groups.length
-      );
-    } else {
-      filteredRoles = roles.filter((role) =>
-        role.groups.includes(selectedGroup)
-      );
-    }
-    
-    // Additional security filter: if user doesn't have manage_all_users permission,
-    // remove roles that have protected permissions
-    if (!permissions.includes("manage_all_users")) {
-      filteredRoles = filteredRoles.filter(role => !role.hasProtectedPermissions);
-    }
-    
-    return filteredRoles;
-  };
-
-  const canManageRole = (userRole) => {
-    // Check if the role has protected permissions - if so, only users with manage_all_users can manage it
-    const roleData = roles.find(r => r.id === userRole.role_id);
-    if (roleData?.hasProtectedPermissions && !permissions.includes("manage_all_users")) {
-      return false;
-    }
-    
-    // Admin users can manage all roles
-    if (permissions.includes("manage_all_users")) return true;
-  
-    // For club-specific management
-    if (permissions.includes("manage_club_users")) {
-      // Can't manage global roles
-      if (!userRole.group_id) return false;
-      
-      // Assuming user roles are structured so we can determine which groups they can manage
-      const groupsUserCanManage = currentUserGroups.filter(group => {
-        // In a proper implementation, this would check if manage_club_users applies to this group
-        // This is a simplified version that would need to be adjusted based on your data structure
-        return group.userHasManagementPermission === true; 
-      });
-      
-      return groupsUserCanManage.some(g => g.id === userRole.group_id);
-    }
-  
-    return false;
   };
 
   if (loading) {
@@ -285,7 +276,7 @@ export default function UserRow({
                   )}
                 </div>
 
-                {canManageRole(userRole) && !isCurrentUser && (
+                {canManageUserRole(userRole) && !isCurrentUser && (
                   <Button
                     size="sm"
                     variant="ghost"
@@ -312,14 +303,9 @@ export default function UserRow({
                 setSelectedRole("");
               }}
             >
-              {permissions.includes("manage_all_users") && (
-                <option value="">No group (Global)</option>
-              )}
+              {isAdmin() && <option value="">No group (Global)</option>}
               {groups
-                .filter(group => 
-                  permissions.includes("manage_all_users") || 
-                  currentUserGroups.some(ug => ug.id === group.id)
-                )
+                .filter(group => isAdmin() || isUserInGroup(group.id))
                 .map((group) => (
                   <option key={group.id} value={group.id}>
                     {group.name}
