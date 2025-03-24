@@ -13,9 +13,9 @@ export default async function Home() {
     redirect("/login");
   }
 
-  // Fetch user permissions
-  const { data: permissions, error } = await supabase
-    .from('users')
+  // Fetch user permissions using the new junction table
+  const { data: userRoles, error: userRolesError } = await supabase
+    .from('user_roles')
     .select(`
       role_id,
       roles!inner (
@@ -26,17 +26,15 @@ export default async function Home() {
         )
       )
     `)
-    .eq('id', user.id)
-    .single();
+    .eq('user_id', user.id);
 
-  if (error) {
-    console.error("Error fetching user permissions:", error);
+  if (userRolesError) {
+    console.error("Error fetching user roles:", userRolesError);
     redirect("/login");
   }
 
-  // All users now go to the same dashboard
+  // No need to check permissions here, just send to dashboard
   redirect("/dashboard/home");
 
   return null; // Prevent unnecessary rendering
 }
-

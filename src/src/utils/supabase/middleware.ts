@@ -42,8 +42,9 @@ export async function updateSession(request: NextRequest) {
 
  let userPermissions: Permission[] = [];
  if (user) {
-   const { data: permissionsData, error } = await supabase
-     .from('users')
+   // Fetch user permissions from the user_roles junction table
+   const { data: userRolesData, error } = await supabase
+     .from('user_roles')
      .select(`
        role_id,
        roles!inner (
@@ -54,25 +55,32 @@ export async function updateSession(request: NextRequest) {
          )
        )
      `)
-     .eq('id', user.id)
-     .single();
+     .eq('user_id', user.id);
 
    if (error) {
      console.error("Error fetching user permissions:", error);
      return NextResponse.redirect(new URL("/login", request.url));
    }
 
-   userPermissions = permissionsData?.roles?.role_permissions?.map(
-     rp => rp.permissions.name as Permission
-   ) || [];
+   // Collect all unique permissions across all user roles
+   const allPermissions = new Set<Permission>();
+   
+   userRolesData?.forEach(userRole => {
+     userRole.roles?.role_permissions?.forEach(rp => {
+       allPermissions.add(rp.permissions.name as Permission);
+     });
+   });
+   
+   userPermissions = Array.from(allPermissions);
  }
 
- // Define required permissions for actual routes
+ // Define required permissions for protected routes
  const pathPermissions: Record<string, Permission[]> = {
   "/dashboard/analytics": ['view_all_requests', 'view_club_requests'],
-  "/dashboard/requests": ['create_requests'] , // Remove permission restriction
+  "/dashboard/requests": ['create_requests'], // Basic request creation
   "/dashboard/users": ['manage_all_users', 'manage_club_users'],
-  "/dashboard/home": null// Basic access
+  "/dashboard/roles": ['manage_all_roles', 'manage_club_roles'], // Add roles page protection
+  "/dashboard/home": null // Basic access
 };
 
 const requiredPermissions = pathPermissions[path];
