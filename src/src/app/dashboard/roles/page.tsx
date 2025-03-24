@@ -180,6 +180,13 @@ export default function RolesPage() {
     setRoles(roles.filter(role => role.id !== roleId));
   };
 
+  // Handle role update
+  const handleRoleUpdate = (updatedRole) => {
+    setRoles(roles.map(role => 
+      role.id === updatedRole.id ? updatedRole : role
+    ));
+  };
+
   if (loading || permissionsLoading) return <div>Loading...</div>;
 
   return (
@@ -213,7 +220,10 @@ export default function RolesPage() {
                 groups={groups}
                 currentUserGroups={currentUserGroups}
                 canManageAllRoles={canManageAllRoles}
+                availablePermissions={availablePermissions}
+                permissionCategories={PERMISSION_CATEGORIES}
                 onRoleDeleted={handleRoleDelete}
+                onRoleUpdated={handleRoleUpdate}
               />
             </div>
           </CardContent>

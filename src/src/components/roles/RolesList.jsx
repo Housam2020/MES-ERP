@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Trash2, Info } from 'lucide-react';
+import { Trash2, Info, Edit } from 'lucide-react';
 import { Badge } from "@/components/ui/badge"; 
 import { 
   AlertDialog, 
@@ -22,19 +22,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import EditRoleDialog from "@/components/roles/EditRoleDialog";
 
 export default function RolesList({ 
   roles, 
   groups,
   currentUserGroups, 
   canManageAllRoles,
-  onRoleDeleted 
+  availablePermissions,
+  permissionCategories,
+  onRoleDeleted,
+  onRoleUpdated
 }) {
   const supabase = createClient();
   const [deleteRoleId, setDeleteRoleId] = useState(null);
@@ -180,34 +178,46 @@ export default function RolesList({
                   </Dialog>
                   
                   {canManageRole(role) && (
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button 
-                          variant="destructive" 
-                          size="icon"
-                          onClick={() => setDeleteRoleId(role.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This will permanently delete the role. This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
-                          <AlertDialogAction 
-                            onClick={handleDeleteRole}
-                            disabled={loading}
+                    <>
+                      <EditRoleDialog
+                        role={role}
+                        availablePermissions={availablePermissions}
+                        permissionCategories={permissionCategories}
+                        groups={groups}
+                        currentUserGroups={currentUserGroups}
+                        canManageAllRoles={canManageAllRoles}
+                        onRoleUpdated={onRoleUpdated}
+                      />
+                      
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button 
+                            variant="destructive" 
+                            size="icon"
+                            onClick={() => setDeleteRoleId(role.id)}
                           >
-                            {loading ? "Deleting..." : "Delete"}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This will permanently delete the role. This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+                            <AlertDialogAction 
+                              onClick={handleDeleteRole}
+                              disabled={loading}
+                            >
+                              {loading ? "Deleting..." : "Delete"}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </>
                   )}
                 </div>
               </td>
