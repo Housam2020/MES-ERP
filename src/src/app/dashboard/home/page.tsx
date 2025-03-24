@@ -22,6 +22,7 @@ export default function HomePage() {
   });
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
+  const [userGroups, setUserGroups] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -38,15 +39,29 @@ export default function HomePage() {
         // Fetch current user details
         const { data: userData } = await supabase
           .from("users")
-          .select("id, group_id, groups(id, name)")
+          .select("id, email, fullName")
           .eq("id", user.id)
           .single();
 
         setCurrentUser(userData);
 
-        // Fetch user's full permissions
+        // Fetch user's groups through the user_roles table
+        const { data: userGroupsData } = await supabase
+          .from("user_roles")
+          .select("group_id, groups(id, name)")
+          .eq("user_id", user.id)
+          .not("group_id", "is", null);
+
+        // Extract unique groups
+        const groups = userGroupsData
+          ? [...new Map(userGroupsData.map(item => [item.group_id, item.groups])).values()]
+          : [];
+        
+        setUserGroups(groups);
+
+        // Fetch user's full permissions from the user_roles table
         const { data: permissionsData } = await supabase
-          .from("users")
+          .from("user_roles")
           .select(`
             role_id,
             roles!inner (
@@ -57,13 +72,14 @@ export default function HomePage() {
               )
             )
           `)
-          .eq("id", user.id)
-          .single();
+          .eq("user_id", user.id);
 
-        const userPermissions =
-          permissionsData?.roles?.role_permissions?.map(
-            (rp) => rp.permissions.name
-          ) || [];
+        // Flatten permissions from all roles
+        const userPermissions = permissionsData?.flatMap(
+          role => role.roles?.role_permissions?.map(
+            rp => rp.permissions.name
+          ) || []
+        ) || [];
 
         // Always fetch user's own requests
         let userRequestsQuery = supabase
@@ -101,8 +117,12 @@ export default function HomePage() {
             !userPermissions.includes("view_all_requests") &&
             userPermissions.includes("view_club_requests")
           ) {
-            if (userData?.group_id) {
-              statsQuery = statsQuery.eq("group_id", userData.group_id);
+            // Get user's group IDs
+            const groupIds = groups.map(group => group.id);
+            
+            if (groupIds.length > 0) {
+              // Filter requests for any of the user's groups
+              statsQuery = statsQuery.in("group_id", groupIds);
             }
           }
 
@@ -143,6 +163,9 @@ export default function HomePage() {
 
   if (loading || permissionsLoading) return <div>Loading...</div>;
 
+  // Get the primary group for display purposes (first group or empty string)
+  const primaryGroup = userGroups.length > 0 ? userGroups[0].name : "";
+
   return (
     <div>
       <DashboardHeader />
@@ -182,7 +205,7 @@ export default function HomePage() {
                     <CardTitle className="text-sm font-medium">
                       {permissions.includes("view_all_requests")
                         ? "Total Requests"
-                        : `${currentUser?.groups?.name || "Club"} Requests`}
+                        : `${primaryGroup || "Club"} Requests`}
                     </CardTitle>
                     <FileText className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
