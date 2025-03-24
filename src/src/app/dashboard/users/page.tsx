@@ -6,6 +6,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { PROTECTED_PERMISSIONS } from "@/config/permissions";
 import { usePermissions } from "@/hooks/usePermissions";
+import UserRow from "@/components/users/UserRow";
 
 export default function UsersPage() {
   const supabase = createClient();
@@ -13,9 +14,9 @@ export default function UsersPage() {
   const { permissions, loading: permissionsLoading } = usePermissions();
   const [users, setUsers] = useState([]);
   const [groups, setGroups] = useState([]);
-  const [roles, setRoles] = useState([]);
+  const [availableRoles, setAvailableRoles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentUserGroup, setCurrentUserGroup] = useState(null);
+  const [currentUserGroups, setCurrentUserGroups] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function UsersPage() {
 
         // Check if user has required permissions
         const canManageUsers = permissions.includes('manage_all_users') || 
-                             permissions.includes('manage_club_users');
+                               permissions.includes('manage_club_users');
 
         if (!canManageUsers) {
           router.push("/dashboard/home");
@@ -42,39 +43,82 @@ export default function UsersPage() {
         // Get current user's data
         const { data: userData } = await supabase
           .from('users')
-          .select(`
-            id,
-            group_id,
-            groups:groups!users_group_id_fkey (
-              id,
-              name
-            )
-          `)
+          .select('id, email')
           .eq('id', user.id)
           .single();
         
         setCurrentUser(userData);
-        setCurrentUserGroup(userData?.groups);
 
-        // Fetch roles with their permissions
+        // Get current user's groups
+        const { data: userGroupsData } = await supabase
+          .from('user_roles')
+          .select(`
+            group_id,
+            groups (
+              id,
+              name
+            )
+          `)
+          .eq('user_id', user.id)
+          .not('group_id', 'is', null);
+        
+        // Extract unique groups
+        const currentGroups = userGroupsData
+          ? [...new Map(userGroupsData.map(item => 
+              [item.group_id, item.groups]
+            )).values()]
+          : [];
+        
+        setCurrentUserGroups(currentGroups);
+
+        // Fetch all roles
         const { data: rolesData } = await supabase
           .from("roles")
           .select(`
             id,
-            name,
-            role_permissions (
-              permissions (
-                name
-              )
-            )
+            name
           `);
-        
-        const rolesWithPerms = rolesData?.map(role => ({
-          ...role,
-          permissions: role.role_permissions?.map(rp => rp.permissions.name) || []
-        })) || [];
 
-        setRoles(rolesWithPerms);
+        // Fetch group roles mapping
+        const { data: groupRolesData } = await supabase
+          .from("group_roles")
+          .select(`
+            id,
+            role_id,
+            group_id,
+            is_global
+          `);
+
+        // Create structured available roles data
+        const formattedRoles = rolesData.map(role => {
+          // Find all group role entries for this role
+          const roleEntries = groupRolesData.filter(gr => gr.role_id === role.id);
+          
+          if (roleEntries.length === 0) {
+            // Default to global if no entries found
+            return {
+              ...role,
+              isGlobal: true,
+              groups: []
+            };
+          }
+          
+          // Check if any entries are marked as global
+          const isGlobal = roleEntries.some(re => re.is_global);
+          
+          // Get groups this role is associated with
+          const groupIds = roleEntries
+            .filter(re => !re.is_global && re.group_id)
+            .map(re => re.group_id);
+            
+          return {
+            ...role,
+            isGlobal,
+            groups: groupIds
+          };
+        });
+        
+        setAvailableRoles(formattedRoles);
 
         // Fetch groups
         const { data: groupsData } = await supabase
@@ -82,41 +126,49 @@ export default function UsersPage() {
           .select("*");
         setGroups(groupsData || []);
 
-        // Base query for users
+        // Fetch basic user info
         let usersQuery = supabase
           .from("users")
-          .select(`
-            id,
-            email,
-            role_id,
-            group_id,
-            roles:roles!users_role_id_fkey (
-              id,
-              name,
-              role_permissions (
-                permissions (
-                  name
-                )
-              )
-            ),
-            groups:groups!users_group_id_fkey (
-              id,
-              name
-            )
-          `);
-
-        // If user only has club-level access, show users from their group AND users with no group
-        if (!permissions.includes('manage_all_users') && userData?.group_id) {
-          usersQuery = usersQuery.or(`group_id.eq.${userData.group_id},group_id.is.null`);
-        }
+          .select('id, email');
 
         const { data: usersData, error: usersError } = await usersQuery;
         
         if (usersError) {
           console.error("Error fetching users:", usersError.message);
-        } else {
-          setUsers(usersData || []);
+          return;
         }
+
+        // Filter users based on permission
+        let filteredUsers = usersData;
+        
+        if (!permissions.includes('manage_all_users') && currentGroups.length > 0) {
+          // Club managers can only see users in their groups
+          // We'll do the actual filtering after getting user-role data
+          
+          // Get all user-group relationships
+          const { data: userGroupRelations } = await supabase
+            .from("user_roles")
+            .select("user_id, group_id")
+            .not("group_id", "is", null);
+            
+          // Get group IDs that current user can manage
+          const manageableGroupIds = currentGroups.map(g => g.id);
+          
+          // Filter users who are in the current user's groups
+          const usersInMyGroups = userGroupRelations
+            .filter(ugr => manageableGroupIds.includes(ugr.group_id))
+            .map(ugr => ugr.user_id);
+            
+          // Get unique user IDs
+          const uniqueUserIds = [...new Set(usersInMyGroups)];
+          
+          // Filter users
+          filteredUsers = usersData.filter(u => 
+            uniqueUserIds.includes(u.id) || u.id === user.id
+          );
+        }
+        
+        setUsers(filteredUsers);
       } catch (error) {
         console.error("Error in fetchData:", error);
       } finally {
@@ -129,65 +181,13 @@ export default function UsersPage() {
     }
   }, [permissions, permissionsLoading]);
 
-  const updateUserRole = async (userId: string, newRoleId: string) => {
-    try {
-      const response = await fetch("/api/update-role", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, newRoleId }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update role");
-      }
-
-      setUsers(users.map(user => 
-        user.id === userId 
-          ? { ...user, role_id: newRoleId, roles: roles.find(r => r.id === newRoleId) }
-          : user
-      ));
-    } catch (error) {
-      console.error("Error updating role:", error);
-      alert(error.message || "Failed to update role");
-    }
-  };
-
-  const updateUserGroup = async (userId: string, newGroupId: string | null) => {
-    try {
-      const response = await fetch("/api/update-group", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, newGroupId }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update group");
-      }
-
-      setUsers(users.map(user => 
-        user.id === userId 
-          ? { 
-              ...user, 
-              group_id: newGroupId, 
-              groups: newGroupId ? groups.find(g => g.id === newGroupId) : null 
-            }
-          : user
-      ));
-    } catch (error) {
-      console.error("Error updating group:", error);
-      alert(error.message || "Failed to update group");
-    }
-  };
-
   // Filter available groups based on permissions
   const availableGroups = groups.filter(group => {
     if (permissions.includes('manage_all_users')) {
       return true; // MES admins can assign any group
     }
-    // Club leaders can only assign to their own group
-    return group.id === currentUserGroup?.id;
+    // Club leaders can only assign to their own groups
+    return currentUserGroups.some(ug => ug.id === group.id);
   });
 
   if (loading || permissionsLoading) return <div>Loading...</div>;
@@ -206,63 +206,21 @@ export default function UsersPage() {
                 <thead>
                   <tr>
                     <th className="py-2 px-4 bg-gray-50 text-left">Email</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Role</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Group</th>
+                    <th className="py-2 px-4 bg-gray-50 text-left">Assigned Roles</th>
+                    <th className="py-2 px-4 bg-gray-50 text-left">Add Role</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((user) => (
-                    <tr key={user.id}>
-                      <td className="py-2 px-4 border-b">{user.email}</td>
-                      <td className="py-2 px-4 border-b">
-                        <select
-                          value={user.role_id || ""}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (!value) return;
-                            updateUserRole(user.id, value);
-                          }}
-                          className="border rounded p-1"
-                          disabled={
-                            user.id === currentUser?.id || 
-                            user.roles?.role_permissions?.some(rp => 
-                              PROTECTED_PERMISSIONS.includes(rp.permissions.name) && 
-                              !permissions.includes('manage_all_users')
-                            )
-                          }
-                        >
-                          <option value="">Select Role</option>
-                          {roles.map((role) => (
-                            <option key={role.id} value={role.id}>
-                              {role.name}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="py-2 px-4 border-b">
-                        <select
-                          value={user.group_id || ""}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            updateUserGroup(user.id, value ? value : null);
-                          }}
-                          className="border rounded p-1"
-                          disabled={
-                            !permissions.includes('manage_all_users') && 
-                            user.roles?.role_permissions?.some(rp => 
-                              PROTECTED_PERMISSIONS.includes(rp.permissions.name)
-                            )
-                          }
-                        >
-                          <option value="">No Group</option>
-                          {availableGroups.map((group) => (
-                            <option key={group.id} value={group.id}>
-                              {group.name}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                    </tr>
+                    <UserRow 
+                      key={user.id}
+                      user={user}
+                      groups={availableGroups}
+                      roles={availableRoles}
+                      currentUserGroups={currentUserGroups}
+                      permissions={permissions}
+                      isCurrentUser={user.id === currentUser?.id}
+                    />
                   ))}
                 </tbody>
               </table>

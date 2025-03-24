@@ -12,13 +12,15 @@ export function usePermissions() {
     async function fetchPermissions() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
+        
         if (!user) {
           setPermissions([]);
           return;
         }
-
+        
+        // Query the user_roles table to get all roles for the user
         const { data, error } = await supabase
-          .from('users')
+          .from('user_roles')
           .select(`
             role_id,
             roles!inner (
@@ -29,25 +31,30 @@ export function usePermissions() {
               )
             )
           `)
-          .eq('id', user.id)
-          .single();
-
+          .eq('user_id', user.id);
+          
         if (error) throw error;
-
-        const perms = data?.roles?.role_permissions?.map(
-          rp => rp.permissions.name
+        
+        // Flatten permissions from all roles
+        const perms = data?.flatMap(
+          role => role.roles?.role_permissions?.map(
+            rp => rp.permissions.name
+          ) || []
         ) as Permission[] || [];
-
-        setPermissions(perms);
+        
+        // Remove duplicates (a user might have the same permission from multiple roles)
+        const uniquePerms = [...new Set(perms)];
+        
+        setPermissions(uniquePerms);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch permissions'));
       } finally {
         setLoading(false);
       }
     }
-
+    
     fetchPermissions();
   }, []);
-
+  
   return { permissions, loading, error };
-} 
+}
