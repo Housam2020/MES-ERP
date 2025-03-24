@@ -12,29 +12,6 @@ import {
   CardDescription 
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Trash2 } from 'lucide-react';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger,
-  DialogDescription,
-  DialogFooter
-} from "@/components/ui/dialog";
-import { 
-  AlertDialog, 
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from "@/components/ui/alert-dialog";
 import { 
   PROTECTED_PERMISSIONS, 
   ProtectedPermission, 
@@ -42,6 +19,8 @@ import {
   UserPermission,
   Permission
 } from "@/config/permissions";
+import RolesList from "@/components/roles/RolesList";
+import CreateRoleDialog from "@/components/roles/CreateRoleDialog";
 
 // Categorize permissions
 const PERMISSION_CATEGORIES = {
@@ -69,11 +48,9 @@ export default function RolesPage() {
   const router = useRouter();
   const { permissions, loading: permissionsLoading } = usePermissions();
   const [roles, setRoles] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newRoleName, setNewRoleName] = useState("");
-  const [selectedPermissions, setSelectedPermissions] = useState<Permission[]>([]);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [deleteRoleId, setDeleteRoleId] = useState<string | null>(null);
+  const [currentUserGroups, setCurrentUserGroups] = useState([]);
 
   // Determine user's role creation capabilities
   const canManageAllRoles = permissions.includes('manage_all_roles');
@@ -95,26 +72,27 @@ export default function RolesPage() {
           return;
         }
 
-        // Fetch current user's full details
-        const { data: userData } = await supabase
-          .from('users')
+        // Get current user's groups
+        const { data: userGroupsData } = await supabase
+          .from('user_roles')
           .select(`
-            id,
             group_id,
-            roles!inner (
+            groups (
               id,
-              name,
-              role_permissions (
-                permissions (
-                  name
-                )
-              )
+              name
             )
           `)
-          .eq('id', user.id)
-          .single();
-
-        setCurrentUser(userData);
+          .eq('user_id', user.id)
+          .not('group_id', 'is', null);
+        
+        // Extract unique groups
+        const currentGroups = userGroupsData
+          ? [...new Map(userGroupsData.map(item => 
+              [item.group_id, item.groups]
+            )).values()]
+          : [];
+        
+        setCurrentUserGroups(currentGroups);
 
         // Fetch all roles with their permissions
         const { data: rolesData } = await supabase
@@ -135,7 +113,32 @@ export default function RolesPage() {
           permissions: role.role_permissions?.map(rp => rp.permissions.name) || []
         })) || [];
 
-        setRoles(transformedRoles);
+        // Fetch all groups
+        const { data: groupsData } = await supabase
+          .from("groups")
+          .select("id, name");
+        
+        setGroups(groupsData || []);
+
+        // Fetch role-group associations
+        const { data: groupRolesData } = await supabase
+          .from("group_roles")
+          .select("role_id, group_id, is_global");
+        
+        // Add group info to roles
+        const rolesWithGroupInfo = transformedRoles.map(role => {
+          const roleGroupData = groupRolesData?.filter(gr => gr.role_id === role.id) || [];
+          
+          return {
+            ...role,
+            isGlobal: roleGroupData.some(gr => gr.is_global),
+            groups: roleGroupData
+              .filter(gr => !gr.is_global)
+              .map(gr => gr.group_id)
+          };
+        });
+        
+        setRoles(rolesWithGroupInfo);
       } catch (error) {
         console.error("Error fetching roles:", error);
       } finally {
@@ -167,123 +170,14 @@ export default function RolesPage() {
     return [];
   }, [canManageAllRoles, canManageClubRoles]);
 
-  const handleCreateRole = async () => {
-    if (!newRoleName.trim()) {
-      alert("Role name cannot be empty");
-      return;
-    }
-
-    try {
-      // Check if role name already exists
-      const { data: existingRole } = await supabase
-        .from("roles")
-        .select("id")
-        .eq("name", newRoleName)
-        .single();
-
-      if (existingRole) {
-        alert("A role with this name already exists");
-        return;
-      }
-
-      // Start a transaction
-      const { data: roleData, error: roleError } = await supabase
-        .from("roles")
-        .insert({ name: newRoleName })
-        .select()
-        .single();
-
-      if (roleError) throw roleError;
-
-      // Insert permissions
-      const permissionInserts = selectedPermissions.map(async (permName) => {
-        // First, get the permission ID
-        const { data: permissionData } = await supabase
-          .from("permissions")
-          .select("id")
-          .eq("name", permName)
-          .single();
-
-        if (!permissionData) return null;
-
-        // Then insert role-permission mapping
-        return supabase
-          .from("role_permissions")
-          .insert({
-            role_id: roleData.id,
-            permission_id: permissionData.id
-          });
-      });
-
-      await Promise.all(permissionInserts);
-
-      // Refresh roles list
-      setRoles([
-        ...roles, 
-        { 
-          id: roleData.id, 
-          name: newRoleName, 
-          permissions: selectedPermissions 
-        }
-      ]);
-
-      // Reset form
-      setNewRoleName("");
-      setSelectedPermissions([]);
-    } catch (error) {
-      console.error("Error creating role:", error);
-      alert("Failed to create role");
-    }
+  // Handle role creation
+  const handleRoleCreate = (newRole) => {
+    setRoles([...roles, newRole]);
   };
 
-  const handleDeleteRole = async () => {
-    if (!deleteRoleId) return;
-
-    try {
-      // Check if any users have this role
-      const { count: userCount } = await supabase
-        .from("users")
-        .select("*", { count: "exact" })
-        .eq("role_id", deleteRoleId);
-
-      if (userCount && userCount > 0) {
-        alert(`Cannot delete role. ${userCount} user(s) are currently assigned to this role.`);
-        return;
-      }
-
-      // Delete role-permissions first
-      const { error: rolePermError } = await supabase
-        .from("role_permissions")
-        .delete()
-        .eq("role_id", deleteRoleId);
-
-      if (rolePermError) throw rolePermError;
-
-      // Delete the role
-      const { error: roleError } = await supabase
-        .from("roles")
-        .delete()
-        .eq("id", deleteRoleId);
-
-      if (roleError) throw roleError;
-
-      // Update local state
-      setRoles(roles.filter(role => role.id !== deleteRoleId));
-      
-      // Reset delete role state
-      setDeleteRoleId(null);
-    } catch (error) {
-      console.error("Error deleting role:", error);
-      alert("Failed to delete role");
-    }
-  };
-
-  const handlePermissionToggle = (permission: Permission) => {
-    setSelectedPermissions(prev => 
-      prev.includes(permission)
-        ? prev.filter(p => p !== permission)
-        : [...prev, permission]
-    );
+  // Handle role deletion
+  const handleRoleDelete = (roleId) => {
+    setRoles(roles.filter(role => role.id !== roleId));
   };
 
   if (loading || permissionsLoading) return <div>Loading...</div>;
@@ -302,99 +196,25 @@ export default function RolesPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button>Create New Role</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Create New Role</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <Input 
-                    placeholder="Role Name" 
-                    value={newRoleName}
-                    onChange={(e) => setNewRoleName(e.target.value)}
-                  />
-                  
-                  {Object.entries(PERMISSION_CATEGORIES).map(([category, { label, permissions }]) => (
-                    <div key={category} className="space-y-2">
-                      <h3 className="font-semibold">{label}</h3>
-                      {permissions.map((perm) => (
-                        // Only show permissions user is allowed to assign
-                        availablePermissions.includes(perm) && (
-                          <div key={perm} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={perm}
-                              checked={selectedPermissions.includes(perm)}
-                              onCheckedChange={() => handlePermissionToggle(perm)}
-                            />
-                            <label htmlFor={perm}>{perm}</label>
-                          </div>
-                        )
-                      ))}
-                    </div>
-                  ))}
-                  
-                  <Button 
-                    onClick={handleCreateRole}
-                    disabled={!newRoleName || selectedPermissions.length === 0}
-                  >
-                    Create Role
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <CreateRoleDialog 
+              availablePermissions={availablePermissions}
+              permissionCategories={PERMISSION_CATEGORIES}
+              groups={groups}
+              currentUserGroups={currentUserGroups}
+              canManageAllRoles={canManageAllRoles}
+              onRoleCreated={handleRoleCreate}
+            />
 
             {/* Existing Roles List */}
             <div className="mt-6">
               <h2 className="text-xl font-semibold mb-4">Existing Roles</h2>
-              <table className="min-w-full">
-                <thead>
-                  <tr>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Role Name</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Permissions</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {roles.map((role) => (
-                    <tr key={role.id}>
-                      <td className="py-2 px-4 border-b">{role.name}</td>
-                      <td className="py-2 px-4 border-b">
-                        {role.permissions.join(", ")}
-                      </td>
-                      <td className="py-2 px-4 border-b">
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button 
-                              variant="destructive" 
-                              size="icon"
-                              onClick={() => setDeleteRoleId(role.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This will permanently delete the role. This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={handleDeleteRole}>
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <RolesList 
+                roles={roles}
+                groups={groups}
+                currentUserGroups={currentUserGroups}
+                canManageAllRoles={canManageAllRoles}
+                onRoleDeleted={handleRoleDelete}
+              />
             </div>
           </CardContent>
         </Card>

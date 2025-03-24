@@ -57,7 +57,27 @@ export default function GroupsPage() {
           .from("groups")
           .select("*");
 
-        setGroups(groupsData || []);
+        // Get user counts for each group (counting distinct users)
+        const userCounts = {};
+        
+        // For each group, get the distinct count of users
+        for (const group of groupsData) {
+          const { count } = await supabase
+            .from("user_roles")
+            .select("user_id", { count: "exact", head: true })
+            .eq("group_id", group.id)
+            .not("user_id", "is", null);
+            
+          userCounts[group.id] = count || 0;
+        }
+        
+        // Format group data with user counts
+        const formattedGroups = groupsData.map(group => ({
+          ...group,
+          userCount: userCounts[group.id] || 0
+        }));
+
+        setGroups(formattedGroups || []);
       } catch (error) {
         console.error("Error fetching groups:", error);
       } finally {
@@ -97,7 +117,7 @@ export default function GroupsPage() {
 
       if (error) throw error;
 
-      setGroups([...groups, newGroup]);
+      setGroups([...groups, {...newGroup, userCount: 0}]);
       setNewGroupName("");
     } catch (error) {
       console.error("Error creating group:", error);
@@ -109,14 +129,22 @@ export default function GroupsPage() {
     if (!deleteGroupId) return;
 
     try {
-      // Check if any users are in this group
-      const { count: userCount } = await supabase
-        .from("users")
+      // Get the current group to check its user count
+      const groupToDelete = groups.find(g => g.id === deleteGroupId);
+      
+      if (groupToDelete.userCount > 0) {
+        alert(`Cannot delete group. ${groupToDelete.userCount} user(s) are currently assigned to this group.`);
+        return;
+      }
+
+      // Also check if any roles are associated with this group
+      const { count: roleCount } = await supabase
+        .from("group_roles")
         .select("*", { count: "exact" })
         .eq("group_id", deleteGroupId);
 
-      if (userCount && userCount > 0) {
-        alert(`Cannot delete group. ${userCount} user(s) are currently assigned to this group.`);
+      if (roleCount && roleCount > 0) {
+        alert(`Cannot delete group. ${roleCount} role(s) are currently associated with this group.`);
         return;
       }
 
@@ -131,7 +159,7 @@ export default function GroupsPage() {
       setDeleteGroupId(null);
     } catch (error) {
       console.error("Error deleting group:", error);
-      alert("Failed to delete group");
+      alert("Failed to delete group: " + error.message);
     }
   };
 
@@ -175,6 +203,7 @@ export default function GroupsPage() {
                 <thead>
                   <tr>
                     <th className="py-2 px-4 bg-gray-50 text-left">Group Name</th>
+                    <th className="py-2 px-4 bg-gray-50 text-left">Members</th>
                     <th className="py-2 px-4 bg-gray-50 text-left">Actions</th>
                   </tr>
                 </thead>
@@ -182,6 +211,7 @@ export default function GroupsPage() {
                   {groups.map((group) => (
                     <tr key={group.id}>
                       <td className="py-2 px-4 border-b">{group.name}</td>
+                      <td className="py-2 px-4 border-b">{group.userCount}</td>
                       <td className="py-2 px-4 border-b">
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
