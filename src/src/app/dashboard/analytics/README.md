@@ -29,6 +29,8 @@ components/analytics/
 ├── tabs/
 │   ├── OverviewTab.js                 # Overview dashboard tab
 │   └── DetailedTab.js                 # Detailed analysis tab
+├── utils/
+│   └── chartUtils.js                  # Shared chart utilities and formatters
 └── AnalyticsPage.js                   # Main component imported by page.tsx
 
 hooks/
@@ -137,3 +139,8 @@ The analytics dashboard was recently updated to:
 - Support users belonging to multiple groups
 - Handle the new database schema with junction tables
 - Improve error handling and empty state displays
+- Add enhanced label rendering for pie charts:
+  - Wraps long labels with hyphens
+  - Hides very small slices (under 5%)
+  - Uses matching colors for labels and slices
+  - Improves readability of overlapping labels

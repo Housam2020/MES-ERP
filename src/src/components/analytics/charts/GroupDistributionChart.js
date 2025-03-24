@@ -14,15 +14,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-
-const COLORS = [
-  "#0088FE",
-  "#00C49F",
-  "#FFBB28",
-  "#FF8042",
-  "#FF99E6",
-  "#AA80FF",
-];
+import { COLORS, renderWrappedLabel, currencyFormatter } from "../utils/chartUtils";
 
 export default function GroupDistributionChart({ data }) {
   if (!data || data.length === 0) {
@@ -53,9 +45,7 @@ export default function GroupDistributionChart({ data }) {
               cx="50%"
               cy="50%"
               outerRadius={100}
-              label={({ name, value }) =>
-                `${name || "Unknown"}: $${Number(value || 0).toFixed(2)}`
-              }
+              label={renderWrappedLabel}
             >
               {data.map((entry, index) => (
                 <Cell
@@ -64,10 +54,13 @@ export default function GroupDistributionChart({ data }) {
                 />
               ))}
             </Pie>
-            <Tooltip
-              formatter={(value) => `$${Number(value || 0).toFixed(2)}`}
+            <Tooltip formatter={currencyFormatter} />
+            <Legend 
+              layout="horizontal"
+              verticalAlign="bottom"
+              align="center"
+              wrapperStyle={{ whiteSpace: "nowrap", overflowX: "auto" }}
             />
-            <Legend />
           </PieChart>
         </ResponsiveContainer>
       </CardContent>
