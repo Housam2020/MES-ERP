@@ -23,6 +23,7 @@ export default function RequestsPage() {
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [userGroups, setUserGroups] = useState([]);
+  const [viewableGroups, setViewableGroups] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -46,7 +47,42 @@ export default function RequestsPage() {
 
         setCurrentUser(userData);
 
-        // Fetch user's groups through the user_roles table
+        // Fetch user's role assignments with permissions
+        const { data: userRoleAssignments } = await supabase
+          .from('user_roles')
+          .select(`
+            role_id,
+            group_id,
+            roles (
+              id,
+              name,
+              role_permissions (
+                permissions (
+                  name
+                )
+              )
+            )
+          `)
+          .eq('user_id', user.id);
+
+        console.log("User role assignments:", userRoleAssignments);
+
+        // Determine which groups the user has view_club_requests permission in
+        const viewableGroupIds = [];
+        userRoleAssignments?.forEach(assignment => {
+          // Extract permissions from this role
+          const rolePermissions = assignment.roles?.role_permissions || [];
+          const rolePerms = rolePermissions.map(rp => rp.permissions?.name).filter(Boolean);
+          
+          // If this role has view_club_requests permission and is assigned to a group
+          if (rolePerms.includes('view_club_requests') && assignment.group_id) {
+            viewableGroupIds.push(assignment.group_id);
+          }
+        });
+
+        console.log("Groups where user can view requests:", viewableGroupIds);
+
+        // Fetch all user's groups for display purposes
         const { data: userGroupsData, error: groupsError } = await supabase
           .from("user_roles")
           .select("group_id, groups(id, name)")
@@ -59,7 +95,7 @@ export default function RequestsPage() {
         }
 
         // Extract unique groups
-        const groups = userGroupsData
+        const allGroups = userGroupsData
           ? userGroupsData
               .filter(item => item.groups) // Filter out any null groups
               .map(item => item.groups)
@@ -68,7 +104,17 @@ export default function RequestsPage() {
               )
           : [];
         
-        setUserGroups(groups);
+        setUserGroups(allGroups);
+        
+        // Fetch details of viewable groups for display
+        if (viewableGroupIds.length > 0) {
+          const { data: viewableGroupsData } = await supabase
+            .from('groups')
+            .select('id, name')
+            .in('id', viewableGroupIds);
+            
+          setViewableGroups(viewableGroupsData || []);
+        }
 
         // Base query for payment requests
         let paymentRequestsQuery = supabase
@@ -80,10 +126,12 @@ export default function RequestsPage() {
         if (permissions.includes("view_all_requests")) {
           // Admin can see all requests
         } else if (permissions.includes("view_club_requests")) {
-          // Club leaders/admins see requests from their groups
-          if (groups.length > 0) {
-            const groupIds = groups.map(group => group.id);
-            paymentRequestsQuery = paymentRequestsQuery.in("group_id", groupIds);
+          // Club leaders/admins see requests ONLY from groups where they have view_club_requests
+          if (viewableGroupIds.length > 0) {
+            paymentRequestsQuery = paymentRequestsQuery.in("group_id", viewableGroupIds);
+          } else {
+            // If user has no groups with view_club_requests perm, just show their own requests
+            paymentRequestsQuery = paymentRequestsQuery.eq("user_id", user.id);
           }
         } else {
           // Regular users see only their own requests
@@ -112,11 +160,12 @@ export default function RequestsPage() {
             if (permissions.includes("view_all_requests")) {
               // Admin can see all budget requests
             } else if (permissions.includes("view_club_requests")) {
-              // Club leaders/admins see budget requests from their groups
-              if (groups.length > 0) {
-                const groupIds = groups.map(group => group.id);
-                // First check if group_id column exists
-                budgetRequestsQuery = budgetRequestsQuery.in("group_id", groupIds);
+              // Club leaders/admins see budget requests ONLY from groups where they have view_club_requests
+              if (viewableGroupIds.length > 0) {
+                budgetRequestsQuery = budgetRequestsQuery.in("group_id", viewableGroupIds);
+              } else {
+                // If no viewable groups, show nothing
+                budgetRequestsQuery = budgetRequestsQuery.eq("id", "no-results-will-match-this");
               }
             }
 
@@ -183,10 +232,10 @@ export default function RequestsPage() {
   if (error)
     return <div>Error loading data: {error}</div>;
 
-  // Get a display name for user's groups
-  const userGroupsDisplay = userGroups.length > 0 
-    ? userGroups.map(g => g.name).join(", ")
-    : "Your Clubs";
+  // Get a display name for viewable groups
+  const viewableGroupsDisplay = viewableGroups.length > 0 
+    ? viewableGroups.map(g => g.name).join(", ")
+    : "Your Managed Clubs";
 
   return (
     <div>
@@ -199,7 +248,7 @@ export default function RequestsPage() {
               {permissions.includes("view_all_requests")
                 ? "All Payment Requests"
                 : permissions.includes("view_club_requests")
-                ? `Payment Requests for ${userGroupsDisplay}`
+                ? `Payment Requests for ${viewableGroupsDisplay}`
                 : "Your Payment Requests"}
             </CardTitle>
             {(permissions.includes("create_requests") ||
@@ -252,7 +301,7 @@ export default function RequestsPage() {
                 {permissions.includes("view_all_requests")
                   ? "All Budget Requests"
                   : permissions.includes("view_club_requests")
-                  ? `Budget Requests for ${userGroupsDisplay}`
+                  ? `Budget Requests for ${viewableGroupsDisplay}`
                   : "Your Budget Requests"}
               </CardTitle>
               {(permissions.includes("create_budget_requests") ||
