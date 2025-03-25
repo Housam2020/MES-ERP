@@ -72,27 +72,55 @@ export default function RolesPage() {
           return;
         }
 
-        // Get current user's groups
-        const { data: userGroupsData } = await supabase
+        // Get user's role assignments with permissions
+        const { data: userRoleAssignments } = await supabase
           .from('user_roles')
           .select(`
+            role_id,
             group_id,
-            groups (
+            roles (
               id,
-              name
+              name,
+              role_permissions (
+                permissions (
+                  name
+                )
+              )
             )
           `)
-          .eq('user_id', user.id)
-          .not('group_id', 'is', null);
+          .eq('user_id', user.id);
+
+        console.log("User role assignments:", userRoleAssignments);
+
+        // Determine which groups the user has manage_club_roles permission in
+        const managableGroupIds = [];
+        userRoleAssignments?.forEach(assignment => {
+          // Extract permissions from this role
+          const rolePermissions = assignment.roles?.role_permissions || [];
+          const permissions = rolePermissions.map(rp => rp.permissions?.name).filter(Boolean);
+          
+          // If this role has manage_club_roles permission and is assigned to a group
+          if (permissions.includes('manage_club_roles') && assignment.group_id) {
+            managableGroupIds.push(assignment.group_id);
+          }
+        });
+
+        console.log("Groups where user can manage roles:", managableGroupIds);
+
+        // Get details of the groups the user can manage
+        const { data: managableGroups } = await supabase
+          .from('groups')
+          .select('id, name')
+          .in('id', managableGroupIds);
+
+        setCurrentUserGroups(managableGroups || []);
+
+        // Fetch all groups for dropdown selection
+        const { data: allGroupsData } = await supabase
+          .from("groups")
+          .select("id, name");
         
-        // Extract unique groups
-        const currentGroups = userGroupsData
-          ? [...new Map(userGroupsData.map(item => 
-              [item.group_id, item.groups]
-            )).values()]
-          : [];
-        
-        setCurrentUserGroups(currentGroups);
+        setGroups(allGroupsData || []);
 
         // Fetch all roles with their permissions
         const { data: rolesData } = await supabase
@@ -113,13 +141,6 @@ export default function RolesPage() {
           permissions: role.role_permissions?.map(rp => rp.permissions.name) || []
         })) || [];
 
-        // Fetch all groups
-        const { data: groupsData } = await supabase
-          .from("groups")
-          .select("id, name");
-        
-        setGroups(groupsData || []);
-
         // Fetch role-group associations
         const { data: groupRolesData } = await supabase
           .from("group_roles")
@@ -138,7 +159,17 @@ export default function RolesPage() {
           };
         });
         
-        setRoles(rolesWithGroupInfo);
+        // Filter roles based on user's permissions
+        const visibleRoles = canManageAllRoles
+          ? rolesWithGroupInfo  // Admin can see all roles
+          : rolesWithGroupInfo.filter(role => 
+              // For club managers, only show roles in groups they can manage
+              role.groups.some(groupId => 
+                managableGroups.some(group => group.id === groupId)
+              )
+            );
+        
+        setRoles(visibleRoles);
       } catch (error) {
         console.error("Error fetching roles:", error);
       } finally {

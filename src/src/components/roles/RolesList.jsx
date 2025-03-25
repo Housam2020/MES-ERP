@@ -49,14 +49,13 @@ export default function RolesList({
   const canManageRole = (role) => {
     if (canManageAllRoles) return true;
     
-    // Club managers can manage roles in their groups
-    if (!role.isGlobal) {
-      return role.groups.some(groupId => 
-        currentUserGroups.some(ug => ug.id === groupId)
-      );
-    }
+    // Club managers can't manage global roles
+    if (role.isGlobal) return false;
     
-    return false;
+    // For non-admins, they can only manage roles in their manageable groups
+    // Since roles can only belong to one group now, we can simplify this check
+    return role.groups.length === 1 && 
+           currentUserGroups.some(ug => ug.id === role.groups[0]);
   };
   
   const handleDeleteRole = async () => {

@@ -19,6 +19,13 @@ import {
   TabsList,
   TabsTrigger
 } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function EditRoleDialog({ 
   role,
@@ -33,7 +40,7 @@ export default function EditRoleDialog({
   const [roleName, setRoleName] = useState(role.name);
   const [selectedPermissions, setSelectedPermissions] = useState(role.permissions || []);
   const [isGlobal, setIsGlobal] = useState(role.isGlobal);
-  const [selectedGroups, setSelectedGroups] = useState(role.groups || []);
+  const [selectedGroup, setSelectedGroup] = useState(role.groups?.length > 0 ? role.groups[0] : "");
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("basic");
   const [loading, setLoading] = useState(false);
@@ -48,7 +55,7 @@ export default function EditRoleDialog({
     setRoleName(role.name);
     setSelectedPermissions(role.permissions || []);
     setIsGlobal(role.isGlobal);
-    setSelectedGroups(role.groups || []);
+    setSelectedGroup(role.groups?.length > 0 ? role.groups[0] : "");
   }, [role]);
 
   const handlePermissionToggle = (permission) => {
@@ -59,12 +66,8 @@ export default function EditRoleDialog({
     );
   };
   
-  const handleGroupToggle = (groupId) => {
-    setSelectedGroups(prev => 
-      prev.includes(groupId)
-        ? prev.filter(id => id !== groupId)
-        : [...prev, groupId]
-    );
+  const handleGroupSelect = (groupId) => {
+    setSelectedGroup(groupId);
   };
 
   const handleUpdateRole = async () => {
@@ -78,9 +81,13 @@ export default function EditRoleDialog({
       return;
     }
     
-    if (!isGlobal && selectedGroups.length === 0) {
-      alert("Please select at least one group or make the role global");
+    if (!isGlobal && !selectedGroup) {
+      alert("Please select a group or make the role global");
       return;
+    }
+
+    if (!canManageAllRoles) {
+      isGlobal = false;
     }
 
     try {
@@ -146,7 +153,7 @@ export default function EditRoleDialog({
 
       if (deleteGroupRolesError) throw deleteGroupRolesError;
       
-      // 5. Create the new group_roles entries
+      // 5. Create the new group_roles entry
       if (isGlobal) {
         // Add a global role entry
         await supabase
@@ -155,19 +162,15 @@ export default function EditRoleDialog({
             role_id: role.id,
             is_global: true
           });
-      }
-      
-      // Add group-specific role entries
-      if (selectedGroups.length > 0) {
-        const groupRolesInserts = selectedGroups.map(groupId => ({
-          role_id: role.id,
-          group_id: groupId,
-          is_global: false
-        }));
-        
+      } else if (selectedGroup) {
+        // Add group-specific role entry
         await supabase
           .from("group_roles")
-          .insert(groupRolesInserts);
+          .insert({
+            role_id: role.id,
+            group_id: selectedGroup,
+            is_global: false
+          });
       }
 
       // 6. Prepare the updated role object for state update
@@ -176,7 +179,7 @@ export default function EditRoleDialog({
         name: roleName, 
         permissions: selectedPermissions,
         isGlobal: isGlobal,
-        groups: selectedGroups
+        groups: isGlobal ? [] : [selectedGroup]
       };
 
       // 7. Update parent component state
@@ -223,16 +226,19 @@ export default function EditRoleDialog({
               />
             </div>
             
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="is-global" 
-                checked={isGlobal}
-                onCheckedChange={() => setIsGlobal(!isGlobal)}
-              />
-              <label htmlFor="is-global" className="text-sm font-medium">
-                Global Role (can be assigned independently of group)
-              </label>
-            </div>
+            {/* Only show global option for admins */}
+            {canManageAllRoles && (
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="is-global" 
+                  checked={isGlobal}
+                  onCheckedChange={() => setIsGlobal(!isGlobal)}
+                />
+                <label htmlFor="is-global" className="text-sm font-medium">
+                  Global Role (can be assigned independently of group)
+                </label>
+              </div>
+            )}
             
             <DialogFooter className="mt-4">
               <Button onClick={() => setActiveTab("permissions")}>
@@ -281,28 +287,29 @@ export default function EditRoleDialog({
             {isGlobal ? (
               <div className="text-center p-4 bg-gray-50 rounded">
                 <p>This is a global role and can be assigned to users independent of group membership.</p>
-                <p className="text-sm text-gray-500 mt-2">
-                  You may still select specific groups below to make this role available in those groups as well.
-                </p>
               </div>
             ) : (
-              <div className="text-sm mb-4">
-                Select the groups this role will be available in:
+              <div className="space-y-4">
+                <div className="text-sm mb-2">
+                  Select the group this role will be available in:
+                </div>
+                <Select
+                  value={selectedGroup}
+                  onValueChange={handleGroupSelect}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a group" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableGroups.map((group) => (
+                      <SelectItem key={group.id} value={group.id}>
+                        {group.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
-            
-            <div className="max-h-[200px] overflow-y-auto space-y-2">
-              {availableGroups.map((group) => (
-                <div key={group.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`group-${group.id}`}
-                    checked={selectedGroups.includes(group.id)}
-                    onCheckedChange={() => handleGroupToggle(group.id)}
-                  />
-                  <label htmlFor={`group-${group.id}`}>{group.name}</label>
-                </div>
-              ))}
-            </div>
             
             <DialogFooter className="space-x-2">
               <Button variant="outline" onClick={() => setActiveTab("permissions")}>
@@ -310,7 +317,7 @@ export default function EditRoleDialog({
               </Button>
               <Button 
                 onClick={handleUpdateRole}
-                disabled={loading || !roleName || selectedPermissions.length === 0 || (!isGlobal && selectedGroups.length === 0)}
+                disabled={loading || !roleName || selectedPermissions.length === 0 || (!isGlobal && !selectedGroup)}
               >
                 {loading ? "Updating..." : "Update Role"}
               </Button>
