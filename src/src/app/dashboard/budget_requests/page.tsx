@@ -84,11 +84,19 @@ export default function BudgetRequestsPage() {
     <div>
       <DashboardHeader />
       <div className="container mx-auto p-6">
-        <Card>
+        <Card className="mb-6">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Budget Requests</CardTitle>
-            {permissions.includes("create_budget_requests") && (
-              <Link href="/budget-forms">
+            <CardTitle>
+              {permissions.includes("view_all_requests")
+                ? "All Budget Requests"
+                : permissions.includes("view_club_requests")
+                ? "Club Budget Requests"
+                : "Your Budget Requests"}
+            </CardTitle>
+
+            {(permissions.includes("create_budget_requests") ||
+              permissions.includes("view_all_requests")) && (
+              <Link href="/dashboard/annual_form">
                 <Button>Create New Budget Request</Button>
               </Link>
             )}
