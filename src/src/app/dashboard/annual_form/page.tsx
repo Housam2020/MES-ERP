@@ -6,9 +6,6 @@ import { createClient } from "@/utils/supabase/client";
 import { usePermissions } from "@/hooks/usePermissions";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
-// If your user is not truly "admin" but some other permission (like "view_all_requests"),
-// then update the checks below from "admin" to the permission you want to require.
-
 const BudgetForm = () => {
   const supabase = createClient();
   const router = useRouter();
@@ -33,36 +30,44 @@ const BudgetForm = () => {
     }),
   });
 
-  // 1) Check permissions. If user is not admin, push them away.
   useEffect(() => {
     if (!permissionsLoading) {
-      console.log("User permissions:", permissions); // Log perms to console
       if (!permissions.includes("view_club_requests")) {
-        // If "admin" is truly not in the array, block access
         router.push("/dashboard/home");
       }
     }
   }, [permissions, permissionsLoading, router]);
 
-  // 2) Recalculate totals if income or expenses change
   useEffect(() => {
     const totalIncome = formData.income.reduce(
       (sum, item) => sum + (parseFloat(item.projected) || 0),
       0
     );
+
     const totalExpense = formData.expenses.reduce(
       (sum, item) => sum + (parseFloat(item.projected) || 0),
       0
     );
+
+    const fallExpenses = formData.expenses
+      .filter((item) => item.term.toLowerCase() === "fall")
+      .reduce((sum, item) => sum + (parseFloat(item.projected) || 0), 0);
+
+    const winterExpenses = formData.expenses
+      .filter((item) => item.term.toLowerCase() === "winter")
+      .reduce((sum, item) => sum + (parseFloat(item.projected) || 0), 0);
+
     setFormData((prev) => ({
       ...prev,
       total_income: totalIncome,
       total_expense: totalExpense,
       surplus_deficit: totalIncome - totalExpense,
+      fall_2024_expenses: fallExpenses.toString(),
+      winter_2025_expenses: winterExpenses.toString(),
+      full_year_expenses: (fallExpenses + winterExpenses).toString(),
     }));
   }, [formData.income, formData.expenses]);
 
-  // 3) Handle form changes
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     field: string,
@@ -70,7 +75,6 @@ const BudgetForm = () => {
     subfield?: string
   ) => {
     if (index !== undefined && subfield) {
-      // For array fields
       setFormData((prev) => {
         const clonedField = [...(prev as any)[field]];
         clonedField[index] = {
@@ -84,10 +88,9 @@ const BudgetForm = () => {
     }
   };
 
-  // 4) Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Prepare data
+
     const submissionData = {
       club_name: formData.club_name,
       requested_mes_funding: parseFloat(formData.requested_mes_funding) || 0,
@@ -103,7 +106,6 @@ const BudgetForm = () => {
       total_expenses_calculated: formData.total_expense,
     };
 
-    // Insert in DB
     const { data, error } = await supabase
       .from("annual_budget_form")
       .insert([submissionData]);
@@ -131,7 +133,7 @@ const BudgetForm = () => {
             Budget Form
           </h1>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Club / Team / Group */}
+            {/* Club Name */}
             <div>
               <label className="font-bold text-gray-700 dark:text-gray-300">
                 Club / Team / Group:
@@ -145,7 +147,7 @@ const BudgetForm = () => {
               />
             </div>
 
-            {/* Requested MES Funding */}
+            {/* Requested Funding */}
             <div>
               <label className="font-bold text-gray-700 dark:text-gray-300">
                 Requested MES Funding:
@@ -159,7 +161,7 @@ const BudgetForm = () => {
               />
             </div>
 
-            {/* Fall 2024 Expenses */}
+            {/* Auto-calculated Term Expenses */}
             <div>
               <label className="font-bold text-gray-700 dark:text-gray-300">
                 Fall 2024 Expenses:
@@ -167,13 +169,10 @@ const BudgetForm = () => {
               <input
                 type="text"
                 value={formData.fall_2024_expenses}
-                onChange={(e) => handleChange(e, "fall_2024_expenses")}
-                className="w-full border rounded-lg p-2 mt-1 bg-white dark:bg-gray-700"
-                placeholder="Enter amount"
+                readOnly
+                className="w-full border rounded-lg p-2 mt-1 bg-gray-100 dark:bg-gray-700"
               />
             </div>
-
-            {/* Winter 2025 Expenses */}
             <div>
               <label className="font-bold text-gray-700 dark:text-gray-300">
                 Winter 2025 Expenses:
@@ -181,13 +180,10 @@ const BudgetForm = () => {
               <input
                 type="text"
                 value={formData.winter_2025_expenses}
-                onChange={(e) => handleChange(e, "winter_2025_expenses")}
-                className="w-full border rounded-lg p-2 mt-1 bg-white dark:bg-gray-700"
-                placeholder="Enter amount"
+                readOnly
+                className="w-full border rounded-lg p-2 mt-1 bg-gray-100 dark:bg-gray-700"
               />
             </div>
-
-            {/* Full Year Expenses */}
             <div>
               <label className="font-bold text-gray-700 dark:text-gray-300">
                 Full Year Expenses:
@@ -195,9 +191,8 @@ const BudgetForm = () => {
               <input
                 type="text"
                 value={formData.full_year_expenses}
-                onChange={(e) => handleChange(e, "full_year_expenses")}
-                className="w-full border rounded-lg p-2 mt-1 bg-white dark:bg-gray-700"
-                placeholder="Enter amount"
+                readOnly
+                className="w-full border rounded-lg p-2 mt-1 bg-gray-100 dark:bg-gray-700"
               />
             </div>
 
@@ -344,7 +339,7 @@ const BudgetForm = () => {
               <p>Surplus / Deficit: ${formData.surplus_deficit.toFixed(2)}</p>
             </div>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <div className="text-center">
               <button
                 type="submit"
