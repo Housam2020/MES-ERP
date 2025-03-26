@@ -64,7 +64,7 @@ const BudgetForm = () => {
 
   // 3) Handle form changes
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     field: string,
     index?: number,
     subfield?: string
@@ -308,15 +308,17 @@ const BudgetForm = () => {
                         />
                       </td>
                       <td className="border p-2">
-                        <input
-                          type="text"
+                        <select
                           value={row.term}
                           onChange={(e) =>
                             handleChange(e, "expenses", index, "term")
                           }
-                          className="w-full border-none bg-transparent"
-                          placeholder="Term"
-                        />
+                          className="w-full border-none bg-transparent bg-white dark:bg-gray-700"
+                        >
+                          <option value="">Select Term</option>
+                          <option value="Fall">Fall</option>
+                          <option value="Winter">Winter</option>
+                        </select>
                       </td>
                       <td className="border p-2">
                         <input
