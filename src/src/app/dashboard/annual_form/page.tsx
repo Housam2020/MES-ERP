@@ -11,11 +11,12 @@ const BudgetForm = () => {
   const router = useRouter();
   const { permissions, loading: permissionsLoading } = usePermissions();
 
-  const [clubs, setClubs] = useState([]); 
+  const [clubs, setClubs] = useState([]);
 
   const [formData, setFormData] = useState({
     club_name: "",
     requested_mes_funding: "",
+    budget_year: "",
     total_income: 0,
     total_expense: 0,
     surplus_deficit: 0,
@@ -40,7 +41,6 @@ const BudgetForm = () => {
     }
   }, [permissions, permissionsLoading, router]);
 
-  // 🆕 Fetch club names from Supabase
   useEffect(() => {
     const fetchClubs = async () => {
       const { data, error } = await supabase.from("groups").select("id, name");
@@ -110,6 +110,7 @@ const BudgetForm = () => {
     const submissionData = {
       club_name: formData.club_name,
       requested_mes_funding: parseFloat(formData.requested_mes_funding) || 0,
+      budget_year: formData.budget_year,
       total_income: formData.total_income,
       total_expense: formData.total_expense,
       surplus_deficit: formData.surplus_deficit,
@@ -134,6 +135,14 @@ const BudgetForm = () => {
     }
   };
 
+  const getParsedYears = () => {
+    const [start, end] = formData.budget_year.split("-").map(Number);
+    return {
+      fallYear: start || "____",
+      winterYear: end || "____",
+    };
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <DashboardHeader />
@@ -149,8 +158,6 @@ const BudgetForm = () => {
             Budget Form
           </h1>
           <form onSubmit={handleSubmit} className="space-y-6">
-
-
             <div>
               <label className="font-bold text-gray-700 dark:text-gray-300">
                 Club / Team / Group:
@@ -169,7 +176,6 @@ const BudgetForm = () => {
               </select>
             </div>
 
-            {/* Requested Funding */}
             <div>
               <label className="font-bold text-gray-700 dark:text-gray-300">
                 Requested MES Funding:
@@ -183,10 +189,28 @@ const BudgetForm = () => {
               />
             </div>
 
-            {/* Auto-calculated Term Expenses */}
+            {/* Budget Year */}
             <div>
               <label className="font-bold text-gray-700 dark:text-gray-300">
-                Fall 2024 Expenses:
+                Budget Year:
+              </label>
+              <select
+                value={formData.budget_year}
+                onChange={(e) => handleChange(e, "budget_year")}
+                className="w-full border rounded-lg p-2 mt-1 bg-white dark:bg-gray-700"
+              >
+                <option value="">Select a Year</option>
+                <option value="2023-2024">2023-2024</option>
+                <option value="2024-2025">2024-2025</option>
+                <option value="2025-2026">2025-2026</option>
+                <option value="2026-2027">2026-2027</option>
+              </select>
+            </div>
+
+            {/* Dynamic Term Expense Labels */}
+            <div>
+              <label className="font-bold text-gray-700 dark:text-gray-300">
+                Fall {getParsedYears().fallYear} Expenses:
               </label>
               <input
                 type="text"
@@ -197,7 +221,7 @@ const BudgetForm = () => {
             </div>
             <div>
               <label className="font-bold text-gray-700 dark:text-gray-300">
-                Winter 2025 Expenses:
+                Winter {getParsedYears().winterYear} Expenses:
               </label>
               <input
                 type="text"
@@ -369,7 +393,7 @@ const BudgetForm = () => {
                 Submit Budget
               </button>
             </div>
-          </form>
+         </form>
         </div>
       </main>
     </div>
