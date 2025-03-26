@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
-import DashboardHeader from "@/components/dashboard/DashboardHeader"; // ✅ Import added
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 // Database shapes
 interface BudgetColumn {
@@ -291,7 +291,7 @@ export default function OperatingBudgetPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-      <DashboardHeader /> {/* ✅ Added */}
+      <DashboardHeader />
 
       <main className="p-4 max-w-7xl mx-auto">
         {/* Page Title + Back Button */}
