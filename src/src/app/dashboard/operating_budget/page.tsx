@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
+import DashboardHeader from "@/components/dashboard/DashboardHeader"; // ✅ Import added
 
 // Database shapes
 interface BudgetColumn {
@@ -14,16 +15,16 @@ interface BudgetColumn {
 }
 
 interface GroupRecord {
-  id: string;                // uuid in DB
-  name: string | null;       // from 'groups' table
-  group_order: number;       
-  total_budget?: number | string;  // the new budget field
+  id: string;
+  name: string | null;
+  group_order: number;
+  total_budget?: number | string;
 }
 
 interface BudgetRow {
-  id?: number;        
-  group_id: string;   // references groups.id
-  row_type: string;   
+  id?: number;
+  group_id: string;
+  row_type: string;
   order_index: number;
   col_values: Record<string, string>;
 }
@@ -32,44 +33,35 @@ export default function OperatingBudgetPage() {
   const supabase = createClient();
   const router = useRouter();
 
-  // Hook that fetches user permissions
   const { permissions, loading: permissionsLoading } = usePermissions();
 
   const [columns, setColumns] = useState<BudgetColumn[]>([]);
   const [groups, setGroups] = useState<GroupRecord[]>([]);
   const [rows, setRows] = useState<BudgetRow[]>([]);
-
   const [dragRow, setDragRow] = useState<BudgetRow | null>(null);
 
-  // 1) If user is not admin, redirect away
   useEffect(() => {
     if (!permissionsLoading) {
-      // If the user doesn't have the "admin" permission,
-      // or however you detect an admin
       if (!permissions.includes("view_all_requests")) {
         router.push("/dashboard/home");
       }
     }
   }, [permissions, permissionsLoading, router]);
 
-  // 2) Fetch columns, groups, rows
   useEffect(() => {
     const loadData = async () => {
-      // columns
       const { data: colData } = await supabase
         .from("annual_budget_form_columns")
         .select("*")
         .order("sort_order", { ascending: true });
       if (colData) setColumns(colData);
 
-      // groups (including total_budget)
       const { data: grpData } = await supabase
         .from("groups")
         .select("id, name, group_order, total_budget")
         .order("group_order", { ascending: true });
       if (grpData) setGroups(grpData);
 
-      // budget rows
       const { data: rowData } = await supabase
         .from("annual_budget_form_rows")
         .select("*")
@@ -79,7 +71,6 @@ export default function OperatingBudgetPage() {
     loadData();
   }, [supabase]);
 
-  // Helpers to parse/format currency
   const parseCurrency = (val: string): number => {
     if (!val) return 0;
     const cleaned = val.replace(/[^\d.-]/g, "");
@@ -94,7 +85,6 @@ export default function OperatingBudgetPage() {
     }).format(num);
   };
 
-  // Row editing: auto-calc col_change
   const handleCellChange = (row: BudgetRow, columnKey: string, newValue: string) => {
     setRows((prev) =>
       prev.map((r) => {
@@ -125,10 +115,7 @@ export default function OperatingBudgetPage() {
     );
   };
 
-  // Drag & Drop
-  const handleDragStart = (row: BudgetRow) => {
-    setDragRow(row);
-  };
+  const handleDragStart = (row: BudgetRow) => setDragRow(row);
 
   const handleDragOver = (
     e: React.DragEvent<HTMLTableRowElement>,
@@ -144,7 +131,7 @@ export default function OperatingBudgetPage() {
   ) => {
     e.preventDefault();
     if (!dragRow) return;
-    // reorder
+
     setRows((prev) => {
       const sameGroup = prev.filter((rr) => rr.group_id === dragRow.group_id);
       const others = prev.filter((rr) => rr.group_id !== dragRow.group_id);
@@ -155,7 +142,6 @@ export default function OperatingBudgetPage() {
       sameGroup.splice(dragIndex, 1);
       sameGroup.splice(targetIndex, 0, dragRow);
 
-      // reassign
       sameGroup.forEach((r, idx) => {
         r.order_index = idx + 1;
       });
@@ -165,7 +151,6 @@ export default function OperatingBudgetPage() {
     setDragRow(null);
   };
 
-  // Groups
   const handleAddGroup = () => {
     const tempId = `temp-${Date.now()}`;
     setGroups((prev) => [
@@ -187,7 +172,6 @@ export default function OperatingBudgetPage() {
     setRows((prev) => prev.filter((r) => r.group_id !== g.id));
   };
 
-  // Rows
   const handleAddRow = (groupId: string) => {
     const groupRows = rows.filter((r) => r.group_id === groupId);
     const newIndex = groupRows.length + 1;
@@ -220,13 +204,10 @@ export default function OperatingBudgetPage() {
     });
   };
 
-  // Save All
   const handleSaveAll = async () => {
     try {
-      // Insert/update groups
       for (const g of groups) {
         if (g.id.startsWith("temp-")) {
-          // Insert
           const { data, error } = await supabase
             .from("groups")
             .insert({
@@ -238,7 +219,6 @@ export default function OperatingBudgetPage() {
           if (!error && data && data.length > 0) {
             const inserted = data[0] as GroupRecord;
             const oldTempId = g.id;
-            // fix local
             setGroups((prev) =>
               prev.map((x) => (x.id === oldTempId ? inserted : x))
             );
@@ -249,7 +229,6 @@ export default function OperatingBudgetPage() {
             );
           }
         } else {
-          // Update
           await supabase
             .from("groups")
             .update({
@@ -261,10 +240,8 @@ export default function OperatingBudgetPage() {
         }
       }
 
-      // Insert/update rows
       for (const r of rows) {
         if (!r.id) {
-          // Insert
           const { data } = await supabase
             .from("annual_budget_form_rows")
             .insert({
@@ -281,7 +258,6 @@ export default function OperatingBudgetPage() {
             );
           }
         } else {
-          // Update
           await supabase
             .from("annual_budget_form_rows")
             .update({
@@ -301,7 +277,6 @@ export default function OperatingBudgetPage() {
     }
   };
 
-  // Group rows for display
   const rowsByGroup = useMemo(() => {
     const map: Record<string, BudgetRow[]> = {};
     for (const row of rows) {
@@ -314,24 +289,25 @@ export default function OperatingBudgetPage() {
     return map;
   }, [rows]);
 
-  // Render
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-      {/* Basic top bar */}
-      <div className="p-4 flex items-center justify-between">
-        <button
-          onClick={() => router.push("/dashboard/home")}
-          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-        >
-          Back to Dashboard
-        </button>
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
-          Operating Budget
-        </h1>
-        <div />
-      </div>
+      <DashboardHeader /> {/* ✅ Added */}
 
       <main className="p-4 max-w-7xl mx-auto">
+        {/* Page Title + Back Button */}
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={() => router.push("/dashboard/home")}
+            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+          >
+            Back to Dashboard
+          </button>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+            Operating Budget
+          </h1>
+          <div />
+        </div>
+
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
           {groups.map((group) => {
             const groupRows = rowsByGroup[group.id] || [];
@@ -475,7 +451,7 @@ export default function OperatingBudgetPage() {
               Save All
             </button>
           </div>
-        </div>
+       </div>
       </main>
     </div>
   );
