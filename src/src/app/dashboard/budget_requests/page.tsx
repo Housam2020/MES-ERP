@@ -8,6 +8,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import EditableBudgetStatusRow from "@/components/dashboard/EditableBudgetStatusRow";
 
 export default function BudgetRequestsPage() {
   const supabase = createClient();
@@ -43,7 +44,6 @@ export default function BudgetRequestsPage() {
           !permissions.includes("view_all_requests") &&
           !permissions.includes("view_club_requests")
         ) {
-          // If no permissions to view anything, return empty results
           query = query.eq("id", "no-results-will-match");
         }
 
@@ -68,7 +68,14 @@ export default function BudgetRequestsPage() {
     }
   }, [permissions, permissionsLoading, permissionsError]);
 
-  if (loading || permissionsLoading) return <div className="p-6">Loading...</div>;
+  const handleStatusUpdate = (id, newStatus) => {
+    setBudgetRequests((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
+    );
+  };
+
+  if (loading || permissionsLoading)
+    return <div className="p-6">Loading...</div>;
   if (permissionsError)
     return <div className="p-6 text-red-600">Error: {permissionsError.message}</div>;
   if (error) return <div className="p-6 text-red-600">Error: {error}</div>;
@@ -89,27 +96,23 @@ export default function BudgetRequestsPage() {
           <CardContent>
             <div className="overflow-x-auto">
               {budgetRequests.length > 0 ? (
-                <table className="min-w-full">
+                <table className="min-w-full text-sm">
                   <thead>
                     <tr>
                       <th className="py-2 px-4 bg-gray-50 text-left">Club Name</th>
                       <th className="py-2 px-4 bg-gray-50 text-left">Requested MES Funding</th>
                       <th className="py-2 px-4 bg-gray-50 text-left">Status</th>
                       <th className="py-2 px-4 bg-gray-50 text-left">Date</th>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {budgetRequests.map((request) => (
-                      <tr key={request.id}>
-                        <td className="py-2 px-4 border-b">{request.club_name}</td>
-                        <td className="py-2 px-4 border-b">
-                          ${request.requested_mes_funding?.toLocaleString()}
-                        </td>
-                        <td className="py-2 px-4 border-b">{request.status}</td>
-                        <td className="py-2 px-4 border-b">
-                          {new Date(request.created_at).toLocaleDateString()}
-                        </td>
-                      </tr>
+                      <EditableBudgetStatusRow
+                        key={request.id}
+                        request={request}
+                        onStatusUpdate={handleStatusUpdate}
+                      />
                     ))}
                   </tbody>
                 </table>
