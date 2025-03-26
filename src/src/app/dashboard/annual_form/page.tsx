@@ -11,6 +11,8 @@ const BudgetForm = () => {
   const router = useRouter();
   const { permissions, loading: permissionsLoading } = usePermissions();
 
+  const [clubs, setClubs] = useState([]); 
+
   const [formData, setFormData] = useState({
     club_name: "",
     requested_mes_funding: "",
@@ -37,6 +39,20 @@ const BudgetForm = () => {
       }
     }
   }, [permissions, permissionsLoading, router]);
+
+  // 🆕 Fetch club names from Supabase
+  useEffect(() => {
+    const fetchClubs = async () => {
+      const { data, error } = await supabase.from("groups").select("id, name");
+      if (error) {
+        console.error("Error fetching groups:", error);
+      } else {
+        setClubs(data || []);
+      }
+    };
+
+    fetchClubs();
+  }, []);
 
   useEffect(() => {
     const totalIncome = formData.income.reduce(
@@ -133,18 +149,24 @@ const BudgetForm = () => {
             Budget Form
           </h1>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Club Name */}
+
+
             <div>
               <label className="font-bold text-gray-700 dark:text-gray-300">
                 Club / Team / Group:
               </label>
-              <input
-                type="text"
+              <select
                 value={formData.club_name}
                 onChange={(e) => handleChange(e, "club_name")}
                 className="w-full border rounded-lg p-2 mt-1 bg-white dark:bg-gray-700"
-                placeholder="Enter name"
-              />
+              >
+                <option value="">Select a Club</option>
+                {clubs.map((club) => (
+                  <option key={club.id} value={club.name}>
+                    {club.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Requested Funding */}
@@ -338,7 +360,6 @@ const BudgetForm = () => {
               <p>Total Expenses: ${formData.total_expense.toFixed(2)}</p>
               <p>Surplus / Deficit: ${formData.surplus_deficit.toFixed(2)}</p>
             </div>
-
             {/* Submit */}
             <div className="text-center">
               <button
