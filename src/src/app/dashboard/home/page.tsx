@@ -4,6 +4,8 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import Footer from "@/components/dashboard/Footer";
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Users, Clock, FileText } from "lucide-react";
 import Link from "next/link";
@@ -54,9 +56,13 @@ export default function HomePage() {
 
         // Extract unique groups
         const groups = userGroupsData
-          ? [...new Map(userGroupsData.map(item => [item.group_id, item.groups])).values()]
+          ? [
+              ...new Map(
+                userGroupsData.map((item) => [item.group_id, item.groups])
+              ).values(),
+            ]
           : [];
-        
+
         setUserGroups(groups);
 
         // Fetch user's full permissions from the user_roles table
@@ -75,11 +81,10 @@ export default function HomePage() {
           .eq("user_id", user.id);
 
         // Flatten permissions from all roles
-        const userPermissions = permissionsData?.flatMap(
-          role => role.roles?.role_permissions?.map(
-            rp => rp.permissions.name
-          ) || []
-        ) || [];
+        const userPermissions =
+          permissionsData?.flatMap(
+            (role) => role.roles?.role_permissions?.map((rp) => rp.permissions.name) || []
+          ) || [];
 
         // Always fetch user's own requests
         let userRequestsQuery = supabase
@@ -118,8 +123,8 @@ export default function HomePage() {
             userPermissions.includes("view_club_requests")
           ) {
             // Get user's group IDs
-            const groupIds = groups.map(group => group.id);
-            
+            const groupIds = groups.map((group) => group.id);
+
             if (groupIds.length > 0) {
               // Filter requests for any of the user's groups
               statsQuery = statsQuery.in("group_id", groupIds);
@@ -163,111 +168,119 @@ export default function HomePage() {
 
   if (loading || permissionsLoading) return <div>Loading...</div>;
 
-  // Get the primary group for display purposes (first group or empty string)
+  // Get the primary group for display (first group or empty string)
   const primaryGroup = userGroups.length > 0 ? userGroups[0].name : "";
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
+      {/* Header at the top */}
       <DashboardHeader />
-      <div className="container mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-6">Dashboard Overview</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
-          {/* Your Requests Card */}
-          <Link href="/dashboard/requests" className="h-full">
-            <Card className="h-full flex flex-col">
-              <CardHeader className="flex flex-row items-center justify-between h-12">
-                <CardTitle className="text-sm font-medium">
-                  Your Requests
-                </CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent className="flex flex-col items-start justify-start flex-grow">
-                {/* Reserve space for the main stat */}
-                <div className="min-h-[40px]">
-                  <div className="text-2xl font-bold">
-                    {stats.userRequests}
-                  </div>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Total Amount: ${stats.userAmount.toFixed(2)}
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
 
-          {/* Total/Club Requests Card */}
-          {(permissions.includes("view_club_requests") ||
-            permissions.includes("view_all_requests")) && (
-            <>
-              <Link href="/dashboard/requests" className="h-full">
-                <Card className="h-full flex flex-col cursor-pointer">
-                  <CardHeader className="flex flex-row items-center justify-between h-12">
-                    <CardTitle className="text-sm font-medium">
-                      {permissions.includes("view_all_requests")
-                        ? "Total Requests"
-                        : `${primaryGroup || "Club"} Requests`}
-                    </CardTitle>
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent className="flex flex-col items-start justify-start flex-grow">
-                    {/* Reserve space for the main stat */}
-                    <div className="min-h-[40px]">
-                      <div className="text-2xl font-bold">
-                        {stats.totalRequests}
-                      </div>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Total Amount: ${stats.totalAmount.toFixed(2)}
-                    </p>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              {/* Pending Requests Card */}
-              <Link href="/dashboard/requests" className="h-full">
-                <Card className="h-full flex flex-col cursor-pointer">
-                  <CardHeader className="flex flex-row items-center justify-between h-12">
-                    <CardTitle className="text-sm font-medium">
-                      Pending Requests
-                    </CardTitle>
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent className="flex flex-col items-start justify-start flex-grow">
-                    {/* Reserve space for the main stat */}
-                    <div className="min-h-[40px]">
-                      <div className="text-2xl font-bold">
-                        {stats.pendingRequests}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            </>
-          )}
-
-          {/* Total Users Card (Admin Only) */}
-          {permissions.includes("view_all_requests") && (
-            <Link href="/dashboard/users" className="h-full">
+      {/* Main content grows to push footer to the bottom */}
+      <main className="flex-grow">
+        <div className="container mx-auto p-6">
+          <h1 className="text-2xl font-bold mb-6">Dashboard Overview</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
+            {/* Your Requests Card */}
+            <Link href="/dashboard/requests" className="h-full">
               <Card className="h-full flex flex-col">
                 <CardHeader className="flex flex-row items-center justify-between h-12">
                   <CardTitle className="text-sm font-medium">
-                    Total Users
+                    Your Requests
                   </CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <FileText className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent className="flex flex-col items-start justify-start flex-grow">
                   {/* Reserve space for the main stat */}
                   <div className="min-h-[40px]">
                     <div className="text-2xl font-bold">
-                      {stats.totalUsers}
+                      {stats.userRequests}
                     </div>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Total Amount: ${stats.userAmount.toFixed(2)}
+                  </p>
                 </CardContent>
               </Card>
             </Link>
-          )}
+
+            {/* Total/Club Requests Card */}
+            {(permissions.includes("view_club_requests") ||
+              permissions.includes("view_all_requests")) && (
+              <>
+                <Link href="/dashboard/requests" className="h-full">
+                  <Card className="h-full flex flex-col cursor-pointer">
+                    <CardHeader className="flex flex-row items-center justify-between h-12">
+                      <CardTitle className="text-sm font-medium">
+                        {permissions.includes("view_all_requests")
+                          ? "Total Requests"
+                          : `${primaryGroup || "Club"} Requests`}
+                      </CardTitle>
+                      <FileText className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent className="flex flex-col items-start justify-start flex-grow">
+                      {/* Reserve space for the main stat */}
+                      <div className="min-h-[40px]">
+                        <div className="text-2xl font-bold">
+                          {stats.totalRequests}
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Total Amount: ${stats.totalAmount.toFixed(2)}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Pending Requests Card */}
+                <Link href="/dashboard/requests" className="h-full">
+                  <Card className="h-full flex flex-col cursor-pointer">
+                    <CardHeader className="flex flex-row items-center justify-between h-12">
+                      <CardTitle className="text-sm font-medium">
+                        Pending Requests
+                      </CardTitle>
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent className="flex flex-col items-start justify-start flex-grow">
+                      {/* Reserve space for the main stat */}
+                      <div className="min-h-[40px]">
+                        <div className="text-2xl font-bold">
+                          {stats.pendingRequests}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </>
+            )}
+
+            {/* Total Users Card (Admin Only) */}
+            {permissions.includes("view_all_requests") && (
+              <Link href="/dashboard/users" className="h-full">
+                <Card className="h-full flex flex-col">
+                  <CardHeader className="flex flex-row items-center justify-between h-12">
+                    <CardTitle className="text-sm font-medium">
+                      Total Users
+                    </CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent className="flex flex-col items-start justify-start flex-grow">
+                    {/* Reserve space for the main stat */}
+                    <div className="min-h-[40px]">
+                      <div className="text-2xl font-bold">
+                        {stats.totalUsers}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            )}
+          </div>
         </div>
-      </div>
+      </main>
+
+      {/* Footer at the bottom */}
+      <Footer />
     </div>
   );
 }

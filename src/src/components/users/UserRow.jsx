@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -23,16 +22,19 @@ export default function UserRow({
   // Simple helper functions for permission checks
   const isAdmin = () => permissions.includes("manage_all_users");
   const canManageClubUsers = () => permissions.includes("manage_club_users");
-  const isUserInGroup = (groupId) => currentUserGroups.some(g => g.id === groupId);
+  const isUserInGroup = (groupId) =>
+    currentUserGroups.some((g) => g.id === groupId);
   const hasProtectedPermissions = (roleId) => {
-    const role = roles.find(r => r.id === roleId);
+    const role = roles.find((r) => r.id === roleId);
     return role?.hasProtectedPermissions || false;
   };
 
   // Auto-select the first/only available group on component mount
   useEffect(() => {
-    const availableGroups = groups.filter(group => isAdmin() || isUserInGroup(group.id));
-    
+    const availableGroups = groups.filter(
+      (group) => isAdmin() || isUserInGroup(group.id)
+    );
+
     // If there's only one group available and no group is currently selected, select it automatically
     if (availableGroups.length === 1 && !selectedGroup) {
       setSelectedGroup(availableGroups[0].id);
@@ -72,13 +74,13 @@ export default function UserRow({
   const canManageUserRole = (userRole) => {
     // Admin can manage any role
     if (isAdmin()) return true;
-    
+
     // Can't manage global roles unless admin
     if (userRole.is_global) return false;
-    
+
     // Need club management permission
     if (!canManageClubUsers()) return false;
-    
+
     // Can only manage roles in groups you're authorized for
     return isUserInGroup(userRole.group_id);
   };
@@ -89,30 +91,33 @@ export default function UserRow({
     if (!selectedGroup && !isAdmin()) {
       return []; // Only admins can assign global roles
     }
-    
+
     // Group permission check
     if (selectedGroup && !isAdmin() && !isUserInGroup(selectedGroup)) {
       return []; // Can't assign roles in groups you don't manage
     }
-    
+
     // Filter by global/group
     let filteredRoles;
     if (!selectedGroup) {
       // Global roles
-      filteredRoles = roles.filter(role => role.isGlobal);
+      filteredRoles = roles.filter((role) => role.isGlobal);
     } else {
       // Group roles - might need to check both the groups array and isGlobal flag
-      filteredRoles = roles.filter(role => 
-        role.groups.includes(selectedGroup) || 
-        (role.groups.length === 0 && !role.isGlobal)
+      filteredRoles = roles.filter(
+        (role) =>
+          role.groups.includes(selectedGroup) ||
+          (role.groups.length === 0 && !role.isGlobal)
       );
     }
-    
+
     // Filter out protected roles for non-admins
     if (!isAdmin()) {
-      filteredRoles = filteredRoles.filter(role => !role.hasProtectedPermissions);
+      filteredRoles = filteredRoles.filter(
+        (role) => !role.hasProtectedPermissions
+      );
     }
-    
+
     return filteredRoles;
   };
 
@@ -193,29 +198,33 @@ export default function UserRow({
   const removeUserRole = async (roleId) => {
     try {
       // Get the role we're trying to remove
-      const roleToRemove = userRoles.find(r => r.id === roleId);
-      
+      const roleToRemove = userRoles.find((r) => r.id === roleId);
+
       if (!roleToRemove) {
         alert("Role not found");
         return;
       }
-      
+
       // Security checks
       if (roleToRemove.is_global && !isAdmin()) {
         alert("You don't have permission to remove global roles");
         return;
       }
-      
-      if (roleToRemove.group_id && !isAdmin() && !isUserInGroup(roleToRemove.group_id)) {
+
+      if (
+        roleToRemove.group_id &&
+        !isAdmin() &&
+        !isUserInGroup(roleToRemove.group_id)
+      ) {
         alert("You don't have permission to manage users in this group");
         return;
       }
-      
+
       if (hasProtectedPermissions(roleToRemove.role_id) && !isAdmin()) {
         alert("You don't have permission to remove roles with admin privileges");
         return;
       }
-      
+
       setLoading(true);
 
       const { error } = await supabase
@@ -256,20 +265,20 @@ export default function UserRow({
             userRoles.map((userRole) => (
               <div
                 key={userRole.id}
-                className="flex items-center justify-between bg-gray-50 p-2 rounded"
-              >
+                className="flex items-center justify-between bg-gray-50 dark:bg-gray-500 p-2 rounded"
+                >
                 <div>
-                  <span className="font-medium">
+                  <span className="font-medium text-gray-800 dark:text-white">
                     {userRole.roles?.name}
                   </span>
                   {userRole.group_id && (
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">
                       {" "}
                       in {userRole.groups?.name}
                     </span>
                   )}
                   {userRole.is_global && !userRole.group_id && (
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">
                       {" "}
                       (Global)
                     </span>
@@ -280,7 +289,7 @@ export default function UserRow({
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="h-8 w-8 p-0 text-red-500"
+                    className="h-8 w-8 p-0 text-red-500 dark:text-red-400"
                     onClick={() => removeUserRole(userRole.id)}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -296,7 +305,7 @@ export default function UserRow({
         <div className="flex flex-col space-y-2">
           <div className="flex space-x-2">
             <select
-              className="border rounded p-1 text-sm w-1/3"
+              className="border rounded p-1 text-sm w-1/3 dark:bg-gray-700 dark:text-gray-200"
               value={selectedGroup}
               onChange={(e) => {
                 setSelectedGroup(e.target.value);
@@ -305,17 +314,16 @@ export default function UserRow({
             >
               {isAdmin() && <option value="">No group (Global)</option>}
               {groups
-                .filter(group => isAdmin() || isUserInGroup(group.id))
+                .filter((group) => isAdmin() || isUserInGroup(group.id))
                 .map((group) => (
                   <option key={group.id} value={group.id}>
                     {group.name}
                   </option>
-                ))
-              }
+                ))}
             </select>
 
             <select
-              className="border rounded p-1 text-sm w-1/3"
+              className="border rounded p-1 text-sm w-1/3 dark:bg-gray-700 dark:text-gray-200"
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
               disabled={getAvailableRoles().length === 0}

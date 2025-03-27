@@ -21,6 +21,7 @@ import {
 } from "@/config/permissions";
 import RolesList from "@/components/roles/RolesList";
 import CreateRoleDialog from "@/components/roles/CreateRoleDialog";
+import Footer from "@/components/dashboard/Footer";
 
 // Categorize permissions
 const PERMISSION_CATEGORIES = {
@@ -260,6 +261,7 @@ export default function RolesPage() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -1,15 +1,15 @@
 "use client";
-
 import React, { Suspense, useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import Footer from "@/components/dashboard/Footer";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-// Lazy load the Payment row component
+// Lazy load the Payment row component correctly:
 const EditableStatusRow = React.lazy(() =>
   import("@/components/dashboard/EditableStatusRow")
 );
@@ -227,143 +227,146 @@ export default function RequestsPage() {
       : "Your Managed Clubs";
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <DashboardHeader />
-      <div className="container mx-auto p-6">
-        <Card className="mb-6">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <Button
-                variant={activeTab === "payment" ? "default" : "outline"}
-                onClick={() => setActiveTab("payment")}
-              >
-                Payment Requests
-              </Button>
-              <Button
-                variant={activeTab === "budget" ? "default" : "outline"}
-                onClick={() => setActiveTab("budget")}
-                className="ml-4"
-              >
-                Budget Requests
-              </Button>
-            </div>
+      <main className="flex-grow">
+        <div className="container mx-auto p-6">
+          <Card className="mb-6">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <Button
+                  variant={activeTab === "payment" ? "default" : "outline"}
+                  onClick={() => setActiveTab("payment")}
+                >
+                  Payment Requests
+                </Button>
+                <Button
+                  variant={activeTab === "budget" ? "default" : "outline"}
+                  onClick={() => setActiveTab("budget")}
+                  className="ml-4"
+                >
+                  Budget Requests
+                </Button>
+              </div>
 
-            <CardTitle>
-              {activeTab === "payment"
-                ? permissions.includes("view_all_requests")
+              <CardTitle>
+                {activeTab === "payment"
+                  ? permissions.includes("view_all_requests")
+                    ? ""
+                    : permissions.includes("view_club_requests")
+                    ? `Payment Requests for ${viewableGroupsDisplay}`
+                    : "Your Payment Requests"
+                  : permissions.includes("view_all_requests")
                   ? ""
                   : permissions.includes("view_club_requests")
-                  ? `Payment Requests for ${viewableGroupsDisplay}`
-                  : "Your Payment Requests"
-                : permissions.includes("view_all_requests")
-                ? ""
-                : permissions.includes("view_club_requests")
-                ? "Club Budget Requests"
-                : "Your Budget Requests"}
-            </CardTitle>
+                  ? "Club Budget Requests"
+                  : "Your Budget Requests"}
+              </CardTitle>
 
-            <div>
-              {activeTab === "payment" &&
-                (permissions.includes("create_requests") ||
-                  permissions.includes("view_all_requests")) && (
-                  <Link href="/forms">
-                    <Button>Create New Payment Request</Button>
-                  </Link>
-                )}
-              {activeTab === "budget" &&
-                (permissions.includes("create_budget_requests") ||
-                  permissions.includes("view_all_requests")) && (
-                  <Link href="/dashboard/annual_form">
-                    <Button>Create New Budget Request</Button>
-                  </Link>
-                )}
-            </div>
-          </CardHeader>
+              <div>
+                {activeTab === "payment" &&
+                  (permissions.includes("create_requests") ||
+                    permissions.includes("view_all_requests")) && (
+                    <Link href="/forms">
+                      <Button>Create New Payment Request</Button>
+                    </Link>
+                  )}
+                {activeTab === "budget" &&
+                  (permissions.includes("create_budget_requests") ||
+                    permissions.includes("view_all_requests")) && (
+                    <Link href="/dashboard/annual_form">
+                      <Button>Create New Budget Request</Button>
+                    </Link>
+                  )}
+              </div>
+            </CardHeader>
 
-          <CardContent>
-            {isStillLoading ? (
-              <div className="text-center py-8">Loading...</div>
-            ) : (
-              <div className="overflow-x-auto">
-                {/* Payment Requests Table wrapped in Suspense */}
-                <Suspense fallback={<div className="text-center py-8">Loading Payment Requests Table...</div>}>
-                  <div className={activeTab === "payment" ? "" : "hidden"}>
-                    {paymentRequests.length > 0 ? (
+            <CardContent>
+              {isStillLoading ? (
+                <div className="text-center py-8">Loading...</div>
+              ) : (
+                <div className="overflow-x-auto">
+                  {/* Payment Requests Table wrapped in Suspense */}
+                  <Suspense fallback={<div className="text-center py-8">Loading Payment Requests Table...</div>}>
+                    <div className={activeTab === "payment" ? "" : "hidden"}>
+                      {paymentRequests.length > 0 ? (
+                        <table className="min-w-full text-sm">
+                          <thead>
+                            <tr>
+                              <th className="py-2 px-4 bg-gray-50 text-left">Name</th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">Role</th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">Amount</th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">Group</th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">Timeframe</th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">Type</th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">Date</th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {paymentRequests.map((request) => (
+                              <EditableStatusRow
+                                key={request.request_id}
+                                request={request}
+                                onStatusUpdate={handlePaymentStatusUpdate}
+                              />
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : (
+                        <div className="text-center py-8 text-gray-500">
+                          No payment requests found.
+                        </div>
+                      )}
+                    </div>
+                  </Suspense>
+
+                  {/* Budget Requests Table */}
+                  <div className={activeTab === "budget" ? "" : "hidden"}>
+                    {budgetRequests.length > 0 ? (
                       <table className="min-w-full text-sm">
                         <thead>
                           <tr>
-                            <th className="py-2 px-4 bg-gray-50 text-left">Name</th>
-                            <th className="py-2 px-4 bg-gray-50 text-left">Role</th>
-                            <th className="py-2 px-4 bg-gray-50 text-left">Amount</th>
-                            <th className="py-2 px-4 bg-gray-50 text-left">Group</th>
-                            <th className="py-2 px-4 bg-gray-50 text-left">Timeframe</th>
-                            <th className="py-2 px-4 bg-gray-50 text-left">Type</th>
-                            <th className="py-2 px-4 bg-gray-50 text-left">Date</th>
-                            <th className="py-2 px-4 bg-gray-50 text-left">Status</th>
+                            <th className="py-2 px-4 bg-gray-50 text-left">
+                              Club Name
+                            </th>
+                            <th className="py-2 px-4 bg-gray-50 text-left">
+                              Requested MES Funding
+                            </th>
+                            <th className="py-2 px-4 bg-gray-50 text-left">
+                              Status
+                            </th>
+                            <th className="py-2 px-4 bg-gray-50 text-left">
+                              Date
+                            </th>
+                            <th className="py-2 px-4 bg-gray-50 text-left">
+                              Actions
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
-                          {paymentRequests.map((request) => (
-                            <EditableStatusRow
-                              key={request.request_id}
+                          {budgetRequests.map((request) => (
+                            <EditableBudgetStatusRow
+                              key={request.id}
                               request={request}
-                              onStatusUpdate={handlePaymentStatusUpdate}
+                              onStatusUpdate={handleBudgetStatusUpdate}
                             />
                           ))}
                         </tbody>
                       </table>
                     ) : (
                       <div className="text-center py-8 text-gray-500">
-                        No payment requests found.
+                        No budget requests found.
                       </div>
                     )}
                   </div>
-                </Suspense>
-
-                {/* Budget Requests Table */}
-                <div className={activeTab === "budget" ? "" : "hidden"}>
-                  {budgetRequests.length > 0 ? (
-                    <table className="min-w-full text-sm">
-                      <thead>
-                        <tr>
-                          <th className="py-2 px-4 bg-gray-50 text-left">
-                            Club Name
-                          </th>
-                          <th className="py-2 px-4 bg-gray-50 text-left">
-                            Requested MES Funding
-                          </th>
-                          <th className="py-2 px-4 bg-gray-50 text-left">
-                            Status
-                          </th>
-                          <th className="py-2 px-4 bg-gray-50 text-left">
-                            Date
-                          </th>
-                          <th className="py-2 px-4 bg-gray-50 text-left">
-                            Actions
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {budgetRequests.map((request) => (
-                          <EditableBudgetStatusRow
-                            key={request.id}
-                            request={request}
-                            onStatusUpdate={handleBudgetStatusUpdate}
-                          />
-                        ))}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      No budget requests found.
-                    </div>
-                  )}
                 </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }

@@ -8,6 +8,9 @@ import { PROTECTED_PERMISSIONS } from "@/config/permissions";
 import { usePermissions } from "@/hooks/usePermissions";
 import UserRow from "@/components/users/UserRow";
 
+// Import the Footer
+import Footer from "@/components/dashboard/Footer";
+
 export default function UsersPage() {
   const supabase = createClient();
   const router = useRouter();
@@ -269,6 +272,8 @@ export default function UsersPage() {
           </CardContent>
         </Card>
       </div>
+      {/* Footer is added here */}
+      <Footer />
     </div>
   );
 }

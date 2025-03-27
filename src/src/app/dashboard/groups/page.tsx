@@ -27,6 +27,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+// Import the Footer component
+import Footer from "@/components/dashboard/Footer";
+
 export default function GroupsPage() {
   const supabase = createClient();
   const router = useRouter();
@@ -117,7 +120,7 @@ export default function GroupsPage() {
 
       if (error) throw error;
 
-      setGroups([...groups, {...newGroup, userCount: 0}]);
+      setGroups([...groups, { ...newGroup, userCount: 0 }]);
       setNewGroupName("");
     } catch (error) {
       console.error("Error creating group:", error);
@@ -166,87 +169,90 @@ export default function GroupsPage() {
   if (loading || permissionsLoading) return <div>Loading...</div>;
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <DashboardHeader />
-      <div className="container mx-auto p-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Group Management</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button>Create New Group</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Create New Group</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <Input
-                    placeholder="Group Name"
-                    value={newGroupName}
-                    onChange={(e) => setNewGroupName(e.target.value)}
-                  />
-                  <Button
-                    onClick={handleCreateGroup}
-                    disabled={!newGroupName}
-                  >
-                    Create Group
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+      <main className="flex-grow">
+        <div className="container mx-auto p-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Group Management</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>Create New Group</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create New Group</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Input
+                      placeholder="Group Name"
+                      value={newGroupName}
+                      onChange={(e) => setNewGroupName(e.target.value)}
+                    />
+                    <Button
+                      onClick={handleCreateGroup}
+                      disabled={!newGroupName}
+                    >
+                      Create Group
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
 
-            <div className="mt-6">
-              <table className="min-w-full">
-                <thead>
-                  <tr>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Group Name</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Members</th>
-                    <th className="py-2 px-4 bg-gray-50 text-left">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {groups.map((group) => (
-                    <tr key={group.id}>
-                      <td className="py-2 px-4 border-b">{group.name}</td>
-                      <td className="py-2 px-4 border-b">{group.userCount}</td>
-                      <td className="py-2 px-4 border-b">
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              variant="destructive"
-                              size="icon"
-                              onClick={() => setDeleteGroupId(group.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This will permanently delete the group. This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={handleDeleteGroup}>
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </td>
+              <div className="mt-6">
+                <table className="min-w-full">
+                  <thead>
+                    <tr>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Group Name</th>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Members</th>
+                      <th className="py-2 px-4 bg-gray-50 text-left">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                  </thead>
+                  <tbody>
+                    {groups.map((group) => (
+                      <tr key={group.id}>
+                        <td className="py-2 px-4 border-b">{group.name}</td>
+                        <td className="py-2 px-4 border-b">{group.userCount}</td>
+                        <td className="py-2 px-4 border-b">
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="destructive"
+                                size="icon"
+                                onClick={() => setDeleteGroupId(group.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently delete the group. This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleDeleteGroup}>
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
