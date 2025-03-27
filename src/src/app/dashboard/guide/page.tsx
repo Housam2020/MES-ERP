@@ -53,12 +53,20 @@ export default function GuidesPage() {
                   <strong>Submitting a Reimbursement Request:</strong>
                   <ul className="list-circle pl-5 mt-2 space-y-1">
                     <li>
-                      Navigate to the &quot;Forms&quot; page from the sidebar or
-                      directly via (`/forms`).
+                      Navigate to the &quot;Requests&quot; page
+                      (`/dashboard/requests`).
                     </li>
                     <li>
-                      Fill out the reimbursement form with all required details
-                      (payee, amount, description, etc.).
+                      Ensure the &quot;Payment Requests&quot; tab is selected.
+                    </li>
+                    <li>
+                      Click the &quot;Create New Payment Request&quot; button.
+                      This will take you to the reimbursement form page
+                      (`/forms`).
+                    </li>
+                    <li>
+                      Fill out the form with all required details (payee,
+                      amount, description, etc.).
                     </li>
                     <li>
                       Ensure you select the correct `Group` this request belongs
@@ -66,8 +74,8 @@ export default function GuidesPage() {
                     </li>
                     <li>
                       Click &quot;Submit&quot;. You should receive a
-                      confirmation alert, and you&apos;ll be redirected to your
-                      dashboard.
+                      confirmation alert, and you&apos;ll likely be redirected
+                      back to your dashboard or the requests page.
                     </li>
                   </ul>
                 </li>
@@ -184,11 +192,25 @@ export default function GuidesPage() {
                   </ul>
                 </li>
                 <li>
-                  <strong>Submitting Requests:</strong> Follow the same process
-                  as regular users (via `/forms` for payment requests or
-                  potentially `/dashboard/annual_form` for budget requests),
-                  ensuring you select the appropriate group your request belongs
-                  to.
+                  <strong>Submitting Requests:</strong>
+                  <ul className="list-circle pl-5 mt-2 space-y-1">
+                    <li>
+                      <strong>Payment Requests:</strong> Navigate to
+                      `/dashboard/requests`, select the &quot;Payment
+                      Requests&quot; tab, and click &quot;Create New Payment
+                      Request&quot; to go to the form (`/forms`). Fill it out as
+                      a regular user would, selecting the appropriate group.
+                    </li>
+                    <li>
+                      <strong>Budget Requests:</strong> Navigate to
+                      `/dashboard/requests`, select the &quot;Budget
+                      Requests&quot; tab, and click &quot;Create New Budget
+                      Request&quot; to go to the annual budget form
+                      (`/dashboard/annual_form`). Fill it out for your club.
+                      (Alternatively, you might access this form directly via
+                      the sidebar if available).
+                    </li>
+                  </ul>
                 </li>
                 <li>
                   <strong>Submitting Annual Budget Form:</strong>
@@ -253,10 +275,11 @@ export default function GuidesPage() {
                 <li>
                   <strong>Dashboard:</strong> Your dashboard (`/dashboard/home`)
                   provides a system-wide overview. If you have
-                  `view_all_requests`, you'll see statistics for *all* payment
-                  requests across *all* groups (total count, total amount,
-                  pending count). If you have `manage_all_users` or similar, you
-                  may also see the total number of users in the system.
+                  `view_all_requests`, you&apos;ll see statistics for *all*
+                  payment requests across *all* groups (total count, total
+                  amount, pending count). If you have `manage_all_users` or
+                  similar, you may also see the total number of users in the
+                  system.
                 </li>
                 <li>
                   <strong>Full Access:</strong> You can generally navigate to
@@ -273,9 +296,10 @@ export default function GuidesPage() {
                 <li>
                   <strong>Managing Roles & Permissions:</strong> Go to the
                   &quot;Roles&quot; page (`/dashboard/roles`). You can create,
-                  edit, and delete *any* role, whether it's global or assigned
-                  to specific groups. You define which permissions (including
-                  protected admin permissions) are associated with each role.
+                  edit, and delete *any* role, whether it&apos;s global or
+                  assigned to specific groups. You define which permissions
+                  (including protected admin permissions) are associated with
+                  each role.
                 </li>
                 <li>
                   <strong>Managing Groups:</strong> Go to the &quot;Groups&quot;
@@ -306,9 +330,9 @@ export default function GuidesPage() {
                   <strong>Analytics:</strong> Visit the &quot;Analytics&quot;
                   page (`/dashboard/analytics`). If you have
                   `view_all_requests`, you can view aggregated data, trends, and
-                  reports covering the entire system's financial activities,
-                  such as spending trends, status distributions, and budget
-                  utilization across all groups.
+                  reports covering the entire system&apos;s financial
+                  activities, such as spending trends, status distributions, and
+                  budget utilization across all groups.
                 </li>
                 <li>
                   <strong>Managing Your Account Info:</strong> Same process as
