@@ -51,8 +51,8 @@ export default function DashboardHeader() {
 
   const navItems = [
     { href: '/dashboard/home', label: 'Home', permission: null },
-    { href: '/dashboard/requests', label: 'Payment Requests', permission: ['create_requests'] },
-    { href: '/dashboard/budget_requests', label: 'Budget Requests', permission: ['create_requests'] },
+    { href: '/dashboard/requests', label: 'Requests Page', permission: ['create_requests'] },
+    // { href: '/dashboard/budget_requests', label: 'Budget Requests', permission: ['create_requests'] },
     { href: '/dashboard/users', label: 'Users', permission: ['manage_all_users', 'manage_club_users'] },
     { href: '/dashboard/groups', label: 'Groups', permission: ['manage_groups'] },
     { href: '/dashboard/analytics', label: 'Analytics', permission: ['view_all_requests', 'view_club_requests'] },
