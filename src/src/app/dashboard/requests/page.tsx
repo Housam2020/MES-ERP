@@ -142,7 +142,7 @@ export default function RequestsPage() {
           !permissions.includes("view_all_requests") &&
           !permissions.includes("view_club_requests")
         ) {
-          budgetQuery = budgetQuery.eq("id", "no-results");
+          budgetQuery = budgetQuery.in("id", []);
         }
 
         const {
@@ -248,20 +248,6 @@ export default function RequestsPage() {
                   Budget Requests
                 </Button>
               </div>
-
-              <CardTitle>
-                {activeTab === "payment"
-                  ? permissions.includes("view_all_requests")
-                    ? ""
-                    : permissions.includes("view_club_requests")
-                    ? `Payment Requests for ${viewableGroupsDisplay}`
-                    : "Your Payment Requests"
-                  : permissions.includes("view_all_requests")
-                  ? ""
-                  : permissions.includes("view_club_requests")
-                  ? "Club Budget Requests"
-                  : "Your Budget Requests"}
-              </CardTitle>
 
               <div>
                 {activeTab === "payment" &&
