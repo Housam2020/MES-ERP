@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
@@ -22,7 +22,22 @@ const FormContent = () => {
     receiptFile
   } = useFormContext();
   
-  const { handleSubmit, formState: { isSubmitting } } = methods;
+  const { handleSubmit, formState: { isSubmitting }, register } = methods;
+  const [groups, setGroups] = useState([]);
+
+  // Fetch groups from Supabase so the dropdown is populated with user-created groups.
+  useEffect(() => {
+    const fetchGroups = async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("groups").select("id, name");
+      if (error) {
+        console.error("Error fetching groups:", error);
+      } else {
+        setGroups(data || []);
+      }
+    };
+    fetchGroups();
+  }, []);
 
   const onSubmit = async (data) => {
     const supabase = createClient();
@@ -33,7 +48,7 @@ const FormContent = () => {
         throw userError;
       }
 
-      // Use the selected group from the form instead of fetching from user table
+      // Ensure a group is selected
       if (!data.group_id) {
         alert("Please select a group for this request.");
         return;
@@ -85,6 +100,24 @@ const FormContent = () => {
           MES Payment and Reimbursement Form
         </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Group Selection Dropdown */}
+          <div className="mb-4">
+            <label className="font-bold text-gray-700 dark:text-gray-300">
+              Group:
+            </label>
+            <select
+              {...register("group_id", { required: true })}
+              className="w-full border rounded-lg p-2 mt-1 bg-white dark:bg-gray-700"
+            >
+              <option value="">Select a Group</option>
+              {groups.map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Form Sections */}
           <BasicInfoSection />
           <RoleBudgetSection />
