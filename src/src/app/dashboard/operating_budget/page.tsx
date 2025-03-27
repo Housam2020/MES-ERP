@@ -295,19 +295,10 @@ export default function OperatingBudgetPage() {
       <DashboardHeader />
 
       <main className="p-4 max-w-7xl mx-auto">
-        {/* Page Title + Back Button */}
-        <div className="flex items-center justify-between mb-4">
-          {/* <button
-            onClick={() => router.push("/dashboard/home")}
-            className="bg-[#7A003C] text-white py-2 px-4 rounded hover:bg-[#680033] dark:bg-blue-700 dark:hover:bg-blue-800"
-          >
-            Back to Dashboard
-          </button> */}
-          <h1 className="text-center text-2xl font-bold text-gray-800 dark:text-gray-200">
+        <div className="flex items-center justify-center mb-4">
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
             Operating Budget
           </h1>
-
-          <div />
         </div>
 
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
@@ -315,7 +306,6 @@ export default function OperatingBudgetPage() {
             const groupRows = rowsByGroup[group.id] || [];
             return (
               <div key={group.id} className="mb-8">
-                {/* Group heading */}
                 <div className="flex items-center justify-between mb-2 border-b pb-2">
                   <div className="flex items-center space-x-2">
                     <h2 className="text-xl font-bold">
@@ -334,7 +324,6 @@ export default function OperatingBudgetPage() {
                         )
                       }
                     />
-                    {/* total_budget input */}
                     <label className="ml-4 font-semibold">Budget:</label>
                     <input
                       type="number"
@@ -421,8 +410,6 @@ export default function OperatingBudgetPage() {
                         </tr>
                       );
                     })}
-
-                    {/* Add row */}
                     <tr>
                       <td colSpan={columns.length + 2} className="border p-2 bg-gray-50">
                         <button
