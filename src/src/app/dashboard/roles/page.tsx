@@ -222,45 +222,47 @@ export default function RolesPage() {
   if (loading || permissionsLoading) return <div>Loading...</div>;
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <DashboardHeader />
-      <div className="container mx-auto p-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Role Management</CardTitle>
-            <CardDescription>
-              {canManageAllRoles 
-                ? "Create and manage roles with full permissions" 
-                : "Create and manage roles with club-level permissions"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <CreateRoleDialog 
-              availablePermissions={availablePermissions}
-              permissionCategories={PERMISSION_CATEGORIES}
-              groups={groups}
-              currentUserGroups={currentUserGroups}
-              canManageAllRoles={canManageAllRoles}
-              onRoleCreated={handleRoleCreate}
-            />
-
-            {/* Existing Roles List */}
-            <div className="mt-6">
-              <h2 className="text-xl font-semibold mb-4">Existing Roles</h2>
-              <RolesList 
-                roles={roles}
+      <main className="flex-grow">
+        <div className="container mx-auto p-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Role Management</CardTitle>
+              <CardDescription>
+                {canManageAllRoles 
+                  ? "Create and manage roles with full permissions" 
+                  : "Create and manage roles with club-level permissions"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <CreateRoleDialog 
+                availablePermissions={availablePermissions}
+                permissionCategories={PERMISSION_CATEGORIES}
                 groups={groups}
                 currentUserGroups={currentUserGroups}
                 canManageAllRoles={canManageAllRoles}
-                availablePermissions={availablePermissions}
-                permissionCategories={PERMISSION_CATEGORIES}
-                onRoleDeleted={handleRoleDelete}
-                onRoleUpdated={handleRoleUpdate}
+                onRoleCreated={handleRoleCreate}
               />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+
+              {/* Existing Roles List */}
+              <div className="mt-6">
+                <h2 className="text-xl font-semibold mb-4">Existing Roles</h2>
+                <RolesList 
+                  roles={roles}
+                  groups={groups}
+                  currentUserGroups={currentUserGroups}
+                  canManageAllRoles={canManageAllRoles}
+                  availablePermissions={availablePermissions}
+                  permissionCategories={PERMISSION_CATEGORIES}
+                  onRoleDeleted={handleRoleDelete}
+                  onRoleUpdated={handleRoleUpdate}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
       <Footer />
     </div>
   );
