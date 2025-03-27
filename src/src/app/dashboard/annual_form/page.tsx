@@ -150,7 +150,7 @@ const BudgetForm = () => {
         <div className="relative max-w-7xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
           <button
             onClick={() => router.push("/dashboard/home")}
-            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+            className="bg-[#7A003C] text-white py-2 px-4 rounded hover:bg-[#680033] dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             Back to Dashboard
           </button>
@@ -388,7 +388,7 @@ const BudgetForm = () => {
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+                className="bg-[#7A003C] text-white px-6 py-2 rounded-lg hover:bg-[#680033] transition"
               >
                 Submit Budget
               </button>

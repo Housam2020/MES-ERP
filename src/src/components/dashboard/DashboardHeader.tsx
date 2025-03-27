@@ -64,7 +64,7 @@ export default function DashboardHeader() {
   if (loading) return null;
 
   return (
-    <header className="bg-blue-600 dark:bg-[#1A365D] mcmaster:bg-[#7A003C]">
+    <header className="bg-[#7A003C] dark:bg-[#1A365D] mcmaster:bg-[#7A003C]">
       <nav className="container mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
@@ -81,8 +81,8 @@ export default function DashboardHeader() {
                     href={item.href}
                     className={`px-4 py-4 text-sm font-medium transition-colors ${
                       pathname === item.href
-                        ? "bg-blue-700 dark:bg-[#2C5282] mcmaster:bg-[#FDBF57] text-white mcmaster:text-[#7A003C]"
-                        : "text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] mcmaster:hover:text-[#7A003C]"
+                        ? "bg-[#680033] dark:bg-[#2C5282] mcmaster:bg-[#FDBF57] text-white mcmaster:text-[#7A003C]"
+                        : "text-white hover:bg-[#680033] dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] mcmaster:hover:text-[#7A003C]"
                     }`}
                   >
                     {item.label}
@@ -94,24 +94,24 @@ export default function DashboardHeader() {
           <div className="flex items-center gap-4">
             <button
               onClick={cycleTheme}
-              className="p-2 text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] rounded-full"
+              className="p-2 text-white hover:bg-[#680033] dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] rounded-full"
             >
               {theme === "light" ? (
                 <MoonIcon className="h-6 w-6" />
-              ) :(
+              ) : (
                 <SunIcon className="h-6 w-6" />
               )}
             </button>
             <button
               onClick={handleGuideClick}
-              className="p-2 text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] rounded-full"
+              className="p-2 text-white hover:bg-[#680033] dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] rounded-full"
             >
               <QuestionMarkCircleIcon className="h-6 w-6" />
             </button>
             <div className="relative">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="px-6 py-4 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] flex items-center"
+                className="px-6 py-4 text-sm font-medium text-white hover:bg-[#680033] dark:hover:bg-[#2C5282] mcmaster:hover:bg-[#FDBF57] flex items-center"
               >
                 <UserCircleIcon className="h-6 w-6" />
               </button>

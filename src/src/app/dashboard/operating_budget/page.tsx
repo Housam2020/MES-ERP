@@ -298,7 +298,7 @@ export default function OperatingBudgetPage() {
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => router.push("/dashboard/home")}
-            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+            className="bg-[#7A003C] text-white py-2 px-4 rounded hover:bg-[#680033] dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             Back to Dashboard
           </button>
@@ -425,7 +425,7 @@ export default function OperatingBudgetPage() {
                       <td colSpan={columns.length + 2} className="border p-2 bg-gray-50">
                         <button
                           onClick={() => handleAddRow(group.id)}
-                          className="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                          className="bg-[#7A003C] text-white py-1 px-3 rounded hover:bg-[#680033] dark:bg-blue-700 dark:hover:bg-blue-800"
                         >
                           + Add Row
                         </button>
@@ -451,7 +451,7 @@ export default function OperatingBudgetPage() {
               Save All
             </button>
           </div>
-       </div>
+        </div>
       </main>
     </div>
   );

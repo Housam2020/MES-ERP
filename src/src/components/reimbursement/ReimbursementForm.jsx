@@ -77,7 +77,7 @@ const FormContent = () => {
         <button
           type="button"
           onClick={() => router.push("/dashboard/requests")}
-          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+          className="bg-[#7A003C] text-white py-2 px-4 rounded hover:bg-[#680033] dark:bg-blue-700 dark:hover:bg-blue-800"
         >
           Back to Dashboard
         </button>
@@ -98,7 +98,7 @@ const FormContent = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 disabled:opacity-50"
+              className="bg-[#7A003C] text-white py-2 px-4 rounded hover:bg-[#680033] dark:bg-green-700 dark:hover:bg-green-800 disabled:opacity-50"
             >
               {isSubmitting ? "Submitting..." : "Submit"}
             </button>

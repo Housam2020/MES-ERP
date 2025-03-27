@@ -195,7 +195,7 @@ export default function EditableStatusRow({ request, onStatusUpdate }) {
         </td>
         <td className="py-2 px-4 border-b border-gray-200">
           <button
-            className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600"
+            className="bg-[#7A003C] text-white py-1 px-2 rounded hover:bg-[#680033]"
             onClick={() => setShowModal(true)}
           >
             View
