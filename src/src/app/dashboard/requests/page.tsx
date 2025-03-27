@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect, SetStateAction } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -8,26 +8,63 @@ import Footer from "@/components/dashboard/Footer";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Permission } from "@/config/permissions";
 
 // Lazy load the Payment row component correctly:
-const EditableStatusRow = React.lazy(() =>
-  import("@/components/dashboard/EditableStatusRow")
+const EditableStatusRow = React.lazy(
+  () => import("@/components/dashboard/EditableStatusRow")
 );
 
 // Import the Budget row component normally
 import EditableBudgetStatusRow from "@/components/dashboard/EditableBudgetStatusRow";
+
+// Define interfaces for your data structures
+interface Group {
+  id: string;
+  name: string;
+}
+
+interface PaymentRequest {
+  request_id: string;
+  user_id: string; // Assuming user_id is present
+  status: string;
+  amount_requested_cad?: number;
+  email_address?: string; // Keep email for email notifications
+  groups?: Group; // Optional group relation
+  // Add other fields from your payment_requests table as needed
+  name?: string;
+  role?: string;
+  payment_timeframe?: string;
+  type?: string;
+  timestamp?: string;
+}
+
+interface BudgetRequest {
+  id: string;
+  club_name: string;
+  requested_mes_funding: number;
+  created_at: string;
+  status: string;
+}
+
+interface User {
+  id: string;
+  email: string;
+  fullName?: string; // Make optional or ensure it's always fetched
+  contact_phone_number?: string; // Add phone number field
+}
 
 export default function RequestsPage() {
   // Tab state: "payment" or "budget"
   const [activeTab, setActiveTab] = useState("payment");
 
   // Data & UI state
-  const [paymentRequests, setPaymentRequests] = useState([]);
-  const [budgetRequests, setBudgetRequests] = useState([]);
+  const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
+  const [budgetRequests, setBudgetRequests] = useState<BudgetRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [viewableGroups, setViewableGroups] = useState([]);
-  const [error, setError] = useState(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [viewableGroups, setViewableGroups] = useState<Group[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   // Supabase & Permissions
   const supabase = createClient();
@@ -53,17 +90,20 @@ export default function RequestsPage() {
         }
 
         // -- Fetch current user info
-        const { data: userData } = await supabase
+        const { data: userData, error: userError } = await supabase
           .from("users")
           .select("id, email, fullName")
           .eq("id", user.id)
           .single();
+
+        if (userError) throw userError;
         setCurrentUser(userData);
 
         // -- Determine which groups this user can view
-        const { data: userRoleAssignments } = await supabase
+        const { data: userRoleAssignments, error: roleError } = await supabase
           .from("user_roles")
-          .select(`
+          .select(
+            `
             role_id,
             group_id,
             roles (
@@ -75,14 +115,18 @@ export default function RequestsPage() {
                 )
               )
             )
-          `)
+          `
+          )
           .eq("user_id", user.id);
 
-        const viewableGroupIds = [];
+        if (roleError) throw roleError;
+
+        const viewableGroupIds: string[] = [];
         userRoleAssignments?.forEach((assignment) => {
-          const rolePermissions = assignment.roles?.role_permissions || [];
+          const rolePermissions =
+            (assignment.roles as any)?.role_permissions || [];
           const rolePerms = rolePermissions
-            .map((rp) => rp.permissions?.name)
+            .map((rp: any) => rp.permissions?.name)
             .filter(Boolean);
 
           if (rolePerms.includes("view_club_requests") && assignment.group_id) {
@@ -92,10 +136,13 @@ export default function RequestsPage() {
 
         // -- Fetch viewable group names (for display)
         if (viewableGroupIds.length > 0) {
-          const { data: viewableGroupsData } = await supabase
-            .from("groups")
-            .select("id, name")
-            .in("id", viewableGroupIds);
+          const { data: viewableGroupsData, error: groupFetchError } =
+            await supabase
+              .from("groups")
+              .select("id, name")
+              .in("id", viewableGroupIds);
+
+          if (groupFetchError) throw groupFetchError;
           setViewableGroups(viewableGroupsData || []);
         }
 
@@ -113,20 +160,23 @@ export default function RequestsPage() {
                 viewableGroupIds
               );
             } else {
-              paymentRequestsQuery = paymentRequestsQuery.eq("user_id", user.id);
+              paymentRequestsQuery = paymentRequestsQuery.eq(
+                "user_id",
+                user.id
+              );
             }
           } else {
             paymentRequestsQuery = paymentRequestsQuery.eq("user_id", user.id);
           }
         }
 
-        const {
-          data: paymentData,
-          error: paymentError,
-        } = await paymentRequestsQuery;
+        const { data: paymentData, error: paymentError } =
+          await paymentRequestsQuery;
 
         if (paymentError) {
-          throw new Error(paymentError.message);
+          throw new Error(
+            `Failed to fetch payment requests: ${paymentError.message}`
+          );
         }
 
         setPaymentRequests(paymentData || []);
@@ -142,22 +192,21 @@ export default function RequestsPage() {
           !permissions.includes("view_all_requests") &&
           !permissions.includes("view_club_requests")
         ) {
-          budgetQuery = budgetQuery.in("id", []);
+          budgetQuery = budgetQuery.eq("id", "impossible-id-value");
         }
 
-        const {
-          data: budgetData,
-          error: budgetError,
-        } = await budgetQuery;
+        const { data: budgetData, error: budgetError } = await budgetQuery;
 
         if (budgetError) {
-          throw new Error(budgetError.message);
+          throw new Error(
+            `Failed to fetch budget requests: ${budgetError.message}`
+          );
         }
 
         setBudgetRequests(budgetData || []);
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        setError(err.message || "An unknown error occurred");
       } finally {
         setLoading(false);
       }
@@ -171,7 +220,10 @@ export default function RequestsPage() {
   // ------------------------
   // Status update handlers
   // ------------------------
-  const handlePaymentStatusUpdate = async (requestId, newStatus) => {
+  const handlePaymentStatusUpdate = async (
+    requestId: string,
+    newStatus: string
+  ) => {
     setPaymentRequests((prev) =>
       prev.map((r) =>
         r.request_id === requestId ? { ...r, status: newStatus } : r
@@ -179,41 +231,96 @@ export default function RequestsPage() {
     );
 
     const request = paymentRequests.find((r) => r.request_id === requestId);
-    if (!request) return;
+    if (!request || !request.user_id) {
+      console.error(
+        "Request or user ID not found for status update:",
+        requestId
+      );
+      return;
+    }
 
+    // --- Send Email Notification ---
+    if (request.email_address) {
+      try {
+        await fetch("/api/send-email-notif", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            requestId,
+            newStatus,
+            amount: request.amount_requested_cad,
+            userEmail: request.email_address,
+          }),
+        });
+        console.log("Email notification initiated for:", request.email_address);
+      } catch (error) {
+        console.error("Failed to send email notification:", error);
+      }
+    } else {
+      console.warn(
+        "No email address found for request:",
+        requestId,
+        "Skipping email notification."
+      );
+    }
+
+    // --- Send SMS Notification ---
     try {
-      // Optionally send an email or do other side effects
-      await fetch("/api/send-email-notif", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          requestId,
-          newStatus,
-          amount: request.amount_requested_cad,
-          userEmail: request.email_address,
-        }),
-      });
+      // Fetch the user's phone number from the 'users' table
+      const { data: userData, error: userFetchError } = await supabase
+        .from("users")
+        .select("phone_number")
+        .eq("id", request.user_id)
+        .single();
+
+      if (userFetchError) {
+        console.error(
+          "Error fetching user phone number:",
+          userFetchError.message
+        );
+      }
+
+      const phoneNumber = userData?.contact_phone_number;
+
+      if (phoneNumber) {
+        // Phone number exists, call the SMS API route
+        await fetch("/api/send-sms-notif", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            requestId,
+            newStatus,
+            amount: request.amount_requested_cad,
+            phoneNumber: phoneNumber,
+          }),
+        });
+        console.log("SMS notification initiated for:", phoneNumber);
+      } else {
+        console.log(
+          "No phone number found for user:",
+          request.user_id,
+          "Skipping SMS notification."
+        );
+      }
     } catch (error) {
-      console.error("Failed to send email notification:", error);
+      console.error("Failed to send SMS notification:", error);
     }
   };
 
-  const handleBudgetStatusUpdate = (id, newStatus) => {
+  const handleBudgetStatusUpdate = (id: string, newStatus: string) => {
     setBudgetRequests((prev) =>
       prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
     );
     // You could also do a Supabase update or side effect here if necessary
   };
 
-  // Combine these for a single “still loading” check
+  // Combine these for a single "still loading" check
   const isStillLoading = loading || permissionsLoading;
 
   // Handle major errors
   if (permissionsError) {
     return (
-      <div className="p-6 text-red-600">
-        Error: {permissionsError.message}
-      </div>
+      <div className="p-6 text-red-600">Error: {permissionsError.message}</div>
     );
   }
   if (error) {
@@ -223,7 +330,7 @@ export default function RequestsPage() {
   // Prepare display of viewable group names
   const viewableGroupsDisplay =
     viewableGroups.length > 0
-      ? viewableGroups.map((g) => g.name).join(", ")
+      ? viewableGroups.map((g: Group) => g.name).join(", ")
       : "Your Managed Clubs";
 
   return (
@@ -270,23 +377,49 @@ export default function RequestsPage() {
             <CardContent>
               {isStillLoading ? (
                 <div className="text-center py-8">Loading...</div>
+              ) : error ? (
+                <div className="p-6 text-red-600">
+                  Error loading requests: {error}
+                </div>
               ) : (
                 <div className="overflow-x-auto">
                   {/* Payment Requests Table wrapped in Suspense */}
-                  <Suspense fallback={<div className="text-center py-8">Loading Payment Requests Table...</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="text-center py-8">
+                        Loading Payment Requests Table...
+                      </div>
+                    }
+                  >
                     <div className={activeTab === "payment" ? "" : "hidden"}>
                       {paymentRequests.length > 0 ? (
                         <table className="min-w-full text-sm">
                           <thead>
                             <tr>
-                              <th className="py-2 px-4 bg-gray-50 text-left">Name</th>
-                              <th className="py-2 px-4 bg-gray-50 text-left">Role</th>
-                              <th className="py-2 px-4 bg-gray-50 text-left">Amount</th>
-                              <th className="py-2 px-4 bg-gray-50 text-left">Group</th>
-                              <th className="py-2 px-4 bg-gray-50 text-left">Timeframe</th>
-                              <th className="py-2 px-4 bg-gray-50 text-left">Type</th>
-                              <th className="py-2 px-4 bg-gray-50 text-left">Date</th>
-                              <th className="py-2 px-4 bg-gray-50 text-left">Status</th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">
+                                Name
+                              </th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">
+                                Role
+                              </th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">
+                                Amount
+                              </th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">
+                                Group
+                              </th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">
+                                Timeframe
+                              </th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">
+                                Type
+                              </th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">
+                                Date
+                              </th>
+                              <th className="py-2 px-4 bg-gray-50 text-left">
+                                Status
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
