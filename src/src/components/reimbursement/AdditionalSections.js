@@ -132,9 +132,7 @@ export const PaymentMethodDetailsSection = () => {
   const preferredPaymentForm = watch("preferred_payment_form");
 
   return (
-    <div className="mb-6">
-      <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Payment Method Details</h2>
-      
+    <div className="mb-6">      
       {preferredPaymentForm === "E-Transfer" && (
         <div className="space-y-4">
           <div>
