@@ -149,12 +149,12 @@ const BudgetForm = () => {
       <DashboardHeader />
       <main className="pt-8 p-6">
         <div className="relative max-w-7xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-          <button
+          {/* <button
             onClick={() => router.push("/dashboard/home")}
             className="bg-[#7A003C] text-white py-2 px-4 rounded hover:bg-[#680033] dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             Back to Dashboard
-          </button>
+          </button> */}
           <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 text-center">
             Budget Form
           </h1>

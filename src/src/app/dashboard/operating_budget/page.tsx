@@ -108,9 +108,9 @@ export default function OperatingBudgetPage() {
       prev.map((r) =>
         r === row
           ? {
-              ...r,
-              col_values: { ...r.col_values, line_label: newLabel },
-            }
+            ...r,
+            col_values: { ...r.col_values, line_label: newLabel },
+          }
           : r
       )
     );
@@ -297,15 +297,16 @@ export default function OperatingBudgetPage() {
       <main className="p-4 max-w-7xl mx-auto">
         {/* Page Title + Back Button */}
         <div className="flex items-center justify-between mb-4">
-          <button
+          {/* <button
             onClick={() => router.push("/dashboard/home")}
             className="bg-[#7A003C] text-white py-2 px-4 rounded hover:bg-[#680033] dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             Back to Dashboard
-          </button>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+          </button> */}
+          <h1 className="text-center text-2xl font-bold text-gray-800 dark:text-gray-200">
             Operating Budget
           </h1>
+
           <div />
         </div>
 
@@ -454,7 +455,7 @@ export default function OperatingBudgetPage() {
           </div>
         </div>
       </main>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
