@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import Footer from "@/components/dashboard/Footer";
 
 // Database shapes
 interface BudgetColumn {
@@ -453,6 +454,7 @@ export default function OperatingBudgetPage() {
           </div>
         </div>
       </main>
+      <Footer/>
     </div>
   );
 }

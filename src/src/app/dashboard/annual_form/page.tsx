@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { usePermissions } from "@/hooks/usePermissions";
+import Footer from "@/components/dashboard/Footer";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 const BudgetForm = () => {
@@ -396,6 +397,7 @@ const BudgetForm = () => {
          </form>
         </div>
       </main>
+      <Footer/>
     </div>
   );
 };

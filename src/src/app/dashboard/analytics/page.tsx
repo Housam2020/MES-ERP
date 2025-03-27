@@ -5,6 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAnalyticsData } from "@/hooks/useAnalyticsData";
 import OverviewTab from "@/components/analytics/tabs/OverviewTab";
 import DetailedTab from "@/components/analytics/tabs/DetailedTab";
+import Footer from "@/components/dashboard/Footer";
 
 export default function AnalyticsPage() {
   const { analytics, loading, error } = useAnalyticsData();
@@ -60,6 +61,7 @@ export default function AnalyticsPage() {
           <DetailedTab analytics={analytics} />
         </Tabs>
       </main>
+      <Footer/> 
     </div>
   );
 }
