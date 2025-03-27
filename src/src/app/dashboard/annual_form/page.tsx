@@ -207,41 +207,6 @@ const BudgetForm = () => {
               </select>
             </div>
 
-            {/* Dynamic Term Expense Labels */}
-            <div>
-              <label className="font-bold text-gray-700 dark:text-gray-300">
-                Fall {getParsedYears().fallYear} Expenses:
-              </label>
-              <input
-                type="text"
-                value={formData.fall_2024_expenses}
-                readOnly
-                className="w-full border rounded-lg p-2 mt-1 bg-gray-100 dark:bg-gray-700"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-gray-700 dark:text-gray-300">
-                Winter {getParsedYears().winterYear} Expenses:
-              </label>
-              <input
-                type="text"
-                value={formData.winter_2025_expenses}
-                readOnly
-                className="w-full border rounded-lg p-2 mt-1 bg-gray-100 dark:bg-gray-700"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-gray-700 dark:text-gray-300">
-                Full Year Expenses:
-              </label>
-              <input
-                type="text"
-                value={formData.full_year_expenses}
-                readOnly
-                className="w-full border rounded-lg p-2 mt-1 bg-gray-100 dark:bg-gray-700"
-              />
-            </div>
-
             {/* Income Table */}
             <div>
               <h3 className="font-bold text-lg border-b pb-2 text-gray-800 dark:text-gray-200">
