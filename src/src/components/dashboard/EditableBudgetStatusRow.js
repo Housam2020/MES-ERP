@@ -62,39 +62,80 @@ export default function EditableBudgetStatusRow({ request, onStatusUpdate }) {
     }
   };
 
+  const formatKeyLabel = (key) => {
+    return key
+      .replace(/_/g, " ") // Replace underscores with spaces
+      .replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1)); // Capitalize each word
+  };
+
   const renderRequestDetails = () => (
     <div className="overflow-auto">
       <table className="min-w-full">
         <tbody>
           {Object.entries(request).map(([key, value]) => {
-            // Optional image/receipt rendering, in case you store proof blobs later
             if (key === "receipt" && value) {
-              const blob = getBlobFromBytea(value);
-              const url = blob ? URL.createObjectURL(blob) : null;
-              return (
-                <tr key={key}>
-                  <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
-                    {key}
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    {url ? (
-                      <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+              // If the receipt value is a URL (e.g. a Google Drive link), render it as a clickable link.
+              if (typeof value === "string" && value.startsWith("https://")) {
+                return (
+                  <tr key={key}>
+                    <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
+                      {formatKeyLabel(key)}
+                    </td>
+                    <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
+                      <a
+                        href={value}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
                         View Image
                       </a>
-                    ) : (
-                      "Invalid or missing image data"
-                    )}
-                  </td>
-                </tr>
-              );
+                    </td>
+                  </tr>
+                );
+              }
+              // Otherwise, assume it's stored as binary data and convert it.
+              const blob = getBlobFromBytea(value);
+              if (blob) {
+                const url = URL.createObjectURL(blob);
+                return (
+                  <tr key={key}>
+                    <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
+                      {formatKeyLabel(key)}
+                    </td>
+                    <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
+                      <button
+                        onClick={() => window.open(url, "_blank")}
+                        className="text-blue-500 hover:underline"
+                      >
+                        View Image
+                      </button>
+                    </td>
+                  </tr>
+                );
+              } else {
+                return (
+                  <tr key={key}>
+                    <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
+                      {formatKeyLabel(key)}
+                    </td>
+                    <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
+                      Invalid or corrupted image data
+                    </td>
+                  </tr>
+                );
+              }
             }
+            // Render other key/value pairs as usual.
             return (
               <tr key={key}>
                 <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
-                  {key}
+                  {formatKeyLabel(key)}
                 </td>
-                <td className="py-2 px-4 border-b">
-                  {typeof value === "object" ? JSON.stringify(value, null, 2) : value}
+                <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
+                  {typeof value === "object"
+                    ? JSON.stringify(value, null, 2)
+                    : value}
                 </td>
               </tr>
             );
@@ -103,6 +144,7 @@ export default function EditableBudgetStatusRow({ request, onStatusUpdate }) {
       </table>
     </div>
   );
+
 
   return (
     <>

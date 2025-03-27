@@ -88,18 +88,25 @@ export default function EditableStatusRow({ request, onStatusUpdate }) {
   };
 
   // Render request details, with special handling for the receipt field.
+  const formatKeyLabel = (key) => {
+    return key
+      .replace(/_/g, " ") // Replace underscores with spaces
+      .replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1)); // Capitalize each word
+  };
+  
   const renderRequestDetails = () => (
     <div className="overflow-auto">
       <table className="min-w-full">
         <tbody>
           {Object.entries(request).map(([key, value]) => {
+            const label = formatKeyLabel(key);
+  
             if (key === "receipt" && value) {
-              // If the receipt value is a URL (e.g. a Google Drive link), render it as a clickable link.
               if (typeof value === "string" && value.startsWith("https://")) {
                 return (
                   <tr key={key}>
                     <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
-                      {key}
+                      {label}
                     </td>
                     <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
                       <a
@@ -114,14 +121,14 @@ export default function EditableStatusRow({ request, onStatusUpdate }) {
                   </tr>
                 );
               }
-              // Otherwise, assume it's stored as binary data and convert it.
+  
               const blob = getBlobFromBytea(value);
               if (blob) {
                 const url = URL.createObjectURL(blob);
                 return (
                   <tr key={key}>
                     <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
-                      {key}
+                      {label}
                     </td>
                     <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
                       <button
@@ -137,7 +144,7 @@ export default function EditableStatusRow({ request, onStatusUpdate }) {
                 return (
                   <tr key={key}>
                     <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
-                      {key}
+                      {label}
                     </td>
                     <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
                       Invalid or corrupted image data
@@ -146,11 +153,11 @@ export default function EditableStatusRow({ request, onStatusUpdate }) {
                 );
               }
             }
-            // Render other key/value pairs as usual.
+  
             return (
               <tr key={key}>
                 <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
-                  {key}
+                  {label}
                 </td>
                 <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
                   {typeof value === "object" ? JSON.stringify(value, null, 2) : value}
@@ -162,6 +169,7 @@ export default function EditableStatusRow({ request, onStatusUpdate }) {
       </table>
     </div>
   );
+  
 
   return (
     <>
