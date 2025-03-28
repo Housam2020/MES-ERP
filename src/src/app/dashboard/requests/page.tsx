@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -28,6 +28,28 @@ export default function RequestsPage() {
   const [currentUser, setCurrentUser] = useState(null);
   const [viewableGroups, setViewableGroups] = useState([]);
   const [error, setError] = useState(null);
+
+  // Modal state for warnings
+  const [warningModalMessage, setWarningModalMessage] = useState(null);
+  // Use a ref to store the promise resolver so we can await the modal dismissal
+  const warningModalPromiseResolverRef = useRef(null);
+
+  // Helper: showWarning returns a promise that resolves when the user closes the modal
+  const showWarning = (message) => {
+    return new Promise((resolve) => {
+      setWarningModalMessage(message);
+      warningModalPromiseResolverRef.current = resolve;
+    });
+  };
+
+  // Close modal handler
+  const closeModal = () => {
+    if (warningModalPromiseResolverRef.current) {
+      warningModalPromiseResolverRef.current();
+    }
+    setWarningModalMessage(null);
+    warningModalPromiseResolverRef.current = null;
+  };
 
   // Supabase & Permissions
   const supabase = createClient();
@@ -178,54 +200,59 @@ export default function RequestsPage() {
         r.request_id === requestId ? { ...r, status: newStatus } : r
       )
     );
-  
+
     // 2) Find the old request
     const request = paymentRequests.find((r) => r.request_id === requestId);
     if (!request) return;
-  
+
     const oldStatus = request.status;
-  
-    // 3) If going from "Submitted" -> "Reimbursed"
+
+    // 3a) If going from "Submitted" -> "Reimbursed", add the expense line
     if (oldStatus === "Submitted" && newStatus === "Reimbursed") {
       try {
         if (!request.group_id) {
           alert("No group_id found for this request.");
           return;
         }
-  
+
         // Fetch the group's current total
         const { data: groupData, error: grpErr } = await supabase
           .from("groups")
           .select("*")
           .eq("id", request.group_id)
           .single();
-  
+
         if (grpErr || !groupData) {
           console.error("Error fetching group:", grpErr);
           alert("Could not find group for this request");
           return;
         }
-  
+
         const currentBudget = Number(groupData.total_budget ?? 0);
         const reimburseAmount = Number(request.amount_requested_cad ?? 0);
-  
-        // Warn if budget would go below zero
+
+        // Warn if budget would go below zero using our modal
         if (reimburseAmount > currentBudget) {
-          alert(
-            `⚠️ Warning: The club only has $${currentBudget.toFixed(2)} left, but ` +
-            `this reimbursement is $${reimburseAmount.toFixed(2)}. Proceeding anyway.`
+          await showWarning(
+            `⚠️ Warning: The club only has $${currentBudget.toFixed(
+              2
+            )} left, but this reimbursement is $${reimburseAmount.toFixed(
+              2
+            )}. Proceeding anyway.`
           );
         }
-  
+
         // Create a descriptive label
         const formattedDate = new Date(request.timestamp).toLocaleDateString("en-US", {
           year: "numeric",
           month: "short",
           day: "numeric",
         });
-  
-        const label = `Reimbursed to ${request.full_name ?? "Unknown"} for ${request.role_title ?? "unknown role"} (${request.payment_type ?? "unknown type"}) on ${formattedDate}`;
-  
+
+        const label = `Reimbursed to ${request.full_name ?? "Unknown"} for ${
+          request.role_title ?? "unknown role"
+        } (${request.payment_type ?? "unknown type"}) on ${formattedDate}`;
+
         // Insert an expense line so it subtracts from the budget
         const { error: lineErr } = await supabase
           .from("operating_budget_lines")
@@ -236,19 +263,18 @@ export default function RequestsPage() {
             line_type: "expense",
             request_id: requestId,
           });
-  
+
         if (lineErr) {
           console.error("Error inserting expense line:", lineErr);
           alert("❌ Failed to insert expense line into budget table.");
         } else {
           const newBudget = currentBudget - reimburseAmount;
-  
           // Update the group's total budget
           const { error: updErr } = await supabase
             .from("groups")
             .update({ total_budget: newBudget })
             .eq("id", request.group_id);
-  
+
           if (updErr) {
             console.error("Error updating group total_budget:", updErr);
             alert("❌ Failed to update the group's total budget.");
@@ -258,14 +284,80 @@ export default function RequestsPage() {
         console.error("Error during reimbursement flow:", err);
       }
     }
-  
+    // 3b) If going from "Reimbursed" -> "Submitted", remove the expense line(s)
+    else if (oldStatus === "Reimbursed" && newStatus === "Submitted") {
+      try {
+        if (!request.group_id) {
+          alert("No group_id found for this request.");
+          return;
+        }
+
+        // Fetch any expense lines associated with this request
+        const { data: expenseLines, error: expenseErr } = await supabase
+          .from("operating_budget_lines")
+          .select("id, amount")
+          .eq("request_id", requestId);
+
+        if (expenseErr) {
+          console.error("Error fetching expense lines:", expenseErr);
+          alert("Error fetching expense lines for removal");
+          return;
+        }
+
+        // Sum the total amount that was subtracted
+        const totalRemoved = expenseLines.reduce(
+          (sum, line) => sum + Number(line.amount),
+          0
+        );
+
+        // Delete all expense lines associated with this request
+        const { error: deleteErr } = await supabase
+          .from("operating_budget_lines")
+          .delete()
+          .eq("request_id", requestId);
+
+        if (deleteErr) {
+          console.error("Error deleting expense lines:", deleteErr);
+          alert("❌ Failed to remove expense line(s) from budget table.");
+        } else {
+          // Fetch the group's current total budget
+          const { data: groupData, error: grpErr } = await supabase
+            .from("groups")
+            .select("total_budget")
+            .eq("id", request.group_id)
+            .single();
+
+          if (grpErr || !groupData) {
+            console.error("Error fetching group for update:", grpErr);
+            alert("Could not update group budget.");
+            return;
+          }
+          const currentBudget = Number(groupData.total_budget ?? 0);
+          // Add back the removed expense amount
+          const newBudget = currentBudget + totalRemoved;
+
+          const { error: updErr } = await supabase
+            .from("groups")
+            .update({ total_budget: newBudget })
+            .eq("id", request.group_id);
+
+          if (updErr) {
+            console.error("Error updating group total_budget:", updErr);
+            alert("❌ Failed to update the group's total budget.");
+          }
+        }
+      } catch (err) {
+        console.error("Error during status reversal:", err);
+      }
+    }
+
     // 4) Update the request’s status in the DB
     try {
       const { error: statusErr } = await supabase
         .from("payment_requests")
         .update({ status: newStatus })
         .eq("request_id", requestId);
-  
+
       if (statusErr) {
         console.error("Error updating request status:", statusErr);
         alert("❌ Could not update request status in DB.");
@@ -273,7 +365,7 @@ export default function RequestsPage() {
     } catch (err) {
       console.error("Error finalizing status change:", err);
     }
-  };  
+  };
 
   const handleBudgetStatusUpdate = (id, newStatus) => {
     setBudgetRequests((prev) =>
@@ -430,6 +522,27 @@ export default function RequestsPage() {
         </div>
       </main>
       <Footer />
+
+      {/* Warning Modal: Closes on clicking the "X" or the overlay */}
+      {warningModalMessage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={closeModal}
+        >
+          <div
+            className="bg-white p-4 rounded shadow-lg relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={closeModal}
+              className="absolute top-2 right-2 text-gray-600 text-xl"
+            >
+              &times;
+            </button>
+            <div>{warningModalMessage}</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

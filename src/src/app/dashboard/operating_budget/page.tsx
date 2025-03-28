@@ -19,7 +19,7 @@ interface BudgetLine {
   group_id: string;       // references groups.id
   line_label: string;
   amount: number;         // store a positive number
-  line_type: "income" | "expense"; // new: determines if it adds or subtracts from total
+  line_type: "income" | "expense"; // determines if it adds or subtracts from total
   order_index: number;
   request_id?: string;    // if tied to payment request
 }
@@ -34,6 +34,7 @@ export default function OperatingBudgetPage() {
   const [groups, setGroups] = useState<GroupRecord[]>([]);
   const [lines, setLines] = useState<BudgetLine[]>([]);
   const [dragLine, setDragLine] = useState<BudgetLine | null>(null);
+  const [saveMessage, setSaveMessage] = useState<string>("");
 
   // Ensure user has permission
   useEffect(() => {
@@ -74,8 +75,7 @@ export default function OperatingBudgetPage() {
       const typedLines: BudgetLine[] = (lineData || []).map((l: any) => ({
         ...l,
         amount: Number(l.amount ?? 0),
-        line_type:
-          l.line_type === "income" ? "income" : "expense", // default to expense if not set
+        line_type: l.line_type === "income" ? "income" : "expense", // default to expense if not set
       }));
 
       setLines(typedLines);
@@ -267,10 +267,13 @@ export default function OperatingBudgetPage() {
         }
       }
 
-      alert("All changes saved!");
+      // Set green success message beside the button
+      setSaveMessage("All changes saved!");
+      setTimeout(() => setSaveMessage(""), 3000);
     } catch (err) {
       console.error("SaveAll error:", err);
-      alert("Error saving data.");
+      setSaveMessage("Error saving data.");
+      setTimeout(() => setSaveMessage(""), 3000);
     }
   };
 
@@ -377,13 +380,18 @@ export default function OperatingBudgetPage() {
             );
           })}
 
-          <div className="flex space-x-4 mt-4">
+          <div className="flex items-center space-x-4 mt-4">
             <button
               onClick={handleSaveAll}
               className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
             >
               Save All
             </button>
+            {saveMessage && (
+              <span className="bg-green-100 text-green-800 px-3 py-1 rounded">
+                {saveMessage}
+              </span>
+            )}
           </div>
         </div>
       </main>
