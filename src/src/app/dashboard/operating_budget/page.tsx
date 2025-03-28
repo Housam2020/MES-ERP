@@ -1,19 +1,11 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { usePermissions } from "@/hooks/usePermissions";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import Footer from "@/components/dashboard/Footer";
-
-// Database shapes
-interface BudgetColumn {
-  id: number;
-  column_key: string;
-  display_label: string;
-  sort_order: number;
-}
 
 interface GroupRecord {
   id: string;
@@ -22,12 +14,14 @@ interface GroupRecord {
   total_budget?: number | string;
 }
 
-interface BudgetRow {
-  id?: number;
-  group_id: string;
-  row_type: string;
+interface BudgetLine {
+  id?: number;            // new lines won’t have an ID yet
+  group_id: string;       // references groups.id
+  line_label: string;
+  amount: number;         // store a positive number
+  line_type: "income" | "expense"; // new: determines if it adds or subtracts from total
   order_index: number;
-  col_values: Record<string, string>;
+  request_id?: string;    // if tied to payment request
 }
 
 export default function OperatingBudgetPage() {
@@ -36,11 +30,12 @@ export default function OperatingBudgetPage() {
 
   const { permissions, loading: permissionsLoading } = usePermissions();
 
-  const [columns, setColumns] = useState<BudgetColumn[]>([]);
+  // State
   const [groups, setGroups] = useState<GroupRecord[]>([]);
-  const [rows, setRows] = useState<BudgetRow[]>([]);
-  const [dragRow, setDragRow] = useState<BudgetRow | null>(null);
+  const [lines, setLines] = useState<BudgetLine[]>([]);
+  const [dragLine, setDragLine] = useState<BudgetLine | null>(null);
 
+  // Ensure user has permission
   useEffect(() => {
     if (!permissionsLoading) {
       if (!permissions.includes("view_all_requests")) {
@@ -49,225 +44,226 @@ export default function OperatingBudgetPage() {
     }
   }, [permissions, permissionsLoading, router]);
 
+  // Load data from supabase
   useEffect(() => {
     const loadData = async () => {
-      const { data: colData } = await supabase
-        .from("annual_budget_form_columns")
-        .select("*")
-        .order("sort_order", { ascending: true });
-      if (colData) setColumns(colData);
-
-      const { data: grpData } = await supabase
+      // 1) Load groups
+      const { data: grpData, error: grpError } = await supabase
         .from("groups")
-        .select("id, name, group_order, total_budget")
+        .select("*")
         .order("group_order", { ascending: true });
-      if (grpData) setGroups(grpData);
 
-      const { data: rowData } = await supabase
-        .from("annual_budget_form_rows")
+      if (grpError) {
+        console.error("Error loading groups:", grpError);
+        return;
+      }
+      setGroups(grpData || []);
+
+      // 2) Load lines
+      const { data: lineData, error: lineError } = await supabase
+        .from("operating_budget_lines")
         .select("*")
         .order("order_index", { ascending: true });
-      if (rowData) setRows(rowData);
+
+      if (lineError) {
+        console.error("Error loading lines:", lineError);
+        return;
+      }
+
+      // Convert amounts to number; ensure line_type is either "income" or "expense"
+      const typedLines: BudgetLine[] = (lineData || []).map((l: any) => ({
+        ...l,
+        amount: Number(l.amount ?? 0),
+        line_type:
+          l.line_type === "income" ? "income" : "expense", // default to expense if not set
+      }));
+
+      setLines(typedLines);
     };
+
     loadData();
   }, [supabase]);
 
-  const parseCurrency = (val: string): number => {
-    if (!val) return 0;
-    const cleaned = val.replace(/[^\d.-]/g, "");
-    const parsed = parseFloat(cleaned);
-    return isNaN(parsed) ? 0 : parsed;
-  };
-
-  const formatCurrency = (num: number) => {
-    return new Intl.NumberFormat("en-CA", {
-      style: "currency",
-      currency: "CAD",
-    }).format(num);
-  };
-
-  const handleCellChange = (row: BudgetRow, columnKey: string, newValue: string) => {
-    setRows((prev) =>
-      prev.map((r) => {
-        if (r !== row) return r;
-        const updated = { ...r };
-        updated.col_values = { ...updated.col_values, [columnKey]: newValue };
-
-        if (columnKey === "col_2023_2024" || columnKey === "col_2024_2025") {
-          const v2023 = parseCurrency(updated.col_values["col_2023_2024"] || "");
-          const v2025 = parseCurrency(updated.col_values["col_2024_2025"] || "");
-          updated.col_values["col_change"] = formatCurrency(v2025 - v2023);
-        }
-        return updated;
-      })
-    );
-  };
-
-  const handleLineLabelChange = (row: BudgetRow, newLabel: string) => {
-    setRows((prev) =>
-      prev.map((r) =>
-        r === row
-          ? {
-            ...r,
-            col_values: { ...r.col_values, line_label: newLabel },
-          }
-          : r
-      )
-    );
-  };
-
-  const handleDragStart = (row: BudgetRow) => setDragRow(row);
+  // Drag & drop
+  const handleDragStart = (line: BudgetLine) => setDragLine(line);
 
   const handleDragOver = (
     e: React.DragEvent<HTMLTableRowElement>,
-    targetRow: BudgetRow
+    targetLine: BudgetLine
   ) => {
-    if (!dragRow || dragRow.group_id !== targetRow.group_id) return;
+    if (!dragLine || dragLine.group_id !== targetLine.group_id) return;
     e.preventDefault();
   };
 
   const handleDrop = (
     e: React.DragEvent<HTMLTableRowElement>,
-    targetRow: BudgetRow
+    targetLine: BudgetLine
   ) => {
     e.preventDefault();
-    if (!dragRow) return;
+    if (!dragLine) return;
 
-    setRows((prev) => {
-      const sameGroup = prev.filter((rr) => rr.group_id === dragRow.group_id);
-      const others = prev.filter((rr) => rr.group_id !== dragRow.group_id);
+    setLines((prev) => {
+      const sameGroup = prev.filter((ln) => ln.group_id === dragLine.group_id);
+      const others = prev.filter((ln) => ln.group_id !== dragLine.group_id);
 
-      const dragIndex = sameGroup.indexOf(dragRow);
-      const targetIndex = sameGroup.indexOf(targetRow);
+      const dragIndex = sameGroup.indexOf(dragLine);
+      const targetIndex = sameGroup.indexOf(targetLine);
 
       sameGroup.splice(dragIndex, 1);
-      sameGroup.splice(targetIndex, 0, dragRow);
+      sameGroup.splice(targetIndex, 0, dragLine);
 
-      sameGroup.forEach((r, idx) => {
-        r.order_index = idx + 1;
+      sameGroup.forEach((ln, idx) => {
+        ln.order_index = idx + 1;
       });
 
       return [...others, ...sameGroup];
     });
-    setDragRow(null);
+    setDragLine(null);
   };
 
-  const handleAddGroup = () => {
-    const tempId = `temp-${Date.now()}`;
-    setGroups((prev) => [
-      ...prev,
-      {
-        id: tempId,
-        name: "New Group",
-        group_order: prev.length + 1,
-        total_budget: 0,
-      },
-    ]);
+  const handleAddLine = (groupId: string) => {
+    const groupLines = lines.filter((ln) => ln.group_id === groupId);
+    const newIndex = groupLines.length + 1;
+  
+    const newLine: BudgetLine = {
+      group_id: groupId,
+      line_label: "New Line",
+      amount: 0,
+      line_type: "income",
+      order_index: newIndex,
+    };
+    setLines((prev) => [...prev, newLine]);
   };
 
-  const handleRemoveGroup = async (g: GroupRecord) => {
-    if (!g.id.startsWith("temp-")) {
-      await supabase.from("groups").delete().eq("id", g.id);
+  const handleRemoveLine = async (line: BudgetLine) => {
+    if (line.id) {
+      await supabase
+        .from("operating_budget_lines")
+        .delete()
+        .eq("id", line.id);
     }
-    setGroups((prev) => prev.filter((x) => x !== g));
-    setRows((prev) => prev.filter((r) => r.group_id !== g.id));
+    // remove from local state
+    setLines((prev) =>
+      prev.filter((l) => l !== line).map((l, idx) => {
+        // reassign order_index for that group
+        if (l.group_id === line.group_id) {
+          return { ...l, order_index: idx + 1 };
+        }
+        return l;
+      })
+    );
   };
 
-  const handleAddRow = (groupId: string) => {
-    const groupRows = rows.filter((r) => r.group_id === groupId);
-    const newIndex = groupRows.length + 1;
-    const blankVals: Record<string, string> = { line_label: "New Row" };
-    for (const c of columns) {
-      if (!blankVals[c.column_key]) blankVals[c.column_key] = "";
+  // Handle changes
+  const handleLabelChange = (line: BudgetLine, newLabel: string) => {
+    setLines((prev) =>
+      prev.map((ln) =>
+        ln === line ? { ...ln, line_label: newLabel } : ln
+      )
+    );
+  };
+
+  const handleAmountChange = (line: BudgetLine, newAmt: string) => {
+    const asNumber = parseFloat(newAmt) || 0;
+    setLines((prev) =>
+      prev.map((ln) =>
+        ln === line ? { ...ln, amount: asNumber } : ln
+      )
+    );
+  };
+
+  const handleLineTypeChange = (line: BudgetLine, newType: string) => {
+    // Ensure newType is either "income" or "expense"
+    const finalType = newType === "income" ? "income" : "expense";
+    setLines((prev) =>
+      prev.map((ln) =>
+        ln === line ? { ...ln, line_type: finalType } : ln
+      )
+    );
+  };
+
+  // Compute lines by group
+  const linesByGroup = useMemo(() => {
+    const map: Record<string, BudgetLine[]> = {};
+    for (const ln of lines) {
+      if (!map[ln.group_id]) map[ln.group_id] = [];
+      map[ln.group_id].push(ln);
     }
-    setRows((prev) => [
-      ...prev,
-      {
-        group_id: groupId,
-        row_type: "data",
-        order_index: newIndex,
-        col_values: blankVals,
-      },
-    ]);
-  };
-
-  const handleRemoveRow = async (row: BudgetRow) => {
-    if (row.id) {
-      await supabase.from("annual_budget_form_rows").delete().eq("id", row.id);
+    for (const gId of Object.keys(map)) {
+      map[gId].sort((a, b) => a.order_index - b.order_index);
     }
-    setRows((prev) => {
-      const filtered = prev.filter((r) => r !== row);
-      const groupRows = filtered.filter((r) => r.group_id === row.group_id);
-      groupRows.forEach((rr, idx) => {
-        rr.order_index = idx + 1;
-      });
-      return filtered;
-    });
+    return map;
+  }, [lines]);
+
+  // Sum for each group
+  const getGroupTotal = (groupId: string) => {
+    const groupLines = linesByGroup[groupId] || [];
+    return groupLines.reduce((sum, ln) => {
+      // Add if income, subtract if expense
+      return ln.line_type === "income"
+        ? sum + ln.amount
+        : sum - ln.amount;
+    }, 0);
   };
 
+  // Save all changes
   const handleSaveAll = async () => {
     try {
-      for (const g of groups) {
-        if (g.id.startsWith("temp-")) {
+      // Insert or Update lines
+      for (const ln of lines) {
+        if (!ln.id) {
+          // Insert new
           const { data, error } = await supabase
-            .from("groups")
+            .from("operating_budget_lines")
             .insert({
-              name: g.name || "Unnamed",
-              group_order: g.group_order,
-              total_budget: g.total_budget || 0,
+              group_id: ln.group_id,
+              line_label: ln.line_label,
+              amount: ln.amount,
+              line_type: ln.line_type,
+              order_index: ln.order_index,
+              request_id: ln.request_id ?? null,
             })
             .select();
-          if (!error && data && data.length > 0) {
-            const inserted = data[0] as GroupRecord;
-            const oldTempId = g.id;
-            setGroups((prev) =>
-              prev.map((x) => (x.id === oldTempId ? inserted : x))
-            );
-            setRows((prev) =>
-              prev.map((r) =>
-                r.group_id === oldTempId ? { ...r, group_id: inserted.id } : r
+
+          if (error) {
+            console.error("Error inserting line:", error);
+            continue;
+          }
+          if (data && data.length > 0) {
+            const newLine = data[0];
+            setLines((prev) =>
+              prev.map((p) =>
+                p === ln ? { ...p, id: newLine.id } : p
               )
             );
           }
         } else {
-          await supabase
-            .from("groups")
+          // Update existing
+          const { error } = await supabase
+            .from("operating_budget_lines")
             .update({
-              name: g.name,
-              group_order: g.group_order,
-              total_budget: g.total_budget || 0,
+              line_label: ln.line_label,
+              amount: ln.amount,
+              line_type: ln.line_type,
+              order_index: ln.order_index,
             })
-            .eq("id", g.id);
+            .eq("id", ln.id);
+
+          if (error) {
+            console.error("Error updating line:", error);
+          }
         }
       }
 
-      for (const r of rows) {
-        if (!r.id) {
-          const { data } = await supabase
-            .from("annual_budget_form_rows")
-            .insert({
-              group_id: r.group_id,
-              row_type: r.row_type,
-              order_index: r.order_index,
-              col_values: r.col_values,
-            })
-            .select();
-          if (data && data.length > 0) {
-            const newRec = data[0];
-            setRows((prev) =>
-              prev.map((rr) => (rr === r ? { ...rr, id: newRec.id } : rr))
-            );
-          }
-        } else {
-          await supabase
-            .from("annual_budget_form_rows")
-            .update({
-              group_id: r.group_id,
-              row_type: r.row_type,
-              order_index: r.order_index,
-              col_values: r.col_values,
-            })
-            .eq("id", r.id);
+      // Optionally update group total_budget
+      for (const g of groups) {
+        const sum = getGroupTotal(g.id);
+        const { error: grpErr } = await supabase
+          .from("groups")
+          .update({ total_budget: sum })
+          .eq("id", g.id);
+        if (grpErr) {
+          console.error("Error updating group total:", grpErr);
         }
       }
 
@@ -278,22 +274,9 @@ export default function OperatingBudgetPage() {
     }
   };
 
-  const rowsByGroup = useMemo(() => {
-    const map: Record<string, BudgetRow[]> = {};
-    for (const row of rows) {
-      if (!map[row.group_id]) map[row.group_id] = [];
-      map[row.group_id].push(row);
-    }
-    for (const gId of Object.keys(map)) {
-      map[gId].sort((a, b) => a.order_index - b.order_index);
-    }
-    return map;
-  }, [rows]);
-
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <DashboardHeader />
-
       <main className="p-4 max-w-7xl mx-auto">
         <div className="flex items-center justify-center mb-4">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
@@ -303,7 +286,9 @@ export default function OperatingBudgetPage() {
 
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
           {groups.map((group) => {
-            const groupRows = rowsByGroup[group.id] || [];
+            const groupLines = linesByGroup[group.id] || [];
+            const groupTotal = getGroupTotal(group.id);
+
             return (
               <div key={group.id} className="mb-8">
                 <div className="flex items-center justify-between mb-2 border-b pb-2">
@@ -311,112 +296,78 @@ export default function OperatingBudgetPage() {
                     <h2 className="text-xl font-bold">
                       {group.name || "Unnamed Group"}
                     </h2>
-                    <input
-                      className="p-1 rounded border dark:bg-gray-600 dark:text-gray-200"
-                      value={group.name || ""}
-                      onChange={(e) =>
-                        setGroups((prev) =>
-                          prev.map((gRec) =>
-                            gRec.id === group.id
-                              ? { ...gRec, name: e.target.value }
-                              : gRec
-                          )
-                        )
-                      }
-                    />
-                    <label className="ml-4 font-semibold">Budget:</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      className="p-1 rounded border dark:bg-gray-600 dark:text-gray-200 w-32"
-                      value={group.total_budget ?? ""}
-                      onChange={(e) =>
-                        setGroups((prev) =>
-                          prev.map((gRec) =>
-                            gRec.id === group.id
-                              ? { ...gRec, total_budget: e.target.value }
-                              : gRec
-                          )
-                        )
-                      }
-                    />
+                    <span className="ml-4 font-semibold">Total: </span>
+                    <span>{groupTotal.toFixed(2)}</span>
                   </div>
-                  <button
-                    onClick={() => handleRemoveGroup(group)}
-                    className="text-sm bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
-                  >
-                    Remove Group
-                  </button>
                 </div>
 
                 <table className="w-full border border-gray-300 border-collapse">
                   <thead>
                     <tr className="bg-gray-200 dark:bg-gray-700">
-                      <th className="border p-2 w-1/4">Line Label</th>
-                      {columns.map((col) => (
-                        <th key={col.id} className="border p-2">
-                          {col.display_label}
-                        </th>
-                      ))}
+                      <th className="border p-2">Label</th>
+                      <th className="border p-2">Amount</th>
+                      <th className="border p-2">Type</th>
                       <th className="border p-2">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {groupRows.map((row) => {
-                      const labelVal = row.col_values.line_label || "";
-                      return (
-                        <tr
-                          key={row.id ?? `row-${group.id}-${row.order_index}`}
-                          className="border-b"
-                          draggable
-                          onDragStart={() => handleDragStart(row)}
-                          onDragOver={(e) => handleDragOver(e, row)}
-                          onDrop={(e) => handleDrop(e, row)}
-                        >
-                          <td className="border p-2 bg-gray-50 cursor-move">
-                            <input
-                              className="w-full p-1 rounded border dark:bg-gray-700 dark:text-gray-200"
-                              value={labelVal}
-                              onChange={(e) =>
-                                handleLineLabelChange(row, e.target.value)
-                              }
-                            />
-                          </td>
-
-                          {columns.map((col) => (
-                            <td key={col.id} className="border p-2 bg-gray-50">
-                              <input
-                                className="w-full p-1 rounded border dark:bg-gray-700 dark:text-gray-200"
-                                value={row.col_values[col.column_key] || ""}
-                                onChange={(e) =>
-                                  handleCellChange(
-                                    row,
-                                    col.column_key,
-                                    e.target.value
-                                  )
-                                }
-                                readOnly={col.column_key === "col_change"}
-                              />
-                            </td>
-                          ))}
-                          <td className="border p-2 bg-gray-50">
-                            <button
-                              onClick={() => handleRemoveRow(row)}
-                              className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
-                            >
-                              Remove
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                    {groupLines.map((line) => (
+                      <tr
+                        key={line.id ?? `temp-${line.order_index}`}
+                        className="border-b"
+                        draggable
+                        onDragStart={() => handleDragStart(line)}
+                        onDragOver={(e) => handleDragOver(e, line)}
+                        onDrop={(e) => handleDrop(e, line)}
+                      >
+                        <td className="border p-2 bg-gray-50 cursor-move">
+                          <input
+                            className="w-full p-1 rounded border dark:bg-gray-700 dark:text-gray-200"
+                            value={line.line_label}
+                            onChange={(e) =>
+                              handleLabelChange(line, e.target.value)
+                            }
+                          />
+                        </td>
+                        <td className="border p-2 bg-gray-50">
+                          <input
+                            type="number"
+                            className="w-full p-1 rounded border dark:bg-gray-700 dark:text-gray-200"
+                            value={line.amount}
+                            onChange={(e) =>
+                              handleAmountChange(line, e.target.value)
+                            }
+                          />
+                        </td>
+                        <td className="border p-2 bg-gray-50">
+                          <select
+                            className="w-full p-1 rounded border dark:bg-gray-700 dark:text-gray-200"
+                            value={line.line_type}
+                            onChange={(e) =>
+                              handleLineTypeChange(line, e.target.value)
+                            }
+                          >
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                          </select>
+                        </td>
+                        <td className="border p-2 bg-gray-50">
+                          <button
+                            onClick={() => handleRemoveLine(line)}
+                            className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
                     <tr>
-                      <td colSpan={columns.length + 2} className="border p-2 bg-gray-50">
+                      <td colSpan={4} className="border p-2 bg-gray-50">
                         <button
-                          onClick={() => handleAddRow(group.id)}
-                          className="bg-[#7A003C] text-white py-1 px-3 rounded hover:bg-[#680033] dark:bg-blue-700 dark:hover:bg-blue-800"
+                          onClick={() => handleAddLine(group.id)}
+                          className="bg-[#7A003C] text-white py-1 px-3 rounded hover:bg-[#680033]"
                         >
-                          + Add Row
+                          + Add Line
                         </button>
                       </td>
                     </tr>
@@ -428,14 +379,8 @@ export default function OperatingBudgetPage() {
 
           <div className="flex space-x-4 mt-4">
             <button
-              onClick={handleAddGroup}
-              className="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800"
-            >
-              + Add Group
-            </button>
-            <button
               onClick={handleSaveAll}
-              className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+              className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
             >
               Save All
             </button>
