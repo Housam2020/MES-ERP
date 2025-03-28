@@ -60,6 +60,7 @@ function getBlobFromBytea(bytea) {
 export default function EditableStatusRow({ request, onStatusUpdate }) {
   const [status, setStatus] = useState(request.status);
   const [showModal, setShowModal] = useState(false);
+  const [showMoreDetails, setShowMoreDetails] = useState(false);
   const { permissions } = usePermissions();
   const supabase = createClient();
 
@@ -87,101 +88,135 @@ export default function EditableStatusRow({ request, onStatusUpdate }) {
     }
   };
 
-  // Render request details, with special handling for the receipt field.
+  // Helper to convert keys to a more human-readable label.
   const formatKeyLabel = (key) => {
     return key
       .replace(/_/g, " ") // Replace underscores with spaces
       .replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1)); // Capitalize each word
   };
-  
-  const renderRequestDetails = () => (
-    <div className="overflow-auto">
+
+  // Common function to render a row for a detail.
+  const renderDetailRow = (key, value) => {
+    const label = formatKeyLabel(key);
+
+    // Special handling for the 'receipt' field.
+    if (key === "receipt" && value) {
+      if (typeof value === "string" && value.startsWith("https://")) {
+        return (
+          <tr key={key}>
+            <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
+              {label}
+            </td>
+            <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
+              <a
+                href={value}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                View Image
+              </a>
+            </td>
+          </tr>
+        );
+      }
+
+      const blob = getBlobFromBytea(value);
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        return (
+          <tr key={key}>
+            <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
+              {label}
+            </td>
+            <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
+              <button
+                onClick={() => window.open(url, "_blank")}
+                className="text-blue-500 hover:underline"
+              >
+                View Image
+              </button>
+            </td>
+          </tr>
+        );
+      } else {
+        return (
+          <tr key={key}>
+            <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
+              {label}
+            </td>
+            <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
+              Invalid or corrupted image data
+            </td>
+          </tr>
+        );
+      }
+    }
+
+    return (
+      <tr key={key}>
+        <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
+          {label}
+        </td>
+        <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
+          {typeof value === "object" ? JSON.stringify(value, null, 2) : value}
+        </td>
+      </tr>
+    );
+  };
+
+  // Define primary keys already shown in the main table row.
+  const primaryKeys = [
+    "full_name",
+    "who_are_you",
+    "amount_requested_cad",
+    "groups",
+    "payment_timeframe",
+    "reimbursement_or_payment",
+    "timestamp",
+    "status",
+  ];
+
+  // Compute extra entries by filtering out the primary keys.
+  const extraEntries = Object.entries(request).filter(
+    ([key]) => !primaryKeys.includes(key)
+  );
+
+  // Render primary details.
+  const renderPrimaryDetails = () => {
+    const primaryEntries = Object.entries(request).filter(([key]) =>
+      primaryKeys.includes(key)
+    );
+    return (
       <table className="min-w-full">
         <tbody>
-          {Object.entries(request).map(([key, value]) => {
-            const label = formatKeyLabel(key);
-  
-            if (key === "receipt" && value) {
-              if (typeof value === "string" && value.startsWith("https://")) {
-                return (
-                  <tr key={key}>
-                    <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
-                      {label}
-                    </td>
-                    <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
-                      <a
-                        href={value}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
-                      >
-                        View Image
-                      </a>
-                    </td>
-                  </tr>
-                );
-              }
-  
-              const blob = getBlobFromBytea(value);
-              if (blob) {
-                const url = URL.createObjectURL(blob);
-                return (
-                  <tr key={key}>
-                    <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
-                      {label}
-                    </td>
-                    <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
-                      <button
-                        onClick={() => window.open(url, "_blank")}
-                        className="text-blue-500 hover:underline"
-                      >
-                        View Image
-                      </button>
-                    </td>
-                  </tr>
-                );
-              } else {
-                return (
-                  <tr key={key}>
-                    <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
-                      {label}
-                    </td>
-                    <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
-                      Invalid or corrupted image data
-                    </td>
-                  </tr>
-                );
-              }
-            }
-  
-            return (
-              <tr key={key}>
-                <td className="py-2 px-4 border-b font-medium text-gray-700 dark:text-gray-300">
-                  {label}
-                </td>
-                <td className="py-2 px-4 border-b text-gray-900 dark:text-gray-100">
-                  {typeof value === "object" ? JSON.stringify(value, null, 2) : value}
-                </td>
-              </tr>
-            );
-          })}
+          {primaryEntries.map(([key, value]) => renderDetailRow(key, value))}
         </tbody>
       </table>
-    </div>
-  );
-  
+    );
+  };
 
   return (
     <>
       <tr>
-        <td className="py-2 px-4 border-b border-gray-200">{request.full_name}</td>
-        <td className="py-2 px-4 border-b border-gray-200">{request.who_are_you}</td>
-        <td className="py-2 px-4 border-b border-gray-200">{request.amount_requested_cad}</td>
+        <td className="py-2 px-4 border-b border-gray-200">
+          {request.full_name}
+        </td>
+        <td className="py-2 px-4 border-b border-gray-200">
+          {request.who_are_you}
+        </td>
+        <td className="py-2 px-4 border-b border-gray-200">
+          {request.amount_requested_cad}
+        </td>
         <td className="py-2 px-4 border-b border-gray-200">
           {request.groups?.name || "None"}
         </td>
-        <td className="py-2 px-4 border-b border-gray-200">{request.payment_timeframe}</td>
-        <td className="py-2 px-4 border-b border-gray-200">{request.reimbursement_or_payment}</td>
+        <td className="py-2 px-4 border-b border-gray-200">
+          {request.payment_timeframe}
+        </td>
+        <td className="py-2 px-4 border-b border-gray-200">
+          {request.reimbursement_or_payment}
+        </td>
         <td className="py-2 px-4 border-b border-gray-200">
           {new Date(request.timestamp).toLocaleString()}
         </td>
@@ -208,7 +243,6 @@ export default function EditableStatusRow({ request, onStatusUpdate }) {
           >
             View
           </button>
-
         </td>
       </tr>
 
@@ -225,7 +259,29 @@ export default function EditableStatusRow({ request, onStatusUpdate }) {
               <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">
                 Request Details
               </h2>
-              {renderRequestDetails()}
+              {/* Primary Details */}
+              {renderPrimaryDetails()}
+
+              {/* Extra details (if any) under a "More Details" section */}
+              {extraEntries.length > 0 && (
+                <div className="mt-4">
+                  <button
+                    onClick={() => setShowMoreDetails(!showMoreDetails)}
+                    className="text-blue-500 hover:underline mb-2"
+                  >
+                    {showMoreDetails ? "Hide More Details" : "Show More Details"}
+                  </button>
+                  {showMoreDetails && (
+                    <table className="min-w-full">
+                      <tbody>
+                        {extraEntries.map(([key, value]) =>
+                          renderDetailRow(key, value)
+                        )}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              )}
             </div>
           </div>,
           document.body
