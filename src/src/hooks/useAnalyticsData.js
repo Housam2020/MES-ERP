@@ -1,4 +1,5 @@
-// hooks/useAnalyticsData.js
+"use client";
+
 import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
@@ -13,8 +14,9 @@ export function useAnalyticsData() {
     loading: permissionsLoading,
     error: permissionsError,
   } = usePermissions();
+
   const [paymentRequests, setPaymentRequests] = useState([]);
-  const [budgetData, setBudgetData] = useState([]);
+  const [budgetData, setBudgetData] = useState([]); // We'll store operating_budget_lines data here
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -40,15 +42,14 @@ export function useAnalyticsData() {
           return;
         }
 
-        // Base query for payment requests
+        // 1) Base query for payment requests
         let requestsQuery = supabase
           .from("payment_requests")
           .select("*, groups(name)")
           .order("timestamp", { ascending: true });
 
-        // Filter by groups if club-level access
+        // 2) Filter by groups if only club-level access
         if (!permissions.includes("view_all_requests")) {
-          // Get user's groups from user_roles junction table
           const { data: userRoles, error: userRolesError } = await supabase
             .from("user_roles")
             .select("group_id")
@@ -58,41 +59,40 @@ export function useAnalyticsData() {
           if (userRolesError) throw userRolesError;
 
           if (userRoles?.length) {
-            const groupIds = userRoles.map(role => role.group_id).filter(Boolean);
+            const groupIds = userRoles
+              .map((role) => role.group_id)
+              .filter(Boolean);
             requestsQuery = requestsQuery.in("group_id", groupIds);
           }
         }
 
         const { data: requests, error: requestsError } = await requestsQuery;
-
         if (requestsError) throw requestsError;
 
-        // Update budget data fetch to use new schema
-        const { data: budgetRows, error: budgetError } = await supabase
-          .from("annual_budget_form_rows")
-          .select(
-            `
+        // 3) Fetch operating_budget_lines (instead of annual_budget_form_rows)
+        const { data: budgetLines, error: budgetError } = await supabase
+          .from("operating_budget_lines")
+          .select(`
             id,
-            row_type,
-            col_values,
+            group_id,
+            line_label,
+            amount,
+            line_type,
+            order_index,
             groups (
               id,
               name,
               total_budget
             )
-          `
-          )
-          .eq("row_type", "data") // Only get data rows, not totals
-          .order("order_index");
+          `)
+          .order("order_index", { ascending: true });
 
         if (budgetError) throw budgetError;
 
         setPaymentRequests(requests || []);
-        setBudgetData(budgetRows || []);
+        setBudgetData(budgetLines || []);
       } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to fetch data")
-        );
+        setError(err instanceof Error ? err : new Error("Failed to fetch data"));
       } finally {
         setLoading(false);
       }
@@ -101,122 +101,122 @@ export function useAnalyticsData() {
     if (!permissionsLoading && !permissionsError) {
       fetchData();
     }
-  }, [permissions, permissionsLoading, permissionsError]);
+  }, [permissions, permissionsLoading, permissionsError, router, supabase]);
 
-  // Calculate analytics using useMemo to prevent unnecessary recalculations
+  // -------------------------------
+  // Calculate analytics
+  // -------------------------------
   const analytics = useMemo(() => {
     if (!paymentRequests?.length) return null;
 
-    // Monthly trends
+    // 1) Monthly trends
     const monthlyData = _.chain(paymentRequests)
       .groupBy((req) => {
         const date = new Date(req.timestamp);
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-          2,
-          "0"
-        )}`;
+        // Format as "YYYY-MM"
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
       })
       .map((requests, month) => ({
         month,
-        total: _.sumBy(requests, (req) => req.amount_requested_cad || 0),
+        total: _.sumBy(requests, (r) => r.amount_requested_cad || 0),
         count: requests.length,
       }))
       .orderBy("month")
       .value();
 
-    // Status distribution
+    // 2) Status distribution
     const statusData = _.chain(paymentRequests)
       .groupBy("status")
       .map((requests, status) => ({
         status,
-        value: _.sumBy(requests, (req) => req.amount_requested_cad || 0),
+        value: _.sumBy(requests, (r) => r.amount_requested_cad || 0),
         count: requests.length,
       }))
       .value();
 
-    // Group distribution
+    // 3) Group distribution
     const groupData = _.chain(paymentRequests)
-      .groupBy((req) => req.groups?.name || "Unassigned")
+      .groupBy((r) => r.groups?.name || "Unassigned")
       .map((requests, group) => ({
         group,
-        value: _.sumBy(requests, (req) => req.amount_requested_cad || 0),
+        value: _.sumBy(requests, (r) => r.amount_requested_cad || 0),
         count: requests.length,
       }))
       .orderBy(["value"], ["desc"])
       .value();
 
-    // Average request by timeframe
+    // 4) Average request by timeframe
     const timeframeData = _.chain(paymentRequests)
-      .filter(
-        (req) => (req.amount_requested_cad || 0) > 0 && req.payment_timeframe
-      )
+      .filter((r) => (r.amount_requested_cad || 0) > 0 && r.payment_timeframe)
       .groupBy("payment_timeframe")
       .map((requests, timeframe) => ({
         timeframe: timeframe || "Unspecified",
-        averageAmount: _.meanBy(
-          requests,
-          (req) => req.amount_requested_cad || 0
-        ),
+        averageAmount: _.meanBy(requests, (r) => r.amount_requested_cad || 0),
         count: requests.length,
       }))
       .value();
 
-    // Budget Line Distribution
+    // 5) Budget Line distribution (based on payment_requests.budget_line)
     const budgetLineData = _.chain(paymentRequests)
       .groupBy("budget_line")
-      .map((requests, budget_line) => ({
-        name: budget_line || "Unspecified",
-        value: _.sumBy(requests, (req) => req.amount_requested_cad || 0),
+      .map((requests, budgetLine) => ({
+        name: budgetLine || "Unspecified",
+        value: _.sumBy(requests, (r) => r.amount_requested_cad || 0),
         count: requests.length,
       }))
       .orderBy(["value"], ["desc"])
       .value();
 
-    // Request Volume by Day of Week
+    // 6) Request volume by Day of Week
     const dayOfWeekData = _.chain(paymentRequests)
-      .groupBy((req) => {
-        const date = new Date(req.timestamp);
+      .groupBy((r) => {
+        const date = new Date(r.timestamp);
         return date.toLocaleDateString("en-US", { weekday: "long" });
       })
       .map((requests, day) => ({
         day,
         count: requests.length,
-        value: _.sumBy(requests, (req) => req.amount_requested_cad || 0),
+        value: _.sumBy(requests, (r) => r.amount_requested_cad || 0),
       }))
       .value();
 
-    // Top Requesters
+    // 7) Top requesters
     const topRequesters = _.chain(paymentRequests)
       .groupBy("email_address")
       .map((requests, email) => ({
         email: email || "Unknown",
         count: requests.length,
-        totalAmount: _.sumBy(requests, (req) => req.amount_requested_cad || 0),
+        totalAmount: _.sumBy(requests, (r) => r.amount_requested_cad || 0),
       }))
       .orderBy(["count"], ["desc"])
       .take(10)
       .value();
 
-    // Budget vs Actual Spending
+    // 8) Budget vs Actual Spending
+    //
+    // We'll compare:
+    //   - The actual spent from paymentRequests, grouped by `budget_line`
+    //   - The allocated "amount" from operating_budget_lines with matching line_label
+    //
+    // This is a guess at how you're correlating requests <-> lines. Adjust as needed.
     const budgetComparison = _.chain(paymentRequests)
       .groupBy("budget_line")
       .map((requests, budgetLine) => {
-        const actualSpent = _.sumBy(
-          requests,
-          (req) => req.amount_requested_cad || 0
+        const actualSpent = _.sumBy(requests, (r) => r.amount_requested_cad || 0);
+
+        // Try to find a matching operating_budget_line by label
+        const matchedLine = budgetData.find(
+          (line) => line.line_label === budgetLine
         );
 
-        // Find matching budget row using the new schema
-        const budgetRow = budgetData?.find(
-          (row) => row.col_values?.line_label === budgetLine
-        );
+        // If found, we interpret `line_type: "income"` or "expense" and an .amount
+        // If it's an "expense" line, that might represent allocated funds.
+        // This is somewhat guessy; adapt to your data.
+        const allocated = matchedLine?.amount ?? 0;
+        const groupTotalBudget = matchedLine?.groups?.total_budget ?? 0;
 
-        // Get allocated amount from the new col_values structure
-        const allocated = Number(budgetRow?.col_values?.col_2024_2025) || 0;
-
-        // Calculate group total budget if available
-        const groupTotalBudget = budgetRow?.groups?.total_budget || 0;
-
+        // We'll treat "utilizationRate" as actualSpent / allocated * 100
+        // If allocated is 0, rate = 0
         return {
           budgetLine: budgetLine || "Unspecified",
           actualSpent,
@@ -231,12 +231,12 @@ export function useAnalyticsData() {
       .orderBy(["utilizationRate"], ["desc"])
       .value();
 
-    // Seasonal Analysis
+    // 9) Seasonal analysis
     const seasonalAnalysis = _.chain(paymentRequests)
-      .groupBy((req) => {
-        const date = new Date(req.timestamp);
+      .groupBy((r) => {
+        const date = new Date(r.timestamp);
         const month = date.getMonth();
-        // Group into seasons
+        // Group into seasons as an example
         if (month >= 8 && month <= 11) return "Fall";
         if (month >= 0 && month <= 3) return "Winter";
         return "Spring/Summer";
@@ -244,20 +244,20 @@ export function useAnalyticsData() {
       .map((requests, season) => ({
         season,
         count: requests.length,
-        totalAmount: _.sumBy(requests, (req) => req.amount_requested_cad || 0),
+        totalAmount: _.sumBy(requests, (r) => r.amount_requested_cad || 0),
       }))
       .value();
 
-    // Budget Utilization Timeline
+    // 10) Budget utilization timeline
     const budgetTimeline = _.chain(paymentRequests)
       .orderBy(["timestamp"], ["asc"])
-      .reduce((acc, req) => {
-        const amount = req.amount_requested_cad || 0;
+      .reduce((acc, r) => {
+        const amount = r.amount_requested_cad || 0;
         const lastTotal = acc.length ? acc[acc.length - 1].cumulativeTotal : 0;
         return [
           ...acc,
           {
-            date: req.timestamp,
+            date: r.timestamp,
             amount,
             cumulativeTotal: lastTotal + amount,
           },
