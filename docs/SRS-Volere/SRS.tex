@@ -132,7 +132,6 @@ Maintenance users play a vital role in the long-term success of the platform:
 \begin{enumerate}
   \item The app must handle the throughput of the 60 student groups to the MES without trouble.
   \item The app must inform student groups the status of their request. 
-  \item The app must notify the appropriate parties of the MES for any new requests made.
   \item The app must allow student groups to upload receipts. 
   \item The app must be able to read the receipts that are uploaded by the student groups. 
   \item The app must be up and running at all times, if not a message must be shown signifying why the app is offline. 
@@ -198,8 +197,6 @@ Maintenance users play a vital role in the long-term success of the platform:
 \subsection{Business Rules}
 \begin{itemize}
   \item Users will be notified when their receipts are reimbursed.
-  \item The site will notify the relevant parties MES when a request comes through.
-  \item Users will be notified of an expected deadline for when the requests will be fulfilled.
   \item Users will be notified of any maintenance times the site will need.
   \item All financial records will be recorded and saved in the backend of the application 
 \end{itemize}
@@ -349,9 +346,8 @@ The Product Use Case Table summarizes the specific functionalities (Product Use 
         3 & Track Payment Requests & Administrator & Payment Request (in), Payment Status (out) \\ \hline
         4 & Process Funding Applications & Student Leader & Funding Application (in), Approval Status (out) \\ \hline
         5 & Save Repetitive Information & Student Leader & Repetitive Info (in), Confirmation (out) \\ \hline
-        6 & Generate Reports & Financial Auditor & Report Criteria (in), Generated Report (out) \\ \hline
-        7 & Send Notifications & System & User Notification Preferences (in), SMS/Email Notification (out) \\ \hline
-        8 & Manage Audit Trails & Financial Auditor & Audit Criteria (in), Audit Trail Report (out) \\ \hline
+        6 & Send Notifications & System & User Notification Preferences (in), SMS/Email Notification (out) \\ \hline
+        7 & Manage Audit Trails & Financial Auditor & Audit Criteria (in), Audit Trail Report (out) \\ \hline
     \end{tabular}
 \end{table}
 
@@ -405,17 +401,17 @@ This section details the individual product use cases listed in the Product Use 
     \item The information is stored for future reimbursement requests.
 \end{itemize}
 
-\subsubsection{PUC 6: Generate Reports}
-\textbf{Actors:} Financial Auditor \\
-\textbf{Scenario:} A financial auditor generates financial reports for review.
+\subsubsection{PUC 6: Generate Analytics}
+\textbf{Actors:} MES Admin \\
+\textbf{Scenario:} Admin reviews analytical data.
 \begin{itemize}
-    \item The auditor selects criteria for the report (e.g., date range, type of expenses).
-    \item The system generates the report and displays it for download.
+    \item The system displays analytics.
+    \item Admin reviews data. 
 \end{itemize}
 
 \subsubsection{PUC 7: Send Notifications}
 \textbf{Actors:} System \\
-\textbf{Scenario:} The system sends notifications to users based on their preferences.
+\textbf{Scenario:} The system sends notifications to users.
 \begin{itemize}
     \item Upon important updates (e.g., approval of reimbursement), the system triggers notifications.
     \item Notifications are sent via SMS or email as specified by the user.
@@ -539,7 +535,6 @@ The platform must ensure a responsive experience for users to maintain workflow 
     \item The response shall be fast enough to avoid interrupting the user’s flow of thought during the submission and review processes.
     \item The system shall process and save repetitive information quickly to enhance user experience.
     \item The product shall update status parameters in a timely manner to reflect changes accurately.
-    \item The system shall generate reports promptly to facilitate timely decision-making by financial auditors.
 \end{itemize}
 
 \subsection{Safety-Critical Requirements}
@@ -565,8 +560,6 @@ To ensure accurate financial reporting and user trust, precision requirements fo
 The platform must demonstrate robustness to ensure continuous operation even during unexpected failures or high usage. Specific robustness requirements include:
 
 \begin{itemize}
-    \item The product shall continue to operate in local mode whenever it loses its connection to the central server, allowing users to save entries temporarily.
-    \item The system shall provide emergency operation capabilities in case of power or network failures, ensuring that critical processes can still be completed.
     \item Automatic backups of all financial data shall occur regularly to prevent data loss.
 \end{itemize}
 
