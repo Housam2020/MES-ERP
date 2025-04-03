@@ -10,9 +10,11 @@
 \usepackage{tabularx}
 \usepackage{longtable}
 \usepackage{hyperref}
+\usepackage{graphicx}
+
 \hypersetup{
     bookmarks=true,         % show bookmarks bar?
-      colorlinks=true,      % false: boxed links; true: colored links
+    colorlinks=true,        % false: boxed links; true: colored links
     linkcolor=red,          % color of internal links (change box color with linkbordercolor)
     citecolor=green,        % color of links to bibliography
     filecolor=magenta,      % color of file links
@@ -54,877 +56,827 @@
 ~\newpage
 \section{Purpose of the Project}
 \subsection{User Business}
-The McMaster Engineering Society is looking to develop a finance and accounting system that will streamline the financial operations of 60 student groups. Due to recent struggles managing and keeping track of reimbursement requests, many students must wait large wait times during the process. The implementation of our solution will allow the MES to provide users with adequate tracking of reimbursement requests made as well as reduce the loss of requests and lower wait times.
-
+The McMaster Engineering Society is looking to develop a finance and accounting system that will streamline the financial operations of 60 student groups. Due to recent struggles in managing and keeping track of reimbursement requests, many students must endure long wait times during the process. The implementation of our solution will allow the MES to provide users with adequate tracking of reimbursement requests, reduce the loss of requests, and lower wait times.
 
 \subsection{Goals of the Project}
-Currently, the MES is losing track of reimbursement requests made resulting in large wait times and loss of money. We aim to provide a solution that effectively manages and organizes the large throughput of reimbursement requests sent. The effectiveness of our solution will be measured based on how well it reduces wait times as well as how many requests are lost.
-Additionally, we plan on implementing custom budget creation and tracking for all users. Through this, users will be able to effectively create and manage budgets for different categories and all transactions will be tracked in real time. This would allow users to gain financial oversight, ultimately preventing going over budget. Custom budgets should be categorized correctly nine times out of ten. The system should also reduce reimbursement turnover time for users, ultimately improving the claim process. Finally, the final solution should aim to be easy for users to understand and use. There should be an intuitive way to create reimbursement requests and if required, users will be provided extra instructions where needed.
+Currently, the MES is losing track of reimbursement requests made, resulting in long wait times and lost money. We aim to provide a solution that effectively manages and organizes the large volume of reimbursement requests sent. The effectiveness of our solution will be measured based on how well it reduces wait times and how many requests are lost. Additionally, we plan on implementing custom budget creation and tracking for all users. Through this, users will be able to effectively create and manage budgets for different categories, and all transactions will be tracked in real time. This will allow users to gain financial oversight, ultimately preventing them from going over budget. Custom budgets should be categorized correctly nine times out of ten. The system should also reduce reimbursement turnover time for users, improving the claim process. Finally, the solution should be easy for users to understand and use. There should be an intuitive way to create reimbursement requests, and if required, users will be provided with extra instructions where needed.
+
+\section{System Overview} 
+In this section, the system architecture and general flow of how users will interact with the system are detailed.  
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=1\textwidth]{system_detail.png}
+  \caption{System process from different users}
+  \label{fig:detailed-architecture}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=1\textwidth]{stack.png}
+  \caption{System Architecture}
+  \label{fig:stack-architecture}
+\end{figure}
 
 \section{Stakeholders}
 \subsection{Client}
 The client for this project is the McMaster Engineering Society (MES). The MES financially supports 60 different student groups and numerous individuals throughout the year through a reimbursement model. The society is responsible for approving the final product and ensuring it meets the needs of the student groups.
 The MES invests in this platform to streamline financial processes, reduce administrative overhead, and improve user experience for students and administrators.
-Roles and responsibilities: Maintain the server that will host the tool. Process and complete the reimbursement requests
+
+\textbf{Roles and responsibilities:} 
+\begin{itemize}
+    \item Maintain the server that will host the tool
+    \item Process and complete the reimbursement requests
+\end{itemize}
 
 \subsection{Customer}
-The primary customers of this platform are the student groups and administrative personal who utilize the reimbursement system. Their roles and responsibilities include:
+The primary customers of this platform are the student groups and administrative personnel who utilize the reimbursement system. Their roles and responsibilities include:
 \begin{itemize}
-    \item \textbf{Expense Submission:} Student leaders and members will be submitting expense reports, requiring a user-friendly interface that simplifies the process.
-    \item \textbf{Feedback Providers:} Customers will offer feedback on system usability and required features, which is critical for ensuring the platform meets their expectations.
-    \item \textbf{User Adoption:} The willingness of these customers to adopt the new system will largely depend on its functionality and ease of use, impacting the overall success of the project.
+    \item \textbf{Expense Submission:} Student leaders and members submit expense reports via a user-friendly interface.
+    \item \textbf{Feedback Providers:} Provide feedback on system usability and required features.
+    \item \textbf{User Adoption:} Their willingness to adopt the system affects overall success.
 \end{itemize}
 
 \subsection{Other Stakeholders}
-Other stakeholders include individuals and groups that may influence or be impacted by the product. Their roles are as follows:
+Other stakeholders include individuals and groups that may influence or be impacted by the product:
 \begin{itemize}
-    \item \textbf{Student Group Leaders:} Responsible for managing their group's finances, they will provide insights into the specific needs and challenges they face in the current reimbursement process.
-    \item \textbf{MES Administrative Staff:} These individuals assist in processing reimbursements and will need training on the new system to ensure smooth operations.
-    \item \textbf{McMaster Administion:} The Faculty of Engineering and CCGE faculty interact with clubs often. They may also want to ensure that our tool follows their principles and standards in terms of rules, flow, cohesiveness.
-    \item \textbf{Club members:} Can also submit expense receipts, will want an easy experience.
-    \item \textbf{MES IT:} Involved in the integration of the platform with existing systems, they will need detailed documentation and support for maintenance.
+    \item \textbf{Student Group Leaders:} Provide insights into the specific needs and challenges faced in the current reimbursement process.
+    \item \textbf{MES Administrative Staff:} Assist in processing reimbursements and will need training on the new system to ensure smooth operations.
+    \item \textbf{McMaster Administration:} May want to ensure that the tool follows relevant standards and policies.
+    \item \textbf{Club Members:} Occasionally submit expense receipts and will want an easy experience.
+    \item \textbf{MES IT:} Involved in integration with existing systems and maintenance.
 \end{itemize}
 
 \subsection{Hands-On Users of the Project}
-Hands-on users are the individuals who will directly interact with the platform. Their characteristics include:
 \begin{itemize}
-    \item \textbf{Student Leaders:} Typically aged 18-25, they manage club finances, possess an intermediate amount of technological experience, and are familiar with digital forms and spreadsheets. They would prioritize an intuitive interface that simplifies expense reporting.
-    \item \textbf{Administrators:} Members of the MES staff that are aged 18-25, these users manage the overall reimbursement process, have intermediate technological experience, and require efficient tools for tracking and reviewing submissions.
-    \item \textbf{Financial Administrators:} Experienced professionals (aged 30+) with an advanced understanding of financial compliance, they need robust reporting features to analyze and audit transactions effectively.
+    \item \textbf{Student Leaders:} Typically aged 18-25, manage club finances, need an intuitive interface.
+    \item \textbf{Administrators:} MES staff aged 18-25, require tools for efficient review/approval workflows.
+    \item \textbf{Financial Administrators:} Experienced professionals (30+), need advanced financial compliance and reporting features.
 \end{itemize}
 
 \subsection{Personas}
-The development of personas helps to understand user needs more concretely. Examples include:
 \begin{itemize}
-  \item \textbf{Alex, the Student Leader:} 20 years old, manages a student club. Familiar with Google Forms and spreadsheets, Alex seeks efficiency in submitting reimbursement requests and values features that save time, such as automated data entry.
-  \item \textbf{Jamie, the MES Administrator:} 21 years old, processes reimbursements for multiple student groups. Jamie values accuracy and compliance and prefers tools that provide a clear overview of submissions and their statuses.
-  \item \textbf{James, the VP Finance:} 22 years old, Vice President of Finance for the MES. James values comprehensive financial oversight and strategic planning, and prefers tools that provide high-level summaries and detailed financial reports.
-  \item \textbf{Jordan, the Club Member:} 19 years old, a member of a student club who occasionally submits reimbursement requests. Jordan values simplicity and ease of use, and prefers a straightforward interface for submitting and tracking requests.
+  \item \textbf{Alex, the Student Leader (20):} Seeks time-saving features for reimbursements.
+  \item \textbf{Jamie, the MES Administrator (21):} Values accuracy and clear approval workflows.
+  \item \textbf{James, the VP Finance (22):} Prefers tools providing high-level summaries and robust reports.
+  \item \textbf{Jordan, the Club Member (19):} Submits occasional claims, wants straightforward UI.
 \end{itemize}
 
 \subsection{Priorities Assigned to Users}
-Understanding user priorities is critical for product success:
 \begin{itemize}
-    \item \textbf{Key Users:} Student leaders are crucial to the project's success. They must be able to submit expenses easily and effectively in order for this project to be successful. Their requirements will take precedence due to their direct interaction with the system.
-    \item \textbf{Secondary Users:} MES Administrators who facilitate the reimbursement process are equally as important, but their needs will be prioritized lower than those of key users.
-    \item \textbf{Unimportant Users:} Casual users with minimal interaction, such as infrequent users of the system, will have their requirements considered last, as they do not impact the product's long-term success.
+    \item \textbf{Key Users:} Student leaders; they must easily submit expenses.
+    \item \textbf{Secondary Users:} MES administrators; essential for approvals but secondary to consistent submissions.
+    \item \textbf{Unimportant Users:} Casual users; their requirements are considered last.
 \end{itemize}
 
 \subsection{User Participation}
-User participation is vital for gathering accurate requirements:
 \begin{itemize}
-    \item \textbf{Requirements Gathering:} Key users will participate in interviews and surveys to provide insights into their needs and expectations. We will need to document how a typical expense and reimbursement occours, from the time it is submitted into the current expese system to the final payout of the expense to the user. This will provide a clear overview of how the current system works, what the roadblocks are and how we can optimize the tool to the needs of the users.
-    \item \textbf{Usability Testing:} Hands-on users will be invited to participate in usability testing sessions to ensure the platform meets their requirements.
-    \item \textbf{Regular Check-Ins:} Scheduled meetings with key users will provide ongoing opportunities for feedback and validation throughout the development process.
+    \item \textbf{Requirements Gathering:} Interviews and surveys with key users to document the reimbursement process.
+    \item \textbf{Usability Testing:} Hands-on sessions to validate design choices.
+    \item \textbf{Regular Check-Ins:} Meetings to ensure alignment with user expectations.
 \end{itemize}
 
 \subsection{Maintenance Users and Service Technicians}
-Maintenance users play a vital role in the long-term success of the platform:
 \begin{itemize}
-    \item \textbf{MES IT Staff:} Responsible for system updates and troubleshooting, they will require detailed documentation on the platform's functionalities to effectively manage its operation. These users ensure the platform runs smoothly, addressing any technical issues that arise and implementing updates as necessary.
+    \item \textbf{MES IT Staff:} Responsible for system updates, troubleshooting, and maintenance documentation.
 \end{itemize}
-
-
-
 
 \section{Mandated Constraints}
 \subsection{Solution Constraints}
 \begin{enumerate}
-  \item The app must handle the throughput of the 60 student groups to the MES without trouble.
-  \item The app must inform student groups the status of their request. 
-  \item The app must allow student groups to upload receipts. 
-  \item The app must be able to read the receipts that are uploaded by the student groups. 
-  \item The app must be up and running at all times, if not a message must be shown signifying why the app is offline. 
+  \item The system must manage reimbursement requests for 60 student groups efficiently.
+  \item The system must track and display the status of each request to the submitting group.
+  \item The system must allow uploading and storage of receipt images or files.
+  \item The system must be online continuously or display a clear message when offline.
 \end{enumerate}
+
 \subsection{Implementation Environment of the Current System}
 \begin{enumerate}
-  \item There is no current implement of any current system.
-  \item The new system will be hosted on a laptop provided by the MES, this laptop will have access to Windows 10, and will have above average specs (eg, 4gb of RAM, RTX 2080).
+  \item There is no existing system in place.
+  \item The new system will be hosted on an MES-provided laptop or server running Windows 10 or higher, with at least 4 GB RAM and a modern GPU (e.g., RTX 2080).
 \end{enumerate}
+
 \subsection{Partner or Collaborative Applications}
 \begin{enumerate}
-  \item There is no current implement of any current system.
+  \item N/A (No partner or collaborative application exists for this project).
 \end{enumerate}
+
 \subsection{Off-the-Shelf Software}
 \begin{enumerate}
-  \item We will use an API for scanning receipts, A specific API has not been chosen yet.
+  \item An external API may be used for scanning receipts; the final choice is pending.
 \end{enumerate}
+
 \subsection{Anticipated Workplace Environment}
 \begin{enumerate}
-  \item The workplace environment will be on our specific dev machines, we will use Git (A version control software) to collaborate and share code with each other.
+  \item Development will occur on local machines with Git for version control and collaboration.
 \end{enumerate}
+
 \subsection{Schedule Constraints}
 \begin{enumerate}
-  \item The final demonstration will be April 2nd, which will be our final design constraint.
+  \item Final demonstration is set for April 2nd, serving as the primary deadline for core features.
 \end{enumerate}
+
 \subsection{Budget Constraints}
 \begin{enumerate}
-  \item The maximum budget of this would be \$750.
+  \item The budget is capped at \$750 for the entire project.
 \end{enumerate}
+
 \subsection{Enterprise Constraints}
 \begin{enumerate}
-  \item The product and code will be made entirely available to the MES.
+  \item All developed code and documentation will be owned by the MES.
 \end{enumerate}
 
 \section{Naming Conventions and Terminology}
 \subsection{Glossary of All Terms, Including Acronyms, Used by Stakeholders Involved in the Project}
 
 \begin{itemize}
-    \item \textbf{MES}: McMaster Engineering Society. The student organization responsible for overseeing financial and academic matters for engineering students at McMaster University.    
-    \item \textbf{Audit Log}: A record of all actions performed within the system, used for tracking who accessed or modified data and when these actions took place.
-    \item \textbf{Club Financial Manager}: A designated member of a club responsible for managing that club's financial records and submitting reimbursement requests on behalf of the club.
-    \item \textbf{Budget Allocation}: The amount of funding designated for specific clubs or activities by the MES team and is used to track and control spending.
-    \item \textbf{Vendor Contracts}: Agreements between MES and external suppliers for goods or services provided to the engineering society or its member clubs.
-    \item \textbf{Approval Workflow}: The process that a reimbursement request goes through before getting final approval.
-    \item \textbf{Financial Dashboard}: A feature of the system that provides an overview of the current financial standing, showing budget tracking, reimbursement status, and pending requests.
-    \item \textbf{CI/CD}: Continuous Integration/Continuous Deployment. A software development practice that automatically tests and deploys code changes to ensure the system is always in a working state.
+    \item \textbf{MES}: McMaster Engineering Society.   
+    \item \textbf{Audit Log}: A record of actions performed within the system, noting the user, action, and time.
+    \item \textbf{Club Financial Manager}: A designated club member overseeing financial records and reimbursement submissions.
+    \item \textbf{Budget Allocation}: The amount of funding designated for specific clubs or activities, used to track and control spending.
+    \item \textbf{Vendor Contracts}: Agreements with external suppliers for goods or services.
+    \item \textbf{Approval Workflow}: The process a reimbursement request undergoes from submission to final approval.
+    \item \textbf{Financial Dashboard}: A system feature providing an overview of budgets, reimbursements, and pending actions.
+    \item \textbf{CI/CD}: Continuous Integration/Continuous Deployment for automated testing and code deployment.
 \end{itemize}
-
 
 \section{Relevant Facts And Assumptions}
 \subsection{Relevant Facts}
 \begin{itemize}
-  \item There is no current application built for this project.
-  \item The project will be built primarily in JavaScript and React.
-  \item There are 60 student groups to account for.
-  \item The current process for submitting checks is manual, which takes far too long.
-  \item The input should be generalized, with no differentiation between student groups.
-  \item The application is intended to be created with future growth in mind.
+  \item No existing application is currently handling these reimbursements.
+  \item The project targets 60 student groups at McMaster University.
+  \item The system design must allow for future growth and additional features.
 \end{itemize}
-
-
 
 \subsection{Business Rules}
 \begin{itemize}
-  \item Users will be notified when their receipts are reimbursed.
-  \item Users will be notified of any maintenance times the site will need.
-  \item All financial records will be recorded and saved in the backend of the application 
+  \item Users receive notifications when their submitted receipts are reimbursed.
+  \item Users are notified in advance of any scheduled maintenance windows.
+  \item All financial records are stored on the backend for reference and auditing.
 \end{itemize}
 
 \subsection{Assumptions}
 \begin{itemize}
-  \item Student groups and the MES are in contact and know the ground rules of what to expect from purchases.
-  \item We are expecting the MES to provide us with a server to run our software.
-  \item The system will be coded in JavaScript and NextJS.
-  \item The system will be built from scratch.
-  \item The MES is expected to provide us with data for test cases.
-  \item Internet is expected to be provided, as well as a suitable system with enough RAM/storage for the app. 
-  \item Student groups will use the application for further validation testing. 
+  \item The MES provides the server hardware for hosting the system.
+  \item The MES supplies any data required for testing and validation.
+  \item Reliable internet connectivity is assumed for normal usage and notifications.
 \end{itemize}
 
 \section{The Scope of the Work}
 \subsection{The Current Situation}
-Currently, the McMaster Engineering Society (MES) manages financial operations for over 60 student groups. The existing process for handling reimbursement requests is inefficient and manual. This is due to the lack of a consolidated platform to manage this reimbursement workflow which leads to delays, loss of reimbursement requests, and difficulty in tracking budgets and expenses.
+Currently, the MES manages reimbursements through manual methods such as Google Forms, PDFs, and spreadsheets, causing delays, lost requests, and difficulty tracking finances.
 
 \subsection{The Context of the Work}
-The goal of the MES-ERP project is to streamline the financial processes of the MES by providing a consolidated platform that combines reimbursement tracking, budget management, and financial reporting. The scope of the work includes allowing users to submit and track reimbursement requests, manage budgets, and generate financial reports. In addition, the system will include an audit trail of all transactions to aid the MES during audits.
+The MES-ERP project aims to streamline these financial processes by enabling a single platform for reimbursement requests, budget oversight, and comprehensive reporting. This includes an audit trail for transaction histories.
 
 \subsection{Work Partitioning}
 \begin{itemize}
-  \item \textbf{Reimbursement Submission Module:} A feature that allows users to submit receipts and financial documents for reimbursement.
-  \item \textbf{Reimbursement Review and Approval:} A feature to allow MES administrators to review, approve, or reject reimbursement requests.
-  \item \textbf{Audit and Compliance Module:} This feature will ensure that all transactions are logged and auditable, complying with MES financial policies.
-  \item \textbf{Budget and User Dashboards:} A feature that provides users with an overview of their budgets, expenses, and pending requests.
+  \item \textbf{Reimbursement Submission Module:} Allows users to upload receipts and request reimbursements.
+  \item \textbf{Reimbursement Review and Approval:} Administrators approve or reject pending requests.
+  \item \textbf{Audit and Compliance Module:} Maintains an audit log for all actions and financial records.
+  \item \textbf{Budget/User Dashboards:} Provides real-time tracking of budgets, spending, and request statuses.
 \end{itemize}
 
 \subsection{Specifying a Business Use Case (BUC)}
-\textbf{BUC 1 - Submitting a Reimbursement Request:}
+\textbf{BUC 1: Submitting a Reimbursement Request}  
 \begin{itemize}
-  \item \textbf{Precondition:} The user must have access to the system and necessary documentation for submission.
-  \item \textbf{Trigger:} A student group needs reimbursement for an expense.
+  \item \textbf{Precondition:} User has valid credentials and receipts.
+  \item \textbf{Trigger:} A club needs reimbursement for an authorized expense.
   \item \textbf{Steps:}
   \begin{enumerate}
-      \item The user logs into the MES-ERP system.
-      \item The user navigates to the  `Submit Reimbursement' section.
-      \item The user fills out the required fields, attaches relevant receipts or documents, and submits the form.
+      \item User logs into MES-ERP.
+      \item User navigates to `Submit Reimbursement.'
+      \item User completes required fields and uploads receipts.
+      \item User submits the request.
   \end{enumerate}
-  \item \textbf{Postconditions:} The reimbursement request is logged in the system and sent for review by the MES administrators.
+  \item \textbf{Postcondition:} Request is placed in the approval queue.
 \end{itemize}
 
-\textbf{BUC 2 - Review Reimbursement Requests:}
+\textbf{BUC 2: Reviewing a Reimbursement Request}  
 \begin{itemize}
-  \item \textbf{Precondition:} A request has been submitted by a student group.
-  \item \textbf{Trigger:} MES administrators receive a notification of a new reimbursement request.
+  \item \textbf{Precondition:} A request has been submitted.
+  \item \textbf{Trigger:} An MES administrator checks the pending requests or receives a notification.
   \item \textbf{Steps:}
   \begin{enumerate}
-      \item The MES administrator logs into the system.
-      \item The MES administrator reviews the reimbursement request and attached documents.
-      \item The MES administrator updates the status of the request in the system with either an approval or rejection with feedback.
+      \item Administrator logs in.
+      \item Administrator navigates to pending requests.
+      \item Administrator reviews details and receipts.
+      \item Administrator approves or rejects the request with optional feedback.
   \end{enumerate}
-  \item \textbf{Postconditions:} The reimbursement request is either approved and sent for payment or rejected with feedback provided to the user.
+  \item \textbf{Postcondition:} Request status is updated for the submitter to view.
 \end{itemize}
 
 \section{Business Data Model and Data Dictionary}
 \subsection{Business Data Model}
-The MES-ERP system will handle various types of financial and user-related data, organized into distinct entities to support the core functionalities of the platform. Below is an overview of the key entities and their relationships:
+The MES-ERP system manages financial and user-related data across several entities:
 
 \begin{itemize}
     \item \textbf{User Entity:}
     \begin{itemize}
-        \item \textbf{Attributes:} UserID, Name, Email, Group, Role (Student Group Leader, Administrator, Financial Officer), Login Credentials, Phone Number, Reimbursement Choice 
-        \item \textbf{Relationship:} A user can submit many reimbursement requests and manage budgets.
+        \item \textbf{Attributes:} UserID, Name, Email, Group, Role, Phone Number
+        \item \textbf{Relationships:} A user may submit multiple reimbursement requests; roles determine permissions.
     \end{itemize}
     
     \item \textbf{Reimbursement Request Entity:}
     \begin{itemize}
-        \item \textbf{Attributes:} RequestID, Timestamp, Email Address, SubmitterID (links to UserID), Identification, Full name, Phone Number, Email, Role, Budget Line, Approved Individual, Team name, Conference or competition name/type, Head Delegate, Amount, Status (Submitted, Approved, Rejected, Paid), Attached Receipts, Reimbursement Choice, Payment timeframe
-        \item \textbf{Relationship:} Each reimbursement request is submitted by one user but can be reviewed by multiple administrators.
+        \item \textbf{Attributes:} RequestID, Timestamp, SubmitterID, Amount, Status, Attached Receipts
+        \item \textbf{Relationships:} Each request is linked to a single user; administrators can review or modify the status.
     \end{itemize}
     
     \item \textbf{Budget Entity:}
     \begin{itemize}
-        \item \textbf{Attributes:} BudgetID, GroupID (identifies the student group), Total Amount Allocated, Amount Spent, Category (e.g., Event, Travel, Supplies), Additional group information
-        \item \textbf{Relationship:} A student group manages one budget per financial year, and each budget can have multiple expense reports linked to it.
+        \item \textbf{Attributes:} BudgetID, GroupID, TotalAmountAllocated, AmountSpent, Category
+        \item \textbf{Relationships:} A group manages one budget, with possible multiple spending entries or reimbursement references.
     \end{itemize}
 
     \item \textbf{Group Entity:}
     \begin{itemize}
-        \item \textbf{Attributes:} ID, Name, Created at, Created by
-        \item \textbf{Relationship:} A group will identify a bunch of individuals to a specific group which they take part of 
+        \item \textbf{Attributes:} GroupID, GroupName, CreatedAt
+        \item \textbf{Relationships:} A group can have multiple associated users and budgets.
     \end{itemize}
     
-    \item \textbf{Permission Entity:}
-    \begin{itemize}
-        \item \textbf{Attributes:} ID, Name
-        \item \textbf{Relationship:} The permission entity will allow a user to have different roles on the site based off their permissions
-    \end{itemize}
-
-    \item \textbf{Role Permission Entity:}
-    \begin{itemize}
-        \item \textbf{Attributes:} ID, Permission ID
-        \item \textbf{Relationship:} This links role IDs to permission IDs
-    \end{itemize}
-
     \item \textbf{Role Entity:}
     \begin{itemize}
-        \item \textbf{Attributes:} ID, Name
-        \item \textbf{Relationship:} This creates roles for a user.
+        \item \textbf{Attributes:} RoleID, RoleName
+        \item \textbf{Relationships:} Determines which system actions are allowed (e.g., submit, approve).
     \end{itemize}
 
 \end{itemize}
 
 \subsection{Data Dictionary}
-\lips
+N/A (No additional data dictionary provided at this time).
 
 \section{The Scope of the Product}
-
 \subsection{Product Boundary}
-The product boundary defines the scope of the McMaster Engineering Society (MES) Custom Financial Expense Reporting Platform. The product boundary distinguishes between functionalities to be automated by the platform and those that will remain manual or handled by other existing systems.
-
 \begin{itemize}
     \item \textbf{Automated Functions:}
     \begin{itemize}
-        \item Streamlining reimbursement requests for student groups.
-        \item Saving repetitive information.
-        \item Sending SMS and automated emails for updates and notifications to users.
-        \item Processing invoices, receipts, payment notices, and remittance advice effectively.
+        \item Reimbursement request submission
+        \item Notification of updates and statuses
+        \item Approval/rejection workflow
+        \item Basic budget tracking
     \end{itemize}
     \item \textbf{Manual Functions:}
     \begin{itemize}
-        \item Initial data entry for historical records and previous expense submissions.
-        \item User training and support for navigating the new platform.
-        \item Handling of any non-digital submissions or documents.
-        \item Submitting reimbursement receipts.
-        \item Handling payment requests. 
-        \item Creating roles and groups. 
-        \item Managing users and groups. 
-        \item Creating budget lines. 
+        \item Legacy data entry for older records
+        \item User training and support
+        \item Handling of non-digital (physical) receipts
     \end{itemize}
 \end{itemize}
 
 \subsection{Product Use Case Table}
-The Product Use Case Table summarizes the specific functionalities (Product Use Cases, or PUCs) that the platform will support. This table identifies the main actors involved and outlines the input and output data associated with each use case.
-
 \begin{table}[h]
-    \centering
-    \caption{Product Use Case Summary Table}
-    \begin{tabular}{|c|l|l|l|}
-        \hline
-        \textbf{PUC No} & \textbf{PUC Name} & \textbf{Actor/s} & \textbf{Input \& Output} \\ \hline
-        1 & Submit Reimbursement Request & Student Leader & Reimbursement Details (in) \\ \hline
-        2 & Review Reimbursement Requests & Administrator & Reimbursement Request (in), Approval Status (out) \\ \hline
-        3 & Track Payment Requests & Administrator & Payment Request (in), Payment Status (out) \\ \hline
-        4 & Process Funding Applications & Student Leader & Funding Application (in), Approval Status (out) \\ \hline
-        5 & Save Repetitive Information & Student Leader & Repetitive Info (in), Confirmation (out) \\ \hline
-        6 & Send Notifications & System & User Notification Preferences (in), SMS/Email Notification (out) \\ \hline
-        7 & Manage Audit Trails & Financial Auditor & Audit Criteria (in), Audit Trail Report (out) \\ \hline
-    \end{tabular}
+  \centering
+  \caption{Product Use Case Summary Table}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{|c|l|l|l|}
+      \hline
+      \textbf{PUC No} & \textbf{PUC Name} & \textbf{Actor/s} & \textbf{Input \& Output} \\ \hline
+      1 & Submit Reimbursement Request & Student Leader & (in) Reimbursement details \newline (out) Confirmation message \\ \hline
+      2 & Review Reimbursement Requests & Administrator & (in) Request details \newline (out) Approved/Rejected status \\ \hline
+      3 & Track Payment Requests & Administrator & (in) Payment info \newline (out) Payment status \\ \hline
+      4 & Process Funding Applications & Student Leader & (in) Funding application \newline (out) Approval status \\ \hline
+      5 & Save Repetitive Information & Student Leader & (in) User data \newline (out) Data saved confirmation \\ \hline
+      6 & Send Notifications & System & (in) Event triggers \newline (out) Emails/SMS notifications \\ \hline
+      7 & Manage Audit Trails & Financial Auditor & (in) Search/Filter criteria \newline (out) Audit trail report \\ \hline
+  \end{tabular}%
+  }
 \end{table}
 
 \subsection{Individual Product Use Cases (PUCs)}
-This section details the individual product use cases listed in the Product Use Case Table. Each use case outlines the scenario, the actors involved, and the interactions within the system.
+\textbf{PUC 1: Submit Reimbursement Request}  
+\textbf{Actors:} Student Leader  
+\textbf{Scenario:} A student leader submits an expense reimbursement request with attached receipts.
 
-\subsubsection{PUC 1: Submit Reimbursement Request}
-\textbf{Actors:} Student Leader \\
-\textbf{Scenario:} A student leader submits an expense reimbursement request through the platform.
-\begin{itemize}
-    \item The student logs into the system.
-    \item They navigate to the reimbursement section and fill out the required fields (e.g., amount, purpose, and attaching receipts).
-    \item Upon submission, the request is sent for review to the administrator.
-    \item Confirmation of submission is displayed on the screen.
-\end{itemize}
+\textbf{PUC 2: Review Reimbursement Requests}  
+\textbf{Actors:} Administrator  
+\textbf{Scenario:} An administrator reviews and decides on a submitted request.
 
-\subsubsection{PUC 2: Review Reimbursement Requests}
-\textbf{Actors:} Administrator \\
-\textbf{Scenario:} An administrator reviews submitted reimbursement requests.
-\begin{itemize}
-    \item The administrator logs into the system.
-    \item They access the list of pending reimbursement requests.
-    \item The administrator reviews the details and either approves or rejects the request.
-    \item An automated notification is sent to the student leader regarding the decision.
-\end{itemize}
+\textbf{PUC 3: Track Payment Requests}  
+\textbf{Actors:} Administrator  
+\textbf{Scenario:} An administrator verifies the status of paid or pending reimbursements.
 
-\subsubsection{PUC 3: Track Payment Requests}
-\textbf{Actors:} Administrator \\
-\textbf{Scenario:} The administrator tracks the status of payment requests.
-\begin{itemize}
-    \item The administrator logs into the system.
-    \item They navigate to the payment request section.
-    \item The status of each request is displayed (e.g., pending, processed, completed).
-\end{itemize}
+\textbf{PUC 4: Process Funding Applications}  
+\textbf{Actors:} Student Leader  
+\textbf{Scenario:} A student leader submits an application for intramural or special funding.
 
-\subsubsection{PUC 4: Process Funding Applications}
-\textbf{Actors:} Student Leader \\
-\textbf{Scenario:} A student leader processes an application for intramural funding.
-\begin{itemize}
-    \item The student accesses the funding application section.
-    \item They fill out the required information and submit it for approval.
-    \item The system sends a notification confirming the application submission.
-\end{itemize}
+\textbf{PUC 5: Save Repetitive Information}  
+\textbf{Actors:} Student Leader  
+\textbf{Scenario:} A user stores frequently used data (address, contact info) to simplify future submissions.
 
-\subsubsection{PUC 5: Save Repetitive Information}
-\textbf{Actors:} Student Leader \\
-\textbf{Scenario:} The student saves repetitive financial information for future use.
-\begin{itemize}
-    \item The student navigates to the settings section.
-    \item They enter and save their personal information.
-    \item The information is stored for future reimbursement requests.
-\end{itemize}
+\textbf{PUC 6: Send Notifications}  
+\textbf{Actors:} System  
+\textbf{Scenario:} Automated notifications when request statuses change or approvals occur.
 
-\subsubsection{PUC 6: Generate Analytics}
-\textbf{Actors:} MES Admin \\
-\textbf{Scenario:} Admin reviews analytical data.
-\begin{itemize}
-    \item The system displays analytics.
-    \item Admin reviews data. 
-\end{itemize}
-
-\subsubsection{PUC 7: Send Notifications}
-\textbf{Actors:} System \\
-\textbf{Scenario:} The system sends notifications to users.
-\begin{itemize}
-    \item Upon important updates (e.g., approval of reimbursement), the system triggers notifications.
-    \item Notifications are sent via SMS or email as specified by the user.
-\end{itemize}
-
-\subsubsection{PUC 8: Manage Audit Trails}
-\textbf{Actors:} Financial Auditor \\
-\textbf{Scenario:} The financial auditor reviews audit trails to ensure compliance.
-\begin{itemize}
-    \item The auditor accesses the audit trail section in the platform.
-    \item They filter results based on date and type of activity.
-    \item A detailed report is generated to review all activities related to financial transactions.
-\end{itemize}
+\textbf{PUC 7: Manage Audit Trails}  
+\textbf{Actors:} Financial Auditor  
+\textbf{Scenario:} Auditor reviews logs to ensure compliance or investigate anomalies.
 
 \section{Functional Requirements}
 \subsection{Functional Requirements}
 
 \begin{itemize}
 
-  \item \textbf{Requirement Number}: 001
-  \item \textbf{Description}: The system must allow club financial managers to submit reimbursement requests.
-  \item \textbf{Rationale}: Ensures that clubs can request refunds for approved expenses.
-  \item \textbf{Fit Criterion}: A club financial manager must be able to submit a reimbursement request successfully, which should appear in the MES staff's pending approval list.
-  \item \textbf{Priority}: High
+  \item \textbf{Requirement Number}: 001  
+  \item \textbf{Description}: The system must allow club financial managers (or authorized users) to submit reimbursement requests with attached receipts.  
+  \item \textbf{Rationale}: Without a submission feature, expenses cannot be recorded, delaying financial processes and risking lost receipts.  
+  \item \textbf{Fit Criterion}:  
+  \begin{itemize}
+    \item A user with the “Club Financial Manager” role can upload receipts and complete a reimbursement form.
+    \item The new request must appear in the system’s pending queue at least 95\% of the time without errors.
+  \end{itemize}
+  \item \textbf{Priority}: High  
   \item \textbf{Originator}: Club Financial Manager
   
   \bigskip
 
-  \item \textbf{Requirement Number}: 002
-  \item \textbf{Description}: The system must allow MES staff to approve or reject reimbursement requests.
-  \item \textbf{Rationale}: Ensures proper management of reimbursement requests.
-  \item \textbf{Fit Criterion}: A reimbursement request must be updated with the approval or rejection status when MES staff submits their decision.
-  \item \textbf{Priority}: High
+  \item \textbf{Requirement Number}: 002  
+  \item \textbf{Description}: The system must allow MES staff to approve or reject reimbursement requests, updating the status accordingly.  
+  \item \textbf{Rationale}: Administrators require an approval workflow to finalize reimbursements; otherwise, requests cannot be processed or escalated.  
+  \item \textbf{Fit Criterion}:  
+  \begin{itemize}
+    \item An administrator can change a request’s status to Approved or Rejected.
+    \item The change must reflect in the database and be visible to the submitter.
+  \end{itemize}
+  \item \textbf{Priority}: High  
   \item \textbf{Originator}: MES Finance Team
 
   \bigskip
 
-  \item \textbf{Requirement Number}: 003
-  \item \textbf{Description}: The system must send a notification to MES financial managers when their reimbursement requests are approved or rejected.
-  \item \textbf{Rationale}: This ensures that club financial managers are informed of the status of their reimbursement requests.
-  \item \textbf{Fit Criterion}: A notification must be sent within a short amount of time after approval or rejection of a reimbursement request to the person who requested it. In case of approval, this will include some form of receipt for the user confirming their reimbursement.
-  \item \textbf{Priority}: Medium
+  \item \textbf{Requirement Number}: 003  
+  \item \textbf{Description}: The system must notify the request submitter whenever there is a change in the status of the reimbursement request.  
+  \item \textbf{Rationale}: Submitters must be informed of any updates to address additional requirements or confirm approvals.  
+  \item \textbf{Fit Criterion}:  
+  \begin{itemize}
+    \item A notification is sent (email or user-chosen method) within 30 seconds of status change.
+    \item 90\% of notifications should reach users successfully under normal conditions.
+  \end{itemize}
+  \item \textbf{Priority}: Medium  
   \item \textbf{Originator}: MES Finance Team
 
   \bigskip
 
-  \item \textbf{Requirement Number}: 004
-  \item \textbf{Description}: The system must allow administrators to access all financial records, audit logs, and user activity.
-  \item \textbf{Rationale}: Administrators need full access for auditing and tracking user activity.
-  \item \textbf{Fit Criterion}: Administrators must be able to view any financial records or user actions.
-  \item \textbf{Priority}: High
+  \item \textbf{Requirement Number}: 004  
+  \item \textbf{Description}: The system must allow administrators to access all financial records, audit logs, and user actions for oversight.  
+  \item \textbf{Rationale}: Full access is needed for auditing, compliance, and potential investigations.  
+  \item \textbf{Fit Criterion}:  
+  \begin{itemize}
+    \item An administrator can retrieve data on any submitted reimbursement or user action without permission errors.
+    \item The system must maintain at least one year’s worth of logs for each financial record.
+  \end{itemize}
+  \item \textbf{Priority}: High  
   \item \textbf{Originator}: System Administrators
   
-  \bigskip
-
 \end{itemize}
 
 \section{Look and Feel Requirements}
 \subsection{Appearance Requirements}
 \begin{enumerate}
-  \item  Animations should be kept minimal and used only when necessary to avoid distractions. \\
-  Rationale: Minimal animation improves the user experience through feedback, without being very distracting, hence keeping the focus on the functionality of the platform.
+  \item Animations must be minimal and only used to provide necessary feedback. \\
+  \textbf{Rationale}: Minimizing animations reduces distractions and maintains clarity of purpose.
 \end{enumerate}
+
 \subsection{Style Requirements}
 \begin{enumerate}
-  \item The system must not have elements that depict violence, nudity or language that is discriminatory, vulgar, or derogatory. \\ 
-  Rationale: The system should not offensive or inappropriate to users.
-  \item There will be no visually unpleasing elements such as colour combinations that strain the eyes. \\ 
-  Rationale: There should not be any elements that make the application harder to read.
-  \item The platform's tone should remain professional and formal. \\
-  Rationale: A professional tone builds trust with users by emphasizing the seriousness of the platform, particularly given its purpose in handling financial workflows.
-  \item Form fields should be simple and clear, with error states highlighted in red to help users easily identify and correct mistakes. \\
-  Rationale: Well-designed form fields minimize confusion during data entry, while clear error messages guide users through resolving issues.
-  \item Clear and intuitive icons should be used for navigation and key actions, such as submitting expenses or reviewing approvals. \\
-  Rationale: Icons provide immediate visual cues that reduces the need for text explanations.
+  \item The system must not include any imagery or language that is discriminatory, vulgar, or otherwise inappropriate. \\
+  \textbf{Rationale}: Ensures a professional and inclusive environment.
+  \item The platform should avoid high-contrast color combinations that may strain the eyes. \\
+  \textbf{Rationale}: Preserves readability and user comfort.
+  \item Overall tone shall be professional and formal. \\
+  \textbf{Rationale}: Reinforces confidence in a financial system handling sensitive data.
+  \item Form fields shall be clearly labeled, with errors highlighted in red. \\
+  \textbf{Rationale}: Clear labels and error indicators reduce user confusion.
+  \item Icons for navigation or key actions shall be intuitive and consistent. \\
+  \textbf{Rationale}: Simplifies learning curve and speeds up task completion.
 \end{enumerate}
 
 \section{Usability and Humanity Requirements}
 \subsection{Ease of Use Requirements}
-
 \begin{enumerate}
-  
-  \item The solution's UI elements such as buttons and forms will adhere to consistent styling in order to allow for an easy to understand user experience. \\
-  Rationale: Maintaining consistency allows user to easily understand the system while interacting with the UI.
-  \item The solution will have an organized main menu that will allow users to navigate quickly between numerous tabs. \\
-  Rationale: Having a platform that is easy to use requires a good navigation menu in order to reduce time taken for users when finding the tab they wish to visit.
+  \item The system’s UI elements (buttons, forms, menus) shall maintain consistent styling and positioning to promote ease of learning. \\
+  \textbf{Rationale}: Consistency helps new users quickly understand navigation and reduces errors.
+  \item The main menu shall allow navigation to primary features in three clicks or fewer. \\
+  \textbf{Rationale}: Quick navigation improves efficiency and user satisfaction.
 \end{enumerate}
+
 \subsection{Personalization and Internationalization Requirements}
-
 \begin{enumerate}
-  
-  \item Users will have the ability to create an account and update their information to their liking. \\
-  Rationale: This will allow users to save time for any future reimbursement requests.
+  \item N/A (English only; no additional personalization or localization required at this stage).
 \end{enumerate}
+
 \subsection{Learning Requirements}
-
 \begin{enumerate}
-  \item Users will be provided instructions if they go to a tutorial page. \\
-  Rationale: Walking the user through the reimbursement request process would effectively and efficiently teach the user on how to create requests in the future, saving time and minimizing confusion.
-  
+  \item The system shall provide a brief on-screen tutorial or help option for new users on their first reimbursement submission. \\
+  \textbf{Rationale}: Reduces user confusion and the likelihood of errors during early usage.
 \end{enumerate}
+
 \subsection{Understandability and Politeness Requirements}
-
 \begin{enumerate}
-  \item Any error messages on the platform will provide information regarding why the error is showing. \\
-  Rationale: Having detailed error messages will help users to quickly troubleshoot the problem and fix their mistakes.
+  \item All error messages shall include a description of the issue and a suggestion for fixing it. \\
+  \textbf{Rationale}: Clear guidance on errors saves user time and reduces frustration.
 \end{enumerate}
+
 \subsection{Accessibility Requirements}
-
 \begin{enumerate}
-  \item The product shall have an option for adjusting colour themes and will avoid colour combinations that are not supported for those with colour blindness. \\
-  Rationale: Allowing customizable colour themes would accomodate for users who are colour blind.
+  \item The product shall offer a high-contrast mode for visually impaired users. \\
+  \textbf{Rationale}: Ensures the platform is accessible to those with visual impairments or color blindness.
 \end{enumerate}
+
 \section{Performance Requirements}
-
 \subsection{Speed and Latency Requirements}
-The platform must ensure a responsive experience for users to maintain workflow efficiency and user satisfaction. Specific speed and latency requirements include:
-
 \begin{itemize}
-    \item Any interface between a user and the automated system shall have a response time that ensures a smooth user experience.
-    \item The response shall be fast enough to avoid interrupting the user’s flow of thought during the submission and review processes.
-    \item The system shall process and save repetitive information quickly to enhance user experience.
-    \item The product shall update status parameters in a timely manner to reflect changes accurately.
+    \item The system shall respond to user actions (page loads, form submissions) within 2 seconds for 90\% of requests under normal load.
+    \item Repetitive information entry or retrieval shall not exceed 1 second in typical usage scenarios.
 \end{itemize}
 
 \subsection{Safety-Critical Requirements}
-Given the financial nature of the platform and its handling of sensitive information, safety-critical requirements focus on data security and user privacy. These requirements include:
-
 \begin{itemize}
-    \item The platform shall comply with relevant data protection and user privacy standards.
-    \item The system shall ensure that no sensitive user data is exposed during the submission or review of expense reports.
-    \item User authentication processes must prevent unauthorized access to financial information.
-    \item Regular security audits must be performed to ensure compliance with established safety standards.
+  \item N/A (No immediate life-critical functionality; focus is on data security and accuracy).
 \end{itemize}
 
 \subsection{Precision or Accuracy Requirements}
-To ensure accurate financial reporting and user trust, precision requirements for monetary transactions and data entries are essential. These requirements include:
-
 \begin{itemize}
-    \item All monetary amounts shall be accurate to a standard level of precision.
-    \item The system shall ensure the accuracy of expense calculations to prevent discrepancies in reporting.
-    \item The product shall validate and display error messages for any inaccurate entries immediately upon submission.
+    \item All monetary values must be stored and displayed with two decimal places.
+    \item The system shall validate numerical fields to prevent data entry errors (e.g., non-numeric amounts).
 \end{itemize}
 
 \subsection{Robustness or Fault-Tolerance Requirements}
-The platform must demonstrate robustness to ensure continuous operation even during unexpected failures or high usage. Specific robustness requirements include:
-
 \begin{itemize}
-    \item Automatic backups of all financial data shall occur regularly to prevent data loss.
+    \item The system shall back up financial records daily to prevent loss from system failures or corruption.
 \end{itemize}
 
 \subsection{Capacity Requirements}
-The platform must accommodate a significant number of users and transactions, ensuring it can handle the expected load. These requirements include:
-
 \begin{itemize}
-    \item The product shall cater to a large number of simultaneous users during peak usage hours, ensuring that the system remains responsive.
-    \item The platform must handle a high volume of expense report submissions without degradation in performance.
-    \item The database shall be capable of storing financial records for an extended period, accommodating historical data for auditing purposes.
+    \item The system shall support at least 200 concurrent users during peak usage without a noticeable slowdown.
+    \item The database must store up to five years of financial transactions without performance degradation.
 \end{itemize}
 
 \subsection{Scalability or Extensibility Requirements}
-To meet future growth and increased demand, the platform must be designed for scalability. Key requirements include:
-
 \begin{itemize}
-    \item The product shall be capable of scaling to accommodate a growing number of users and transactions over time.
-    \item The platform must handle increasing transaction volumes as the organization grows.
-    \item The system architecture should be modular to facilitate the addition of new features without requiring significant redesign.
+    \item The system shall allow for adding new user roles or additional student groups without a major redesign of the database schema.
 \end{itemize}
 
 \subsection{Longevity Requirements}
-The longevity of the platform is crucial for ensuring a return on investment and sustainability. Requirements include:
-
 \begin{itemize}
-    \item The product shall be expected to operate effectively for an extended period within the defined maintenance budget.
-    \item All components of the system must be built with durability and support in mind, with the expectation of routine maintenance.
+    \item The product shall be maintainable for at least five years under a defined maintenance budget.
 \end{itemize}
 
 \section{Operational and Environmental Requirements}
 \subsection{Expected Physical Environment}
 \begin{enumerate}
-  \item The system will be in an office room.
-  \item The system will be located in the McMaster Campus. 
-  \item The system will be useable in any natural environment for a laptop or desktop. 
+  \item The system will be used primarily in indoor office settings, with stable power and networking. 
 \end{enumerate}
+
 \subsection{Wider Environment Requirements}
 \begin{enumerate}
-  \item The system will make the MES limit the use of Google Forms/Excel for reimbursements and adopt the application for these requests.
+  \item The system is intended to replace manual methods (Google Forms, spreadsheets) for MES reimbursements.
 \end{enumerate}
 
 \subsection{Requirements for Interfacing with Adjacent Systems}
 \begin{enumerate}
-  \item The app will be useable on a desktop and laptop.
-  \item The app will be running on Windows, Mac and Linux. 
-  \item The app will work on the last 4 versions of Chrome, Firefox and Edge. 
+  \item The system must be accessible from Windows, Mac, and Linux devices, supporting at least the last four versions of major browsers (Chrome, Firefox, Edge).
 \end{enumerate}
+
 \subsection{Productization Requirements}
 \begin{enumerate}
-  \item N/A (this product is not for sale) 
+  \item N/A (The product is not for external sale).
 \end{enumerate}
+
 \subsection{Release Requirements}
 \begin{enumerate}
-  \item The product will follow an agile software development lifestyle.
-  \item The product will only have maintenance is a crucial bug is found. 
-  \item Products must be tested before each release. 
-  \item A bug found will be made into a ticket which will be given a deadline to solve by, and then a new release build will be made.  
+  \item The product shall be tested for regressions before each official release. 
+  \item Critical bugs must be addressed and resolved before a new version is deployed to production.
 \end{enumerate}
 
 \section{Maintainability and Support Requirements}
 \subsection{Maintenance Requirements}
-
 \begin{enumerate}
-  
-  \item If any changes to the reimbursement process is made in the future or if the number of student groups increase, the software will be easily extensible to allow for future development. \\
-  Rationale: Keeping the program extensible will make the program easy to maintain and add features later on in the future.
-  \item Any general maintenance issues should be resolvable by hired software developers after being provided all necessary documentation. \\
-  Rationale: The system should be well documented to allow for easy understanding of the software.
+  \item The system must allow for future reimbursement process changes or an increase in student groups without needing a complete redesign. \\
+  \textbf{Rationale}: Ensures the software remains adaptable as MES operations evolve.
+  \item The codebase and technical documentation must enable a new developer to address general maintenance issues within one week of onboarding. \\
+  \textbf{Rationale}: Proper documentation and clear structure shorten learning curves for support staff.
 \end{enumerate}
+
 \subsection{Supportability Requirements}
-
 \begin{enumerate}
-  
-  \item The solution will be supported on all platforms (Windows, Linux, Mac). \\
-  Rationale: Having a wide range of platforms will allow users from different operating systems to easily use the software.
-  \item The service shall only run on MES authorized devices. These devices are expected to have at least 4GB ram, a modern CPU, and access to the internet. \\
-  Rationale: The MES requires the solution to be ran on authorized devices due to security reasons.
+  \item The system must run on MES-authorized devices meeting a minimum of Windows 10, 4 GB RAM, and stable internet connectivity. \\
+  \textbf{Rationale}: Standard hardware and networking reduce support complexity.
 \end{enumerate}
+
 \subsection{Adaptability Requirements}
 \begin{enumerate}
-  
-  \item Expected to run above Windows 10 or ideally be updated to latest windows/mac software. \\
-  \item Expected to be designed for possible expansion (increase in users etc) \\
-  \item Expected to run on provided MES laptops and to support all platforms (Mac, Windows, Linux)
+  \item The system must handle scaling from 60 clubs to at least 100 clubs if the MES expands. \\
+  \textbf{Rationale}: Accommodates future growth without major refactoring.
 \end{enumerate}
-
-
-
-
 
 \section{Security Requirements}
 \subsection{Access Requirements}
-
 \begin{enumerate}
-  \item Administrators must have full access to all system functionalities, including creating, modifying, and deleting records for all users, managing user roles, and viewing audit logs and financial reports.
-  \item MES staff must have access to financial records, reimbursement requests, audit logs, and the ability to approve or reject reimbursement requests.
-  \item Club financial managers must have access to their respective club's financial records, submission of reimbursement requests, and viewing of their club's budget tracking, but no access to financial data from other clubs.
-  \item Only administrators and MES staff must be able to access sensitive data such as vendor contracts, budget allocations, and event financials.
-  \item Club financial managers must not have access to sensitive financial information beyond their own club's data.
-  \item Administrators and MES staff must be able to modify financial records, approve budgets, and manage payments, while club financial managers can only submit reimbursement requests.
-  \item All access to information and functions, such as reimbursement approval and budget tracking, must be restricted according to user roles to protect the confidentiality of the financial data.
+  \item Administrators must have full privileges to view, modify, or delete all financial records, user roles, and audit logs. \\
+  \textbf{Rationale}: Necessary for oversight, auditing, and compliance checks.
+  \item Club financial managers shall only access or modify data relevant to their own club. \\
+  \textbf{Rationale}: Protects privacy and data integrity across different clubs.
 \end{enumerate}
 
 \subsection{Integrity Requirements}
-
 \begin{enumerate}
-    \item The system must ensure that all financial data, such as budgets, expense reports, and reimbursement requests, remain accurate and have not been tampered with. This includes preventing inaccurate or unauthorized modifications to any financial records. This is to ensure that submitted data is valid and consistent with the system's requirements.
-    \item The system shall prevent internal misuse, such as incorrect data entry, through validation rules and error handling mechanisms.
-    \item To maintain data integrity, the system must perform automated backups of all important financial data. In the event of system failure, data corruption, or accidental deletion, these backups should allow the system to recover with minimal data loss. Recovery processes should be tested regularly to ensure reliability.
-    \item The system shall maintain detailed logs of all actions taken within the platform, such as data modifications, approvals, or deletions. These logs will be immutable and can be used to restore data or identify the source of an error if data becomes corrupted or tampered with.
+  \item All modifications to financial records must be logged with user ID, timestamp, and action details. \\
+  \textbf{Rationale}: Ensures traceability of changes for audit and compliance.
 \end{enumerate}
 
 \subsection{Privacy Requirements}
-
 \begin{enumerate}
-  \item The system must comply with all relevant privacy laws and regulations to ensure that personal data is handled in accordance with these laws.
-  \item The system must obtain consent from users before collecting personal information. Users must have the ability to revoke data collection consent at any time, and the system must stop processing or storing the data on the user.
-  \item Users must be able to view, edit, or request corrections to their personal data stored in the system.
-  \item The system must notify users of any changes to its information or privacy policy. Users should have the opportunity to review and give feedback or consent to the changes before any further processing of their data.
-  \item The system must protect all personal information with encryption or other security measures to ensure it cannot be accessed, modified, or deleted by unauthorized users. 
+  \item The system must adhere to PIPEDA, ensuring personal data is handled securely and only for authorized purposes. \\
+  \textbf{Rationale}: Protects user data and aligns with legal standards.
+  \item Users should be able to request corrections or removal of their personal data if allowed by MES policies. \\
+  \textbf{Rationale}: Respects user rights and privacy.
 \end{enumerate}
 
 \subsection{Audit Requirements}
-
 \begin{enumerate}
-  \item The system must retain detailed records of all user transactions, including financial submissions, approvals, modifications, and deletions, ensuring that all actions can be traced back to the responsible user.
-  \item The system must record login attempts, both successful and unsuccessful, to provide a complete history of user access to the system.
-  \item Access to the audit logs must be restricted to authorized users, such as administrators and auditors, ensuring confidentiality of the audit data.
-  \item The system must ensure that audit data is protected from unauthorized access or tampering, using security measures such as encryption and access control.
+  \item The system must generate exportable logs detailing each significant financial action, from request submission to final approval. \\
+  \textbf{Rationale}: Facilitates investigations and historical record-keeping for compliance.
 \end{enumerate}
 
 \subsection{Immunity Requirements}
-
 \begin{enumerate}
-  \item The system must ensure that all software components and libraries used in the product are regularly updated with the latest security patches to reduce the risk of infection by known vulnerabilities.
+  \item All third-party libraries must be reviewed monthly for updates or security patches. \\
+  \textbf{Rationale}: Minimizes exposure to known vulnerabilities.
 \end{enumerate}
 
 \section{Cultural Requirements}
 \subsection{Cultural Requirements}
 \begin{enumerate}
-  \item The application must be available in English. \\
-  Rationale: English is the primary language spoken by citizens in Ontario and thus shall be the primary method of communication.
-  \item The application shall use British spelling. \\
-  Rationale: As the application is for use within McMaster University, the predominant spelling method is using British spelling.
-  \item The system must be designed to be inclusive and usable by people from diverse cultural, linguistic, and social backgrounds. This includes ensuring gender-neutral language and avoiding culturally biased terms. \\
-  Rationale:  MES is a diverse community composed of students and staff from various cultural and linguistic backgrounds. The platform must reflect this diversity by avoiding assumptions about users' cultural norms or preferences.
+  \item The interface language shall be English, using British spelling if conflict arises. \\
+  \textbf{Rationale}: Aligns with McMaster University’s regional norms.
+  \item Inclusive language shall be used to avoid cultural bias or assumptions about users. \\
+  \textbf{Rationale}: Reflects the diversity of MES’s student population.
 \end{enumerate}
 
 \section{Compliance Requirements}
-
 \subsection{Legal Requirements}
-The development of the McMaster Engineering Society (MES) Custom Financial Expense Reporting Platform must adhere to various legal requirements to ensure compliance with applicable laws and regulations.
-
 \begin{itemize}
-    \item \textbf{Data Protection Compliance:} Personal information shall be implemented in a manner that complies with the Personal Information Protection and Electronic Documents Act (PIPEDA) in Canada. This includes ensuring that user data is collected, stored, and processed securely, with consent obtained from users.
-    \item \textbf{Financial Regulations:} The platform must comply with the Financial Transactions and Reports Analysis Centre of Canada (FINTRAC) regulations to prevent money laundering and the financing of terrorist activities.
-    \item \textbf{Accessibility Compliance:} The product shall meet the requirements set forth by the Accessibility for Ontarians with Disabilities Act (AODA), ensuring that all users, regardless of their abilities, can access and utilize the platform effectively.
-    \item \textbf{Fit Criterion:} A legal opinion must be obtained confirming that the product does not violate any applicable laws or regulations.
+    \item \textbf{Data Protection Compliance:} Must comply with PIPEDA for data collection, storage, and consent.
+    \item \textbf{Accessibility Compliance:} Follow AODA guidelines for an inclusive user experience.
 \end{itemize}
 
 \subsection{Standards Compliance Requirements}
-To ensure the quality and reliability of the platform, it must comply with various industry standards. These standards are critical for avoiding delays in deployment and ensuring user trust.
-
 \begin{itemize}
-    \item \textbf{Information Security Standards:} The product shall comply with the ISO/IEC 27001 standard for information security management systems, ensuring a systematic approach to managing sensitive company and customer information.
-    \item \textbf{Software Development Standards:} The development process shall follow Agile methodologies, specifically adhering to the Agile Manifesto principles, which emphasize flexibility and collaboration.
-    \item \textbf{Fit Criterion:} The appropriate standard-keeper (e.g., certification bodies or industry organizations) must certify that the platform adheres to the specified standards throughout its development and operation.
+    \item \textbf{Information Security Standards:} Align with ISO/IEC 27001 best practices for managing sensitive information.
+    \item \textbf{Software Development Standards:} Adhere to Agile principles for iterative development and stakeholder feedback.
 \end{itemize}
 
 \section{Open Issues}
 \begin{itemize}
-  \item \textbf{Issue Number}: 001
-  \item \textbf{Cross-reference}: Affects Functional Requirement 003.
-  \item \textbf{Summary}: The team is deciding if notifications should be sent through email, SMS, or through in-app alerts.
-  \item \textbf{Stakeholders Involved}: Project Team, MES IT Team.
-  \item \textbf{Action}: Perform a survey with stakeholders to determine the preferred notification method.
-  \item \textbf{Resolution}: Expected decision within one week.
+  \item \textbf{Issue Number}: 001  
+  \item \textbf{Cross-reference}: FR-003 (Notifications)  
+  \item \textbf{Summary}: Determining whether to send notifications via email, SMS, or in-app alerts.  
+  \item \textbf{Stakeholders Involved}: Project Team, MES IT Team  
+  \item \textbf{Action}: Conduct a survey or meeting to finalize the preferred method.  
+  \item \textbf{Resolution}: Expected within one week.
 
   \bigskip
 
-  \item \textbf{Issue Number}: 002
-  \item \textbf{Cross-reference}: Affects Functional Requirement 004.
-  \item \textbf{Summary}: It is not clear how long audit logs should be stored in the system.
-  \item \textbf{Stakeholders Involved}: Project Team, MES IT Team.
-  \item \textbf{Action}: Stakeholders will be meeting to determine data retention policies. 
-  \item \textbf{Resolution}: Expected decision within two weeks.
+  \item \textbf{Issue Number}: 002  
+  \item \textbf{Cross-reference}: FR-004 (Audit Logs)  
+  \item \textbf{Summary}: Retention period for audit logs is unclear.  
+  \item \textbf{Stakeholders Involved}: Project Team, MES IT Team  
+  \item \textbf{Action}: Decide data retention policy in alignment with MES financial guidelines.  
+  \item \textbf{Resolution}: Expected within two weeks.
 
   \bigskip
 
-  \item \textbf{Issue Number}: 003
-  \item \textbf{Cross-reference}: Affects Functional Requirement 002.
-  \item \textbf{Summary}: It is not clear whether some requests should get multiple approvals from multiple people. For example, a reimbursement request showing high levels of spending needing to be reimbursed.
-  \item \textbf{Stakeholders Involved}: Project Team, MES Finance Team.
-  \item \textbf{Action}: Stakeholders will be meeting to define thresholds and cases for multiple approvals.
-  \item \textbf{Resolution}: Expected decision within two weeks.
+  \item \textbf{Issue Number}: 003  
+  \item \textbf{Cross-reference}: FR-002 (Approval Workflow)  
+  \item \textbf{Summary}: Thresholds for multi-level approvals (e.g., high-value requests) are undefined.  
+  \item \textbf{Stakeholders Involved}: Project Team, MES Finance Team  
+  \item \textbf{Action}: Define rules and thresholds for multi-level approvals.  
+  \item \textbf{Resolution}: Expected within two weeks.
 
   \bigskip
-
 \end{itemize}
 
 \section{Off-the-Shelf Solutions}
 \subsection{Ready-Made Products}
 \begin{enumerate}
-  \item There is no pre-existing solution for this problem, this problem is MES specific and has never been done before.
+  \item N/A (No existing product meets MES-specific needs).
 \end{enumerate}
+
 \subsection{Reusable Components}
 \begin{enumerate}
-  \item The main library we will use is ReactJS, there will be no other components that can be used/reused. 
+  \item Existing UI libraries and receipt parsing APIs can be integrated.
 \end{enumerate}
+
 \subsection{Products That Can Be Copied}
 \begin{enumerate}
-  \item Any budgeting apps UI can be copied and taken over for the front end of the application. With that frontend along with some changes it can be applied to our app. 
+  \item Some budgeting app UIs can inspire design but will require custom adaptation to MES workflows.
 \end{enumerate}
 
 \section{New Problems}
-
 \subsection{Effects on the Current Environment}
-The introduction of the McMaster Engineering Society (MES) Custom Financial Expense Reporting Platform will have several effects on the current implementation environment:
-
 \begin{itemize}
-    \item \textbf{Integration with Existing Processes:} The new platform will replace the cumbersome process involving Google Forms, PDFs, and spreadsheets. This transition may initially disrupt the workflow for users accustomed to the old system, necessitating training and adaptation.
-    \item \textbf{Data Migration:} Historical data from existing systems must be migrated to the new platform, which could lead to data integrity issues if not managed correctly.
-    \item \textbf{Resistance to Change:} Existing users may exhibit reluctance to adopt the new platform, impacting initial usage rates and acceptance.
-    \item \textbf{Preservation of Critical Operations:} It is crucial that the new product does not interfere with ongoing financial operations, such as payment processing or compliance reporting.
+    \item Training might be needed as users transition away from manual systems.
+    \item Historical data remains in spreadsheets unless explicitly imported.
 \end{itemize}
-
-The goal is to identify potential conflicts early to minimize disruption during implementation.
 
 \subsection{Effects on the Installed Systems}
-The new platform will interface with existing systems at MES, and understanding these interactions is critical:
-
 \begin{itemize}
-    \item \textbf{Compatibility:} Ensure that the platform is compatible with existing hardware and software, minimizing the risk of conflicts or failures during operation.
-    \item \textbf{Legacy System Considerations:} Users may need access to legacy systems during the transition phase, requiring well-defined procedures for accessing both systems without confusion.
+    \item Must ensure hardware/software compatibility with existing MES infrastructure.
+    \item Temporary hybrid usage (old and new) may occur during transition.
 \end{itemize}
-
-A model depicting these interfaces, along with data dictionary definitions, will help clarify these relationships.
 
 \subsection{Potential User Problems}
-The transition to a new system may lead to potential user problems, which should be anticipated:
-
 \begin{itemize}
-    \item \textbf{Loss of Familiarity:} Existing users may struggle with the new interface, leading to frustration and decreased productivity.
-    \item \textbf{User Error:} Inexperienced users might make errors during the transition, especially in submitting requests or processing approvals, which could impact financial accuracy.
-    \item \textbf{Support Needs:} Increased demand for technical support during the initial rollout phase may overwhelm the support team, leading to delays in assistance.
+    \item Resistance to change from familiar manual processes.
+    \item Errors if new users find the interface confusing.
 \end{itemize}
-
-Identifying these potential issues early allows for proactive measures to be taken.
 
 \subsection{Limitations in the Anticipated Implementation Environment That May Inhibit the New Product}
-Several limitations in the anticipated implementation environment may affect the success of the new platform:
-
 \begin{itemize}
-    \item \textbf{Server Capacity:} The current server infrastructure may not support the expected load during peak usage times. Upgrading server capacity may be necessary to accommodate the increased demand.
-    \item \textbf{Power Requirements:} If the new platform relies on additional hardware or services, ensuring that power capabilities meet these needs is critical to avoid downtime.
-    \item \textbf{User Bandwidth:} Users may require sufficient internet bandwidth to utilize the platform effectively, which may not be available in all cases.
+    \item Server capacity may become an issue at peak load, requiring upgrades.
+    \item Network outages or limited bandwidth could hinder usage.
 \end{itemize}
-
-Addressing these limitations early in the development process will facilitate a smoother implementation.
 
 \subsection{Follow-Up Problems}
-As the project progresses, several follow-up problems may emerge:
-
 \begin{itemize}
-    \item \textbf{Increased Demand:} If the new platform proves popular, there may be an unexpected surge in users, leading to scalability issues.
-    \item \textbf{Compliance Challenges:} New legal regulations may emerge after implementation, necessitating additional features or modifications to ensure compliance.
-    \item \textbf{Resource Allocation:} Ensuring that the necessary resources, including personnel for support and development, are available will be critical to the ongoing success of the platform.
+    \item Need for additional training if advanced features or expansions are introduced.
+    \item Possible legal/policy changes affecting how finances are tracked.
 \end{itemize}
-
-Identifying these potential follow-up problems allows for strategic planning and resource allocation to mitigate risks.
-
 
 \section{Tasks}
 \subsection{Project Planning}
-\begin{enumerate}
-  \item The lifestyle we intend to use and develop this software is an Agile software development lifestyle.
-\end{enumerate}
+An Agile approach (e.g., Scrum) will be used to iteratively refine requirements and deliverables.
 
 \subsection{Planning of the Development Phases}
 \begin{longtable}{| m{3cm} | m{10cm} |}
   \hline
   \textbf{Step} & \textbf{Description} \\
   \hline
-  \textbf{1. Requirements Gathering} & Stakeholders and the team collaborate to define high-level requirements and user stories. This is an ongoing process, with requirements being added or modified during the development cycle. \\
+  \textbf{1. Requirements Gathering} & Ongoing collaboration with stakeholders to define user stories and acceptance criteria. \\
   \hline
-  \textbf{2. Sprint Planning} & The team selects the user stories or tasks to be completed during the upcoming sprint. A sprint typically lasts 1 to 4 weeks. \\
+  \textbf{2. Sprint Planning} & Select and prioritize tasks from the backlog for each 1--4 week sprint. \\
   \hline
-  \textbf{3. Design and Architecture} & Before starting the implementation, the team defines a general approach for the architecture and design of the system. The design may evolve as new requirements are discovered. \\
+  \textbf{3. Design and Architecture} & Establish initial data models and system design, refining as needed. \\
   \hline
-  \textbf{4. Development} & The team works on the selected tasks, developing the functionality and features according to the user stories. Developers and testers collaborate closely. \\
+  \textbf{4. Development} & Implement features, coordinating with testers for immediate feedback. \\
   \hline
-  \textbf{5. Testing} & Continuous testing is done throughout the sprint. Unit tests, integration tests, and functional tests are performed to ensure that the software meets the requirements. \\
+  \textbf{5. Testing} & Conduct unit, integration, and user acceptance tests within each sprint. \\
   \hline
-  \textbf{6. Review and Retrospective} & At the end of the sprint, the team holds a sprint review to showcase the completed work. A retrospective is also held to discuss improvements for the next sprint. \\
+  \textbf{6. Review and Retrospective} & Evaluate completed work, gather stakeholder feedback, and identify improvements for the next sprint. \\
   \hline
-  \textbf{7. Release Planning} & The team decides when to release new features to production. This can happen after each sprint or after several sprints, depending on the project's needs. \\
+  \textbf{7. Release Planning} & Decide on feature packages and when to deploy them to production. \\
   \hline
-  \textbf{8. Continuous Feedback} & The team gathers feedback from stakeholders and users to refine the product in subsequent sprints, ensuring the software evolves according to user needs. \\
+  \textbf{8. Continuous Feedback} & Stakeholder input guides future sprints, ensuring alignment with evolving needs. \\
   \hline
-  \end{longtable}
+\end{longtable}
+
+\subsection{Requirement Priority}
+
+The following outlines the priority levels for each category of requirements in this SRS, along with brief rationales. These priorities guide the order in which features should be addressed during development when resources (time, budget) are constrained.
+
+\begin{itemize}
+
+    \item \textbf{Functional Requirements (Highest Priority)} \\
+    \textbf{Rationale:} Core functionalities like request submission, approval workflows, and admin oversight (FR-001, FR-002, FR-003, and FR-004) form the backbone of the system. Without these features, the MES cannot handle reimbursements effectively.
+
+    \item \textbf{Security and Privacy Requirements (High Priority)} \\
+    \textbf{Rationale:} Financial data is sensitive. Ensuring controlled access, encryption, and adherence to legal standards (e.g., PIPEDA) is critical to user trust and regulatory compliance. Security failures can severely undermine the system’s viability.
+
+    \item \textbf{Compliance Requirements (High Priority)} \\
+    \textbf{Rationale:} Meeting legal (PIPEDA, AODA) and industry standards (ISO/IEC 27001) is non-negotiable for a financial platform. Non-compliance can lead to legal repercussions and reputational damage.
+
+    \item \textbf{Performance Requirements (Medium–High Priority)} \\
+    \textbf{Rationale:} The system must reliably manage peak loads and handle concurrent users. While performance optimization can occur iteratively, unacceptable lag or downtime would undermine user confidence and adoption.
+
+    \item \textbf{Usability and Accessibility Requirements (Medium Priority)} \\
+    \textbf{Rationale:} A user-friendly interface and features like high-contrast mode encourage adoption and reduce errors. Though essential for overall success, these can be refined after the core reimbursement logic is in place.
+
+    \item \textbf{Look and Feel Requirements (Medium Priority)} \\
+    \textbf{Rationale:} Maintaining a clean, professional interface supports a positive user experience, especially important for financial transactions. However, basic functionality and security must still take precedence.
+
+    \item \textbf{Maintainability and Support Requirements (Medium Priority)} \\
+    \textbf{Rationale:} Ensuring the codebase is well-documented and easily extensible will save time and costs in the long run, especially if MES processes change or the platform expands to serve more groups. While it may not block initial launch, neglecting maintainability increases technical debt.
+
+    \item \textbf{Operational and Environmental Requirements (Medium Priority)} \\
+    \textbf{Rationale:} The system’s environment (offices, MES-provided hardware) and adjacency to other processes (e.g., budget committees, cloud backups) must be stable to avoid downtime. This stability underpins successful day-to-day usage.
+
+    \item \textbf{Cultural Requirements (Low–Medium Priority)} \\
+    \textbf{Rationale:} Respectful, inclusive language and British spelling (as required by McMaster conventions) are important but do not hinder core financial workflows. These can be verified or adjusted without blocking core features.
+
+    \item \textbf{Longevity Requirements (Medium Priority)} \\
+    \textbf{Rationale:} Building the system to last at least five years is valuable for ROI and operational continuity; however, it can be balanced with immediate functional needs and iterative improvements.
+
+\end{itemize}
 
 \section{Migration to the New Product}
 \subsection{Requirements for Migration to the New Product}
-N/A - There are no current requirements to migrate data from the old product to the new product since no existing data will be imported into the new MES-ERP system. Historical reimbursement data from previous systems will be considered as legacy information and will remain in the old system, which will be referenced when necessary.
+N/A --- No official migration of legacy data is currently mandated. Historical files remain in their existing formats unless otherwise requested.
 
 \subsection{Data That Has to be Modified or Translated for the New System}
-N/A - No existing data will be modified or translated. Should it become necessary to import historical data in the future, this process will be considered during a potential extension of the system, as detailed in Section 24.
+N/A --- No translation of old data is required for the first release. Further data integration can be explored later.
 
 \section{Costs}
-
-The cost estimation for the McMaster Engineering Society Custom Financial Expense Reporting Platform is based on factors such as functional and non-functional requirements, the difficulty of the business use cases, and the expected development effort.
-
 \subsection{Labor Costs}
-The total estimated labor cost is based on the following:
 \begin{itemize}
-    \item \textbf{Development Hours}: The estimated time required for developing the platform is between 400 to 500 hours. This estimate accounts for the implementation of core features such as reimbursement submissions, approval workflows, and financial tracking and integration with third-party services for sms notifications, and UI/UX design.
-    \item \textbf{Testing Hours}: Testing the platform, including unit testing and integration testing, is expected to take 50 to 70 hours. This estimate is based on functional requirements and the need to ensure stability across many use cases.
+    \item \textbf{Development Hours}: Estimated 400--500 hours to implement key features (reimbursement flow, approvals, budgeting).
+    \item \textbf{Testing Hours}: Estimated 50--70 hours for comprehensive testing (unit, integration, acceptance).
 \end{itemize}
 
 \subsection{Monetary Costs}
-While the development and testing are measured in hours, the following are expected to have real monetary costs:
 \begin{itemize}
-    \item \textbf{Server Operating Costs}: The system will be hosted on a local server provided by MES. Although there is no cloud storage cost, running the server will have electricity and maintenance costs. These are expected to be minimal and can be estimated at approximately \$10 to \$20 per month.
+    \item \textbf{Server Operating Costs}: \$10--\$20 monthly for electricity and basic upkeep of MES’s local server.
 \end{itemize}
 
 \subsection{Additional Considerations}
 \begin{itemize}
-    \item \textbf{Maintenance Costs}: After development, maintenance will be required for system updates, bug fixes, and adding new features. This will likely require an extra 5-10 hours per month.
-    \item \textbf{Backup Plan}: An extra 10-20 hours is set aside for unexpected issues or changes in requirements during development.
+    \item \textbf{Maintenance Costs}: 5--10 hours monthly for bug fixes and feature updates.
+    \item \textbf{Backup Budget}: 10--20 hours set aside for unforeseen issues or requirement changes.
 \end{itemize}
 
-\section{Waiting Room}
+\section{Likely Changes}
+Potential future additions include:
 \begin{enumerate}
-  \item A mobile app version of the platform should be developed for easier on-the-go access to financial tracking and submissions. \\
-  Rationale: A dedicated mobile app would improve accessibility for users who need to submit expenses or view budgets while away from their desktops. Although this would be beneficial, it is not critical for the platform's core functionality as responsive design already ensures usability on mobile devices.
-  \item Implement machine learning-based expense categorization to automatically categorize expenses based on historical data. \\
-  Rationale: Automated categorization of expenses would reduce manual entry and improve accuracy, providing an intelligent system that learns from user inputs. This is a technically complex feature that could be revisited after the platform's initial release.
-  \item Provide users with customizable dashboards where they can select and prioritize the financial metrics most relevant to them. \\
-  Rationale: Customizable dashboards allow users to personalize their experience and focus on the data that matters most to them. While this is an attractive feature, it can be delayed until after the core dashboard functionalities are developed.
-  \item Enable multi-language functionality, allowing users to switch between different languages for a more inclusive experience. \\
-  Rationale: MES is a diverse community with users from various linguistic backgrounds. Multi-language support would enhance accessibility and usability for all users. However, this feature is not critical for the platform's initial release and can be considered in future updates.
-  \item The system should include functionality to import historical reimbursement data from the previous system, allowing all past transactions and records to be accessible within the new MES-ERP platform. \\
-  Rationale: Historical data migration will allow users to reference past financial transactions within the new system, ensuring continuity and easy access to older records. This feature, while not critical to the initial deployment, adds value by consolidating all financial data into a single platform which reduces the need for referencing multiple systems.
+  \item A mobile app for instant expense submission.
+  \item Machine learning-based receipt categorization to minimize manual data entry.
+  \item Customizable dashboards for different user roles.
+  \item Multi-language support to serve a broader community.
+  \item Historical data import from prior systems.
 \end{enumerate}
 
 \section{Ideas for Solution}
-A solution for this will be a web-based finance and accounting system using JavaScript, NextJS, React, and Git to address the MES's challenges in managing reimbursement requests for 60 student groups. This system will streamline financial operations by allowing students to submit reimbursement requests with modular receipt uploads, real-time status tracking, and automated notifications. It will also feature live ledger tracking, custom budget creation, and support for multiple approval levels, ensuring transparency and reducing delays in request processing. This solution will greatly increase the efficiency of the old system the MES uses (excel files). Typescript will be used as the primary programming language. NextJS will serve as the framework for both front-end and back-end. React will also be used to create a responsive and interactive experience for the app. Git will manage version control, allowing the development team to share code, track changes, and collaborate efficiently without overwriting each other’s work. 
+A web-based finance and accounting solution using JavaScript, NextJS, React, and Git is proposed to handle the MES’s reimbursement challenges:
+\begin{itemize}
+    \item Streamlines submission with digital receipts and real-time status tracking.
+    \item Offers automated notifications for both submitters and administrators.
+    \item Includes budget oversight and multiple approval levels to prevent lost requests.
+\end{itemize}
+TypeScript will serve as the main language. NextJS handles front-end and back-end, with React providing a responsive, interactive UI. Git supports version control for collaborative development.
+
+\newpage{}
+\section*{References}
+
+\begin{flushleft}
+Hunter, C. (n.d.). \textit{Software Requirements Specification (SRS)} [PDF]. GitHub.
+\url{https://github.com/cer-hunter/OAR-CAS741/blob/main/docs/SRS/SRS.pdf}
+
+\vspace{1em}
+
+McMaster Engineering Society. (n.d.). \textit{Home}.
+\url{https://macengsociety.ca/}
+\end{flushleft}
+
 \newpage{}
 \section*{Appendix --- Reflection}
 
 The information in this section will be used to evaluate the team members on the
-graduate attribute of Lifelong Learning.  Please answer the following questions:
+graduate attribute of Lifelong Learning. Please answer the following questions:
 
 \begin{enumerate}
-  \item What knowledge and skills will the team collectively need to acquire to
-  successfully complete this capstone project?  Examples of possible knowledge
-  to acquire include domain specific knowledge from the domain of your
-  application, or software engineering knowledge, mechatronics knowledge or
-  computer science knowledge.  Skills may be related to technology, or writing,
-  or presentation, or team management, etc.  You should look to identify at
-  least one item for each team member.
-  \item For each of the knowledge areas and skills identified in the previous
-  question, what are at least two approaches to acquiring the knowledge or
-  mastering the skill?  Of the identified approaches, which will each team
-  member pursue, and why did they make this choice?
+  \item \textbf{What knowledge and skills will the team collectively need to acquire to
+  successfully complete this capstone project?}
+
+  As a team, we must acquire technical and domain-specific knowledge, as well as relevant soft skills. Key areas include:
+  \begin{itemize}
+    \item \textbf{Domain-Specific Knowledge:} Understanding the MES’s financial workflows, budgeting cycles, and typical expense categories.
+    \item \textbf{Frontend Development:} Building intuitive and responsive user interfaces with React.
+    \item \textbf{Backend and Database Management:} Managing data securely and in real time, possibly using NextJS and Supabase.
+    \item \textbf{Project Management:} Using Agile processes and Git for efficient collaboration and consistent code quality.
+  \end{itemize}
+
+  \item \textbf{For each of the knowledge areas and skills identified in the previous
+  question, what are at least two approaches to acquiring the knowledge or mastering the skill? Which will the team pursue, and why?}
+
+  \begin{itemize}
+    \item \textbf{Domain-Specific Knowledge}
+    \begin{itemize}
+      \item Interview MES finance staff and student leaders to understand current workflows.
+      \item Examine existing reimbursement documents and spreadsheets.
+      \item \textit{Chosen Approach:} Direct interviews to obtain real-world context and pain points.
+    \end{itemize}
+
+    \item \textbf{Frontend Development}
+    \begin{itemize}
+      \item Complete online tutorials or short courses in React.
+      \item Build a small prototype and gather feedback from typical users.
+      \item \textit{Chosen Approach:} Prototype-based learning to identify usability issues early.
+    \end{itemize}
+
+    \item \textbf{Backend and Database Management}
+    \begin{itemize}
+      \item Study official Supabase and PostgreSQL documentation.
+      \item Implement a proof-of-concept backend to test data flow and security.
+      \item \textit{Chosen Approach:} Hands-on experimentation to confirm performance and reliability before scaling.
+    \end{itemize}
+
+    \item \textbf{Project Management}
+    \begin{itemize}
+      \item Use GitHub Projects, Kanban boards, or Scrum boards for sprint planning.
+      \item Conduct frequent reviews and retrospectives with stakeholders.
+      \item \textit{Chosen Approach:} An Agile framework enabling iterative feedback, ensuring the final product meets evolving needs.
+    \end{itemize}
+  \end{itemize}
 \end{enumerate}
 
 \end{document}
