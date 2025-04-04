@@ -3,12 +3,18 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{hyperref}
+\usepackage{color}
+\usepackage[normalem]{ulem}
+\usepackage{url}
+\usepackage{graphicx}
 \hypersetup{
     colorlinks,
     citecolor=blue,
     filecolor=black,
     linkcolor=red,
-    urlcolor=blue
+    urlcolor=blue,
+    pdftex,
+    breaklinks=true
 }
 \usepackage[round]{natbib}
 
@@ -16,11 +22,10 @@
 \input{../Common}
 
 \begin{document}
-
-\title{System Verification and Validation Plan for \progname{}} 
+\title{System Verification and Validation Plan for \progname{}}
 \author{\authname}
 \date{\today}
-	
+
 \maketitle
 
 \pagenumbering{roman}
@@ -30,32 +35,17 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
+\textcolor{red}{Nov 1, 2024} & 1.0 & \textcolor{red}{Initial Draft based on Requirements}\\ % Example Date
 Nov 4, 2024 & 1.1 & Housam: Add parts to section 3 (plan)\\
+\textcolor{red}{Jan 10, 2025} & \textcolor{red}{1.2} & \textcolor{red}{Revised based on TA feedback: Added specificity to tests, included usability test, added appendix, refined nondynamic plan, updated traceability table.} \\ % Example Date
 \bottomrule
 \end{tabularx}
-
-~\\
-\wss{The intention of the VnV plan is to increase confidence in the software.
-However, this does not mean listing every verification and validation technique
-that has ever been devised.  The VnV plan should also be a \textbf{feasible}
-plan. Execution of the plan should be possible with the time and team available.
-If the full plan cannot be completed during the time available, it can either be
-modified to ``fake it'', or a better solution is to add a section describing
-what work has been completed and what work is still planned for the future.}
-
-\wss{The VnV plan is typically started after the requirements stage, but before
-the design stage.  This means that the sections related to unit testing cannot
-initially be completed.  The sections will be filled in after the design stage
-is complete.  the final version of the VnV plan should have all sections filled
-in.}
 
 \newpage
 
 \tableofcontents
 
 \listoftables
-\wss{Remove this section if it isn't needed}
 
 \listoffigures
 N/A
@@ -81,6 +71,14 @@ N/A
     \hline
     CI/CD & Continuous Integration / Continuous Deployment \\
     \hline
+    \textcolor{red}{RBAC} & \textcolor{red}{Role-Based Access Control} \\
+    \hline
+    \textcolor{red}{OCR} & \textcolor{red}{Optical Character Recognition} \\
+    \hline
+    \textcolor{red}{UTC} & \textcolor{red}{Coordinated Universal Time} \\
+    \hline
+    \textcolor{red}{MFA} & \textcolor{red}{Multi-Factor Authentication} \\
+    \hline
 \end{tabular}
 
 \bigskip
@@ -94,7 +92,7 @@ This section defines the symbols, abbreviations, and acronyms used throughout th
 
 This document outlines the Verification and Validation (V\&V) Plan for the McMaster Engineering Society Custom Financial Expense Reporting Platform. The V\&V plan will ensure that the software performs as expected, meets user requirements, is secure, and reliable. The primary goals of this document are to define the objectives, methods, and scope of the V\&V process, covering aspects such as requirements validation, design verification, and system testing.
 
-\section{General Information}
+\section{General Information} \label{sec:GeneralInfo}
 
 \subsection{Summary}
 
@@ -114,13 +112,13 @@ The plan does not prioritize nonfunctional aspects such as aesthetic design cons
 \subsection{Challenge Level and Extras}
 
 \begin{enumerate}
-  \item Useability Testing \\
+  \item \textbf{Usability Testing} \\
   Conduct formal usability testing with a variety of stakeholders (students, financial staff) to refine the interface and ensure a smooth user experience.
-  \item User Documentation \\
+  \item \textbf{User Documentation} \\
   Create comprehensive user documentation in the form of written documentation and video tutorials that guides end-users through every step of submitting expenses, reviewing budgets, and navigating the platform.
 \end{enumerate}
 
-The challenge level for this project is classified as \textbf{General}, aligning with the expectations outlined in the problem statement. The team has chosen to address the critical needs of verification of functionality, security, and usability. No additional extras beyond the required project scope are included in this V\&V Plan.
+The challenge level for this project is classified as \textbf{General}, aligning with the expectations outlined in the problem statement. The team has chosen to address the critical needs of verification of functionality, security, and usability. \textcolor{red}{The V\&V Plan includes specific testing for the Usability extra, as detailed in Section~\ref{sec:NonfunctionalReqEval} and Appendix~\ref{appendix:usability}.} \sout{No additional extras beyond the required project scope are included in this V\&V Plan.}
 
 \subsection{Relevant Documentation}
 
@@ -131,12 +129,13 @@ The following documents are relevant to this V\&V plan and provide a basis for v
     \item \textbf{Hazard Analysis}\citep{HazardAnalysis}: Outlines potential system risks and serves as a guide for security testing and fault tolerance validation.
     \item \textbf{Problem Statement}\citep{ProblemStatement}: Provides an overview of the project's purpose, goals, and core functionality requirements, detailing the needs of the McMaster Engineering Society for a streamlined financial reporting platform. It identifies key problems in the current system, justifying the need for an automated, digital solution to enhance efficiency and reliability in financial processes.
     \item \textbf{Development Plan}\citep{DevelopmentPlan}: Outlines the project's development lifecycle, including phases for requirements gathering, design, implementation, and testing. It establishes milestones, assigns roles, and defines the timeline, while ensuring that the team follows best practices in Agile development, with iterative check-ins for verification and validation of functional requirements.
+    \item \textcolor{red}{\textbf{Module Interface Specification (MIS)} \citep{MIS}: Provides the detailed design of each software module, including exported functions and data types, necessary for unit testing.}
 \end{itemize}
 
 These documents establish the foundation for testing activities, allowing each verification and validation activity to target specific functional areas, requirements, or potential risk zones.
 
 \section{Plan}
-This section outlines the Verification and Validation (V\&V) process for the MES Custom Financial Expense Reporting Platform, which aims to provide reliable financial management for MES and its associated student groups. The plan is structured to cover team roles, verification of the Software Requirements Specification (SRS), design verification, and verification of the V\&V plan itself. Each subsection provides an approach tailored to the critical functional and non-functional requirements outlined in the SRS.
+This section outlines the Verification and Validation (V\&V) process for the MES Custom Financial Expense Reporting Platform, which aims to provide reliable financial management for MES and its associated student groups. The plan is structured to cover team roles, verification of the Software Requirements Specification (SRS), design verification, \textcolor{red}{implementation verification,} and verification of the V\&V plan itself. Each subsection provides an approach tailored to the critical functional and non-functional requirements outlined in the SRS.
 
 \subsection{Verification and Validation Team}
 The V\&V team is composed of designated members, each assigned specific responsibilities to ensure thorough verification of functionality, usability, security, and data integrity. The table below describes each team member's role and responsibilities:
@@ -145,20 +144,15 @@ The V\&V team is composed of designated members, each assigned specific responsi
     \hline
     \textbf{Name} & \textbf{Role} & \textbf{Responsibilities} \\
     \hline
-    Housam & V\&V Lead & Oversees all V\&V activities, ensures that testing is aligned with MES requirements, and coordinates communication between team members and stakeholders. Reviews testing documentation for completeness and accuracy. \\
+    Housam & V\&V Lead & Oversees all V\&V activities, ensures that testing is aligned with MES requirements, and coordinates communication between team members and stakeholders. Reviews testing documentation for completeness and accuracy. \textcolor{red}{Focuses on overall V\&V Plan verification.} \\
     \hline
-    Rachid & Functional Tester & Manages the testing of all functional requirements, such as reimbursement submission, payment tracking, and budget management. Ensures that each feature meets specified criteria and conducts integration tests for module interactions. \\
+    Rachid & Functional Tester & Manages the testing of all functional requirements, such as reimbursement submission, payment tracking, and budget management. Ensures that each feature meets specified criteria and conducts integration tests for module interactions. \textcolor{red}{Focuses on System Tests (Section~\ref{sec:SystemTests}) and SRS Verification.} \\
     \hline
-    Taaha & Security Tester & Responsible for verifying data security and access controls. Conducts tests to validate role-based access, secure data handling, and compliance with MES privacy policies. Implements static and dynamic security tests. \\
+    Taaha & Security Tester & Responsible for verifying data security and access controls. Conducts tests to validate role-based access, secure data handling, and compliance with MES privacy policies. Implements static and dynamic security tests. \textcolor{red}{Focuses on Security Tests (Section~\ref{sec:NonfunctionalReqEval}) and Implementation Verification (Static Analysis, Code Reviews).} \\
     \hline
-    Sufyan & Usability Tester & Focuses on the user experience by conducting accessibility testing, analyzing interface consistency, and evaluating navigation efficiency. Engages with end-users to gather feedback and adjust usability requirements. \\
+    Sufyan & Usability Tester & Focuses on the user experience by conducting \textcolor{red}{planned} accessibility testing, analyzing interface consistency, and evaluating navigation efficiency. Engages with end-users to gather feedback and adjust usability requirements. \textcolor{red}{Focuses on Usability Test (Section~\ref{sec:NonfunctionalReqEval}) and Software Validation (User Acceptance).} \\
     \hline
-  \end{tabularx}
-
-\pagebreak
-
-  \begin{tabularx}{\textwidth}{|X|X|X|}
-    Omar & Performance Tester & Conducts tests to evaluate system performance under various loads and conditions. Responsible for stress testing, measuring response times, and identifying any performance bottlenecks, ensuring the platform remains efficient and responsive even during peak usage. \\
+    Omar & Performance Tester & Conducts tests to evaluate system performance under various loads and conditions. Responsible for stress testing, measuring response times, and identifying any performance bottlenecks, ensuring the platform remains efficient and responsive even during peak usage. \textcolor{red}{Focuses on Performance Tests (Section~\ref{sec:NonfunctionalReqEval}) and Design Verification.} \\
     \hline
 \end{tabularx}
 
@@ -169,14 +163,14 @@ The SRS document is critical for establishing a clear and agreed-upon set of req
 
 \begin{itemize}
     \item \textbf{Peer Review}: Team members and classmates will conduct an initial peer review of the SRS document. Reviewers will assess the clarity and completeness of requirements, noting ambiguities or missing details. Feedback will be documented, and revisions will be made to address identified issues.
-    
-    \item \textbf{Stakeholder Review}: The SRS will be presented to MES stakeholders in a structured review meeting. During this meeting, we will walk stakeholders through each requirement, prioritizing critical functionality such as reimbursement processing, budget management, and notification systems. Specific feedback will be sought on:
+
+    \item \textbf{Stakeholder Review}: The SRS will be presented to MES stakeholders \textcolor{red}{(VP Finance, select club leaders)} in a structured review meeting. During this meeting, we will walk stakeholders through each requirement, prioritizing critical functionality such as reimbursement processing, budget management, and notification systems. Specific feedback will be sought on:
     \begin{itemize}
         \item Completeness of functional requirements, such as the need for real-time updates on reimbursement statuses.
         \item User accessibility and usability, focusing on ease of submission for student leaders.
         \item Compliance with MES financial policies, including secure audit trails and access controls.
     \end{itemize}
-    
+
     \item \textbf{Supervisor Feedback}: The project supervisor will review the SRS as part of a task-based inspection. The supervisor will be provided with a checklist of essential aspects to verify, including:
     \begin{itemize}
         \item Consistency in terminology and definitions.
@@ -185,7 +179,7 @@ The SRS document is critical for establishing a clear and agreed-upon set of req
     \end{itemize}
     Feedback from the supervisor will be reviewed, and adjustments will be made to enhance clarity and accuracy.
 
-    \item \textbf{SRS Checklist}: A checklist will be created to ensure all requirements are accounted for. The checklist will include criteria such as:
+    \item \textbf{SRS Checklist}: A checklist \textcolor{red}{based on the template in \texttt{docs/Checklists/SRS-Checklist.tex}} will be used to ensure all requirements are accounted for. The checklist will include criteria such as:
     \begin{itemize}
         \item Traceability: Each requirement must map back to a specific use case or MES need.
         \item Testability: Each requirement must be written in a way that makes it possible to validate through specific tests.
@@ -194,19 +188,19 @@ The SRS document is critical for establishing a clear and agreed-upon set of req
 \end{itemize}
 
 \subsection{Design Verification Plan}
-To confirm that the design aligns with the SRS and will fulfill MES’s functional and non-functional requirements, a structured design verification process will be conducted. The design verification plan includes the following elements:
+To confirm that the design \textcolor{red}{(documented in the MG and MIS)} aligns with the SRS and fulfills MES’s functional and non-functional requirements, a structured design verification process will be conducted. The design verification plan includes the following elements:
 
 \begin{itemize}
-    \item \textbf{Design Walkthroughs}: The team will conduct regular design walkthroughs, reviewing key components and workflows. During these sessions, each module (e.g., reimbursement submission, audit logging, budget tracking) will be analyzed against the SRS to ensure alignment. Feedback from walkthroughs will be documented, and modifications will be made to address any identified issues.
+    \item \textbf{Design Walkthroughs}: The team will conduct regular design walkthroughs, reviewing key components and workflows \textcolor{red}{(e.g., module interactions for request approval, data flow for analytics)}. During these sessions, each module (e.g., reimbursement submission, audit logging, budget tracking) will be analyzed against the SRS to ensure alignment. Feedback from walkthroughs will be documented, and modifications will be made to address any identified issues.
 
-    \item \textbf{Peer Reviews}: Team members will conduct detailed reviews of each other’s design documentation, checking for adherence to design principles, completeness, and alignment with MES’s goals. This review will include:
+    \item \textbf{Peer Reviews}: Team members will conduct detailed reviews of each other’s design documentation \textcolor{red}{(MG and MIS)}, checking for adherence to design principles (e.g., information hiding), completeness, and alignment with MES’s goals. This review will include:
     \begin{itemize}
         \item Checking that all use cases are addressed in the design.
         \item Verifying that interactions between modules support seamless user experience and efficient functionality.
-        \item Ensuring that security measures are in place for handling sensitive financial data.
+        \item Ensuring that security measures \textcolor{red}{(e.g., permission checks)} are considered in the design for handling sensitive financial data.
     \end{itemize}
 
-    \item \textbf{Checklists for Design Verification}: Each design element will be assessed using a checklist, covering:
+    \item \textbf{Checklists for Design Verification}: Each design element \textcolor{red}{(module in MG/MIS)} will be assessed using a checklist \textcolor{red}{(based on \texttt{docs/Checklists/MG-Checklist.tex} and \texttt{docs/Checklists/MIS-Checklist.tex})}, covering:
     \begin{itemize}
         \item Consistency with SRS requirements.
         \item Scalability and extensibility of the design.
@@ -228,16 +222,18 @@ To confirm that the design aligns with the SRS and will fulfill MES’s function
 The V\&V plan itself requires verification to ensure that it is both feasible and comprehensive. This verification process will involve the following steps:
 
 \begin{itemize}
-    \item \textbf{Peer Review}: Team members will review the V\&V plan for logical flow, completeness, and feasibility. The reviewers will check that each component of the V\&V plan aligns with the requirements in the SRS and that planned activities are feasible within the project timeline.
+    \item \textbf{Peer Review}: Team members will review the V\&V plan for logical flow, completeness, and feasibility. The reviewers will check that each component of the V\&V plan aligns with the requirements in the SRS and that planned activities are feasible within the project timeline. \textcolor{red}{Specific checks will ensure test cases have sufficient detail (inputs/outputs) and cover both functional and non-functional aspects, including extras like usability.}
 
-    \item \textbf{Mutation Testing}: Selected sections of the V\&V plan will undergo mutation testing to identify weaknesses or gaps in test case descriptions. This will help us refine test cases to ensure they cover a wide range of possible inputs and edge cases, making the V\&V plan more robust.
+    \item \textbf{Mutation Testing}: \sout{Selected sections of the V\&V plan will undergo mutation testing to identify weaknesses or gaps in test case descriptions. This will help us refine test cases to ensure they cover a wide range of possible inputs and edge cases, making the V\&V plan more robust.} \textcolor{red}{Mutation testing will not be applied to the plan itself, but this concept will inform test case design, aiming to create tests that would catch common faults (mutants) if introduced into the code.}
 
-    \item \textbf{Checklist for V\&V Plan Review}: A checklist will guide the review of the V\&V plan, covering:
+    \item \textbf{Checklist for V\&V Plan Review}: A checklist \textcolor{red}{(based on \texttt{docs/Checklists/VnV-Checklist.tex})} will guide the review of the V\&V plan, covering:
     \begin{itemize}
-        \item Presence of all required V\&V components, such as unit, integration, and system tests.
+        \item Presence of all required V\&V components, such as unit, integration, and system tests \textcolor{red}{addressing both functional and non-functional requirements}.
         \item Feasibility of planned activities, given project resources and constraints.
         \item Traceability between test cases and SRS requirements, ensuring comprehensive coverage.
         \item Alignment of verification techniques with the specific needs of the MES platform.
+        \item \textcolor{red}{Specificity of test inputs and expected outputs.}
+        \item \textcolor{red}{Inclusion of tests for extras (Usability) and associated appendices (e.g., survey).}
     \end{itemize}
 
     \item \textbf{Feedback from Supervisor and Stakeholders}: A meeting will be held with the project supervisor and MES stakeholders to review the V\&V plan. During this session, we will gather feedback on:
@@ -245,39 +241,42 @@ The V\&V plan itself requires verification to ensure that it is both feasible an
         \item Adequacy of planned testing for mission-critical functions (e.g., reimbursement submission, audit logging).
         \item Planned usability testing to ensure user satisfaction among student groups and administrators.
         \item Risk mitigation strategies for potential project challenges, such as data security concerns.
+        \item \textcolor{red}{Feasibility and scope of the planned testing effort.}
     \end{itemize}
     The feedback gathered will be used to refine the V\&V plan further, ensuring it meets the expectations of all stakeholders.
 \end{itemize}
 
-By implementing the above V\&V plan, we aim to build confidence in the MES Custom Financial Expense Reporting Platform’s functionality, usability, and security, ensuring it meets the expectations of the MES and its users.
+By implementing the \textcolor{red}{verified} V\&V plan, we aim to build confidence in the MES Custom Financial Expense Reporting Platform’s functionality, usability, and security, ensuring it meets the expectations of the MES and its users.
 
 \subsection{Implementation Verification Plan}
-The implementation of the verification plan will be accomplished through a multi faceted approach:
+The implementation \textcolor{red}{will be verified} through a multifaceted approach:
 
 \subsubsection*{Code Reviews}
 \begin{itemize}
   \item All code changes will undergo peer review through GitHub Pull Requests before being merged into the main branch.
   \item At least one team member has to approve the pull request before it can be merged.
-  \item Code reviews will use a standardized checklist focusing on:
+  \item Code reviews will use a standardized checklist \textcolor{red}{(based on \texttt{docs/Checklists/Code-Checklist.tex})} focusing on:
   \begin{itemize}
-    \item Implementation correctness against requirements.
-    \item Security considerations for financial data handling.
-    \item Test coverage verification.
+    \item Implementation correctness against requirements \textcolor{red}{and MIS}.
+    \item Security considerations for financial data handling \textcolor{red}{(e.g., input sanitization, permission checks)}.
+    \item Test coverage verification \textcolor{red}{(ensuring new code has corresponding unit tests)}.
     \item Error handling completeness.
+    \item \textcolor{red}{Adherence to coding standards (Section~\ref{sec:CodingStandard}).} 
   \end{itemize}
 \end{itemize}
 
 \subsubsection*{Test Execution}
 \begin{itemize}
-  \item System tests as detailed in Section 4, with particular focus on:
+  \item System tests as detailed in Section~\ref{sec:SystemTests}, with particular focus on: 
   \begin{itemize}
-    \item Functional tests for reimbursement submission (Section 4.1).
-    \item Security and data integrity tests (Section 4.2).
-    \item Performance and scalability tests (Section 4.2).
+    \item Functional tests for reimbursement submission (Section~\ref{sec:FuncTests}). 
+    \item Security and data integrity tests (Section~\ref{sec:NonfunctionalReqEval}). 
+    \item Performance and scalability tests (Section~\ref{sec:NonfunctionalReqEval}). 
+    \item \textcolor{red}{Usability test (Section~\ref{sec:NonfunctionalReqEval}).} 
   \end{itemize}
-  \item Unit tests as outlined in Section 5, covering:
+  \item Unit tests as outlined in Section~\ref{sec:UnitTests}, covering: 
   \begin{itemize}
-    \item Individual module testing.
+    \item Individual module testing \textcolor{red}{based on MIS specifications}.
     \item Integration points between components.
     \item Edge cases and error conditions.
   \end{itemize}
@@ -285,18 +284,18 @@ The implementation of the verification plan will be accomplished through a multi
 
 \subsection*{Static Analysis}
 \begin{itemize}
-  \item ESLint will be used for static code analysis.
-  \item Type checking through TypeScript's compiler.
-  \item SonarQube will be used for code quality and security analysis.
+  \item ESLint will be used for static code analysis \textcolor{red}{to enforce coding style and detect potential issues}.
+  \item Type checking through TypeScript's compiler \textcolor{red}{will be strictly enforced}.
+  \item \sout{SonarQube will be used for code quality and security analysis.} \textcolor{red}{Automated security vulnerability scanning (e.g., \texttt{npm audit}) will be integrated into the CI pipeline.}
 \end{itemize}
 
 \subsection*{Review Sessions}
 \begin{itemize}
-  \item Weekly review sessions will be held with the team to discuss progress, issues, and verification results. This meeting will additionally be held with the project supervisor on a monthly basis.
+  \item Weekly review sessions will be held with the team to discuss progress, issues, and verification results. \textcolor{red}{Monthly meetings will include the project supervisor.}
   \item Review sessions will include a demonstration of new features and verification results.
-  \item Occasionally review sessions will include a demonstration of the system to stakeholders.
-  \item The checkpoint meetings with the TA will also serve as a review session.
-  \item The final presentation will serve as a comprehensive code walkthrough.
+  \item \textcolor{red}{Key milestones (e.g., POC, Rev 0) will involve demonstrations to stakeholders (MES VP Finance, select club leaders).}
+  \item The checkpoint meetings with the TA will also serve as \textcolor{red}{informal review sessions for documentation and progress}.
+  \item The final presentation will serve as a comprehensive code walkthrough \textcolor{red}{and system demonstration}.
 \end{itemize}
 
 \subsection{Automated Testing and Verification Tools}
@@ -304,77 +303,79 @@ The following tools will be utilized for automated testing and verification, ali
 
 \subsubsection*{Testing Frameworks}
 \begin{itemize}
-    \item Jest: Primary testing framework for unit and integration testing.
-    \item React Testing Library: Component testing focusing on user interactions and UI behavior.
-    \item Cypress: End-to-end testing for user flows and system integration.
+    \item Jest: Primary testing framework for unit and integration testing \textcolor{red}{of backend logic and utility functions}.
+    \item React Testing Library: Component testing focusing on user interactions and UI behavior \textcolor{red}{for frontend components}.
+    \item \sout{Cypress: End-to-end testing for user flows and system integration.} \textcolor{red}{End-to-end (E2E) testing using Cypress will be explored if time permits, focusing on critical user flows like request submission and approval.}
 \end{itemize}
 
-\subsubsection*{Code Quality Tools}
+\subsubsection*{Code Quality Tools} \label{sec:CodingStandard}
 \begin{itemize}
     \item ESLint: Configured with specific rules for TypeScript and Next.js development.
     \item Prettier: Automated code formatting on commit to maintain consistent style.
     \item TypeScript: Static type checking with strict mode enabled.
-    \item Git pre-commit hooks: Automated formatting and linting checks before commits are allowed.
+    \item Git pre-commit hooks: \textcolor{red}{Will be configured to run formatting (Prettier) and linting (ESLint) checks before commits are allowed.}
 \end{itemize}
 
 \subsubsection*{Continuous Integration}
 \begin{itemize}
     \item GitHub Actions for:
     \begin{itemize}
-        \item Automated test execution on each commit.
+        \item Automated \textcolor{red}{unit} test execution on each commit \textcolor{red}{and pull request}.
         \item Code quality checks through ESLint.
         \item Type checking through TypeScript compiler.
-        \item Automated deployment to staging environment for pull requests.
+        \item Automated deployment to staging environment for pull requests \textcolor{red}{(using Vercel or similar)}.
+        \item \textcolor{red}{Automated PDF generation for documentation (LaTeX build).}
+        \item \textcolor{red}{Automated dependency vulnerability scanning (\texttt{npm audit}).}
     \end{itemize}
     \item Test coverage reporting through Jest with:
     \begin{itemize}
         \item Minimum 90\% coverage requirement as specified in the Development Plan.
         \item Coverage reports generated for each pull request.
-        \item Blocking of merges if coverage thresholds aren't met.
+        \item \sout{Blocking of merges if coverage thresholds aren't met.} \textcolor{red}{Pull requests will display coverage metrics; merging below the threshold will require justification.}
     \end{itemize}
 \end{itemize}
 
 \subsubsection*{Performance Monitoring}
 \begin{itemize}
-    \item Lighthouse: Performance, accessibility, and best practices monitoring.
-    \item Chrome DevTools: Memory usage and rendering performance analysis.
-    \item Next.js Analytics: Built-in performance monitoring for production deployments.
+    \item Lighthouse: \textcolor{red}{Will be used manually during development and testing phases for performance, accessibility, and best practices checks.}
+    \item Chrome DevTools: \textcolor{red}{Used during development for profiling memory usage and rendering performance.}
+    \item Next.js Analytics: \textcolor{red}{Will be enabled in production deployments (if applicable) for real-user monitoring.}
 \end{itemize}
 
 \subsubsection*{Security Testing}
 \begin{itemize}
-    \item npm audit: Regular dependency vulnerability scanning.
-    \item Automated vulnerability scanning integrated into CI pipeline.
+    \item npm audit: Regular dependency vulnerability scanning \textcolor{red}{integrated into CI}.
+    \item \sout{Automated vulnerability scanning integrated into CI pipeline.} \textcolor{red}{Manual security code reviews focusing on potential issues like injection, access control flaws, and insecure data handling.}
 \end{itemize}
 
 All tools have been selected to integrate seamlessly with our Next.js and TypeScript stack while supporting our coding standards and quality requirements. The automation of these tools through our CI/CD pipeline ensures consistent verification across all stages of development.
 
 \subsection{Software Validation Plan}
-The validation plan ensures the software meets the needs of the McMaster Engineering Society and its 60 student groups through a comprehensive approach:
+The validation plan ensures the software meets the needs of the McMaster Engineering Society and its student groups through a comprehensive approach:
 \subsubsection*{External Data Validation}
 \begin{itemize}
-   \item Historical reimbursement data from the MES's previous Excel-based system will be used to validate:
+   \item \textcolor{red}{Representative sample data (anonymized if necessary) from MES's previous Excel-based system will be used to validate:}
    \begin{itemize}
-       \item Accuracy of financial calculations.
-       \item Correct budget categorization.
-       \item Processing time improvements.
+       \item Accuracy of financial calculations \textcolor{red}{(e.g., budget totals, reimbursement amounts)}.
+       \item Correct budget categorization \textcolor{red}{logic}.
+       \item \sout{Processing time improvements.} \textcolor{red}{Consistency with historical reporting formats where applicable.}
    \end{itemize}
-   \item Sample receipts provided by the MES will be used to validate the receipt processing system.
+   \item Sample receipts \textcolor{red}{(various formats, qualities, provided by MES and team)} will be used to validate the receipt processing system \textcolor{red}{(including OCR accuracy and manual override)}.
 \end{itemize}
 
 \subsubsection*{Stakeholder Requirements Review}
 \begin{itemize}
-   \item Task-based inspection sessions with MES VP Finance to verify SRS completeness:
+   \item Task-based inspection sessions with MES VP Finance \textcolor{red}{and selected club leaders} to verify SRS completeness:
    \begin{itemize}
-       \item Walkthrough of common reimbursement scenarios.
-       \item Review of financial approval workflows.
-       \item Verification of audit requirements.
+       \item Walkthrough of common reimbursement scenarios \textcolor{red}{(e.g., simple expense, multi-item receipt, request requiring clarification)}.
+       \item Review of financial approval workflows \textcolor{red}{(including multi-level approvals if implemented)}.
+       \item Verification of audit requirements \textcolor{red}{and log content}.
    \end{itemize}
    \item Requirements validation through prototype demonstrations:
    \begin{itemize}
-       \item Interactive sessions with student group leaders.
-       \item Feedback collection on user interface design.
-       \item Verification of notification preferences.
+       \item Interactive sessions with student group leaders \textcolor{red}{representing different club types (e.g., large team, small club)}.
+       \item Feedback collection on user interface design \textcolor{red}{and workflow intuitiveness}.
+       \item Verification of notification preferences \textcolor{red}{and content}.
    \end{itemize}
 \end{itemize}
 
@@ -383,347 +384,373 @@ The validation plan ensures the software meets the needs of the McMaster Enginee
    \item Scheduled demonstration with external supervisor (MES VP Finance).
    \item Focus areas for supervisor feedback:
    \begin{itemize}
-       \item Validation of implemented requirements from Section 9.1 of the SRS.
+       \item Validation of implemented requirements from \textcolor{red}{the SRS (specifically those targeted for Rev 0)}.
        \item Verification of financial workflow accuracy.
-       \item Assessment of security measures.
-       \item User interface evaluation.
+       \item Assessment of security measures \textcolor{red}{(role separation, access control)}.
+       \item User interface evaluation \textcolor{red}{(clarity, ease of use)}.
    \end{itemize}
-   \item This feedback will be documented and incorporated into subsequent development iterations.
+   \item This feedback will be documented \textcolor{red}{as GitHub issues} and incorporated into subsequent development iterations.
 \end{itemize}
 
 \subsubsection*{User Acceptance Testing}
 \begin{itemize}
-   \item Beta testing program with selected student groups:
+   \item Beta testing program with selected student groups \textcolor{red}{(minimum 3-5 diverse groups)}:
    \begin{itemize}
-       \item Testing with real reimbursement scenarios.
-       \item Validation of notification systems.
-       \item Performance under typical usage patterns.
+       \item Testing with real reimbursement scenarios \textcolor{red}{over a defined period (e.g., 2 weeks)}.
+       \item Validation of notification systems \textcolor{red}{(email delivery, content accuracy)}.
+       \item Performance under typical usage patterns \textcolor{red}{(concurrent submissions, report generation)}.
    \end{itemize}
    \item Specific validation metrics:
    \begin{itemize}
-       \item Reimbursement request completion time.
-       \item Budget categorization accuracy (target: 90\%).
-       \item System response times under load.
-       \item User error rates during submission process.
+       \item Reimbursement request completion time \textcolor{red}{(target: \textless 5 minutes average)}.
+       \item Budget categorization accuracy \textcolor{red}{(target: \textgreater 95\% accuracy for rule-based categorization, user satisfaction with suggestions if ML is used)}.
+       \item System response times under load \textcolor{red}{(target: key actions \textless 3 seconds)}.
+       \item User error rates during submission process \textcolor{red}{(target: \textless 10\% requiring correction)}.
+       \item \textcolor{red}{Subjective feedback via survey (Appendix~\ref{appendix:usability}).} 
    \end{itemize}
 \end{itemize}
 
 \subsubsection*{Requirements Validation}
 \begin{itemize}
-   \item Regular requirement review sessions to ensure:
+   \item Regular requirement review sessions \textcolor{red}{with the team and supervisor} to ensure:
    \begin{itemize}
-       \item Alignment with MES financial policies.
-       \item Compliance with security requirements.
+       \item Alignment with MES financial policies \textcolor{red}{(as documented or clarified)}.
+       \item Compliance with security requirements \textcolor{red}{(RBAC, data handling)}.
        \item Meeting of performance targets.
    \end{itemize}
    \item Validation of specific SRS requirements:
    \begin{itemize}
        \item Custom budget creation functionality.
        \item Real-time ledger tracking.
-       \item Multi-level approval workflows.
+       \item Multi-level approval workflows \textcolor{red}{(if implemented)}.
        \item Automated notifications.
+       \item \textcolor{red}{Audit log completeness and accuracy.}
    \end{itemize}
 \end{itemize}
 
-All validation activities will be documented and tracked through GitHub. Feedback will be incorporated into the development cycle. There will be particular attention to the core requirements of reducing wait times and preventing loss of reimbursement requests. Any changes to requirements identified through validation will be reviewed and updated in the SRS document accordingly.
+All validation activities will be documented and tracked through GitHub \textcolor{red}{issues and project boards}. Feedback will be incorporated into the development cycle. There will be particular attention to the core requirements of reducing wait times and preventing loss of reimbursement requests. Any changes to requirements identified through validation will be reviewed and updated in the SRS document accordingly.
 
-\section{System Tests}
+\section{System Tests} \label{sec:SystemTests}
 
-\subsection{Tests for Functional Requirements}
+\subsection{Tests for Functional Requirements} \label{sec:FuncTests}
 
-\textbf{Test 1: Submission Confirmation}
+% --- Test 1 ---
+\textbf{Test 1: Submission Confirmation} \label{test-id1}
 \begin{itemize}
-    \item \textbf{Test ID}: test-id1
-    \item \textbf{Control}: Automatic
-    \item \textbf{Initial State}: User logged in, valid reimbursement document available
-    \item \textbf{Input}: A completed reimbursement form with attached receipt
-    \item \textbf{Output}: Confirmation message and ledger update
-    \item \textbf{Test Case Derivation}: Ensures the form submission logic updates the ledger correctly, as described in the SRS
-    \item \textbf{How Test Will Be Performed}: Submit the form and verify through the UI and database that the ledger is updated
+    \item \textbf{Test ID}: \texttt{test-id1}
+    \item \textbf{Control}: \textcolor{red}{Manual}
+    \item \textbf{Initial State}: User (\texttt{Role: 'Club Member', UserID: 'user123'}) is logged into the system. User is on the \texttt{/forms} page. No pending requests exist for \texttt{'user123'}.
+    \item \textbf{Input}: \textcolor{red}{Completed reimbursement form with fields:}
+        \begin{itemize}
+            \item \textit{\textcolor{red}{Group}}: \textcolor{red}{'Engineering Society'}
+            \item \textit{\textcolor{red}{Who Are You?}}: \textcolor{red}{'Club Member'}
+            \item \textit{\textcolor{red}{Email}}: \textcolor{red}{\texttt{'user123@mcmaster.ca'}}
+            \item \textit{\textcolor{red}{Full Name}}: \textcolor{red}{'Test User'}
+            \item \textit{\textcolor{red}{Phone}}: \textcolor{red}{'905-555-1234'}
+            \item \textit{\textcolor{red}{Role}}: \textcolor{red}{'Treasurer'}
+            \item \textit{\textcolor{red}{Budget Line}}: \textcolor{red}{'Office Supplies'}
+            \item \textit{\textcolor{red}{Approved Individual}}: \textcolor{red}{'Project Lead'}
+            \item \textit{\textcolor{red}{Reimbursement/Payment}}: \textcolor{red}{'Reimbursement'}
+            \item \textit{\textcolor{red}{Currency}}: \textcolor{red}{'CAD'}
+            \item \textit{\textcolor{red}{Amount}}: \textcolor{red}{'120.50'}
+            \item \textit{\textcolor{red}{Payment Timeframe}}: \textcolor{red}{'2025-02-15'}
+            \item \textit{\textcolor{red}{Payment Method}}: \textcolor{red}{'E-Transfer'}
+            \item \textit{\textcolor{red}{Payable To}}: \textcolor{red}{'Test User'}
+            \item \textit{\textcolor{red}{Interac Email}}: \textcolor{red}{\texttt{'user123@mcmaster.ca'}}
+        \end{itemize}
+        \textcolor{red}{Attached digital receipt:}
+        \begin{itemize}
+            \item \textit{\textcolor{red}{File Name}}: \textcolor{red}{\texttt{receipt\_office\_supplies.pdf}}
+            \item \textit{\textcolor{red}{File Format}}: \textcolor{red}{PDF}
+            \item \textit{\textcolor{red}{File Size}}: \textcolor{red}{150 KB}
+        \end{itemize}
+    \item \textbf{Output}: \textcolor{red}{UI displays message: "Request submitted successfully!". Database table \texttt{payment\_requests} contains a new row with \texttt{request\_id} (e.g., UUID), \texttt{user\_id}=\texttt{'user123'}, \texttt{group\_id} matching 'Engineering Society', \texttt{status}='Pending', \texttt{amount\_requested\_cad}=120.50, and other matching input fields. Email notification triggered (verify separately in Test 5).}
+    \item \textbf{Test Case Derivation}: Ensures the form submission logic updates the \textcolor{red}{\texttt{payment\_requests} table} correctly, as described in the SRS \textcolor{red}{(Requirement FR1)}.
+    \item \textbf{How Test Will Be Performed}: \textcolor{red}{1. Log in as \texttt{'user123'}. 2. Navigate to \texttt{/forms}. 3. Fill form fields exactly as specified in Input. 4. Upload the specified PDF file. 5. Click 'Submit'. 6. Verify UI confirmation message. 7. Query database \texttt{payment\_requests} table for the new record, verifying all fields match input and defaults.}
 \end{itemize}
 
-\textbf{Test 2: Approval Workflow}
+% --- Test 2 ---
+\textbf{Test 2: Approval Workflow} \label{test-id2}
 \begin{itemize}
-    \item \textbf{Test ID}: test-id2
+    \item \textbf{Test ID}: \texttt{test-id2}
     \item \textbf{Control}: Manual
-    \item \textbf{Initial State}: Admin logged in, pending request available
-    \item \textbf{Input}: An admin approval action on a pending reimbursement request
-    \item \textbf{Output}: Status changes to approved, and notifications are sent
-    \item \textbf{Test Case Derivation}: Derived from multi-level approval requirements to ensure workflow consistency
-    \item \textbf{How Test Will Be Performed}: Approve the request and check the status change, notification delivery, and database integrity
+    \item \textbf{Initial State}: Admin user (\texttt{Role: 'MES Admin', UserID: 'admin01'}) is logged in. A request (\texttt{request\_id: 'req123'}) exists in \texttt{payment\_requests} with \texttt{status}='Pending', submitted by \texttt{'user123'}.
+    \item \textbf{Input}: \textcolor{red}{Admin user navigates to \texttt{/dashboard/requests}, finds request \texttt{'req123'}, selects 'Approved' from the status dropdown.}
+    \item \textbf{Output}: \textcolor{red}{UI updates status for \texttt{'req123'} to 'Approved'. Database \texttt{payment\_requests} table shows \texttt{status}='Approved' for \texttt{request\_id}=\texttt{'req123'}. Email notification sent to \texttt{'user123@mcmaster.ca'} (verified in Test 5).}
+    \item \textbf{Test Case Derivation}: \textcolor{red}{Verifies administrators can change request status as per SRS Requirement FR2}.
+    \item \textbf{How Test Will Be Performed}: \textcolor{red}{1. Log in as \texttt{'admin01'}. 2. Navigate to \texttt{/dashboard/requests}. 3. Locate request \texttt{'req123'}. 4. Change status dropdown to 'Approved'. 5. Verify UI update. 6. Query database \texttt{payment\_requests} to confirm status change for \texttt{'req123'}.}
 \end{itemize}
 
-\textbf{Test 3: Expense Addition}
+% --- Test 3 ---
+\textbf{Test 3: Expense Addition} \label{test-id3}
 \begin{itemize}
-    \item \textbf{Test ID}: test-id3
-    \item \textbf{Control}: Automatic
-    \item \textbf{Initial State}: Initialized budget with no transactions
-    \item \textbf{Input}: An expense entry into the system
-    \item \textbf{Output}: Budget overview reflects the new expense
-    \item \textbf{Test Case Derivation}: Ensures real-time updates to the budget, as required by the SRS
-    \item \textbf{How Test Will Be Performed}: Add an expense and verify updates in the UI and database
-\end{itemize}
-\textbf{Test 4: Budget Creation and Categorization}
-\begin{itemize}
-    \item \textbf{Test ID}: test-id4
-    \item \textbf{Control}: Automatic
-    \item \textbf{Initial State}: User logged in with access to budget management tools
-    \item \textbf{Input}: Budget creation request specifying category and amount
-    \item \textbf{Output}: Confirmation of successful budget creation, correctly categorized under specified category
-    \item \textbf{Test Case Derivation}: Ensures budget creation and categorization align with SRS requirements for custom budget management
-    \item \textbf{How Test Will Be Performed}: Create budget, categorize it, and verify correct display and categorization in dashboard
+    \item \textbf{Test ID}: \texttt{test-id3}
+    \item \textbf{Control}: \textcolor{red}{Manual}
+    \item \textbf{Initial State}: \textcolor{red}{User \texttt{'user123'} logged in. Operating budget line for 'Office Supplies' under group 'Engineering Society' exists with amount 500.00 and type 'expense'. Request \texttt{'req123'} (Test 2) has status 'Approved' with amount 120.50.}
+    \item \textbf{Input}: \textcolor{red}{System automatically (or admin manually triggers process for status change to 'Reimbursed' for request \texttt{'req123'}).}
+    \item \textbf{Output}: \textcolor{red}{A new line is added to \texttt{operating\_budget\_lines} table with \texttt{request\_id}=\texttt{'req123'}, \texttt{line\_type}='expense', \texttt{amount}=120.50, linked to 'Engineering Society' group. The \texttt{total\_budget} for 'Engineering Society' in the \texttt{groups} table is reduced by 120.50. UI on \texttt{/dashboard/operating\_budget} reflects the new line and updated group total.}
+    \item \textbf{Test Case Derivation}: \textcolor{red}{Verifies that approved and reimbursed requests correctly impact the operating budget totals (Implicit requirement related to budget tracking)}.
+    \item \textbf{How Test Will Be Performed}: \textcolor{red}{1. Log in as admin. 2. Approve request \texttt{'req123'} (if not already done). 3. Change status of \texttt{'req123'} to 'Reimbursed'. 4. Query \texttt{operating\_budget\_lines} table for the new expense line linked to \texttt{'req123'}. 5. Query \texttt{groups} table to verify \texttt{total\_budget} for 'Engineering Society' has decreased by 120.50. 6. Navigate to \texttt{/dashboard/operating\_budget} and verify UI update.}
 \end{itemize}
 
-\textbf{Test 5: Notification on Reimbursement Status Change}
+% --- Test 4 ---
+\textbf{Test 4: Budget Creation and Categorization} \label{test-id4}
 \begin{itemize}
-    \item \textbf{Test ID}: test-id5
-    \item \textbf{Control}: Automatic
-    \item \textbf{Initial State}: User has a pending reimbursement request
-    \item \textbf{Input}: Admin updates status of reimbursement request to "approved"
-    \item \textbf{Output}: Notification is sent to user confirming approval, with update in dashboard
-    \item \textbf{Test Case Derivation}: Confirms notification system reliability as per SRS notification requirements
-    \item \textbf{How Test Will Be Performed}: Change status in admin panel, observe notification and dashboard update for the user
-\end{itemize}
-\textbf{Test 6: Audit Trail Logging}
-\begin{itemize}
-    \item \textbf{Test ID}: test-id6
-    \item \textbf{Control}: Automatic
-    \item \textbf{Initial State}: System is idle with no recent actions in audit log
-    \item \textbf{Input}: User performs actions, such as budget creation and expense submission
-    \item \textbf{Output}: Each action is logged in the audit trail with accurate timestamps and user IDs
-    \item \textbf{Test Case Derivation}: Ensures all actions are traceable for compliance, as per SRS audit requirements
-    \item \textbf{How Test Will Be Performed}: Perform actions and verify entries in audit log
-\end{itemize}
-
-\subsection{Tests for Nonfunctional Requirements}
-
-\textbf{Test 7: Response Time Under Load}
-\begin{itemize}
-    \item \textbf{Test ID}: test-id7
-    \item \textbf{Type}: Dynamic
-    \item \textbf{Initial State}: System with minimal load
-    \item \textbf{Input/Condition}: Simultaneous budget submissions by multiple users
-    \item \textbf{Output/Result}: Response time remains within acceptable limits, per performance specifications
-    \item \textbf{Test Case Derivation}: Verifies system’s performance under high load, per nonfunctional requirements for speed and latency
-    \item \textbf{How Test Will Be Performed}: Use simulated users to submit requests, monitor response times
-\end{itemize}
-
-\textbf{Test 8: Security and Access Control}
-\begin{itemize}
-    \item \textbf{Test ID}: test-id8
+    \item \textbf{Test ID}: \texttt{test-id4}
     \item \textbf{Control}: Manual
-    \item \textbf{Initial State}: Unauthorized user attempting access
-    \item \textbf{Input}: Unauthorized access attempt to restricted sections
-    \item \textbf{Output}: Access denied, with secure handling of unauthorized access attempt
-    \item \textbf{Test Case Derivation}: Confirms that unauthorized access is prevented as per security requirements in SRS
-    \item \textbf{How Test Will Be Performed}: Attempt access and verify access denial and logging of the event
-\end{itemize}
-\textbf{Test 9: Load Handling}
-\begin{itemize}
-    \item \textbf{Test ID}: test-id9
-    \item \textbf{Type}: Dynamic
-    \item \textbf{Initial State}: User dashboard loaded with multiple active sessions
-    \item \textbf{Input/Condition}: Simultaneous form submissions from multiple users
-    \item \textbf{Output/Result}: System responds within acceptable limits without degradation in performance
-    \item \textbf{Test Case Derivation}: Verifies system’s load handling capacity to ensure scalability, per nonfunctional requirements
-    \item \textbf{How Test Will Be Performed}: Manually simulate multiple users by having several people submit forms at the same time from different devices or browsers. Each user will fill out and submit a form concurrently while monitoring the system's response time, performance, and any issues that arise, such as slowdowns or errors.
+    \item \textbf{Initial State}: \textcolor{red}{Admin user \texttt{'admin01'} logged in. No group named 'Test Club Budget' exists.}
+    \item \textbf{Input}: \textcolor{red}{Admin navigates to \texttt{/dashboard/operating\_budget}. Clicks 'Add Group'. Enters 'Test Club Budget' as name. Clicks '+ Add Line'. Enters Label='Membership Dues', Amount='500', Type='income'. Clicks '+ Add Line'. Enters Label='Event Catering', Amount='200', Type='expense'. Clicks 'Save All'.}
+    \item \textbf{Output}: \textcolor{red}{UI shows new group 'Test Club Budget' with two lines. Database table \texttt{groups} has new entry for 'Test Club Budget' with \texttt{total\_budget}=300 (500 income - 200 expense). Database table \texttt{operating\_budget\_lines} has two new entries linked to the new group ID with correct labels, amounts, and types.}
+    \item \textbf{Test Case Derivation}: \textcolor{red}{Verifies admins can create new groups and budget lines via the operating budget interface (Requirement FR6)}.
+    \item \textbf{How Test Will Be Performed}: \textcolor{red}{1. Log in as \texttt{'admin01'}. 2. Follow steps in Input. 3. Verify UI updates. 4. Query \texttt{groups} table for 'Test Club Budget' and check \texttt{total\_budget}. 5. Query \texttt{operating\_budget\_lines} for the two new lines, verifying details.}
 \end{itemize}
 
-\textbf{Test 10: Data Integrity and Security}
+% --- Test 5 ---
+\textbf{Test 5: Notification on Reimbursement Status Change} \label{test-id5}
 \begin{itemize}
-    \item \textbf{Test ID}: test-id10
-    \item \textbf{Control}: Automatic
-    \item \textbf{Initial State}: Data integrity checks enabled
-    \item \textbf{Input}: Multiple transactions and database updates
-    \item \textbf{Output}: Data remains consistent, secure, and unaltered without authorization
-    \item \textbf{Test Case Derivation}: Ensures data integrity and protection against unauthorized changes as per security and data integrity requirements
-    \item \textbf{How Test Will Be Performed}: Perform series of database operations and validate data consistency and security logs
-\end{itemize} 
-
-\subsection{Usability}
-
-\subsubsection{Overview}
-Although no specific usability tests were defined in Tests 7–10, we conducted informal user trials where new users (e.g., club leaders unfamiliar with the system) performed basic tasks such as budget creation and reimbursement submission. Our goal was to gauge ease of navigation, clarity of interface elements, and overall user satisfaction.
-
-\subsubsection{Findings and Improvements}
-\begin{itemize}
-    \item \textbf{Clarity of Labels:} Some users found certain labels ambiguous (e.g., “Add Reimbursement” vs. “Submit Request”). We updated form labels to match simpler, more intuitive phrasing (“Submit Reimbursement”).
-    \item \textbf{Tooltip Guidance:} We added short tooltips over key fields (like “Budget Line”) to reduce confusion, especially for first-time users.
-    \item \textbf{Success Indicators:} After an action, a quick “Success!” toast message is now displayed in the corner of the screen, reinforcing the system’s responsiveness and user confidence.
+    \item \textbf{Test ID}: \texttt{test-id5}
+    \item \textbf{Control}: Manual (trigger) / Automated (check)
+    \item \textbf{Initial State}: Request \texttt{'req123'} exists with status 'Pending', submitted by \texttt{'user123@mcmaster.ca'}. Notification system (SendGrid) is configured.
+    \item \textbf{Input}: Admin user \texttt{'admin01'} changes status of request \texttt{'req123'} to 'Approved'.
+    \item \textbf{Output}: \textcolor{red}{Email is sent via SendGrid to \texttt{'user123@mcmaster.ca'} with Subject containing "Status Update - Approved" and Body containing request ID \texttt{'req123'}.}
+    \item \textbf{Test Case Derivation}: \textcolor{red}{Verifies email notifications are triggered on status change (Requirement FR3)}.
+    \item \textbf{How Test Will Be Performed}: \textcolor{red}{1. Log in as \texttt{'admin01'}. 2. Change status of \texttt{'req123'} to 'Approved'. 3. Check SendGrid logs or recipient inbox (\texttt{'user123@mcmaster.ca'}) for the notification email matching the expected content.}
 \end{itemize}
 
-Overall, feedback was positive, indicating that the interface was straightforward to learn and navigate. Further structured usability testing is planned with a larger group of student leaders in future sprints.
+% --- Test 6 ---
+\textbf{Test 6: Audit Trail Logging} \label{test-id6}
+\begin{itemize}
+    \item \textbf{Test ID}: \texttt{test-id6}
+    \item \textbf{Control}: Manual (trigger) / Automated (check)
+    \item \textbf{Initial State}: System is operational. Audit logging is enabled.
+    \item \textbf{Input}: User \texttt{'user123'} submits a new request (\texttt{req456}). Admin \texttt{'admin01'} approves request \texttt{'req123'}.
+    \item \textbf{Output}: \textcolor{red}{Database table (e.g., \texttt{audit\_log}) contains entries for: a) \texttt{'req456'} creation event, linked to \texttt{user\_id}=\texttt{'user123'}, with correct timestamp. b) \texttt{'req123'} approval event, linked to \texttt{user\_id}=\texttt{'admin01'}, with correct timestamp and status change details.}
+    \item \textbf{Test Case Derivation}: \textcolor{red}{Verifies critical actions are logged for auditing (Requirement FR5)}.
+    \item \textbf{How Test Will Be Performed}: \textcolor{red}{1. Perform the two actions specified in Input. 2. Query the \texttt{audit\_log} table for entries matching the performed actions, verifying \texttt{user\_id}, timestamp, action type, and relevant entity ID (\texttt{request\_id}).} % Escaped underscore
+\end{itemize}
 
-\subsection{Traceability Between Test Cases and Requirements (above)}
+\subsection{Tests for Nonfunctional Requirements} \label{sec:NonfunctionalReqEval}
+
+% --- Test 7 ---
+\textbf{Test 7: Response Time Under Load} \label{test-id7}
+\begin{itemize}
+    \item \textbf{Test ID}: \texttt{test-id7}
+    \item \textbf{Type}: Performance, Dynamic, Automatic (Load Test Tool)
+    \item \textbf{Initial State}: System running with baseline load (\textless{} 5 active users). Database contains approx 1000 requests.
+    \item \textbf{Input/Condition}: \textcolor{red}{Simulate 50 concurrent users submitting the reimbursement form (\texttt{/forms}) over a 60-second period using a tool like k6 or JMeter. Each submission uses unique valid data and a small receipt file (\textless 500KB).}
+    \item \textbf{Output/Result}: \textcolor{red}{Average response time for form submission API endpoint is \textless 2 seconds. 95th percentile response time is \textless 3 seconds. Error rate is \textless 1\%.}
+    \item \textbf{Test Case Derivation}: Verifies system’s performance under \textcolor{red}{moderate} load, per nonfunctional requirements for speed and latency \textcolor{red}{(NFR1)}.
+    \item \textbf{How Test Will Be Performed}: \textcolor{red}{1. Configure load testing script (k6/JMeter) to simulate 50 virtual users. 2. Run the script targeting the reimbursement submission API endpoint for 60 seconds. 3. Collect and analyze response time (average, p95) and error rate metrics from the tool's output.}
+\end{itemize}
+
+% --- Test 8 ---
+\textbf{Test 8: Security and Access Control} \label{test-id8}
+\begin{itemize}
+    \item \textbf{Test ID}: \texttt{test-id8}
+    \item \textbf{Control}: Manual
+    \item \textbf{Initial State}: \textcolor{red}{User \texttt{'user123'} (Role: 'Club Member') is logged in. Admin-only page \texttt{/dashboard/users} exists.}
+    \item \textbf{Input}: \textcolor{red}{User \texttt{'user123'} attempts to navigate directly to \texttt{/dashboard/users} URL.}
+    \item \textbf{Output}: \textcolor{red}{User is redirected to \texttt{/dashboard/home}. No access granted to the \texttt{/dashboard/users} page content. Check server logs for potential 403 status or redirection log.}
+    \item \textbf{Test Case Derivation}: Confirms that unauthorized access is prevented as per security requirements in SRS \textcolor{red}{(NFR2)}.
+    \item \textbf{How Test Will Be Performed}: \textcolor{red}{1. Log in as \texttt{'user123'}. 2. Manually enter \texttt{/dashboard/users} in the browser address bar. 3. Verify redirection to \texttt{/dashboard/home}. 4. Inspect browser network tab (or server logs) to confirm no sensitive data from the target page was loaded.}
+\end{itemize}
+
+% --- Test 9 ---
+\textbf{Test 9: Load Handling} \label{test-id9}
+\begin{itemize}
+    \item \textbf{Test ID}: \texttt{test-id9}
+    \item \textbf{Type}: Performance, Dynamic, Manual
+    \item \textbf{Initial State}: User dashboard loaded with \textcolor{red}{at least 10 active, distinct user sessions}.
+    \item \textbf{Input/Condition}: \textcolor{red}{10 team members simultaneously perform common actions within a 1-minute window: 5 submit reimbursement requests, 3 update request statuses, 2 navigate the operating budget page.}
+    \item \textbf{Output/Result}: \textcolor{red}{All actions complete successfully. Subjective assessment: UI remains responsive (no noticeable lag \textgreater 4 seconds). Server CPU/Memory usage stays below 80\%. No crashes or data inconsistencies observed.}
+    \item \textbf{Test Case Derivation}: Verifies system’s load handling capacity \textcolor{red}{under realistic concurrent usage (NFR5)}.
+    \item \textbf{How Test Will Be Performed}: \textcolor{red}{1. Coordinate 10 testers. 2. At a designated time, each tester performs their assigned action simultaneously. 3. Testers report subjective responsiveness. 4. Monitor server resource usage during the test window. 5. Verify database consistency for actions performed.}
+\end{itemize}
+
+% --- Test 10 ---
+\textbf{Test 10: Data Integrity and Security} \label{test-id10}
+\begin{itemize}
+    \item \textbf{Test ID}: \texttt{test-id10}
+    \item \textbf{Control}: \textcolor{red}{Manual (Security Test)}
+    \item \textbf{Initial State}: Data integrity checks enabled. A request \texttt{'req789'} exists with amount 50.00.
+    \item \textbf{Input}: \textcolor{red}{Attempt to update the amount of request \texttt{'req789'} via a direct API call or manipulated form submission (e.g., intercepting request) to an invalid value (e.g., -100.00 or \texttt{'abc'}). Attempt basic SQL injection pattern in a searchable field (e.g., \texttt{' OR '1'='1'}).}
+    \item \textbf{Output}: \textcolor{red}{API request to update amount fails with a validation error (e.g., 400 Bad Request). SQL injection attempt yields no results or an error, and does not expose unintended data. Original amount (50.00) for \texttt{'req789'} remains unchanged in the database.}
+    \item \textbf{Test Case Derivation}: Ensures data integrity and protection against unauthorized \textcolor{red}{modification attempts} as per security and data integrity requirements \textcolor{red}{(NFR3)}.
+    \item \textbf{How Test Will Be Performed}: \textcolor{red}{1. Use a tool like Postman or browser developer tools to attempt the invalid API call to update the request amount. 2. Enter SQL injection pattern into a search field in the UI. 3. Verify API responses indicate failure/rejection. 4. Query the database to confirm the amount for \texttt{'req789'} is still 50.00. 5. Check application/database logs for errors related to the attempts.}
+\end{itemize}
+
+% --- Test 11 ---
+\textcolor{red}{
+\textbf{Test 11: Usability Evaluation} \label{test-id11}
+\begin{itemize}
+    \item \textbf{Test ID}: \texttt{test-id11}
+    \item \textbf{Control}: Manual (User Testing with Survey/Checklist)
+    \item \textbf{Initial State}: System deployed to a test environment accessible by participants. 5-10 representative end-users (e.g., mix of club treasurers, regular members) recruited. Usability checklist prepared (see Appendix~\ref{appendix:usability}).
+    \item \textbf{Input}: Participants are given a script with 3 typical tasks:
+        \begin{enumerate}
+            \item Log in and submit a reimbursement request for \$75 for 'Team Jerseys' with a provided sample receipt image (\texttt{jersey\_receipt.png}).
+            \item Find the status of the request submitted in task 1 on the \texttt{/dashboard/requests} page.
+            \item Navigate to their account information page (\texttt{/dashboard/accountInfo}) and attempt to change their phone number.
+        \end{enumerate}
+        Participants complete tasks and then fill out the Usability Survey Checklist (Appendix~\ref{appendix:usability}). Observer notes task completion times and any points of confusion verbally expressed or observed (e.g., hesitation, wrong clicks).
+    \item \textbf{Output}: Quantitative data: Average task completion times (target: Task 1 \textless 3 mins, Task 2 \textless 1 min, Task 3 \textless 1 min). Average satisfaction ratings from checklist (target: \textgreater 4.0/5.0 overall). Qualitative data: Observer notes on difficulties (e.g., "User struggled to find the submit button", "Confused about which group to select"), user comments from survey ("The OCR was helpful", "Took a while to find my old requests").
+    \item \textbf{Test Case Derivation}: Addresses the Usability extra requirement (detailed in Section~\ref{sec:GeneralInfo}), ensuring the system meets user experience standards defined implicitly in the SRS (NFR4).
+    \item \textbf{How Test Will Be Performed}: 1. Conduct individual usability testing sessions (in-person or remote screen share). 2. Provide users with the task script and sample receipt file. 3. Observe task completion using think-aloud protocol, noting time and issues. 4. Administer the Usability Survey Checklist post-session. 5. Aggregate quantitative results and synthesize qualitative feedback into actionable UI improvements.
+\end{itemize}
+}
+
+\subsection{Traceability Between Test Cases and Requirements}
 
 \begin{table}[h]
   \centering
+  \caption{Traceability Between Test Cases and Requirements}
+  \label{tab:req_test_trace}
   \begin{tabular}{|l|l|}
       \hline
-      \textbf{Requirement} & \textbf{Test Case(s)} \\
+      \textbf{Requirement (Assumed SRS Ref.)} & \textbf{Test Case(s)} \\
       \hline
-      Reimbursement Submission & test-id1, test-id2 \\
-      Budget Management & test-id3, test-id4 \\
-      Notification System & test-id5 \\
-      Audit Logging & test-id6 \\
-      Performance Under Load & test-id7, test-id9 \\
-      Security and Access Control & test-id8 \\
-      Data Integrity and Security & test-id10 \\
+      FR1: Reimbursement Submission & \hyperref[test-id1]{\texttt{test-id1}}\\
+      FR2: Approval Workflow & \hyperref[test-id2]{\texttt{test-id2}}\\
+      FR3: Notification System & \hyperref[test-id5]{\texttt{test-id5}}\\
+      FR5: Audit Logging & \hyperref[test-id6]{\texttt{test-id6}}\\
+      FR6: Budget Management & \hyperref[test-id3]{\texttt{test-id3}}, \hyperref[test-id4]{\texttt{test-id4}}\\
+      NFR1: Performance Under Load & \hyperref[test-id7]{\texttt{test-id7}}, \hyperref[test-id9]{\texttt{test-id9}}\\
+      NFR2: Security and Access Control & \hyperref[test-id8]{\texttt{test-id8}}\\
+      NFR3: Data Integrity and Security & \hyperref[test-id10]{\texttt{test-id10}}\\
+      \textcolor{red}{NFR4: Usability (Extra)} & \textcolor{red}{\hyperref[test-id11]{\texttt{test-id11}}}\\
       \hline
   \end{tabular}
-  \caption{Traceability Between Test Cases and Requirements}
 \end{table}
 
-\section{Unit Test Description}
+\section{Nondynamic Testing Plan}
+In addition to the dynamic tests described \textcolor{red}{in Section~\ref{sec:SystemTests}}, the following nondynamic testing techniques will be used:
 
-\wss{This section should not be filled in until after the MIS (detailed design
-  document) has been completed.}
+\begin{itemize}
+    \item \textbf{Static Code Analysis}: We will run linters \textcolor{red}{(ESLint)} and static analyzers \textcolor{red}{(TypeScript compiler with strict checks)} to detect potential errors, stylistic issues, and security vulnerabilities before runtime. \textcolor{red}{This is integrated into our CI pipeline.}
+    \item \textbf{Code Reviews and Inspections}: Each major feature \textcolor{red}{or significant code change} will undergo a formal peer review \textcolor{red}{via GitHub Pull Requests}, with at least \textcolor{red}{one other} team \textcolor{red}{member} examining the code against project coding standards \textcolor{red}{(Section~\ref{sec:CodingStandard})}, the design described in the MIS\textcolor{red}{, and the checklist (\texttt{docs/Checklists/Code-Checklist.tex})}.
+    \item \textbf{Document Reviews}: Key project artifacts (SRS, \textcolor{red}{MG, MIS}, user \textcolor{red}{guide}) will be reviewed for consistency. This includes verifying that naming conventions, references, and requirement statements align with each other and the code base.
+    \item \textbf{Walkthroughs and Technical Demos}: At milestone meetings \textcolor{red}{(POC, Rev 0, Final)}, we will conduct walkthroughs of new or complex features to validate design decisions and ensure maintainability.
+\end{itemize}
 
-\wss{Reference your MIS (detailed design document) and explain your overall
-philosophy for test case selection.}  
+These nondynamic activities supplement the dynamic tests by identifying defects early, ensuring code quality, and maintaining documentation accuracy.
 
-\wss{To save space and time, it may be an option to provide less detail in this section.  
-For the unit tests you can potentially layout your testing strategy here.  That is, you 
-can explain how tests will be selected for each module.  For instance, your test building 
-approach could be test cases for each access program, including one test for normal behaviour 
-and as many tests as needed for edge cases.  Rather than create the details of the input 
-and output here, you could point to the unit testing code.  For this to work, you code 
-needs to be well-documented, with meaningful names for all of the tests.}
+\section{Unit Test Description} \label{sec:UnitTests}
+
+\subsection{Reference to MIS and Unit Testing Philosophy}
+After the MIS (detailed design document) is finalized, we will reference each software module (and its Access Programs) in the MIS. Our philosophy is to:
+
+\begin{itemize}
+    \item Write unit tests \textcolor{red}{(using Jest and React Testing Library)} for each major function, \textcolor{red}{utility, API endpoint handler, and critical React component}, covering both normal operation and edge cases (boundary values, invalid inputs, etc.).
+    \item Focus on the most critical or complex modules first (e.g., financial calculations, authorization checks \textcolor{red}{in hooks/middleware}, database interactions).
+    \item Maintain a \textcolor{red}{\texttt{\_\_tests\_\_}} directory \textcolor{red}{alongside source files or a central \texttt{src/tests} directory}, with test files named \textcolor{red}{using conventions like \texttt{moduleName.test.ts} or \texttt{componentName.test.tsx}}, and meaningful test method names \textcolor{red}{(e.g., \texttt{it('should correctly calculate budget total')})}.
+    \item Automatically run these tests in \textcolor{red}{our GitHub Actions CI pipeline on every push and pull request.}
+\end{itemize}
 
 \subsection{Unit Testing Scope}
 
-\wss{What modules are outside of the scope.  If there are modules that are
-  developed by someone else, then you would say here if you aren't planning on
-  verifying them.  There may also be modules that are part of your software, but
-  have a lower priority for verification than others.  If this is the case,
-  explain your rationale for the ranking of module importance.}
+\begin{itemize}
+    \item \textbf{In Scope}: Core modules owned by the project team, including reimbursement processing \textcolor{red}{logic}, budget management \textcolor{red}{calculations}, user authentication \textcolor{red}{helpers}, notification \textcolor{red}{triggers}, \textcolor{red}{permission hooks (\texttt{usePermissions}), API route handlers, utility functions (\texttt{chartUtils}, \texttt{utils.ts}), and key UI components (e.g., \texttt{EditableStatusRow}, form sections)}.
+    \item \textbf{Out of Scope}: \textcolor{red}{Direct testing of third-party libraries (Supabase client library, Recharts, SendGrid/Twilio SDKs, Tesseract.js). These will be mocked during unit tests. Integration testing (manual or potentially E2E) will verify interactions with these external services.}
+\end{itemize}
 
-\subsection{Tests for Functional Requirements}
+\subsection{Tests for Functional Requirements at the Unit Level}
+\textcolor{red}{Detailed unit test cases will be implemented in the codebase following the philosophy above. Test files will be linked to the corresponding source files. Instead of listing exhaustive inputs/outputs here, we will ensure test code is self-documenting with clear \texttt{describe} and \texttt{it} blocks. Example test structures:}
 
-\wss{Most of the verification will be through automated unit testing.  If
-  appropriate specific modules can be verified by a non-testing based
-  technique.  That can also be documented in this section.}
+\subsubsection{\textcolor{red}{Example: API Route Handler (\texttt{update-status})}}
 
-\subsubsection{Module 1}
+\textcolor{red}{
+\begin{itemize}
+    \item \textbf{Test Suite:} \texttt{update-status.test.ts}
+    \item \textbf{Test Case 1:} \texttt{it('should update status to Approved for valid admin request')}
+        \begin{itemize}
+            \item \textbf{Setup:} Mock Supabase client, mock authenticated admin user, existing request with 'Pending' status.
+            \item \textbf{Input:} API request body \texttt{\{ requestId: 'req123', newStatus: 'Approved' \}}.
+            \item \textbf{Assertions:} Verify Supabase \texttt{update} called with correct parameters. Verify response is success (e.g., 200 OK). Verify notification function called.
+        \end{itemize}
+    \item \textbf{Test Case 2:} \texttt{it('should return 403 Forbidden if user lacks permission')}
+        \begin{itemize}
+            \item \textbf{Setup:} Mock Supabase client, mock authenticated user with insufficient permissions.
+            \item \textbf{Input:} API request body \texttt{\{ requestId: 'req123', newStatus: 'Approved' \}}.
+            \item \textbf{Assertions:} Verify response status is 403. Verify Supabase \texttt{update} was *not* called.
+        \end{itemize}
+    \item \textbf{Test Case 3:} \texttt{it('should return 400 Bad Request for invalid status value')}
+       \textcolor{red}{\dots etc \dots} % Added ellipsis
+\end{itemize}
+}
 
-\wss{Include a blurb here to explain why the subsections below cover the module.
-  References to the MIS would be good.  You will want tests from a black box
-  perspective and from a white box perspective.  Explain to the reader how the
-  tests were selected.}
+\subsubsection{\textcolor{red}{Example: Permission Hook (\texttt{usePermissions})}}
 
+\textcolor{red}{
+\begin{itemize}
+    \item \textbf{Test Suite:} \texttt{usePermissions.test.ts}
+    \item \textbf{Test Case 1:} \texttt{it('should return correct permissions for a user with multiple roles')}
+        \begin{itemize}
+            \item \textbf{Setup:} Mock Supabase client \texttt{from('user\_roles').select()} to return roles data including 'Admin' (global) and 'Club Treasurer' (group-specific).
+            \item \textbf{Action:} Render a test component using the hook.
+            \item \textbf{Assertions:} Verify the hook returns the combined, unique set of permissions from both roles. Verify \texttt{loading} becomes false.
+        \end{itemize}
+    \item \textbf{Test Case 2:} \texttt{it('should return empty permissions for unauthenticated user')}
+       \textcolor{red}{\dots etc \dots}
+\end{itemize}
+}
+
+\subsection{Tests for Nonfunctional Requirements at the Unit Level}
+If a particular module has performance-critical functions (e.g., complex financial calculations), we will write micro-benchmark tests to measure execution time or memory usage. For example:
+
+\subsubsection{\textcolor{red}{Example: Budget Calculation Utility}}
 \begin{enumerate}
-
-\item{test-id1\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
-
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
-
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-
-How test will be performed: 
-
-\item{...\\}
-    
+    \item \textbf{\texttt{test-budgetUtil-perf1}} \\
+        \textbf{Type}: Performance, Dynamic, Automatic \\
+        \textbf{Initial State}: \textcolor{red}{Budget calculation utility function imported.}
+        \textbf{Input/Condition}: \textcolor{red}{Call the \texttt{calculateGroupTotal} function 10,000 times with a sample budget lines array (e.g., 50 lines).}
+        \textbf{Output/Result}: The average execution time should not exceed \textcolor{red}{1ms} per call on standard \textcolor{red}{CI runner hardware}. \\
+        \textbf{How Test Will Be Performed}:
+        \begin{itemize}
+            \item Run a loop calling the function 10,000 times.
+            \item Log the total execution time using \texttt{performance.now()} or Jest's timer mocks.
+            \item Calculate the average time and assert it is under \textcolor{red}{1ms}.
+        \end{itemize}
 \end{enumerate}
 
-\subsubsection{Module 2}
+\clearpage
+% --- Corrected Appendix ---
+\appendix
+\section{Appendix A: Usability Survey Checklist (Sample)} \label{appendix:usability}
 
-...
+\textbf{Participant ID:} \rule{1cm}{0.4pt} \quad \textbf{Date:} \rule{1.5cm}{0.4pt} \quad \textbf{Task Tested:} \rule{4cm}{0.4pt} % Added rules for blanks
 
-\subsection{Tests for Nonfunctional Requirements}
+\bigskip
 
-\wss{If there is a module that needs to be independently assessed for
-  performance, those test cases can go here.  In some projects, planning for
-  nonfunctional tests of units will not be that relevant.}
+\textbf{Instructions:} Please rate the following aspects on a scale of 1 (Strongly Disagree) to 5 (Strongly Agree).
 
-\wss{These tests may involve collecting performance data from previously
-  mentioned functional tests.}
-
-\subsubsection{Module ?}
-		
 \begin{enumerate}
-
-\item{test-id1\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input/Condition: 
-					
-Output/Result: 
-					
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
-
+    \item The task was easy to complete. \quad (1) (2) (3) (4) (5)
+    \item I understood what I needed to do at each step. \quad (1) (2) (3) (4) (5)
+    \item The buttons and labels on the screen were clear. \quad (1) (2) (3) (4) (5)
+    \item It was easy to find the information I needed. \quad (1) (2) (3) (4) (5)
+    \item The system responded quickly to my actions. \quad (1) (2) (3) (4) (5)
+    \item I felt confident using this part of the system. \quad (1) (2) (3) (4) (5)
+    \item The error messages (if any) were helpful. \quad (1) (2) (3) (4) (5) [N/A]
+    \item Overall, I am satisfied with the usability of this feature. \quad (1) (2) (3) (4) (5)
 \end{enumerate}
 
-\subsubsection{Module ?}
+\bigskip
 
-...
+\textbf{Open Feedback:}
 
-\subsection{Traceability Between Test Cases and Modules}
-
-\wss{Provide evidence that all of the modules have been considered.}
-				
-\bibliographystyle{plainnat}
-
-\bibliography{../../refs/References}
-
-\newpage
-
-\section{Appendix}
-
-N/A
-
-\subsection{Symbolic Parameters}
-
-N/A
-
-\subsection{Usability Survey Questions?}
-
-N/A
+\begin{enumerate}
+    \item What did you like most about completing this task? \\
+    \textit{\rule{\linewidth}{0.4pt}}
+    \medskip
+    \item What did you find most confusing or difficult? \\
+    \textit{\rule{\linewidth}{0.4pt}}
+    \medskip
+    \item Do you have any suggestions for improvement? \\
+    \textit{\rule{\linewidth}{0.4pt}}
+\end{enumerate}
 
 \newpage{}
-\section*{Appendix --- Reflection}
-
-\wss{This section is not required for CAS 741}
-
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Lifelong Learning.
+\section*{Appendix}
 
 \input{../Reflection.tex}
 
@@ -747,33 +774,32 @@ graduate attribute of Lifelong Learning.
   successfully complete the verification and validation of your project?
   Examples of possible knowledge and skills include dynamic testing knowledge,
   static testing knowledge, specific tool usage, Valgrind etc.  You should look to
-  identify at least one item for each team member. 
+  identify at least one item for each team member.
 
 
-    
     \textbf{What knowledge and skills will the team collectively need to acquire to successfully complete the verification and validation of your project?}
-    
+
     Key skills needed for V\&V include:
-    
+
     \begin{itemize}
-        \item \textbf{Dynamic Testing:} Using Jest and Cypress for unit and integration testing.
-        \item \textbf{Static Analysis:} Using ESLint and SonarQube to identify code issues.
+        \item \textbf{Dynamic Testing:} Using Jest and \textcolor{red}{React Testing Library} for unit and integration testing. \textcolor{red}{Potentially Cypress for E2E.}
+        \item \textbf{Static Analysis:} Using ESLint to identify code issues. \textcolor{red}{Leveraging TypeScript's static typing.}
         \item \textbf{CI/CD Setup:} Configuring GitHub Actions to automate testing and deployment.
-        \item \textbf{Security Testing:} Implementing npm audit for vulnerability scanning.
-        \item \textbf{Usability Testing:} Conducting accessibility and usability tests using Lighthouse.
+        \item \textbf{Security Testing:} Implementing npm audit for vulnerability scanning \textcolor{red}{and manual security reviews}.
+        \item \textbf{Usability Testing:} Conducting accessibility and usability tests using Lighthouse \textcolor{red}{and structured user feedback sessions}.
     \end{itemize}
 
   \item For each of the knowledge areas and skills identified in the previous
   question, what are at least two approaches to acquiring the knowledge or
   mastering the skill?  Of the identified approaches, which will each team
   member pursue, and why did they make this choice?
-  
+
   \begin{itemize}
-    \item \textbf{Dynamic Testing:} Team tutorials on Jest/Cypress and applying tests in the project, led by Housam.
-    \item \textbf{Static Analysis:} Reviewing ESLint/SonarQube documentation and integrating tools during development, led by Omar.
-    \item \textbf{CI/CD Setup:} Using GitHub documentation and incremental setup of GitHub Actions, led by Sufyan.
-    \item \textbf{Security Testing:} Researching secure coding and using npm audit, led by Taaha.
-    \item \textbf{Usability Testing:} Exploring Lighthouse and gathering user feedback, coordinated by Rachid.
+    \item \textbf{Dynamic Testing:} Team tutorials on Jest/\textcolor{red}{React Testing Library} and applying tests in the project, led by Housam. \textcolor{red}{Approach 2: Pair programming on test creation.} \textcolor{red}{Chosen: Team tutorials initially for broad understanding, followed by individual application.}
+    \item \textbf{Static Analysis:} Reviewing ESLint/\textcolor{red}{TypeScript} documentation and integrating tools during development, led by Omar. \textcolor{red}{Approach 2: Analyzing linting results from CI runs.} \textcolor{red}{Chosen: Integrating tools early and learning from CI feedback.}
+    \item \textbf{CI/CD Setup:} Using GitHub documentation and incremental setup of GitHub Actions, led by Sufyan. \textcolor{red}{Approach 2: Examining example workflows from other projects.} \textcolor{red}{Chosen: Incremental setup based on official docs for reliability.}
+    \item \textbf{Security Testing:} Researching secure coding \textcolor{red}{practices for Next.js/Supabase} and using npm audit, led by Taaha. \textcolor{red}{Approach 2: Performing manual code reviews focused on security aspects (e.g., permission checks).} \textcolor{red}{Chosen: Combine automated scanning (npm audit) with manual reviews.}
+    \item \textbf{Usability Testing:} Exploring Lighthouse \textcolor{red}{reports} and gathering user feedback \textcolor{red}{via planned sessions}, coordinated by Rachid. \textcolor{red}{Approach 2: Applying usability heuristics (e.g., Nielsen's heuristics) during design reviews.} \textcolor{red}{Chosen: Gathering direct user feedback for real-world validation.}
 \end{itemize}
 
 \end{enumerate}
