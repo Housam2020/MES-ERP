@@ -11,6 +11,33 @@
                 urlcolor=blue, unicode=false}
     \urlstyle{same}
 
+% Add the float package for the H specifier
+\usepackage{float}
+
+% Increase spacing around figures
+\setlength{\intextsep}{12pt plus 2pt minus 2pt}
+
+% Add figure placement control
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.9}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.9}
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{4}
+\setcounter{totalnumber}{8}
+
+% Modify section spacing to help with float placement
+\makeatletter
+\renewcommand \section{\clearpage\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\normalfont\Large\bfseries}}
+\renewcommand \subsection{\@startsection{subsection}{2}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\large\bfseries}}
+\makeatother
+
 \input{../Comments}
 \input{../Common}
 
@@ -61,6 +88,7 @@ The platform uses a Role-Based Access Control (RBAC) system. Your capabilities w
     \item \textbf{System Admin (MES Staff/Exec):} Has broad access to manage users, roles, groups, requests, budgets, and system-wide settings.
 \end{itemize}
 
+\clearpage
 \section{Getting Started}
 
 \subsection{Accessing the Platform}
@@ -73,7 +101,12 @@ The \progname{} platform is accessible via a web browser on desktops and laptops
     \item Click the \textbf{Login} button.
     \item Upon successful login, you will be redirected to your dashboard (\texttt{/dashboard/home}).
 \end{enumerate}
-\textit{[Screenshot Placeholder: Login Page]}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{login_page.png}
+    \caption{Login Page}
+\end{figure}
 
 \subsection{Registering a New Account}
 \begin{enumerate}
@@ -83,7 +116,12 @@ The \progname{} platform is accessible via a web browser on desktops and laptops
     \item You may need to check your email to confirm your registration before you can log in.
     \item Upon first login after registration, a user profile will be created for you with a default "user" role.
 \end{enumerate}
-\textit{[Screenshot Placeholder: Registration Page]}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{register_page.png}
+    \caption{Registration Page}
+\end{figure}
 
 \subsection{Dashboard Overview (\texttt{/dashboard/home})}
 This is your main landing page after logging in. It provides a quick overview of relevant statistics based on your role:
@@ -92,18 +130,29 @@ This is your main landing page after logging in. It provides a quick overview of
     \item \textbf{Club Admins:} May see stats for \textit{your club's} requests (total count, amount, pending count) in addition to your personal stats, depending on permissions.
     \item \textbf{System Admins:} See system-wide stats (total requests, total amount, pending count, total users).
 \end{itemize}
-\textit{[Screenshot Placeholder: Dashboard Home Page]}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{user_dashboard.png}
+    \caption{User Dashboard Home Page}
+\end{figure}
 
 \subsection{Navigating the Platform (Header \& Sidebar)}
 \begin{itemize}
     \item \textbf{Header:} The header (maroon/dark blue bar at the top) contains the main navigation links (Home, Requests, Users, etc.). The links visible depend on your permissions. It also includes theme toggles, a link to this guide (\texttt{/dashboard/guide}), and the user menu (profile icon).
     \item \textbf{User Menu:} Clicking the profile icon in the header opens a dropdown to access your "Account" page (\texttt{/dashboard/accountInfo}) or "Sign Out".
 \end{itemize}
-\textit{[Screenshot Placeholder: Header with Nav Links and User Menu]}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{header.png}
+    \caption{Header with Navigation Links and User Menu}
+\end{figure}
 
 \subsection{Theme Selection (Light/Dark)}
 Click the Sun/Moon icon in the header to toggle between light and dark themes. Your preference is saved locally in your browser.
 
+\clearpage
 \section{Guide for Regular Users}
 
 \subsection{Viewing Your Dashboard (\texttt{/dashboard/home})}
@@ -128,7 +177,12 @@ See section 2.4 for details. Your dashboard shows stats specific to \textit{your
     \item Review all information carefully.
     \item Click the \textbf{Submit} button. You should see a confirmation message.
 \end{enumerate}
-\textit{[Screenshot Placeholder: Reimbursement Form]}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{reimbursement_form.png}
+    \caption{Reimbursement Form}
+\end{figure}
 
 \subsection{Tracking Your Request Status (\texttt{/dashboard/requests})}
 \begin{enumerate}
@@ -137,7 +191,12 @@ See section 2.4 for details. Your dashboard shows stats specific to \textit{your
     \item The table shows the request details and the current \texttt{Status} (e.g., Submitted, In Progress, Approved, Rejected, Reimbursed).
     \item You will receive email (and potentially SMS if configured) notifications when the status of your request is updated by an admin.
 \end{enumerate}
-\textit{[Screenshot Placeholder: Requests Page showing User's Requests]}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{current_user_requests.png}
+    \caption{Requests Page showing User's Requests}
+\end{figure}
 
 \subsection{Managing Your Account Information (\texttt{/dashboard/accountInfo})}
 \begin{enumerate}
@@ -147,8 +206,14 @@ See section 2.4 for details. Your dashboard shows stats specific to \textit{your
     \item Enter the new value and click the checkmark icon ($\checkmark$) to save, or the X icon (\textsf{X}) to cancel.
     \item \textbf{Note:} Your email address and assigned roles are usually not editable here and must be changed by an administrator.
 \end{enumerate}
-\textit{[Screenshot Placeholder: Account Info Page]}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{account_info.png}
+    \caption{Account Info Page}
+\end{figure}
+
+\clearpage
 \section{Guide for Club/Group Admins}
 (Requires specific permissions like \texttt{view\_club\_requests}, \texttt{manage\_club\_requests}, etc.)
 
@@ -180,7 +245,12 @@ Follow the same process as Regular Users (Section 3.2), ensuring you select the 
     \item Fill out the detailed form with projected income and expenses for the specified budget year for your club.
     \item Submit the form for review by MES Finance/Execs.
 \end{enumerate}
-\textit{[Screenshot Placeholder: Annual Budget Form]}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{budget_request.png}
+    \caption{Annual Budget Form}
+\end{figure}
 
 \subsection{(Optional) Managing Club Members (\texttt{/dashboard/users})}
 (Requires \texttt{manage\_club\_users} permission)
@@ -190,6 +260,13 @@ Follow the same process as Regular Users (Section 3.2), ensuring you select the 
     \item You may be able to assign group-specific roles (see below) to these users or potentially remove users \textit{from your group}. You cannot manage users outside your assigned groups.
 \end{enumerate}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{users.png}
+    \caption{Users Management Page}
+\end{figure}
+
+\clearpage
 \subsection{(Optional) Managing Club Roles (\texttt{/dashboard/roles})}
 (Requires \texttt{manage\_club\_roles} permission)
 \begin{enumerate}
@@ -198,29 +275,11 @@ Follow the same process as Regular Users (Section 3.2), ensuring you select the 
     \item You typically cannot create roles with high-level administrative permissions. Assign only the permissions needed for club operations.
 \end{enumerate}
 
-\section{Guide for System Admins}
-(Requires permissions like \texttt{manage\_all\_users}, \texttt{manage\_all\_roles}, \texttt{manage\_groups}, \texttt{view\_all\_requests})
-
-\subsection{Dashboard Overview (System-Wide)}
-Your dashboard (\texttt{/dashboard/home}) shows system-wide statistics, including total requests across all groups, total amounts, pending counts, and the total number of users.
-
-\subsection{Managing All Users (\texttt{/dashboard/users})}
-\begin{enumerate}
-    \item Navigate to the \textbf{Users} page.
-    \item View the complete list of all users in the system.
-    \item Assign/remove roles (including global roles) and assign/remove users from any group using the interface provided in each user's row.
-\end{enumerate}
-\textit{[Screenshot Placeholder: Users Management Page]}
-
-\subsection{Managing All Roles \& Permissions (\texttt{/dashboard/roles})}
-\begin{enumerate}
-    \item Navigate to the \textbf{Roles} page.
-    \item Click \textbf{Create New Role} to open a dialog.
-    \item Define the role name, select permissions (across Admin, Club, User categories), and choose if it's a Global Role or assign it to a specific group.
-    \item Edit existing roles using the Edit (pencil) icon.
-    \item Delete roles using the Delete (trash) icon (usually only possible if no users are assigned that role).
-\end{enumerate}
-\textit{[Screenshot Placeholder: Roles Management Page]}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{roles.png}
+    \caption{Roles Management Page}
+\end{figure}
 
 \subsection{Managing Groups (\texttt{/dashboard/groups})}
 \begin{enumerate}
@@ -229,15 +288,14 @@ Your dashboard (\texttt{/dashboard/home}) shows system-wide statistics, includin
     \item Edit group names directly in the table (if enabled) or via an edit action.
     \item Delete groups using the Delete (trash) icon (typically only if no users or roles are assigned to them).
 \end{enumerate}
-\textit{[Screenshot Placeholder: Groups Management Page]}
 
-\subsection{Viewing \& Managing All Requests (\texttt{/dashboard/requests})}
-\begin{enumerate}
-    \item Navigate to the \textbf{Requests} page.
-    \item View \textit{all} payment and budget requests submitted across the entire system.
-    \item Use the status controls in the tables to approve or reject \textit{any} request.
-\end{enumerate}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{groups.png}
+    \caption{Groups Management Page}
+\end{figure}
 
+\clearpage
 \subsection{Managing the Operating Budget (\texttt{/dashboard/operating\_budget})}
 \begin{enumerate}
     \item Navigate to the \textbf{Operating Budget} page.
@@ -248,7 +306,12 @@ Your dashboard (\texttt{/dashboard/home}) shows system-wide statistics, includin
     \item Reorder rows within a group by dragging and dropping.
     \item Use the \textbf{Save All} button to persist changes made on the page.
 \end{enumerate}
-\textit{[Screenshot Placeholder: Operating Budget Page]}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{operating_budget.png}
+    \caption{Operating Budget Page}
+\end{figure}
 
 \subsection{Viewing System Analytics (\texttt{/dashboard/analytics})}
 \begin{enumerate}
@@ -256,8 +319,14 @@ Your dashboard (\texttt{/dashboard/home}) shows system-wide statistics, includin
     \item View dashboards and charts summarizing financial activity across the \textit{entire system}.
     \item Analyze spending trends, status distributions, group spending, budget utilization, etc. Use the tabs ("Overview", "Detailed Analysis") for different views.
 \end{enumerate}
-\textit{[Screenshot Placeholder: Analytics Page]}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{analytics.png}
+    \caption{Analytics Page}
+\end{figure}
+
+\clearpage
 \section{Key Features Overview}
 
 \begin{itemize}
