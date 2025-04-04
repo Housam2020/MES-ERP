@@ -2,6 +2,10 @@
 
 \usepackage{tabularx}
 \usepackage{booktabs}
+% --- ADDED ---
+\usepackage{xcolor}
+\usepackage[normalem]{ulem}
+% --- END ADDED ---
 
 \title{Problem Statement and Goals\\\progname}
 
@@ -33,19 +37,35 @@ Sep 24th, 2024 & Omar, Rachid, Sufyan, Housam, Taaha & Appendix \\
 
 \subsection{Problem Statement}
 
-\hspace{0.5cm} The MES (McMaster Engineering Society) is looking to develop a finance and accounting system that will streamline the financial operations of 60 student groups. Currently, the financial operations involve inefficient, fragmented processes that make it difficult to track budgets, manage expenses, and process reimbursement requests. The platform created will intake reimbursement receipts to help track budgets, manage expense reporting, and streamline reimbursement requests in an orderly fashion. By offering custom budget creation, live ledger tracking, modular receipt submission, and multiple approval levels, the system will provide a single, accessible platform by outputting reimbursement requests and responses for all financial matters related to the MES and it's member clubs or organizations.
+\hspace{0.5cm} The MES (McMaster Engineering Society) \sout{is looking to develop} \textcolor{red}{requires} a \sout{finance and accounting system} \textcolor{red}{modern web application} that will streamline the financial operations of \sout{60} \textcolor{red}{its numerous (~60)} student groups. Currently, the financial operations involve inefficient, fragmented processes \textcolor{red}{(primarily manual tracking via spreadsheets and forms)} that make it difficult to track budgets, manage expenses, and process reimbursement \textcolor{red}{and payment} requests \textcolor{red}{in a timely and transparent manner}. The platform created will intake reimbursement receipts \sout{to help} \textcolor{red}{and request details, enabling users and administrators to} track budgets, manage expense reporting, and streamline \sout{reimbursement requests in an orderly fashion} \textcolor{red}{request approvals}. By offering \sout{custom budget creation, live ledger tracking, modular receipt submission, and multiple approval levels} \textcolor{red}{role-based access control, dedicated interfaces for budget management, request submission with optional OCR, status tracking, automated notifications, and analytics}, the system will provide a single, accessible platform \sout{by outputting reimbursement requests and responses} for all financial matters related to the MES and \sout{it's} \textcolor{red}{its} member clubs or organizations.
 
 \subsection{Problem}
 
-\hspace{0.5cm} The main problem the MES is facing is the large amount of reimbursement requests and financial documents it receives that must be processed. There is a current lack of organization for such requests and no clear system of how to deal with them except manually, there is no system in place to deal with them.
-This makes the MES lose track of the requests which leads to large wait times on the part of the clubs for reimbursement, which puts many of the club organizers in a tough position waiting for reimbursement.  
+\hspace{0.5cm} The main problem the MES is facing is the large \sout{amount} \textcolor{red}{volume} of reimbursement \textcolor{red}{and payment} requests and \sout{financial documents} \textcolor{red}{associated documentation (receipts)} it receives that must be processed \textcolor{red}{manually}. There is a current lack of organization for such requests and no clear \sout{system of how to deal with them except manually, there is no system in place to deal with them.} \textcolor{red}{centralized system to manage the workflow efficiently.}
+This \sout{makes the MES lose track of the requests which} \textcolor{red}{manual process often} leads to \sout{large} \textcolor{red}{significant} wait times \sout{on the part of the clubs for reimbursement} \textcolor{red}{for users seeking reimbursement}, potential loss or misplacement of requests/receipts, difficulty in tracking budget spending accurately, and \sout{which puts many of the club organizers in a tough position waiting for reimbursement.} \textcolor{red}{considerable administrative overhead for MES staff.}
 
 \subsection{Inputs and Outputs}
 
 \begin{itemize}
-    \item Inputs: Reimbursement receipts and financial documents provided to the McMaster Engineering Society (MES) by the clubs.
-    \item Outputs: Processing and reimbursement for all expense requests to the club organizers who request them, as well as a response back to the student groups.
-    \item Comprehensive and up-to-date financial records for the MES, detailing the recipients of payments and the corresponding payment dates.
+    \item Inputs:
+        \begin{itemize}
+            \item \textcolor{red}{User credentials (for login/registration).}
+            \item Reimbursement \sout{receipts and financial documents provided to the McMaster Engineering Society (MES) by the clubs.} \textcolor{red}{/ Payment request details (submitter info, amount, currency, group, budget line, description, payment method, etc.) entered via web forms.}
+            \item \textcolor{red}{Receipt files (PDF, JPG, PNG, etc.) or links to receipts.}
+            \item \textcolor{red}{Approval/rejection actions from authorized administrators.}
+            \item \textcolor{red}{Budget line item details (label, amount, type) and group configurations entered by administrators.}
+            \item \textcolor{red}{User, Role, and Group management inputs from administrators.}
+            \item \textcolor{red}{Annual budget form submissions.}
+        \end{itemize}
+    \item Outputs:
+        \begin{itemize}
+            \item \textcolor{red}{User interface displaying dashboards, request lists, budget views, user/role/group management screens, analytics charts.}
+            \item \sout{Processing and reimbursement for all expense requests to the club organizers who request them, as well as a} \textcolor{red}{Request status updates (e.g., Pending, Approved, Rejected, Reimbursed) visible to relevant users.}
+            \item \textcolor{red}{Automated email (and potentially SMS) notifications for request status changes.}
+            \item Comprehensive and up-to-date financial records \sout{for the MES,} \textcolor{red}{(requests, budget lines, group totals)} accessible \textcolor{red}{via the platform} \sout{, detailing the recipients of payments and the corresponding payment dates}.
+            \item \textcolor{red}{Analytics data and visualizations summarizing financial activity.}
+            \item \textcolor{red}{Audit trail data (implicitly stored in database for compliance).}
+        \end{itemize}
 \end{itemize}
 
 \subsection{Stakeholders}
@@ -53,66 +73,53 @@ This makes the MES lose track of the requests which leads to large wait times on
 \hspace{0.5cm} The stakeholders for this project include:
 
 \begin{itemize}
-    \item  Luke Schuurman, Vice President, Finance of the McMaster Engineering Society (MES).
-    \item  Members of the MES, including student groups and individuals who submit reimbursement requests.
-    \item The MES, which oversees the financial support and reimbursement processes for various student groups.
-    \item Any regulatory bodies that govern financial transactions and compliance within McMaster.
-    \item Vendors and service providers who interact with the MES for financial transactions and reimbursements.
-    \item  The broader university community and potential investors who may have an interest in the financial transparency and efficiency of the MES.
+    \item Luke Schuurman, Vice President, Finance of the McMaster Engineering Society (MES) \textcolor{red}{(Primary Client)}.
+    \item Members \sout{of the MES, including} \textcolor{red}{and leaders of MES-affiliated} student groups \sout{and individuals} who submit \sout{reimbursement} requests \textcolor{red}{or manage group finances (End Users)}.
+    \item The MES \sout{, which} \textcolor{red}{(as an organization)} oversees \sout{the financial support and reimbursement processes for various student groups.} \textcolor{red}{financial operations and requires efficient, auditable processes.}
+    \item \sout{Any regulatory bodies that govern financial transactions and compliance within McMaster.} \textcolor{red}{McMaster University administration (indirectly, ensuring compliance with university financial policies).}
+    \item \sout{Vendors and service providers who interact with the MES for financial transactions and reimbursements.} % Less direct stakeholder for the *platform* itself
+    \item \sout{The broader university community and potential investors who may have an interest in the financial transparency and efficiency of the MES.} % Too broad for this context
+    \item \textcolor{red}{MES IT Staff (potential future maintainers/integrators).}
+    \item \textcolor{red}{The Capstone Project Team (Developers).}
 \end{itemize}
 
 \subsection{Environment}
 
-\hspace{0.5cm} We intend for our solution to be usable on all platforms (Windows, Linux, and Mac), but not on mobile devices; it will most likely be hosted on a server owned by McMaster, but must be lightweight enough for a laptop to host the solution. The laptop hosting the information should be a modern laptop with at least 4 GB of RAM, a modern CPU (mid-range released within the last 5 years, e.g. i5 8300h), and access to the internet. The frontend of the program will be programmed in React, with the backend being in NextJS. These hardware restrictions are subject to change as the solution evolves.
+\hspace{0.5cm} \sout{We intend for our solution} \textcolor{red}{The MES-ERP platform} \sout{to be usable} \textcolor{red}{is a web application intended for use} on all \textcolor{red}{desktop/laptop} platforms (Windows, Linux, and Mac), \sout{but not on mobile devices} \textcolor{red}{using modern web browsers (Chrome, Firefox, Edge, Safari). While potentially usable on mobile browsers due to responsive design, it is optimized for desktop use}. \sout{it will most likely be hosted on a server owned by McMaster, but must be lightweight enough for a laptop to host the solution.} \textcolor{red}{The application leverages cloud-based infrastructure provided by Supabase for its database (PostgreSQL), authentication, and potentially storage. The frontend} \sout{The laptop hosting the information should be a modern laptop with at least 4 GB of RAM, a modern CPU (mid-range released within the last 5 years, e.g. i5 8300h), and access to the internet. The frontend} of the program \sout{will be programmed in React,} \textcolor{red}{is built} with the \sout{backend being in} NextJS \textcolor{red}{framework (React) and TypeScript}. \sout{These hardware restrictions are subject to change as the solution evolves.} \textcolor{red}{Client devices require internet access to interact with the platform.}
 
-\section{Goals}
+\section{Goals} % Revised based on core implemented features
 
 \begin{enumerate}
-    \item \textbf{Customizable Approval Workflows} \\
-    Allow custom approval workflows that enable different student groups to customize the approval workflows according to their unique needs for expense and budget approvals. This will provide flexibility, allowing for the platform to scale and conform to the diverse requirements of various teams. This will be considered successful if 95\% of users are able to create workflows well suited to their needs without errors or complaints.
-    
-    \item \textbf{Audit and Compliance Tracking} \\
-    Implement detailed audit logs for all transactions, approvals, and modifications to ensure accountability and compliance with financial regulations. This will ensure that all financial activities are traceable and meet compliance standards, reducing risks and delays during audit processes. The audit log should record 100\% of relevant activities, with full traceability and no gaps in tracking.
-    
-    \item \textbf{User Dashboard with Financial Overview} \\
-    Develop a dashboard that provides users with real-time summaries of their budgets, expenses, pending reimbursements, and financial approvals. This will offer users a comprehensive view of their financial standing at any given time which will help gauge future decisions and reflection on past data. The dashboard accurately displays data for 100\% of transactions, with a refresh rate under 5 minutes.
-    
-    \item \textbf{Machine Learning Based Expense Categorization} \\
-    Train and implement a machine learning algorithm to automatically categorize expenses based on historical reimbursement data. This will reduce the burden of manual input and repetitiveness on users. The trained model will be considered a success if it can achieve an accuracy rate of at least 85\%.
+    \item \textbf{Streamlined Request Submission:} Provide an intuitive web form (\texttt{/forms}) for users to submit payment/reimbursement requests, including receipt uploads \textcolor{red}{(with optional OCR assistance)} and association with specific groups and budget lines. \textit{\textcolor{red}{Fit Criterion: 90\% of trained users can submit a standard request without assistance in under 5 minutes.}} % Escaped %
+    \item \textbf{Efficient Request Management:} Enable authorized administrators (MES or Club level based on RBAC) to view, track, and update the status (Approve/Reject/etc.) of requests relevant to their scope via the Requests dashboard (\texttt{/dashboard/requests}). \textit{\textcolor{red}{Fit Criterion: Admins can locate and update the status of a specific pending request within 1 minute.}}
+    \item \textbf{Role-Based Access Control (RBAC):} Implement a permission system allowing administrators to define roles (\texttt{/dashboard/roles}) and assign users (\texttt{/dashboard/users}) to specific groups (\texttt{/dashboard/groups}) with appropriate roles, ensuring users only see and interact with data according to their privileges. \textit{\textcolor{red}{Fit Criterion: Manual verification shows users cannot access pages or perform actions (e.g., approve requests, manage users) for which they lack permission.}}
+    \item \textbf{Operating Budget Management:} Provide an interface (\texttt{/dashboard/operating\_budget}) for administrators to define and manage budget lines (income/expense) for each group, calculating and displaying totals accurately. \textit{\textcolor{red}{Fit Criterion: Group budget totals displayed accurately reflect the sum of income lines minus expense lines for that group, verified against manual calculation for 3 sample groups.}}
+    \item \textbf{Automated Status Notifications:} Automatically notify users via email when the status of their submitted payment request changes (e.g., Approved, Rejected). \textit{\textcolor{red}{Fit Criterion: 95\% of status updates trigger a corresponding email notification within 5 minutes.}} % Escaped %
+    \item \textbf{Basic Financial Analytics:} Display key financial metrics and trends (e.g., spending per group, request volume over time, status distribution) on an analytics dashboard (\texttt{/dashboard/analytics}), accessible based on user permissions. \textit{\textcolor{red}{Fit Criterion: Analytics dashboard loads within 5 seconds and displays charts reflecting current request data.}}
 \end{enumerate}
 
-\section{Stretch Goals}
+\section{Stretch Goals} % Revised based on features that seem less core or more advanced
 
 \begin{enumerate}
-    \item \textbf{Customizable Approval Workflows} \\
-    Allow custom approval workflows that enable different student groups to customize the approval workflows according to their unique needs for expense and budget approvals. This will provide flexibility, allowing for the platform to scale and conform to the diverse requirements of various teams. This will be considered successful if 95\% of users are able to create workflows well suited to their needs without errors or complaints.
-    
-    \item \textbf{Audit and Compliance Tracking} \\
-    Implement detailed audit logs for all transactions, approvals, and modifications to ensure accountability and compliance with financial regulations. This will ensure that all financial activities are traceable and meet compliance standards, reducing risks and delays during audit processes. The audit log should record 100\% of relevant activities, with full traceability and no gaps in tracking.
-    
-    \item \textbf{User Dashboard with Financial Overview} \\
-    Develop a dashboard that provides users with real-time summaries of their budgets, expenses, pending reimbursements, and financial approvals. This will offer users a comprehensive view of their financial standing at any given time which will help gauge future decisions and reflection on past data. The dashboard accurately displays data for 100\% of transactions, with a refresh rate under 5 minutes.
-    
-    \item \textbf{Machine Learning Based Expense Categorization} \\
-    Train and implement a machine learning algorithm to automatically categorize expenses based on historical reimbursement data. This will reduce the burden of manual input and repetitiveness on users. The trained model will be considered a success if it can achieve an accuracy rate of at least 85\%.
+    \item \textbf{Customizable Approval Workflows:} \textcolor{red}{Allow administrators to define custom, potentially multi-step, approval workflows based on criteria like request amount or group type, beyond the basic status changes.}
+    \item \textbf{\textcolor{red}{Advanced Audit Trail Interface}:} \textcolor{red}{Provide a dedicated UI for searching, filtering, and exporting the detailed audit logs captured by the system, enhancing transparency and compliance capabilities.}
+    \item \textbf{\textcolor{red}{ML-Based Expense Categorization}:} \textcolor{red}{Implement a machine learning model to automatically suggest or assign budget lines/categories based on receipt content or past user behavior, reducing manual input.}
+    \item \textbf{Advanced Reporting and Analytics:} \textcolor{red}{Enhance the analytics dashboard with customizable report generation (e.g., PDF/CSV export), budget variance analysis, and forecasting tools.}
+    \item \textcolor{red}{\textbf{SMS Notifications:}} \textcolor{red}{Integrate Twilio or a similar service to send request status updates via SMS in addition to email.}
 \end{enumerate}
 
 \section{Challenge Level and Extras}
 \subsection{Challenge Level: General}
 
-\hspace{0.5cm}The general challenge level comes from the project requiring to create multiple complex features such as 
-real-time ledger tracking, modular receipt submissions, multi-level approval workflows, and automated 
-notifications all while creating a well-designed user interface that allows users to immediately find 
-and use these features. Another challenge also comes from integrating TypeScript and Next.js with existing 
-MES applications. This must be done while maintaining stability and performance. 
+\hspace{0.5cm}The general challenge level comes from the project requiring \sout{to create multiple complex features such as real-time ledger tracking, modular receipt submissions, multi-level approval workflows, and automated notifications all while creating a well-designed user interface that allows users to immediately find and use these features.} \textcolor{red}{the integration of several complex components: a multi-group RBAC system, database interactions for real-time budget/request tracking, form handling with file uploads and OCR, automated notifications, and data visualization, all within a modern web framework (Next.js/TypeScript/Supabase). Ensuring data consistency, security, and a usable interface across different user roles presents a significant challenge.} This must be done while maintaining stability and performance.
 
 \subsection{Extras}
 
 \begin{enumerate}
-    \item Useability Testing \\
+    \item \textbf{Useability Testing} \\
     Conduct formal usability testing with a variety of stakeholders (students, financial staff) to refine the interface and ensure a smooth user experience.
-    \item User Documentation \\
-    Create comprehensive user documentation in the form of written documentation and video tutorials that guides end-users through every step of submitting expenses, reviewing budgets, and navigating the platform.
+    \item \textbf{User Documentation} \\
+    Create comprehensive user documentation \textcolor{red}{(potentially including written guides and/or video tutorials)} that guides end-users through \textcolor{red}{key tasks like submitting requests, managing budgets (for admins), and navigating the platform.}
 \end{enumerate}
 
 \newpage{}
@@ -141,7 +148,7 @@ MES applications. This must be done while maintaining stability and performance.
     \item How did you and your team adjust the scope of your goals to ensure
     they are suitable for a Capstone project (not overly ambitious but also of
     appropriate complexity for a senior design project)? (Done as group)\\
-    We adjusted our goals by ensuring that the scope of the project was not too large. The MES covers a broad range of tasks that the project could have included, but we took into account everyone’s schedules and what our project supervisor wanted to achieve with our capstone project. Using this information, we accepted a level of work that we found suitable for our team. This work included only agreeing to work first on including "Streamlining reimbursement requests, Payment requests, Intramural funding applications". We also agreed that once these initial, baseline features had been implemented we could move to tackling the other parts of the project.
-\end{enumerate}  
+    We adjusted our goals by ensuring that the scope of the project was not too large. The MES covers a broad range of tasks that the project could have included, but we took into account everyone's schedules and what our project supervisor wanted to achieve with our capstone project. Using this information, we accepted a level of work that we found suitable for our team. This work included only agreeing to work first on including "Streamlining reimbursement requests, Payment requests, Intramural funding applications". We also agreed that once these initial, baseline features had been implemented we could move to tackling the other parts of the project.
+\end{enumerate}
 
 \end{document}
