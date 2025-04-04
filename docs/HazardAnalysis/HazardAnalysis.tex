@@ -4,6 +4,8 @@
 \usepackage{tabularx}
 \usepackage{hyperref}
 \usepackage{longtable}
+\usepackage{color}
+\usepackage[normalem]{ulem}
 
 \hypersetup{
     colorlinks=true,       % false: boxed links; true: colored links
@@ -27,191 +29,240 @@
 \maketitle
 \thispagestyle{empty}
 
-~\newpage
+\newpage
 
 \pagenumbering{roman}
+\tableofcontents
+\listoftables
+\listoffigures
+
+\newpage
 
 \begin{table}[hp]
 \caption{Revision History} \label{TblRevisionHistory}
-\begin{tabularx}{\textwidth}{llX}
+\begin{tabularx}{\textwidth}{lllX}
 \toprule
-\textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
+\textbf{Date} & \textbf{Version} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-October 15, 2024 & Omar Muhammad & Introduction, scope and system boundaries\\
-October 18, 2024 & Housam Alamour & Critical Assumptions, started on FMEA\\
-October 25, 2024 & Sufyan Motala & Safety and Security Requirements and reflection\\
+October 15, 2024 & 0.1 & Omar Muhammad & Introduction, scope and system boundaries\\
+October 18, 2024 & 0.2 & Housam Alamour & Critical Assumptions, started on FMEA\\
+October 25, 2024 & 0.3 & Sufyan Motala & Safety and Security Requirements and reflection\\
+\today & 1.0 & Sufyan Motala & Revised based on rubric feedback: Added missing elements (ToC, Lists), refined intro/scope, added labeled SSRs, completed FMEA table, improved hazard identification specificity. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-~\newpage
-
-\tableofcontents
-
-~\newpage
+\newpage
 
 \pagenumbering{arabic}
 
 \section{Introduction}
 
-A hazard is defined as a condition or event that can result in harm, failure, or an undesirable outcome in a system. For engineers, hazards are risks that can affect the safety of a system, its functionality, or its operational integrity. For this project, a possible solution discussed was a web based app for phones, laptops, and computers. Specifically, in our project, a hazard can be identified as something that would degrade the operational integrity of the system, cause a crash in our system, expose a user to information that should not be available to them, or grant a user access to something they shouldn't have access to.
+% Added roadmap sentence as suggested by Content rubric. Refined definition.
+A hazard is defined as a condition or event that can result in harm, failure, or an undesirable outcome in a system. For engineers, hazards are risks that can affect the safety of a system, its functionality, or its operational integrity. For this project, \progname{}, a possible solution discussed was a web based app for phones, laptops, and computers. Specifically, in our project, a hazard \textcolor{red}{is identified as any potential event or condition that could lead to financial loss, data breach, unauthorized access, incorrect processing of requests, system downtime, or significant user frustration, thereby compromising the system's intended function of streamlining MES financial operations.} \sout{can be identified as something that would degrade the operational integrity of the system, cause a crash in our system, expose a user to information that should not be available to them, or grant a user access to something they shouldn't have access to.} \textcolor{red}{This document outlines the scope, system components, assumptions, identified hazards, analysis (using FMEA), and resulting safety requirements.}
 
 \section{Scope and Purpose of Hazard Analysis}
-
-The scope of the hazard analysis will include any potential risk that will degrade operational integrity, cause crashes, or give users unauthorized access/information to system functionalities. The losses incurred from the listed scope would include unauthorized access to sensitive data, or exposure to restricted information. This risk could lead to a failure to maintain accurate data of the reimbursement requests. For example, if the backend of the app is edited without proper authorization, it will cause the McMaster Engineering Society to have false information and could make them miss out on reimbursement requests, which lowers the integrity of the app. A final loss would be degraded system functionality or complete system failure if the app cannot handle various inputs from users. If these risks occur frequently, the user base of the application will not be happy and we will risk them not wanting to use the app. By conducting this hazard analysis, we intend to limit all these risks, by limiting the risks we ensure the users of the application will remain content with it and will continue to use the app. 
-
+% Refined scope statement for clarity based on Boundary/Scope rubric
+The scope of the hazard analysis \sout{will include any potential risk that will degrade operational integrity, cause crashes, or give users unauthorized access/information to system functionalities.} \textcolor{red}{encompasses potential failures within the \progname{} web application, including its frontend interface, backend processing logic, database interactions, authentication mechanisms, and integration points (like notification services). We will analyze hazards related to data input/output, processing accuracy, security vulnerabilities, access control failures, system availability, and usability issues that could lead to incorrect financial outcomes or data exposure.} The losses incurred from \sout{the listed scope} \textcolor{red}{these hazards} would include unauthorized access to sensitive \textcolor{red}{financial} data \textcolor{red}{(like reimbursement amounts, budget details)}, exposure to restricted information, \textcolor{red}{incorrect payment processing,} or \sout{exposure to restricted information. This risk could lead to a} failure to maintain accurate data \sout{of the reimbursement requests}. For example, if the backend of the app \sout{is edited without proper authorization} \textcolor{red}{incorrectly calculates budget totals}, it will cause the McMaster Engineering Society to have false information and could \sout{make them miss out on reimbursement requests} \textcolor{red}{lead to overspending}, which lowers the integrity of the app. A final loss would be degraded system functionality or complete system failure if the app cannot handle \sout{various inputs from users} \textcolor{red}{unexpected data formats (e.g., in receipt uploads) or high traffic loads}. If these risks occur frequently, the user base of the application will not be happy and we will risk them not wanting to use the app. By conducting this hazard analysis, we intend to \sout{limit} \textcolor{red}{identify and propose mitigations for} \sout{all} these risks, \sout{by limiting the risks we ensure} \textcolor{red}{to ensure} the users of the application will remain content with it and will continue to use the app.
 
 \section{System Boundaries and Components}
+% Added more specific hazards based on Hazard Identification rubric
 
 \begin{itemize}
-    \item \textbf{Component: Database} 
+    \item \textbf{Component: Database (Supabase/PostgreSQL)} % specificity
     \begin{itemize}
         \item Hazards:
         \begin{enumerate}
-            \item Unauthorized access leading to data breaches.
-            \item Data corruption or loss during operations or updates.
-            \item Insufficient backups causing data loss.
+            \item Unauthorized access leading to data breaches \textcolor{red}{(e.g., exposing financial details of clubs)}.
+            \item Data corruption or loss during operations or updates \textcolor{red}{(e.g., failed budget update transaction)}.
+            \item Insufficient backups causing \textcolor{red}{irreversible} data loss.
+            \item \textcolor{red}{Inconsistent data due to race conditions during concurrent updates.}
+            \item \textcolor{red}{Performance degradation under high query load.}
         \end{enumerate}
     \end{itemize}
 
-    \item \textbf{Component: Front End} 
+    \item \textbf{Component: Front End (Next.js/React)} % Added specificity
     \begin{itemize}
         \item Hazards:
         \begin{enumerate}
-            \item Unhandled inputs leading to system crashes. 
-            \item Poor user experience with performance speed. 
-            \item Poor user experience from a lack of system feedback. 
-            \item Browser compatibility issues causing incorrect display of content.
-            \item Browser compatibility issues causing crashes. 
+            \item Unhandled inputs \textcolor{red}{(e.g., invalid characters in forms, large file uploads)} leading to system crashes or incorrect data submission.
+            \item Poor user experience \sout{with performance speed.} \textcolor{red}{due to slow page loads or unresponsive UI elements.}
+            \item Poor user experience from a lack of \textcolor{red}{clear error messages or} system feedback.
+            \item Browser compatibility issues causing incorrect display of content \textcolor{red}{or non-functional features}.
+            \item \sout{Browser compatibility issues causing crashes.} % Merged with previous
+            \item \textcolor{red}{Cross-Site Scripting (XSS) vulnerabilities if user input is not properly sanitized before display.}
+            \item \textcolor{red}{Failure to correctly reflect backend status changes in real-time (e.g., request approval).}
         \end{enumerate}
     \end{itemize}
 
-    \item \textbf{Component: Back End} 
+    \item \textbf{Component: Back End (Next.js API Routes / Supabase Functions)} % Added specificity
     \begin{itemize}
         \item Hazards:
         \begin{enumerate}
-            \item System crashes due to unhandled exceptions or inputs.
-            \item Failure to process data correctly, leading to incorrect outputs.
-            \item Poor security implementation exposing APIs.
-        \end{enumerate}
-    \end{itemize}
-    
-    \item \textbf{Component: Hardware/Server} 
-    \begin{itemize}
-        \item Hazards:
-        \begin{enumerate}
-            \item Power failures or hardware malfunctions.
-            \item Weak server side processing power causing increased latency. 
-            \item No potential backup server in case of emergency.
-            \item Insufficient server capacity for handling peak loads.
+            \item System crashes due to unhandled exceptions or inputs \textcolor{red}{(e.g., unexpected API request format)}.
+            \item Failure to process data correctly, leading to incorrect outputs \textcolor{red}{(e.g., miscalculation of budget totals, incorrect status updates)}.
+            \item Poor security implementation exposing APIs \textcolor{red}{to unauthorized access or data manipulation}.
+            \item \textcolor{red}{Logic errors in approval workflows leading to incorrect routing or status changes.}
+            \item \textcolor{red}{Failure to properly integrate with external services (SendGrid, Twilio) resulting in missed notifications.}
         \end{enumerate}
     \end{itemize}
 
-    \item \textbf{Component: Authentication System} 
+    \item \textbf{Component: Hardware/Server (Assumed McMaster/MES provided)} % Added specificity
     \begin{itemize}
         \item Hazards:
         \begin{enumerate}
-            \item Unauthorized access due to weak authentication protocols.
-            \item Mismanagement of user roles leading to incorrect access control.
+            \item Power failures or hardware malfunctions \textcolor{red}{causing system unavailability}.
+            \item Weak server side processing power causing increased latency \textcolor{red}{during peak usage}.
+            \item No \sout{potential} backup server \textcolor{red}{or failover mechanism} in case of emergency.
+            \item Insufficient server capacity \textcolor{red}{(CPU, RAM, storage)} for handling peak loads or data growth.
         \end{enumerate}
     \end{itemize}
 
-    \item \textbf{Component: Reimbursement System (Input/Output)} 
+    \item \textbf{Component: Authentication System (Supabase Auth)} % Added specificity
     \begin{itemize}
         \item Hazards:
         \begin{enumerate}
-            \item Incorrect data submission (e.g. incorrect amounts, invalid receipts) causing delays or rejection of requests.
-            \item Output discrepancies (e.g. incorrect approvals or incorrect reimbursement amounts) due to calculation or logic errors.
+            \item Unauthorized access due to weak authentication protocols \textcolor{red}{or compromised credentials}.
+            \item Mismanagement of user roles \textcolor{red}{(RBAC)} leading to incorrect access control \textcolor{red}{(privilege escalation or denial of necessary access)}.
+            \item \textcolor{red}{Session hijacking vulnerabilities.}
+            \item \textcolor{red}{Failure to properly revoke access for users who leave MES/clubs.}
+        \end{enumerate}
+    \end{itemize}
+
+    \item \textbf{Component: Reimbursement System (Input/Output)}
+    \begin{itemize}
+        \item Hazards:
+        \begin{enumerate}
+            \item Incorrect data submission (e.g. incorrect amounts, invalid receipts, \textcolor{red}{OCR errors}) causing delays or rejection of requests.
+            \item Output discrepancies (e.g. incorrect approvals or incorrect reimbursement amounts) due to calculation or logic errors \textcolor{red}{in the backend}.
             \item Failure to notify the appropriate parties (clubs or administrators) regarding the status of the request, leading to confusion and delays.
             \item Data tampering during the approval process, allowing unauthorized changes to reimbursement requests.
-            \item Lack of exception handling, leading to duplicate requests or other unintended circumstances. 
+            \item Lack of exception handling, leading to duplicate requests or other unintended circumstances \textcolor{red}{(e.g., submitting the same request twice quickly)}.
+            \item \textcolor{red}{Inaccurate budget tracking due to errors in associating expenses with the correct budget lines.}
         \end{enumerate}
     \end{itemize}
-    
+
 \end{itemize}
 
 
 \section{Critical Assumptions}
+% Added one more assumption, slightly reworded existing ones for clarity based on Boundary/Scope rubric
 \begin{enumerate}
     \item \textbf{Assumption 1: Reliable Internet Connectivity} \\
-    The system assumes that all users, including student leaders, administrators, and MES staff, will have access to reliable and stable internet connections when interacting with the platform. This assumption is important because the platform is designed to work through a web-based interface. This will require real-time data processing. Reliable internet connectivity is necessary for users to access features like submitting reimbursement requests, tracking the status of payments, and viewing financial reports without interruption. If the connection is unstable, users might experience delays or errors during data submission, which may lead to incomplete reimbursement requests or user frustration. Also, poor connectivity could stop the delivery of notifications, meaning users will not get critical notifications and updates. Addressing potential connectivity issues early through notifications in the interface, error-handling when there is no connection and potentially providing offline access options could mitigate risks associated with this assumption.
+    The system assumes that all users\sout{, including student leaders, administrators, and MES staff,} will have access to reliable and stable internet connections when interacting with the platform. This assumption is important because the platform is designed to work through a web-based interface \sout{. This will require} \textcolor{red}{requiring} real-time data processing. Reliable internet connectivity is necessary for users to access features like submitting reimbursement requests, tracking the status of payments, and viewing financial reports without interruption. If the connection is unstable, users might experience delays or errors during data submission, which may lead to incomplete reimbursement requests or user frustration. Also, poor connectivity could \sout{stop} \textcolor{red}{delay} the delivery of notifications, meaning users \sout{will} \textcolor{red}{may} not get critical \sout{notifications and} updates \textcolor{red}{promptly}. Addressing potential connectivity issues early through \sout{notifications in the interface} \textcolor{red}{clear UI feedback}, error-handling when \sout{there is no connection} \textcolor{red}{requests fail}, and potentially \sout{providing offline access options could mitigate} \textcolor{red}{local caching mechanisms could mitigate some} risks associated with this assumption.
 
     \item \textbf{Assumption 2: Server Availability and Performance} \\
-    It is assumed that the McMaster Engineering Society (MES) will provide a dedicated server with sufficient resources, including CPU power, memory, and storage, to support the platform's operations. The server must handle the anticipated workload, real-time updates, and concurrent access by all administrator of the reimbursement program of the MES as well as administrators of the clubs during peak periods. The server's storage capacity should be enough to store financial data for at least 3 years. This will allow for comprehensive audit trails and historical data retrieval. This assumption is important because if the server cannot handle the project, this could result in slower response times, data processing delays, or system crashes. This would directly impact user experience and the efficiency of financial operations. If these are not met or if future demand necessitates, then there may be a need to upgrade, potentially increasing project costs and delaying deployment. Regular performance monitoring should be planned to ensure server capacity aligns with user demand over time.
+    It is assumed that the \sout{McMaster Engineering Society (MES) will provide a dedicated} server \textcolor{red}{hosting the application} \sout{with sufficient resources, including CPU power, memory, and storage, to support the platform's operations.} \textcolor{red}{has adequate resources (CPU, RAM, storage, network bandwidth) to handle the expected workload.} The server must handle \sout{the anticipated workload,} real-time updates, and concurrent access by \sout{all administrator of the reimbursement program of the MES as well as administrators of the clubs during peak periods} \textcolor{red}{the expected number of users (approx. 60+ groups plus MES staff)}. \sout{The server's storage capacity should be enough to store financial data for at least 3 years.} \textcolor{red}{Sufficient storage must be available for financial records, receipts, and audit logs, potentially spanning multiple years as required by MES policy.} This assumption is important because if the server cannot handle the project \textcolor{red}{load}, this could result in slower response times, data processing delays, or system crashes. This would directly impact user experience and the efficiency of financial operations. If \sout{these are not met or if future demand necessitates} \textcolor{red}{server resources are insufficient}, \sout{then} there may be a need \sout{to upgrade} \textcolor{red}{for upgrades}, potentially increasing \sout{project} \textcolor{red}{operational} costs \sout{and delaying deployment}. Regular performance monitoring should be planned to ensure server capacity aligns with user demand over time.
 
     \item \textbf{Assumption 3: User Compliance with Data Entry Standards} \\
-    It is assumed that all users of the platform, including student group leaders and MES staff, will adhere to the established data entry standards when submitting information into the system. This includes entering accurate details for each reimbursement request, such as the amount, purpose, and necessary attachments like receipts. Sticking to these standards ensures that the data processed by the platform is accurate and complete, minimizing errors during financial reviews and report generation. If users do not comply with these standards, there is a risk of data entry errors leading to rejected requests, delays in processing, and additional administrative workload to correct mistakes. Proper user training and clear guidelines should be implemented so all users comply. Additionally, the platform should include input validation and error-checking features to reduce the likelihood of incorrect data entries.
+    It is assumed that all users of the platform\sout{, including student group leaders and MES staff,} will adhere to \sout{the established data entry standards} \textcolor{red}{reasonable data entry practices} when submitting information into the system. This includes entering accurate details for \sout{each} reimbursement request\sout{s, such as the amount, purpose, and necessary attachments like receipts}. Sticking to these standards ensures that the data processed by the platform is accurate and complete, minimizing errors during financial reviews and report generation. If users do not comply \sout{with these standards}, there is a risk of data entry errors \textcolor{red}{(e.g., incorrect amounts, mismatched categories, unreadable receipts)} leading to rejected requests, delays in processing, and additional administrative workload to correct mistakes. Proper user training and clear guidelines \textcolor{red}{within the application} should \sout{be implemented so all users comply} \textcolor{red}{guide users}. Additionally, the platform should include input validation and error-checking features to reduce the likelihood of incorrect data entries.
 
     \item \textbf{Assumption 4: User Access to Compatible Devices and Browsers} \\
-    It is assumed that all users, including student group leaders, administrators, group members and MES staff, will have access to devices and browsers that are compatible with the new platform. The platform is designed to function optimally on modern operating systems, as well as on commonly used browsers. This assumption is critical because the system's user interface and performance rely on up-to-date browser features and operating system support to ensure a smooth user experience. If users attempt to access the platform on outdated devices or unsupported browsers, they may experience issues such as reduced functionality, slower response times, or display errors. To mitigate this risk, it will be essential to clearly communicate the platform’s minimum system requirements to users and provide support for upgrading or accessing compatible devices where possible.
-    
+    It is assumed that all users\sout{, including student group leaders, administrators, group members and MES staff,} will have access to devices \textcolor{red}{(desktops, laptops)} and browsers \textcolor{red}{(recent versions of Chrome, Firefox, Edge, Safari)} that are compatible with the \sout{new} platform. The platform is designed to function optimally on modern operating systems\sout{, as well as on commonly used browsers}. This assumption is critical because the system's user interface and performance rely on up-to-date browser features and operating system support to ensure a smooth user experience. If users attempt to access the platform on outdated devices or unsupported browsers, they may experience issues such as reduced functionality, slower response times, or display errors. To mitigate this risk, it will be essential to clearly communicate the platform's minimum system requirements to users \sout{and provide support for upgrading or accessing compatible devices where possible}.
+
+    % Added Assumption 5 based on rubric feedback for potentially missing assumptions
+    \item \textcolor{red}{\textbf{Assumption 5: Security of Underlying Infrastructure}} \\
+    \textcolor{red}{It is assumed that the underlying infrastructure provided by Supabase (database, authentication, storage) and any third-party services (SendGrid, Twilio) maintain adequate security measures to protect against common external threats (e.g., DDoS attacks, unauthorized infrastructure access). The project team is responsible for configuring these services securely but relies on the provider's security posture for the infrastructure itself.}
+
 \end{enumerate}
 
-
+\newpage % Added newpage for table readability
 
 \section{Failure Mode and Effect Analysis (FMEA)}
-TO BE EDITED
+% Replaced placeholder content with a real FMEA table addressing the Method/Application rubric and FMEA organization feedback. Added introductory sentence. Added links to SSRs. Marked red.
 
-\begin{longtable}{|p{2.2cm}|p{2.2cm}|p{2.2cm}|p{0.6cm}|p{0.6cm}|p{0.6cm}|p{0.6cm}|p{3cm}|}
-    \hline
-    \textbf{Failure Mode} & \textbf{Cause} & \textbf{Effect} & \textbf{S} & \textbf{O} & \textbf{D} & \textbf{RPN} & \textbf{Recommended Actions} \\ \hline
-    \endfirsthead
-    
-    \hline
-    \textbf{Failure Mode} & \textbf{Cause} & \textbf{Effect} & \textbf{S} & \textbf{O} & \textbf{D} & \textbf{RPN} & \textbf{Recommended Actions} \\ \hline
-    \endhead
-    
-    Data loss during migration & Incorrect data mapping & Loss of historical records, audit issues & 8 & 4 & 6 & 192 & Use validation scripts, trial migrations, ensure backups. \\ \hline
-    Unauthorized access & Weak passwords or vulnerabilities & Data breach, legal issues & 9 & 3 & 5 & 135 & Strong passwords, security audits, multi-factor auth. \\ \hline
-    System downtime & Server overload & Submission delays, processing impact & 7 & 5 & 4 & 140 & Increase capacity, load balance, monitor performance. \\ \hline
-    Incorrect approvals & Manual errors & Financial discrepancies, dissatisfaction & 6 & 4 & 7 & 168 & Automate approvals, training, add review layer. \\ \hline
+\textcolor{red}{
+This section performs a Failure Mode and Effect Analysis (FMEA) to systematically identify potential failures within the \progname{} system, their causes, effects, and severity, and to propose mitigation strategies. The Risk Priority Number (RPN) is calculated as Severity (S) x Occurrence (O) x Detection (D), where scales are typically 1-10 (1=low, 10=high).}
+
+\begin{longtable}{|p{2.2cm}|p{2.2cm}|p{3cm}|p{0.6cm}|p{0.6cm}|p{0.6cm}|p{0.6cm}|p{3.5cm}|}
+\caption{FMEA for \progname{}} \label{tab:fmea} \\
+\hline
+\textbf{Failure Mode} & \textbf{Potential Cause(s)} & \textbf{Potential Effect(s)} & \textbf{S} & \textbf{O} & \textbf{D} & \textbf{RPN} & \textbf{Recommended Actions / Mitigations} \\
+\hline
+\endfirsthead
+
+\multicolumn{8}{|r|}{\textit{Continued on next page}} \\
+\hline
+\textbf{Failure Mode} & \textbf{Potential Cause(s)} & \textbf{Potential Effect(s)} & \textbf{S} & \textbf{O} & \textbf{D} & \textbf{RPN} & \textbf{Recommended Actions / Mitigations} \\
+\hline
+\endhead
+
+\multicolumn{8}{|r|}{\textit{Continued on next page}} \\
+\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+Unauthorized access to financial data & Weak passwords, compromised credentials, RBAC misconfiguration, session hijacking & Data breach, privacy violation, financial fraud, loss of trust. (Ref: SSR-2) & 9 & 3 & 4 & 108 & Enforce strong passwords, MFA (future), regular security audits, secure session management, implement strict RBAC checks on all sensitive endpoints. \\
+\hline
+
+Incorrect reimbursement amount processed & OCR error, User data entry error, Backend calculation bug & Financial loss for MES or user, incorrect budget tracking, user dissatisfaction. & 7 & 4 & 5 & 140 & Implement front-end validation for amounts, require user confirmation of OCR results, add backend validation rules, unit tests for calculation logic. \\
+\hline
+
+System downtime during peak usage & Insufficient server resources (CPU/RAM), Database connection pool exhaustion, Unoptimized code/queries & Users unable to submit/approve requests, operational delays, frustration. & 6 & 5 & 3 & 90 & Load testing (Test 7, Test 9), server resource monitoring, database connection pooling tuning, code optimization (caching, indexing). \\
+\hline
+
+Failure to send status notification (Email/SMS) & Incorrect user contact info, SendGrid/Twilio API failure or misconfiguration, Network issues & User unaware of request status, delays in process, confusion. (Ref: SSR-1, indirect) & 5 & 4 & 4 & 80 & Validate contact info on input, implement retry mechanisms for API calls, robust error logging for notification service, provide in-app status tracking as primary method. \\
+\hline
+
+Data corruption in budget/expense tables & Race conditions during concurrent updates, Software bug during save, Database hardware/software failure & Incorrect financial reporting, inability to track budget accurately, audit failures. (Ref: SSR-3) & 8 & 2 & 5 & 80 & Use database transactions for updates, implement locking mechanisms where needed, regular automated backups, data integrity checks. \\
+\hline
+
+Privilege Escalation & Flaw in RBAC logic, Bug allowing users to modify their own roles/permissions & User gains unauthorized access to sensitive data or functions (e.g., approving own requests, viewing all budgets). (Ref: SSR-2) & 10 & 2 & 4 & 80 & Rigorous testing of permission checks (Test 8), code reviews focused on access control logic, limit user ability to self-modify roles, regular permission audits by admin. \\
+\hline
+
+OCR Receipt Processing Error & Poor image quality, Non-standard receipt format, OCR engine limitations & Incorrect amount extracted, requires manual correction, slows down submission process. & 4 & 6 & 3 & 72 & Provide clear guidelines for receipt images, allow manual override of OCR amount, potentially explore alternative OCR services if accuracy is consistently low. \\
+\hline
 
 \end{longtable}
 
-
-
 \section{Safety and Security Requirements}
+% Added labels (SSR-1, etc.) and refined rationale based on rubric feedback
 
 \begin{enumerate}
-    \item There must be comprehensive logging and monitoring of access to reimbursement information, including tracking actions such as data access, modification, and deletion. \\
-    Rationale: Monitoring access helps in identifying and responding to unauthorized access attempts or suspicious activities, providing an audit trail that enhances data security.
-    \item There must be role based access control to restrict access to reimbursement and financial data. \\
-    Rationale: Only authorized personnel, such as administrators and designated financial officers, should have access to sensitive reimbursement information. This control ensures confidentiality and limits access to sensitive financial information.
-    \item There must be data encryption for sensitive information such as user credentials, financial data, and reimbursement requests. \\
-    Rationale: Encryption protects sensitive data from unauthorized access and ensures that data is secure during transmission and storage.
+    \item[\textcolor{red}{SSR-1:}] \label{ssr:logging} % Added label
+    There must be comprehensive logging and monitoring of access \sout{to reimbursement information,} \textcolor{red}{and modifications to critical financial data (reimbursement requests, budget allocations)}, including tracking actions such as data access, modification, and deletion \textcolor{red}{with associated user IDs and timestamps}. \\
+    Rationale: Monitoring access helps in identifying and responding to unauthorized access attempts or suspicious activities, providing an audit trail \sout{that enhances data security.} \textcolor{red}{essential for financial accountability and forensic analysis if issues arise.}
+    \item[\textcolor{red}{SSR-2:}] \label{ssr:rbac} % Added label
+    There must be role based access control \sout{to restrict} \textcolor{red}{enforced consistently across the application (UI and API) to restrict} access to \sout{reimbursement and} financial data \textcolor{red}{and functionalities based on defined user roles and group memberships}. \\
+    Rationale: Only authorized personnel\sout{, such as administrators and designated financial officers,} should have access to sensitive \sout{reimbursement} information \textcolor{red}{and actions}. This control ensures confidentiality \sout{and limits} \textcolor{red}{, prevents unauthorized modifications, and limits the scope of potential damage from compromised accounts.} \sout{access to sensitive financial information.}
+    \item[\textcolor{red}{SSR-3:}] \label{ssr:encryption} % Added label
+    There must be data encryption for sensitive information such as user credentials, \sout{financial data, and reimbursement requests.} \textcolor{red}{API keys, and potentially sensitive financial details (like bank account numbers if collected for direct deposit), both in transit (using HTTPS) and at rest (using database-level encryption where appropriate).} \\
+    Rationale: Encryption protects sensitive data from unauthorized access \sout{and ensures that data is secure during transmission and storage.} \textcolor{red}{if the underlying storage or network is compromised.}
 \end{enumerate}
 
-\section{Roadmap}
-\subsection{Immediate Implementation}
+\section{Roadmap} % Minor wording adjustments for clarity
+\subsection{Immediate Implementation (During Capstone)}
 
-The following safety requirements will be implemented during the capstone project to ensure a functional and secure platform:
+The following safety \textcolor{red}{and security} requirements will be implemented during the capstone project to ensure a functional and secure platform:
 
 \begin{enumerate}
     \item \textbf{Input Validation and Error Handling}
     \begin{itemize}
-        \item Ensure that user inputs such as reimbursement amounts and receipts are validated to prevent submission errors and system crashes.
+        \item Ensure that user inputs such as reimbursement amounts \sout{and receipts} are validated \textcolor{red}{on both client and server sides} to prevent submission errors \sout{and system crashes} \textcolor{red}{, common injection attacks, and data inconsistencies}.
     \end{itemize}
 
-    \item \textbf{Authentication and Access Control}
+    \item \textbf{Authentication and Access Control (\textcolor{red}{SSR-2})}
     \begin{itemize}
-        \item Implement login system with role-based access control to restrict sensitive financial data and operations.
+        \item Implement \textcolor{red}{Supabase Auth} login system with role-based access control \textcolor{red}{(RBAC)} to restrict \sout{sensitive financial data and operations} \textcolor{red}{access based on assigned permissions}.
     \end{itemize}
 
-    \item \textbf{Data Encryption and Security}
+    \item \textbf{Data Encryption and Security (\textcolor{red}{SSR-3})}
     \begin{itemize}
-        \item Encrypt sensitive data and ensure secure connection between client and server to protect against unauthorized access.
+        \item Encrypt sensitive data \textcolor{red}{(like passwords via Supabase Auth, potentially API keys)} and ensure secure connection\textcolor{red}{s} \sout{between client and server} \textcolor{red}{(HTTPS)} to protect against unauthorized access.
     \end{itemize}
 
-    \item \textbf{Audit Logs}
+    \item \textbf{Audit Logs (\textcolor{red}{SSR-1})}
     \begin{itemize}
-        \item Set up audit logs to track user actions such as submissions, approvals, and modifications.
+        \item Set up audit logs \textcolor{red}{in the database} to track user actions such as submissions, approvals, and modifications \textcolor{red}{to key financial records}.
     \end{itemize}
 
     \item \textbf{Server Monitoring and Reliability}
     \begin{itemize}
-        \item Implement server monitoring and backups to ensure system availability and prevent data loss.
+        \item Implement \textcolor{red}{basic application-level} server monitoring and \textcolor{red}{ensure regular database} backups \textcolor{red}{(via Supabase)} to \sout{ensure system availability and} prevent data loss.
     \end{itemize}
-    
+
 \end{enumerate}
 
 \subsection{Deferred for Future Implementation}
@@ -219,19 +270,26 @@ The following safety requirements will be implemented during the capstone projec
 The following will be considered for future updates beyond the capstone project timeline:
 
 \begin{enumerate}
-    \item \textbf{Multi-factor Authentication}
+    \item \textbf{Multi-factor Authentication (MFA)}
     \begin{itemize}
-        \item Future versions will consider adding MFA to add additional account security.
+        \item Future versions \sout{will consider adding} \textcolor{red}{should implement} MFA \textcolor{red}{via Supabase Auth} to add additional account security, especially for admin roles.
     \end{itemize}
 
     \item \textbf{Advanced Fraud Detection}
     \begin{itemize}
-        \item Implement machine learning algorithms to detect potentially fraudulent reimbursement requests.
+        \item \textcolor{red}{Potentially} implement machine learning algorithms or rule-based systems to detect potentially fraudulent \sout{reimbursement requests} \textcolor{red}{patterns (e.g., duplicate submissions, unusual amounts)}.
+    \end{itemize}
+    % Added another potential future item
+    \item \textcolor{red}{\textbf{Formal Security Penetration Testing}}
+    \begin{itemize}
+        \item \textcolor{red}{Conduct professional penetration testing to identify vulnerabilities not caught by automated scans or internal reviews.}
     \end{itemize}
 \end{enumerate}
 
-\newpage{}
+\newpage
 
+% Added Appendix placeholder based on Content rubric
+\appendix
 \section*{Appendix --- Reflection}
 
 \input{../Reflection.tex}
