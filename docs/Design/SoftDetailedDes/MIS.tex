@@ -7,8 +7,11 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{colortbl}
-\usepackage{xr}
+
 \usepackage{hyperref}
+\usepackage{xr}
+\externaldocument{../../../SRS/SRS}
+
 \usepackage{longtable}
 \usepackage{xfrac}
 \usepackage{tabularx}
@@ -19,22 +22,29 @@
 \usepackage[section]{placeins}
 \usepackage{caption}
 \usepackage{fullpage}
+\usepackage{color}
+\usepackage[normalem]{ulem}
+\usepackage{url}
 
 \hypersetup{
-bookmarks=true,     % show bookmarks bar?
+bookmarks=true,     % show bookmarks bar? - Set only once if possible
 colorlinks=true,       % false: boxed links; true: colored links
 linkcolor=red,          % color of internal links (change box color with linkbordercolor)
 citecolor=blue,      % color of links to bibliography
 filecolor=magenta,  % color of file links
-urlcolor=cyan          % color of external links
+urlcolor=cyan,          % color of external links
+pdftex, % Explicitly set driver
+breaklinks=true % Allow links to break across lines
 }
 
 \usepackage{array}
 
-\externaldocument{../../SRS/SRS}
 
-\input{../../Comments}
-\input{../../Common}
+\input{../../Comments.tex}
+\input{../../Common.tex}
+
+\providecommand{\mref}[1]{M\ref{#1}}
+\providecommand{\SecMD}{5}
 
 \begin{document}
 
@@ -58,13 +68,35 @@ Date 2 & 1.1 & Notes\\
 \bottomrule
 \end{tabularx}
 
-~\newpage
+\newpage % Added page break
 
 \section{Symbols, Abbreviations and Acronyms}
 
-See SRS Documentation at \wss{give url}
+See SRS Documentation. % Simplified reference
 
-\wss{Also add any additional symbols, abbreviations or acronyms}
+\textcolor{red}{Additional symbols used in this MIS:}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l l}
+  \toprule
+  \textbf{Symbol} & \textbf{Description}\\
+  \midrule
+  $\mathbb{Z}$ & Set of integers \\
+  $\mathbb{R}$ & Set of real numbers \\
+  $\mathbb{N}$ & Set of natural numbers (positive integers) \\
+  $\mathbb{N}_0$ & Set of non-negative integers (0, 1, 2, ...) \\ % Added N_0
+  seq of T & Sequence containing elements of type T \\
+  T $\times$ U & Tuple containing elements of type T and U \\
+  := & Assignment \\
+  (c $\Rightarrow$ r) & Conditional rule (if condition c holds, result r applies) \\
+  Map(K $\rightarrow$ V) & Map from keys of type K to values of type V \\ % Added Map
+  Maybe<T> & Type T or null/nothing \\ % Added Maybe
+  Partial<T> & A record where some fields of Type T may be present \\ % Added Partial
+  \texttt{Blob} & \textcolor{red}{Represents binary data (e.g., file content)} \\ % Added Blob
+  \texttt{Timestamp} & \textcolor{red}{String representing ISO 8601 date-time} \\ % Added Timestamp
+  \bottomrule
+\end{tabular}
+
+% Removed \wss comment
 
 \newpage
 
@@ -87,35 +119,35 @@ Complementary documents to this MIS include the System Requirements Specificatio
 
 The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
 with the addition that template modules have been adapted from
-\cite{GhezziEtAl2003}.  The mathematical notation comes from Chapter 3 of
-\citet{HoffmanAndStrooper1995}.  For instance, the symbol := is used for a
-multiple assignment statement and conditional rules follow the form $(c_1
-\Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
+\cite{GhezziEtAl2003}. The mathematical notation comes from Chapter 3 of
+\citet{HoffmanAndStrooper1995}. For instance, the symbol \texttt{:=} is used for assignment and conditional rules follow the form $(c_1 \Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
 
-The following table summarizes the primitive data types used by \progname. 
+The following table summarizes the primitive data types used by \progname{}.
 
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
-\noindent 
-\begin{tabular}{l l p{7.5cm}} 
-\toprule 
-\textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\ 
+\noindent
+\begin{tabular}{l l p{7.5cm}}
+\toprule
+\textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\
 \midrule
 character & char & a single symbol or digit\\
-integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
-natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
-real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
+integer & $\mathbb{Z}$ & a number without a fractional component in $(-\infty, \infty$) \\
+natural number & $\mathbb{N}$ & a number without a fractional component in $[1, \infty$) \\
+real & $\mathbb{R}$ & any number in $(-\infty, \infty$)\\
+boolean & Bool & True or False value \\
+string & String & A sequence of characters \\
 \bottomrule
-\end{tabular} 
+\end{tabular}
 \end{center}
 
 \noindent
 The specification of \progname \ uses some derived data types: sequences, strings, and
-tuples. Sequences are lists filled with elements of the same data type. Strings
+tuples. Sequences are lists filled with elements of the same data type (e.g., seq of $\mathbb{R}$). Strings
 are sequences of characters. Tuples contain a list of values, potentially of
-different types. In addition, \progname \ uses functions, which
-are defined by the data types of their inputs and outputs. Local functions are
-described by giving their type signature followed by their specification.
+different types (e.g., String $\times$ $\mathbb{R}$). In addition, \progname \ uses functions, which
+are defined by the data types of their inputs and outputs (e.g., $f : \mathbb{R} \rightarrow \text{Bool}$). Local functions are
+described by giving their type signature followed by their specification. Object types may be defined using record notation, e.g., \texttt{Type = record of field1: String, field2: $\mathbb{R}$ end}.
 
 \section{Timeline}
 
@@ -124,35 +156,35 @@ This section outlines the timeline for the implementation of the project. The ti
 \subsection{Development Timeline}
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
-\textbf{Week} & \textbf{Task} & \textbf{Details} \\ 
+\textbf{Week} & \textbf{Task} & \textbf{Details} \\
 \hline
-Week 1 & Initial Planning & Team meeting to finalize requirements and review the SRS. Assign responsibilities for each module. \\ 
+Week 1 & Initial Planning & Team meeting to finalize requirements and review the SRS. Assign responsibilities for each module. \\
 \hline
-Week 2 & User Authentication and Profile Management Module & Development of secure login, roles, and basic profile updates. Begin unit testing for authentication. \\ 
+Week 2 & User Authentication and Profile Management Module & Development of secure login, roles, and basic profile updates. Begin unit testing for authentication. \\
 \hline
-Week 3 & Expense Submission and Tracking Module & Implement submission forms for expenses, including receipt uploads and status tracking. Start unit testing. \\ 
+Week 3 & Expense Submission and Tracking Module & Implement submission forms for expenses, including receipt uploads and status tracking. Start unit testing. \\
 \hline
-Week 4 & Budget and Funding Management Module & Develop logic for fetching budgets, validating funds, and updating department budgets. Integrate with the database module. \\ 
+Week 4 & Budget and Funding Management Module & Develop logic for fetching budgets, validating funds, and updating department budgets. Integrate with the database module. \\
 \hline
-Week 5 & Approval Workflow and Review Module & Implement dynamic routing rules and approval workflows. Integrate notifications for pending approvals. Conduct unit testing. \\ 
+Week 5 & Approval Workflow and Review Module & Implement dynamic routing rules and approval workflows. Integrate notifications for pending approvals. Conduct unit testing. \\
 \hline
-Week 6 & Disbursement and Payment Processing Module & Create logic for issuing payments and generating logs for auditing. Integrate with external financial systems. \\ 
+\textcolor{red}{Week 6} & \textcolor{red}{Notifications \& Compliance} & \textcolor{red}{Build Notifications (\mref{mNotify}) and Policy/Compliance (\mref{mCompliance}) modules. Integrate notifications for key events.} \\
 \hline
-Week 7 & Notifications and Communication Module & Build notifications for key events, such as request approvals or denials. Include dashboard alerts for overdue actions. \\ 
+\textcolor{red}{Week 7} & \textcolor{red}{Continued Modules} & \textcolor{red}{Continue development on BH modules as needed.} \\
 \hline
-Week 8 & Reporting and Analytics Module & Develop functionality for generating reports and tracking usage statistics. Validate with sample data. \\ 
+Week 8 & Reporting and Analytics Module & Develop functionality for generating reports \textcolor{red}{(analytics views)} and tracking usage statistics. Validate with sample data. \\
 \hline
-Week 9 & Policy and Compliance Management Module & Implement rule validation for requests and ensure compliance checks during submission. \\ 
+Week 9 & \textcolor{red}{Admin Panel Development} & \textcolor{red}{Begin implementation of Administrator and Configuration Panel Module (\mref{mAdminPanel}).} \\
 \hline
-Week 10 & Integration with Other University Systems Module & Create API connectors for university systems (SIS, finance) and test for reliability. \\ 
+Week 10 & \textcolor{red}{Admin Panel Continued} & \textcolor{red}{Continue implementation of Administrator and Configuration Panel Module (\mref{mAdminPanel}).} \\
 \hline
-Week 11 & Administrator and Configuration Panel Module & Build an admin interface for managing roles, notifications, and system logs. Ensure ease of use. \\ 
+Week 11 & Administrator and Configuration Panel Module & Build an admin interface for managing roles, \textcolor{red}{groups,} and system logs. Ensure ease of use. \\
 \hline
-Week 12 & Testing and Integration & Conduct full system testing, including integration testing across all modules. Address any bugs or performance issues. \\ 
+Week 12 & Testing and Integration & Conduct full system testing, including integration testing across all modules. Address any bugs or performance issues. \\
 \hline
-Week 13 & Final Review & Review system functionality against requirements. Conduct user testing and gather feedback for final improvements. \\ 
+Week 13 & Final Review & Review system functionality against requirements. Conduct user \textcolor{red}{acceptance} testing and gather feedback for final improvements. \\
 \hline
-Week 14 & Deployment & Deploy the system on university servers. Ensure documentation is complete and ready for handover. \\ 
+Week 14 & Deployment & Deploy the system on university servers. Ensure documentation is complete and ready for handover. \\
 \hline
 \end{tabularx}
 
@@ -169,45 +201,22 @@ Testing will be conducted in multiple phases:
 The following responsibilities are assigned to team members:
 \begin{itemize}
     \item Module Implementation: Each team member is responsible for implementing the modules assigned to them during the initial planning phase.
-    \item Documentation: All team members contribute to the MIS and ensure consistency with the SRS.
+    \item Documentation: All team members contribute to the MIS and ensure consistency with the SRS and MG.
     \item Testing: Shared responsibility for writing and executing test cases, with module developers performing unit tests.
     \item Deployment: Coordinated by the team lead, with support from all team members for configuration and setup.
 \end{itemize}
 
 \section{Module Decomposition}
-The modules in this system are divided into the following levels:
-
-\begin{table}[h!]
-    \centering
-    \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
-        \toprule
-        \textbf{Level 1} & \textbf{Level 2} \\
-        \midrule
-        Hardware-Hiding Module & Database Module \\
-        \midrule
-        \multirow{6}{0.3\textwidth}{Behavior-Hiding Module} & Approval Workflow and Review \\
-        & Budget and Funding Management \\
-        & Reporting and Analytics \\
-        & Policy and Compliance Management \\
-        & Notifications and Communication \\
-        & Disbursement and Payment Processing \\
-        \midrule
-        \multirow{3}{0.3\textwidth}{Software Decision Module} & GUI Module \\
-        & Integration with Other University Systems \\
-        & Software Design Decisions Module \\
-        \bottomrule
-    \end{tabular}
-    \caption{Module Decomposition}
-    \label{tab:module_decomposition}
-\end{table}
+\textcolor{red}{This section provides the Module Interface Specifications (MIS) for the modules identified in the Module Guide (MG) Section~\ref{SecMD}. The decomposition follows the HH, BH, and SD layers defined in the MG.}
 
 \newpage
 ~\newpage
 
-\section{MIS of Database Module}
+% --- MIS of Database Module ---
+\section{MIS of Database Module (\mref{mDB})}
 
 \subsection{Module}
-Database
+Database Interaction Layer
 
 \subsection{Uses}
 None (Hardware-Hiding Module).
@@ -215,29 +224,29 @@ None (Hardware-Hiding Module).
 \subsection{Syntax}
 \subsubsection{Exported Constants}
 \begin{itemize}
-    \item DATABASE\_URL: The URL for the database connection.
-    \item MAX\_BATCH\_SIZE: The maximum number of records to fetch in a single query.
-    \item MAX\_CONNECTIONS: The maximum number of concurrent database connections.
-    \item DATABASE\_CREDENTIALS: The username and password for database access.
-    \item DEFAULT\_TIMEOUT: The default timeout for database queries.
+    \item \texttt{DATABASE\_URL}: String - The URL for the database connection.
+    \item \texttt{MAX\_BATCH\_SIZE}: $\mathbb{N}$ - The maximum number of records to fetch in a single query. \textcolor{red}{(e.g., 1000)}
+    \item \texttt{MAX\_CONNECTIONS}: $\mathbb{N}$ - The maximum number of concurrent database connections allowed by the pool. \textcolor{red}{(e.g., 10)}
+    \item \texttt{DEFAULT\_TIMEOUT}: $\mathbb{N}$ - The default timeout \textcolor{red}{in milliseconds} for database queries. \textcolor{red}{(e.g., 30000)}
 \end{itemize}
 
 \subsubsection{Exported Access Programs}
+\textcolor{red}{Note: `Object` type represents a structured record or JSON-like object. `Array` represents a sequence.}
 \begin{center}
     \scriptsize
     \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
         \hline
         \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
         \hline
-        query & queryString (\texttt{String}), params (\texttt{Object}) & results (\texttt{Array}) & QueryExecutionException \\
+        query & queryString: String, params: Object & results: Array of Object & \textcolor{red}{DBQueryError} \\
         \hline
-        insert & collection (\texttt{String}), document (\texttt{Object}) & documentID (\texttt{String}) & InsertionException \\
+        insert & collection: String, document: Object & documentID: String & \textcolor{red}{DBInsertError} \\
         \hline
-        update & collection (\texttt{String}), filter (\texttt{Object}), updates (\texttt{Object}) & modifiedCount (\texttt{Number}) & UpdateException \\
+        update & collection: String, filter: Object, updates: Object & modifiedCount: $\mathbb{N}_0$ & \textcolor{red}{DBUpdateError} \\
         \hline
-        delete & collection (\texttt{String}), filter (\texttt{Object}) & deletedCount (\texttt{Number}) & DeletionException \\
+        delete & collection: String, filter: Object & deletedCount: $\mathbb{N}_0$ & \textcolor{red}{DBDeleteError} \\
         \hline
-        transaction & operations (\texttt{Array}) & results (\texttt{Array}) & TransactionException \\
+        transaction & operations: Array of \newline \{ type: String, \newline collection: String, \newline ...params \} & results: Array of Object & \textcolor{red}{DBTransactionError} \\
         \hline
     \end{tabular}
 \end{center}
@@ -245,108 +254,98 @@ None (Hardware-Hiding Module).
 \subsection{Semantics}
 \subsubsection{State Variables}
 \begin{itemize}
-    %connections: Pool of active database connections
-    %transactions: Active transactions and their states
-    %collections: Schema and metadata for database collections
-    \item connections: Pool of active database connections.
-    \item collections: Schema and metadata for database collections.
-    \item queries: Record of executed queries and their results.
-    \item inserts: Record of inserted documents and their IDs.
-    \item updates: Record of updated documents and their modification counts.
-    \item deletions: Record of deleted documents and their deletion counts.
-    \item transactions: Record of transaction operations and their results.
-    \item collections: Record of database collections and their schemas.
+    \item \textcolor{red}{\texttt{dbState}: \{Connected, Disconnected, Error\} - Represents the current connection status to the database server.}
 \end{itemize}
 
 \subsubsection{Environment Variables}
 \begin{itemize}
-    \item Database Server: Hosts the database and provides access to stored data.
-    \item Database Client: Connects to the database server and executes queries.
-    \item Configuration: Database connection and optimization settings.
+    \item \textcolor{red}{\texttt{DatabaseServer}: Represents the external database system (e.g., Supabase PostgreSQL instance) holding the persisted data.}
 \end{itemize}
 
 \subsubsection{Assumptions}
 \begin{itemize}
-    \item Database server is accessible and responsive.
-    \item Database schema is predefined and consistent across collections.
-    \item Database queries are validated before execution.
-    \item Authentication credentials are securely stored
+    \item \texttt{DatabaseServer} is accessible. \textcolor{red}{A1}
+    \item Database schema (table structures, constraints) is predefined and consistent with the application's expectations. \textcolor{red}{A2}
+    \item Authentication credentials (\textcolor{red}{e.g., API keys}) are securely managed externally (e.g., environment variables) and provided correctly during initialization. \textcolor{red}{A3}
+    \item \textcolor{red}{Network connectivity exists between the application server and the \texttt{DatabaseServer}. A4}
 \end{itemize}
 
 \subsubsection{Access Routine Semantics}
-\noindent \texttt{query(queryString)}:
+\noindent \texttt{query(queryString, params)}:
 \begin{itemize}
-    \item \textbf{Transition}: Executes a database query with the provided parameters.
-    \item \textbf{Output}: Returns query results or raises QueryExecutionException.
-    \item \textbf{Precondition}: Query string is valid MongoDB syntax.
-    \item \textbf{Postcondition}: Results are properly sanitized and formatted.
+    \item \textbf{Transition}: \textcolor{red}{$(\texttt{dbState} = \text{Connected}) \implies$ Executes the database query specified by \texttt{queryString} with bound \texttt{params} against the \texttt{DatabaseServer}.}
+    \item \textbf{Output}: \textcolor{red}{$\texttt{out} := \texttt{results}$ (Array of Object representing rows matching the query).}
+    \item \textbf{Exceptions}: \textcolor{red}{$(\texttt{dbState} \neq \text{Connected}) \lor (\text{Query execution fails on \texttt{DatabaseServer}}) \implies \texttt{exc} := \text{DBQueryError}$}
+    \item \textbf{Precondition}: \texttt{queryString} is valid SQL syntax for the target database. \texttt{params} structure matches placeholders in \texttt{queryString}. \textcolor{red}{(Uses \texttt{sanitizeQuery})}
+    \item \textbf{Postcondition}: Returned \texttt{results} are consistent with the state of the \texttt{DatabaseServer} at the time of query execution.
 \end{itemize}
 
 \noindent \texttt{insert(collection, document)}:
 \begin{itemize}
-    \item \textbf{Transition}: Inserts a new document into the specified collection.
-    \item \textbf{Output}: Returns the unique identifier of the inserted document.
-    \item \textbf{Exceptions}: InsertionException if the document is invalid or the operation fails.
-    \item \textbf{Precondition}: Document matches the collection schema.
+    \item \textbf{Transition}: \textcolor{red}{$(\texttt{dbState} = \text{Connected}) \land (\texttt{validateSchema}(\texttt{collection}, \texttt{document})) \implies$ Persists the \texttt{document} into the specified \texttt{collection} on the \texttt{DatabaseServer}.}
+    \item \textbf{Output}: \textcolor{red}{$\texttt{out} := \texttt{documentID}$ (String representing the unique ID assigned by the \texttt{DatabaseServer}).}
+    \item \textbf{Exceptions}: \textcolor{red}{$(\texttt{dbState} \neq \text{Connected}) \lor (\neg \texttt{validateSchema}(\texttt{collection}, \texttt{document})) \lor (\text{Insertion fails on \texttt{DatabaseServer}}) \implies \texttt{exc} := \text{DBInsertError}$}
+    \item \textbf{Precondition}: \texttt{document} conforms to the expected schema for the \texttt{collection}. \textcolor{red}{(Uses \texttt{validateSchema})}
+    \item \textbf{Postcondition}: \texttt{DatabaseServer} state reflects the newly inserted \texttt{document}.
 \end{itemize}
 
 \noindent \texttt{update(collection, filter, updates)}:
 \begin{itemize}
-    \item \textbf{Transition}: Updates documents matching the filter criteria.
-    \item \textbf{Output}: Returns the count of modified documents.
-    \item \textbf{Exceptions}: UpdateException if the operation fails or the updates are invalid.
-    \item \textbf{Precondition}: Update operation is valid for the collection schema.
-    \item \textbf{Postcondition}: Matching documents are updated atomically.
+    \item \textbf{Transition}: \textcolor{red}{$(\texttt{dbState} = \text{Connected}) \implies$ Applies the specified \texttt{updates} to documents in the \texttt{collection} on the \texttt{DatabaseServer} that match the \texttt{filter} criteria.}
+    \item \textbf{Output}: \textcolor{red}{$\texttt{out} := \texttt{modifiedCount}$ ($\mathbb{N}_0$ representing the number of documents updated).}
+    \item \textbf{Exceptions}: \textcolor{red}{$(\texttt{dbState} \neq \text{Connected}) \lor (\text{Update operation fails on \texttt{DatabaseServer}}) \implies \texttt{exc} := \text{DBUpdateError}$}
+    \item \textbf{Precondition}: \texttt{filter} and \texttt{updates} are valid for the database schema.
+    \item \textbf{Postcondition}: Matching documents on the \texttt{DatabaseServer} are updated.
 \end{itemize}
 
 \noindent \texttt{delete(collection, filter)}:
 \begin{itemize}
-    \item \textbf{Transition}: Removes documents matching the filter criteria.
-    \item \textbf{Output}: Returns the count of deleted documents.
-    \item \textbf{Precondition}: Filter is non-empty to prevent accidental collection deletion.
-    \item \textbf{Postcondition}: Matching documents are permanently removed.
+    \item \textbf{Transition}: \textcolor{red}{$(\texttt{dbState} = \text{Connected}) \implies$ Removes documents from the \texttt{collection} on the \texttt{DatabaseServer} that match the \texttt{filter} criteria.}
+    \item \textbf{Output}: \textcolor{red}{$\texttt{out} := \texttt{deletedCount}$ ($\mathbb{N}_0$ representing the number of documents removed).}
+    \item \textbf{Exceptions}: \textcolor{red}{$(\texttt{dbState} \neq \text{Connected}) \lor (\text{Deletion fails on \texttt{DatabaseServer}}) \implies \texttt{exc} := \text{DBDeleteError}$}
+    \item \textbf{Precondition}: \texttt{filter} is specified to prevent accidental mass deletion.
+    \item \textbf{Postcondition}: Matching documents are removed from the \texttt{DatabaseServer}.
 \end{itemize}
 
 \noindent \texttt{transaction(operations)}:
 \begin{itemize}
-    \item \textbf{Transition}: Executes multiple operations in a single transaction.
-    \item \textbf{Output}: Returns results of all operations or raises TransactionException.
-    \item \textbf{Precondition}: All operations are valid and follow the collection schema.
-    \item \textbf{Postcondition}: All operations succeed or all are rolled back.
+    \item \textbf{Transition}: \textcolor{red}{$(\texttt{dbState} = \text{Connected}) \implies$ Executes the sequence of \texttt{operations} (inserts, updates, deletes) as an atomic transaction on the \texttt{DatabaseServer}. All operations succeed or all are rolled back.}
+    \item \textbf{Output}: \textcolor{red}{$\texttt{out} := \texttt{results}$ (Array of outputs corresponding to each operation if successful).}
+    \item \textbf{Exceptions}: \textcolor{red}{$(\texttt{dbState} \neq \text{Connected}) \lor (\text{Any operation is invalid}) \lor (\text{Transaction fails on \texttt{DatabaseServer}}) \implies \texttt{exc} := \text{DBTransactionError}$}
+    \item \textbf{Precondition}: All individual \texttt{operations} within the sequence are valid.
+    \item \textbf{Postcondition}: \texttt{DatabaseServer} state reflects the successful completion of all operations, or remains unchanged if any operation failed.
 \end{itemize}
 
 \subsubsection{Local Functions}
 \begin{itemize}
-    \item \texttt{validateSchema(collection, document) -> Boolean}: Verifies document against collection schema.
-    \item \texttt{sanitizeQuery(query) -> String}: Prevents injection attacks by sanitizing query strings.
-    \item \texttt{manageConnections() -> void}: Monitors and manages database connection pool.
-    \item \texttt{logQuery(query, results) -> void}: Records executed queries and results.
-    \item \texttt{logInsert(collection, documentID) -> void}: Records inserted documents.
-    \item \texttt{logUpdate(collection, modifiedCount) -> void}: Records updated documents.
-    \item \texttt{logDelete(collection, deletedCount) -> void}: Records deleted documents.
-    \item \texttt{logTransaction(operations) -> void}: Records transaction operations and results.
-    \item \texttt{logCollection(collection, schema) -> void}: Records collection schema and metadata.
+    \item \texttt{validateSchema(collection: String, document: Object) $\rightarrow$ Bool}: \textcolor{red}{Checks if the structure and data types of \texttt{document} match the expected schema for the given \texttt{collection}. (Implementation details hidden).}
+    \item \texttt{sanitizeQuery(query: String) $\rightarrow$ String}: \textcolor{red}{Escapes potentially harmful characters in \texttt{query} to prevent SQL injection attacks. (Implementation details hidden).}
 \end{itemize}
 
-\section{MIS of User Authentication \& Profile Management Module}
+% --- MIS of User Authentication Module ---
+\section{MIS of User Authentication \& Profile Management Module (\mref{mUserAuth})}
 
 \subsection{Module}
 User Authentication \& Profile Management
 
 \subsection{Uses}
 \begin{itemize}
-    \item Database Module
-    \item Integration with Other University Systems Module
-    \item Notifications and Communication Module
+    \item \textcolor{red}{Database Interaction Layer (\mref{mDB})}
 \end{itemize}
 
 \subsection{Syntax}
 \subsubsection{Exported Constants}
 \begin{itemize}
-    \item SESSION\_TIMEOUT: The duration (in minutes) before an inactive session expires.
-    \item MAX\_LOGIN\_ATTEMPTS: Maximum number of failed login attempts before account lockout.
-    \item LOCKOUT\_DURATION: Duration (in minutes) of account lockout after exceeding MAX\_LOGIN\_ATTEMPTS.
+    \item \texttt{SESSION\_TIMEOUT}: $\mathbb{N}$ - The duration \textcolor{red}{(in seconds)} before an inactive session expires. \textcolor{red}{(e.g., 3600)}
+    \item \texttt{MAX\_LOGIN\_ATTEMPTS}: $\mathbb{N}$ - Maximum number of failed login attempts before account lockout. \textcolor{red}{(e.g., 5)}
+    \item \texttt{LOCKOUT\_DURATION}: $\mathbb{N}$ - Duration \textcolor{red}{(in seconds)} of account lockout after exceeding \texttt{MAX\_LOGIN\_ATTEMPTS}. \textcolor{red}{(e.g., 600)}
 \end{itemize}
+
+\subsubsection{Exported Types} % Added Types
+\textcolor{red}{Type \texttt{Credentials} = record of email: String, password: String end} \\
+\textcolor{red}{Type \texttt{ProfileData} = record of userID: String, email: String, fullName: String, phoneNum: String, /* etc. */ end} \\
+\textcolor{red}{Type \texttt{Permissions} = record of allowedActions: seq of String end} \\
+\textcolor{red}{Type \texttt{Timestamp} = String representing ISO 8601 date-time}
 
 \subsubsection{Exported Access Programs}
 \begin{center}
@@ -355,96 +354,126 @@ User Authentication \& Profile Management
         \hline
         \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
         \hline
-        authenticate & credentials (\texttt{Object}) & sessionToken (\texttt{String}) & AuthenticationFailedException \\
+        authenticate & credentials: \textcolor{red}{Credentials} & sessionToken: String & AuthenticationFailed \\
         \hline
-        getProfile & userID (\texttt{String}) & profileData (\texttt{Object}) & UserNotFoundException \\
+        getProfile & userID: String & profileData: \textcolor{red}{ProfileData} & UserNotFound \\
         \hline
-        updateProfile & userID (\texttt{String}), updates (\texttt{Object}) & confirmation (\texttt{Boolean}) & InvalidProfileDataException \\
+        updateProfile & userID: String, updates: \textcolor{red}{Partial<ProfileData>} & confirmation: Bool & InvalidProfileData \\
         \hline
-        validateSession & sessionToken (\texttt{String}) & isValid (\texttt{Boolean}) & InvalidSessionException \\
+        validateSession & sessionToken: String & \textcolor{red}{(isValid: Bool, userID: Maybe<String>)} & \textcolor{red}{None} \\ % Changed output and exceptions
         \hline
-        getRolePermissions & userID (\texttt{String}) & permissions (\texttt{Object}) & RoleNotFoundException \\
+        \textcolor{red}{getUserPermissions} & \textcolor{red}{userID: String} & \textcolor{red}{permissions: Permissions} & \textcolor{red}{UserNotFound} \\
+        \hline
+        \textcolor{red}{registerUser} & \textcolor{red}{credentials: Credentials} & \textcolor{red}{userID: String} & \textcolor{red}{RegistrationFailed} \\
+        \hline
+        \textcolor{red}{signOut} & \textcolor{red}{sessionToken: String} & \textcolor{red}{confirmation: Bool} & \textcolor{red}{None} \\ % Changed exceptions
         \hline
     \end{tabular}
 \end{center}
 
 \subsection{Semantics}
-
 \subsubsection{State Variables}
 \begin{itemize}
-    \item sessions: A mapping of active session tokens to user information and expiration times.
-    \item profiles: A mapping of user IDs to their profile information and preferences
-    \item loginAttempts: A record of failed login attempts per user.
+    \item \texttt{sessions}: \textcolor{red}{Map (String $\rightarrow$ record of userID: String, expiry: Timestamp end)} - A mapping of active session tokens to user information and expiration times.
+    \item \texttt{loginAttempts}: \textcolor{red}{Map (String $\rightarrow$ record of count: $\mathbb{N}_0$, lockoutExpiry: Timestamp end)} - A record of failed login attempts per user \textcolor{red}{(keyed by email or IP)}.
 \end{itemize}
 
 \subsubsection{Environment Variables}
 \begin{itemize}
-    \item Identity Provider: The university's SSO system for authentication.
-    \item User Database: Stores user profiles, roles, and authentication data.
+    \item \textcolor{red}{\texttt{AuthProvider}: Represents the external authentication service (Supabase Auth) which manages credentials and issues tokens.}
 \end{itemize}
 
 \subsubsection{Assumptions}
 \begin{itemize}
-    \item The university's identity provider is available and functioning
-    \item Users have unique identifiers across the system
-    \item Profile data is validated before storage
+    \item The \textcolor{red}{\texttt{AuthProvider}} is available and functioning correctly. \textcolor{red}{A5}
+    \item \textcolor{red}{User emails are unique identifiers for authentication.} \textcolor{red}{A6}
+    \item \textcolor{red}{Input data for profile updates is validated by the caller or within \texttt{updateProfile}. A7}
+    \item \textcolor{red}{The Database module (\mref{mDB}) is available for retrieving/storing non-credential profile data. A8}
 \end{itemize}
 
 \subsubsection{Access Routine Semantics}
 \noindent \texttt{authenticate(credentials)}:
 \begin{itemize}
-    \item \textbf{Transition}: Validates credentials against the identity provider and creates a new session.
-    \item \textbf{Output}: Returns a session token if successful.
-    \item \textbf{Exceptions}: AuthenticationFailedException if the credentials are invalid.
+    \item \textbf{Transition}: \textcolor{red}{Verifies \texttt{credentials} against \texttt{AuthProvider}. If valid and user not locked out, generates a new session token, updates \texttt{sessions} map, resets \texttt{loginAttempts} for the user. If invalid, increments \texttt{loginAttempts}; if count exceeds \texttt{MAX\_LOGIN\_ATTEMPTS}, sets lockout expiry.}
+    \item \textbf{Output}: \textcolor{red}{(Authentication succeeds) $\implies \texttt{out} := \texttt{sessionToken}$ (String)}
+    \item \textbf{Exceptions}: \textcolor{red}{(Authentication fails $\lor$ User locked out) $\implies \texttt{exc} := \text{AuthenticationFailed}$}
 \end{itemize}
 
 \noindent \texttt{getProfile(userID)}:
 \begin{itemize}
-    \item \textbf{Output}: Returns the user's profile data.
-    \item \textbf{Exceptions}: UserNotFoundException if the user ID does not exist.
+    \item \textbf{Transition}: \textcolor{red}{Calls \mref{mDB}::query to retrieve profile data for \texttt{userID} from the \texttt{'users'} table.}
+    \item \textbf{Output}: \textcolor{red}{(User found in DB) $\implies \texttt{out} := \texttt{profileData}$ (ProfileData)}
+    \item \textbf{Exceptions}: \textcolor{red}{(User not found in DB $\lor$ DB query fails) $\implies \texttt{exc} := \text{UserNotFound}$}
 \end{itemize}
 
 \noindent \texttt{updateProfile(userID, updates)}:
 \begin{itemize}
-    \item \textbf{Transition}: Updates the specified user's profile with new information.
-    \item \textbf{Output}: Returns \texttt{true} if successful.
-    \item \textbf{Exceptions}: InvalidProfileDataException if the updates are invalid.
+    \item \textbf{Transition}: \textcolor{red}{Validates \texttt{updates} (A7). Calls \mref{mDB}::update to apply changes to the \texttt{'users'} table for the given \texttt{userID}.}
+    \item \textbf{Output}: \textcolor{red}{(Update succeeds) $\implies \texttt{out} := \text{True}$}
+    \item \textbf{Exceptions}: \textcolor{red}{(Invalid \texttt{updates} $\lor$ DB update fails) $\implies \texttt{exc} := \text{InvalidProfileData}$}
 \end{itemize}
 
 \noindent \texttt{validateSession(sessionToken)}:
 \begin{itemize}
-    \item \textbf{Output}: Returns \texttt{true} if the session is valid and not expired
-    \item \textbf{Exceptions}: InvalidSessionException if the session token is invalid or expired.
+    \item \textbf{Transition}: \textcolor{red}{Checks if \texttt{sessionToken} exists in \texttt{sessions} map and if its expiry time has not passed.}
+    \item \textbf{Output}: \textcolor{red}{(Session is valid) $\implies \texttt{out} := (\text{True}, \texttt{userID})$}. \textcolor{red}{(Session invalid or expired) $\implies \texttt{out} := (\text{False}, \text{null})$}.
+    \item \textbf{Exceptions}: None \textcolor{red}{(returns validity status)}.
 \end{itemize}
 
-\noindent \texttt{getRolePermissions(userID)}:
+\noindent \textcolor{red}{\texttt{getUserPermissions(userID)}}:
 \begin{itemize}
-    \item \textbf{Output}: Returns the permissions associated with the user's role.
-    \item \textbf{Exceptions}: RoleNotFoundException if the user's role is not found.
+    \item \textbf{Transition}: \textcolor{red}{Calls \mref{mDB}::query to retrieve all roles associated with \texttt{userID} from \texttt{'user\_roles'}, then queries \texttt{'role\_permissions'} and \texttt{'permissions'} tables to aggregate all permission names.}
+    \item \textbf{Output}: \textcolor{red}{(User found and permissions retrieved) $\implies \texttt{out} := \texttt{permissions}$ (Permissions)}
+    \item \textbf{Exceptions}: \textcolor{red}{(User not found $\lor$ DB query fails) $\implies \texttt{exc} := \text{UserNotFound}$}
 \end{itemize}
+
+% --- CORRECTED BRACES AROUND \textcolor ---
+\textcolor{red}{
+\noindent \texttt{registerUser(credentials)}:
+\begin{itemize}
+    \item \textbf{Transition}: Calls \texttt{AuthProvider} to create a new user with given \texttt{credentials}. If successful, calls \mref{mDB}::insert to create a corresponding record in the \texttt{'users'} table and assigns a default role via \mref{mDB}::insert into \texttt{'user\_roles'}.
+    \item \textbf{Output}: (Registration succeeds) $\implies \texttt{out} := \texttt{userID}$ (String)
+    \item \textbf{Exceptions}: (Registration fails at AuthProvider $\lor$ DB insert fails) $\implies \texttt{exc} := \text{RegistrationFailed}$
+\end{itemize}
+} % <--- Added closing brace
+
+\textcolor{red}{
+\noindent \texttt{signOut(sessionToken)}:
+\begin{itemize}
+    \item \textbf{Transition}: Removes the entry corresponding to \texttt{sessionToken} from the \texttt{sessions} map. May optionally call \texttt{AuthProvider} to invalidate the token externally if applicable.
+    \item \textbf{Output}: (Sign out successful or token not found) $\implies \texttt{out} := \text{True}$
+    \item \textbf{Exceptions}: None (fails silently or returns True).
+\end{itemize}
+} % <--- Added closing brace
 
 \subsubsection{Local Functions}
 None.
 
-\section{MIS of Expense Submission \& Tracking Module}
+% --- MIS of Expense Submission Module ---
+\section{MIS of Expense Submission \& Tracking Module (\mref{mExpenseSub})}
 \subsection{Module}
 Expense Submission \& Tracking
 
 \subsection{Uses}
 \begin{itemize}
-    \item Database Module
-    \item Budget and Funding Management Module
-    \item Notifications and Communication Module
-    \item Policy \& Compliance Management Module
+    \item \textcolor{red}{Database Interaction Layer (\mref{mDB})}
+    \item \textcolor{red}{Data Validation Module (\mref{mValidation})}
+    \item \textcolor{red}{Policy \& Compliance Management Module (\mref{mCompliance})} % Added for logging
 \end{itemize}
 
 \subsection{Syntax}
 \subsubsection{Exported Constants}
 \begin{itemize}
-    \item MAX\_RECEIPT\_SIZE: The maximum file size (in MB) for uploaded receipts.
-    \item ALLOWED\_FILE\_TYPES: List of accepted file formats for receipts ["pdf", "jpg", "png"].
-    \item EXPENSE\_CATEGORIES: Predefined expense categories ["conference", "travel", "supplies", "materials"].
+    \item \texttt{MAX\_RECEIPT\_SIZE}: $\mathbb{N}$ - The maximum file size (in \textcolor{red}{bytes}) for uploaded receipts. \textcolor{red}{(e.g., 5242880 for 5MB)}
+    \item \texttt{ALLOWED\_FILE\_TYPES}: seq of String - List of accepted file formats for receipts \textcolor{red}{["pdf", "jpg", "png", "jpeg"]}.
+    \item \texttt{EXPENSE\_CATEGORIES}: seq of String - Predefined expense categories ["conference", "travel", "supplies", "materials", \dots]. \textcolor{red}{(Note: May be dynamically loaded from DB instead)}
 \end{itemize}
+
+\subsubsection{Exported Types} % Added Types
+\textcolor{red}{Type \texttt{ExpenseDetails} = record of group\_id: String, amount\_requested\_cad: $\mathbb{R}$, budget\_line: String, /* etc. */ end} \\
+\textcolor{red}{Type \texttt{Attachment} = record of fileName: String, fileData: \texttt{Blob}, /* etc. */ end} \\ % Assuming Blob type exists
+\textcolor{red}{Type \texttt{ExpenseStatus} = record of status: String, timestamp: Timestamp, /* etc. */ end} \\
+\textcolor{red}{Type \texttt{ExpenseSummary} = record of requestID: String, submitterName: String, amount: $\mathbb{R}$, status: String end}
 
 \subsubsection{Exported Access Programs}
 \begin{center}
@@ -453,17 +482,15 @@ Expense Submission \& Tracking
         \hline
         \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
         \hline
-        submitExpense & expenseDetails (\texttt{Object}), attachments (\texttt{Array}) & requestID (\texttt{String}) & InvalidExpenseException \\
+        submitExpense & expenseDetails: \textcolor{red}{ExpenseDetails}, attachments: seq of \textcolor{red}{Attachment} & requestID: String & InvalidExpense \\
         \hline
-        uploadAttachment & requestID (\texttt{String}), file (\texttt{File}) & fileID (\texttt{String}) & FileUploadException \\
+        uploadAttachment & requestID: String, file: \textcolor{red}{Attachment} & fileID: String & FileUploadFailed \\
         \hline
-        getExpenseStatus & requestID (\texttt{String}) & status (\texttt{Object}) & RequestNotFoundException \\
+        getExpenseStatus & requestID: String & status: \textcolor{red}{ExpenseStatus} & RequestNotFound \\
         \hline
-        updateExpenseDetails & requestID (\texttt{String}), updates (\texttt{Object}) & confirmation (\texttt{Boolean}) & InvalidUpdateException \\
+        updateExpenseDetails & requestID: String, updates: \textcolor{red}{Partial<ExpenseDetails>} & confirmation: Bool & InvalidUpdate \\
         \hline
-        searchExpenses & filters (\texttt{Object}) & expenseList (\texttt{Array}) & InvalidSearchException \\
-        \hline
-        categorizeExpense & expenseData (\texttt{Object}) & category (\texttt{String}) & CategorizationException \\
+        searchExpenses & filters: Object & expenseList: seq of \textcolor{red}{ExpenseSummary} & InvalidSearch \\
         \hline
     \end{tabular}
 \end{center}
@@ -471,115 +498,104 @@ Expense Submission \& Tracking
 \subsection{Semantics}
 \subsubsection{State Variables}
 \begin{itemize}
-    \item expenses: A mapping of request IDs to their complete expense details and status.
-    \item attachments: A mapping of file IDs to their metadata and storage locations.
-    \item categories: A record of expense categorization rules and patterns.
+    \item None \textcolor{red}{(This module is largely stateless; request data is persisted via the DB module).}
 \end{itemize}
 
 \subsubsection{Environment Variables}
 \begin{itemize}
-    \item File Storage: Stores uploaded receipts and attachments.
-    \item OCR Service: Extracts text data from uploaded receipts for processing.
-    \item ML Model: Assists in automatic expense categorization
-    \item Database: Stores expense records and tracking information
+    \item \textcolor{red}{\texttt{FileStorageProvider}: Represents the external service (e.g., Supabase Storage) used for persisting uploaded files.}
 \end{itemize}
 
 \subsubsection{Assumptions}
 \begin{itemize}
-    \item Receipts are uploaded in a standard format (PDF, JPG, PNG).
-    \item Expense categorization is based on predefined rules and ML models.
-    \item All monetary values are in Canadian dollars (CAD).
-    \item File storage system has sufficient capacity for attachments.
-    \item Users have necessary permissions to submit expenses.
-    \item Each expense request has at least one receipt attachment.
+    \item All monetary values \textcolor{red}{provided in \texttt{amount\_requested\_cad} are assumed correct after potential currency conversion if applicable. A9}
+    \item \texttt{FileStorageProvider} is available and has sufficient capacity. \textcolor{red}{A10}
+    \item Users have necessary permissions \textcolor{red}{(e.g., \texttt{create\_requests})} to submit expenses, verified by the calling context (e.g., middleware or UI). \textcolor{red}{A11}
 \end{itemize}
 
 \subsubsection{Access Routine Semantics}
 \noindent \texttt{submitExpense(expenseDetails, attachments)}:
 \begin{itemize}
-    \item \textbf{Transition}: Creates a new expense request with the provided details and attachments.
-    \item \textbf{Output}: Returns the unique request ID if successful.
-    \item \textbf{Exceptions}: InvalidExpenseException if the expense details are incomplete or invalid.
-    \item \textbf{Precondition}: expenseDetails contains required fields (amount, date, purpose, funding source).
-    \item \textbf{Postcondition}: Expense request is created with "Submitted" status.
+    \item \textbf{Transition}: \textcolor{red}{Calls \mref{mValidation}::validate(\texttt{expenseDetails}). If valid, generates a unique \texttt{requestID}. Persists \texttt{expenseDetails} (with \texttt{requestID}, \texttt{userID} from context, \texttt{status}='Pending') via \mref{mDB}::insert into \texttt{payment\_requests}. For each attachment, calls \texttt{uploadAttachment}. Calls \mref{mCompliance}::logAction(type='SubmitRequest', ...).}
+    \item \textbf{Output}: \textcolor{red}{(Submission successful) $\implies \texttt{out} := \texttt{requestID}$ (String)}
+    \item \textbf{Exceptions}: \textcolor{red}{(Validation fails $\lor$ DB insert fails $\lor$ Any attachment upload fails) $\implies \texttt{exc} := \text{InvalidExpense}$}
+    \item \textbf{Precondition}: \texttt{expenseDetails} contains required fields (e.g., amount, group\_id, budget\_line). User context provides \texttt{userID}.
+    \item \textbf{Postcondition}: Expense request record created in DB with 'Pending' status. Associated attachments stored via \texttt{FileStorageProvider}. Audit log updated.
 \end{itemize}
 
 \noindent \texttt{uploadAttachment(requestID, file)}:
 \begin{itemize}
-    \item \textbf{Transition}: Validates and stores the provided file attachment.
-    \item \textbf{Output}: Returns a unique fileID if successful.
-    \item \textbf{Exceptions}: FileUploadException if the file size or type is invalid.
-    \item \textbf{Precondition}: File size and type meet system requirements.
-    \item \textbf{Postcondition}: File is stored and linked to the expense request.
+    \item \textbf{Transition}: \textcolor{red}{Calls \mref{mValidation}::validateFile(\texttt{file}, \texttt{MAX\_RECEIPT\_SIZE}, \texttt{ALLOWED\_FILE\_TYPES}). If valid, generates a unique \texttt{fileID}. Stores \texttt{file.fileData} via \texttt{FileStorageProvider}. Calls \mref{mDB}::insert or update to link \texttt{fileID} and metadata (\texttt{file.fileName}) to the request identified by \texttt{requestID} (e.g., in an \texttt{attachments} table or JSONB field).} \textcolor{red}{Optionally calls internal OCR function (\texttt{\_extractAmountFromReceipt}) on \texttt{file.fileData}.}
+    \item \textbf{Output}: \textcolor{red}{(Upload successful) $\implies \texttt{out} := \texttt{fileID}$ (String)}
+    \item \textbf{Exceptions}: \textcolor{red}{(Validation fails $\lor$ File storage fails $\lor$ DB update fails) $\implies \texttt{exc} := \text{FileUploadFailed}$}
+    \item \textbf{Precondition}: \texttt{requestID} refers to an existing request. \texttt{file} contains valid data.
+    \item \textbf{Postcondition}: File is stored externally. DB record links file to the request. \textcolor{red}{Potential update to request's amount based on OCR.}
 \end{itemize}
 
 \noindent \texttt{getExpenseStatus(requestID)}:
 \begin{itemize}
-    \item \textbf{Output}: Returns the current status and tracking information for the specified request.
-    \item \textbf{Exceptions}: RequestNotFoundException if the request ID is invalid.
-    \item \textbf{Postcondition}: Status information is retrieved for the request.
+    \item \textbf{Transition}: \textcolor{red}{Calls \mref{mDB}::query to retrieve the status and relevant tracking info for the request identified by \texttt{requestID} from \texttt{payment\_requests}.}
+    \item \textbf{Output}: \textcolor{red}{(Request found) $\implies \texttt{out} := \texttt{status}$ (ExpenseStatus)}
+    \item \textbf{Exceptions}: \textcolor{red}{(Request not found $\lor$ DB query fails) $\implies \texttt{exc} := \text{RequestNotFound}$}
+    \item \textbf{Postcondition}: Status information is retrieved.
 \end{itemize}
 
 \noindent \texttt{updateExpenseDetails(requestID, updates)}:
 \begin{itemize}
-    \item \textbf{Transition}: Applies valid updates to the specified expense request.
-    \item \textbf{Output}: Returns \texttt{true} if successful.
-    \item \textbf{Exceptions}: InvalidUpdateException if the updates are invalid.
-    \item \textbf{Precondition}: Request is in an editable state.
-    \item \textbf{Postcondition}: Expense details are updated and audit trail is maintained.
+    \item \textbf{Transition}: \textcolor{red}{Fetches current request state via \mref{mDB}. Checks if request \texttt{status} allows editing (e.g., 'Pending', 'Rejected'). Calls \mref{mValidation}::validate(\texttt{updates}). If valid and editable, calls \mref{mDB}::update to apply changes to \texttt{payment\_requests} for \texttt{requestID}. Calls \mref{mCompliance}::logAction(type='UpdateRequest', ...).}
+    \item \textbf{Output}: \textcolor{red}{(Update successful) $\implies \texttt{out} := \text{True}$}
+    \item \textbf{Exceptions}: \textcolor{red}{(Request not found $\lor$ Request not editable $\lor$ Validation fails $\lor$ DB update fails) $\implies \texttt{exc} := \text{InvalidUpdate}$}
+    \item \textbf{Precondition}: \texttt{requestID} exists. Request is in an editable state. User context provides permissions.
+    \item \textbf{Postcondition}: Expense details updated in DB. Audit log updated.
 \end{itemize}
 
 \noindent \texttt{searchExpenses(filters)}:
 \begin{itemize}
-    \item \textbf{Output}: Returns a list of expense requests matching the specified filters.
-    \item \textbf{Exceptions}: InvalidSearchException if filter criteria are invalid.
-    \item \textbf{Postcondition}: Filtered expense list is returned based on search criteria.
-\end{itemize}
-
-\noindent \texttt{categorizeExpense(expenseData)}:
-\begin{itemize}
-    \item \textbf{Transition}: Analyzes expense details to determine the appropriate category.
-    \item \textbf{Output}: Returns the suggested category for the expense or raises CategorizationException.
-    \item \textbf{Postcondition}: Expense category is assigned based on ML model and predefined rules.
-    \item \textbf{Uses}: ML model and predefined rules for categorization.
-    \item \textbf{Updates}: Category confidence score in expense metadata.
+    \item \textbf{Transition}: \textcolor{red}{Constructs a query based on \texttt{filters} (e.g., status, group\_id, date range). Calls \mref{mDB}::query on \texttt{payment\_requests} (potentially joining with \texttt{users}, \texttt{groups}) to retrieve matching requests.}
+    \item \textbf{Output}: \textcolor{red}{(Query successful) $\implies \texttt{out} := \texttt{expenseList}$ (seq of ExpenseSummary)}
+    \item \textbf{Exceptions}: \textcolor{red}{(Invalid \texttt{filters} $\lor$ DB query fails) $\implies \texttt{exc} := \text{InvalidSearch}$}
+    \item \textbf{Postcondition}: List of matching expense summaries is returned.
 \end{itemize}
 
 \subsubsection{Local Functions}
 \begin{itemize}
-    \item \texttt{validateExpenseData(data: Object) -> Boolean}: Ensures all required fields are present and valid.
-    \item \texttt{sanitizeAttachment(file: File) -> File}: Processes uploaded files for security.
-    \item \texttt{calculateTotalAmount(items: Array) -> Number}: Computes total expense amount including all items.
+    \item \textcolor{red}{\texttt{\_extractAmountFromReceipt(fileData: Blob) $\rightarrow$ Maybe<$\mathbb{R}$>}: Internal helper that attempts OCR on the receipt data and returns an extracted amount or null. (Uses Tesseract.js library).}
 \end{itemize}
 
-\section{MIS of Approval Workflow and Review Module}
+% --- MIS of Approval Module ---
+\section{MIS of Approval Workflow and Review Module (\mref{mApproval})}
 
 \subsection{Module}
 Approval Workflow and Review
 
 \subsection{Uses}
 \begin{itemize}
-    \item Budget and Funding Management Module
-    \item Notifications and Communication Module
-    \item Database Module
+    \item \textcolor{red}{Database Interaction Layer (\mref{mDB})}
+    \item Budget and Funding Management Module (\mref{mBudgetMgmt})
+    \item Notifications and Communication Module (\mref{mNotify})
+    \item \textcolor{red}{Policy \& Compliance Management Module (\mref{mCompliance})} % For logging
 \end{itemize}
 
 \subsection{Syntax}
 \subsubsection{Exported Constants}
 None.
 
+\subsubsection{Exported Types} % Added Types
+\textcolor{red}{Type \texttt{RequestStatus} = String (e.g., "Pending", "Approved", "Rejected")} \\
+\textcolor{red}{Type \texttt{UserDetails} = record of userID: String, roles: seq of String, groups: seq of String end}
+
 \subsubsection{Exported Access Programs}
 \begin{center}
     \scriptsize
-    \begin{tabular}{|p{2cm}|p{4cm}|p{4cm}|p{4cm}|} % Add | for vertical lines
+    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|} % Adjusted width
         \hline
         \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
         \hline
-        routeRequest & requestID (\texttt{String}), userRole (\texttt{String}) & status (\texttt{String}) & InvalidRoleException \\
+        \textcolor{red}{getPendingRequests} & \textcolor{red}{approverDetails: UserDetails} & \textcolor{red}{pendingList: seq of ExpenseSummary} & \textcolor{red}{AccessDenied} \\
         \hline
-        addNote & requestID (\texttt{String}), note (\texttt{String}) & confirmation (\texttt{Boolean}) & RequestNotFoundException \\
+        addNote & requestID: String, note: String, \textcolor{red}{userID: String} & confirmation: Bool & RequestNotFound \\
         \hline
-        updateStatus & requestID (\texttt{String}), newStatus (\texttt{String}) & confirmation (\texttt{Boolean}) & InvalidStatusException \\
+        updateStatus & requestID: String, newStatus: \textcolor{red}{RequestStatus}, \textcolor{red}{approverID: String}, \textcolor{red}{comment: String (optional)} & confirmation: Bool & InvalidStatus \\
         \hline
     \end{tabular}
 \end{center}
@@ -587,71 +603,81 @@ None.
 \subsection{Semantics}
 \subsubsection{State Variables}
 \begin{itemize}
-    \item requests: A mapping of request IDs to their current status and approver roles.
+    \item None \textcolor{red}{(Workflow state stored in DB via \mref{mDB}).}
 \end{itemize}
 
 \subsubsection{Environment Variables}
-\begin{itemize}
-    \item Database: Stores information about requests, user roles, and approval workflows.
-    \item Notification System: Sends alerts for pending approvals or status updates.
-\end{itemize}
+None. % Removed DB and Notification system as they are Used modules
 
 \subsubsection{Assumptions}
 \begin{itemize}
-    \item User roles are pre-validated by the authentication system.
-    \item All approvers have access to the system during their review process.
+    \item \textcolor{red}{Approver's identity and permissions (\texttt{approverDetails} or \texttt{approverID}) are validated by the calling context. A12}
+    \item \textcolor{red}{The Database (\mref{mDB}), Budget (\mref{mBudgetMgmt}), Notification (\mref{mNotify}), and Compliance (\mref{mCompliance}) modules are available and functioning correctly. A13}
+    \item \textcolor{red}{Approval rules (e.g., which roles can approve which requests, thresholds for multi-level approval) are defined and accessible (potentially configuration or within this module's logic). A14}
 \end{itemize}
 
 \subsubsection{Access Routine Semantics}
-\noindent \texttt{routeRequest(requestID, userRole)}:
+\noindent \textcolor{red}{\texttt{getPendingRequests(approverDetails)}}:
 \begin{itemize}
-    \item Output: Returns the current status of the request or raises an InvalidRoleException if the userRole is unauthorized.
+    \item \textbf{Transition}: \textcolor{red}{Queries \mref{mDB} for requests with status 'Pending'. Filters the list based on \texttt{approverDetails}' roles/groups and defined approval rules (A14).}
+    \item \textbf{Output}: \textcolor{red}{(Requests found matching criteria) $\implies \texttt{out} := \texttt{pendingList}$ (seq of ExpenseSummary)}
+    \item \textbf{Exceptions}: \textcolor{red}{(Approver lacks permission to view any requests) $\implies \texttt{exc} := \text{AccessDenied}$}
 \end{itemize}
 
-\noindent \texttt{addNote(requestID, note)}:
+\noindent \texttt{addNote(requestID, note, userID)}:
 \begin{itemize}
-    \item Transition: Adds a note to the request specified by \texttt{requestID}.
-    \item Output: Returns \texttt{true} if successful or raises RequestNotFoundException if the request ID does not exist.
+    \item \textbf{Transition}: \textcolor{red}{Calls \mref{mDB}::update to add the \texttt{note} (associated with \texttt{userID} and timestamp) to the specified \texttt{requestID}'s record (e.g., in a comments field/table). Calls \mref{mCompliance}::logAction(type='AddNote', ...).}
+    \item \textbf{Output}: \textcolor{red}{(Update successful) $\implies \texttt{out} := \text{True}$}
+    \item \textbf{Exceptions}: \textcolor{red}{(Request not found $\lor$ DB update fails) $\implies \texttt{exc} := \text{RequestNotFound}$}
 \end{itemize}
 
-\noindent \texttt{updateStatus(requestID, newStatus)}:
+\noindent \texttt{updateStatus(requestID, newStatus, approverID, comment)}:
 \begin{itemize}
-    \item Transition: Updates the status of the request specified by \texttt{requestID}.
-    \item Output: Returns \texttt{true} if successful or raises InvalidStatusException if the new status is invalid.
+    \item \textbf{Transition}: \textcolor{red}{Fetches request via \mref{mDB}. Verifies \texttt{approverID} has permission to change status based on rules (A14) and request details (e.g., amount, group) using \texttt{\_canApprove}. If \texttt{newStatus} is 'Approved', may call \mref{mBudgetMgmt}::validateFunds. If validation passes (or status is 'Rejected'), calls \mref{mDB}::update to set the new status, record \texttt{approverID}, timestamp, and \texttt{comment}. Calls \mref{mCompliance}::logAction(type='UpdateStatus', ...). Calls \mref{mNotify}::sendNotification(requestSubmitterID, newStatus).}
+    \item \textbf{Output}: \textcolor{red}{(Status update successful) $\implies \texttt{out} := \text{True}$}
+    \item \textbf{Exceptions}: \textcolor{red}{(Request not found $\lor$ Approver lacks permission $\lor$ Budget validation fails for 'Approved' $\lor$ Invalid \texttt{newStatus} transition $\lor$ DB update fails) $\implies \texttt{exc} := \text{InvalidStatus}$}
 \end{itemize}
 
 \subsubsection{Local Functions}
-None.
+\begin{itemize}
+    \item \textcolor{red}{\texttt{\_canApprove(approverDetails: UserDetails, request: ExpenseDetails) $\rightarrow$ Bool}: Internal function checking if the approver has the necessary role/group permissions based on defined rules (A14) and request properties.}
+\end{itemize}
 
-\section{MIS of Budget and Funding Management Module}
+% --- Budget Module Example ---
+\section{MIS of Budget and Funding Management Module (\mref{mBudgetMgmt})}
 
 \subsection{Module}
 Budget and Funding Management
 
 \subsection{Uses}
 \begin{itemize}
-    \item Database Module
-    \item Notifications and Communication Module
+    \item \textcolor{red}{Database Interaction Layer (\mref{mDB})}
+    \item \textcolor{red}{Policy \& Compliance Management Module (\mref{mCompliance})} % For logging budget changes
 \end{itemize}
 
 \subsection{Syntax}
 \subsubsection{Exported Constants}
-\begin{itemize}
-    \item MAX\_BUDGET: The maximum allowable budget per department.
-\end{itemize}
+None.
+
+\subsubsection{Exported Types} % Added types
+\textcolor{red}{Type \texttt{BudgetLine} = record of id: Maybe<$\mathbb{N}$>, group\_id: String, line\_label: String, amount: $\mathbb{R}$, line\_type: String, order\_index: $\mathbb{N}$ end} \\
+\textcolor{red}{Type \texttt{GroupWithLines} = record of id: String, name: String, total\_budget: $\mathbb{R}$, lines: seq of BudgetLine end} \\
+\textcolor{red}{Type \texttt{BudgetDetails} = record of groupID: String, totalAllocated: $\mathbb{R}$, currentSpent: $\mathbb{R}$, lines: seq of BudgetLine end}
 
 \subsubsection{Exported Access Programs}
 \begin{center}
     \scriptsize
-    \begin{tabular}{|p{2cm}|p{4cm}|p{4cm}|p{4cm}|} % Add | for vertical lines
+    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|} % Adjusted width
         \hline
         \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
         \hline
-        getBudget & departmentID (\texttt{String}) & budgetDetails (\texttt{Object}) & DepartmentNotFoundException \\
+        getBudget & groupID: String & budgetDetails: \textcolor{red}{BudgetDetails} & \textcolor{red}{GroupNotFound} \\
         \hline
-        validateFunds & requestAmount (\texttt{Float}), departmentID (\texttt{String}) & status (\texttt{Boolean}) & InsufficientFundsException \\
+        validateFunds & requestAmount: $\mathbb{R}$, groupID: String & \textcolor{red}{isSufficient: Bool} & \textcolor{red}{GroupNotFound} \\
         \hline
-        updateBudget & departmentID (\texttt{String}), amount (\texttt{Float}) & confirmation (\texttt{Boolean}) & BudgetOverflowException \\
+        \textcolor{red}{getOperatingBudget} & \textcolor{red}{userID: String} & \textcolor{red}{budgetData: seq of GroupWithLines} & \textcolor{red}{AccessDenied} \\ % Added userID input
+        \hline
+        \textcolor{red}{saveOperatingBudget} & \textcolor{red}{budgetData: seq of GroupWithLines}, \textcolor{red}{userID: String} & \textcolor{red}{confirmation: Bool} & \textcolor{red}{SaveFailed, AccessDenied} \\ % Added userID input
         \hline
     \end{tabular}
 \end{center}
@@ -659,723 +685,122 @@ Budget and Funding Management
 \subsection{Semantics}
 \subsubsection{State Variables}
 \begin{itemize}
-    \item budgets: A mapping of department IDs to their current budget values.
+    \item None \textcolor{red}{(Budget data stored in DB via \mref{mDB})}
 \end{itemize}
 
 \subsubsection{Environment Variables}
-\begin{itemize}
-    \item Database: Stores information about department budgets and transactions.
-\end{itemize}
+None.
 
 \subsubsection{Assumptions}
 \begin{itemize}
-    \item All transactions are logged for auditing purposes.
-    \item Real-time budget data is synchronized with the university financial system.
+    \item \textcolor{red}{Budget structures (lines, amounts) stored in the database are accurate. A15}
+    \item \textcolor{red}{Permissions for viewing/modifying budgets (\texttt{userID}) are checked by the caller. A16}
 \end{itemize}
 
 \subsubsection{Access Routine Semantics}
-\noindent \texttt{getBudget(departmentID)}:
+\noindent \texttt{getBudget(groupID)}:
 \begin{itemize}
-    \item Output: Returns an object containing the budget details of the specified department or raises DepartmentNotFoundException.
+    \item \textbf{Transition}: \textcolor{red}{Calls \mref{mDB}::query to retrieve group details (\texttt{total\_budget}) and associated budget lines (\texttt{operating\_budget\_lines}) for the given \texttt{groupID}.} \textcolor{red}{Calculates \texttt{currentSpent} based on associated expense lines.}
+    \item \textbf{Output}: \textcolor{red}{(Group found) $\implies \texttt{out} := \texttt{budgetDetails}$ (BudgetDetails)}
+    \item \textbf{Exceptions}: \textcolor{red}{(Group not found $\lor$ DB query fails) $\implies \texttt{exc} := \text{GroupNotFound}$}
 \end{itemize}
 
-\noindent \texttt{validateFunds(requestAmount, departmentID)}:
+\noindent \texttt{validateFunds(requestAmount, groupID)}:
 \begin{itemize}
-    \item Output: Returns \texttt{true} if sufficient funds are available, otherwise raises InsufficientFundsException.
+    \item \textbf{Transition}: \textcolor{red}{Calls \texttt{getBudget(groupID)}. Compares \texttt{requestAmount} against (\texttt{totalAllocated} - \texttt{currentSpent}).}
+    \item \textbf{Output}: \textcolor{red}{(\texttt{totalAllocated} - \texttt{currentSpent} >= \texttt{requestAmount}) $\implies \texttt{out} := \text{True}$}. \textcolor{red}{Else $\implies \texttt{out} := \text{False}$}.
+    \item \textbf{Exceptions}: \textcolor{red}{(Group not found) $\implies \texttt{exc} := \text{GroupNotFound}$}
 \end{itemize}
 
-\noindent \texttt{updateBudget(departmentID, amount)}:
+\noindent \textcolor{red}{\texttt{getOperatingBudget(userID)}}:
 \begin{itemize}
-    \item Transition: Updates the budget for the specified department by the specified amount.
-    \item Output: Returns \texttt{true} if successful or raises BudgetOverflowException if the update exceeds MAX\_BUDGET.
+    \item \textbf{Transition}: \textcolor{red}{Checks if \texttt{userID} has permission (A16). Calls \mref{mDB}::query to retrieve all groups and all operating budget lines, ordering them appropriately.}
+    \item \textbf{Output}: \textcolor{red}{$\texttt{out} := \texttt{budgetData}$ (structured representation of groups and their lines).}
+    \item \textbf{Exceptions}: \textcolor{red}{(User lacks permission $\lor$ DB query fails) $\implies \texttt{exc} := \text{AccessDenied}$}
+\end{itemize}
+
+\noindent \textcolor{red}{\texttt{saveOperatingBudget(budgetData, userID)}}:
+\begin{itemize}
+    \item \textbf{Transition}: \textcolor{red}{Checks if \texttt{userID} has permission (A16). Iterates through \texttt{budgetData}. For each group, updates its total via \mref{mDB}::update. For each line, determines if it's new, updated, or deleted, and calls appropriate \mref{mDB}::insert, \mref{mDB}::update, or \mref{mDB}::delete operations within a transaction (\mref{mDB}::transaction). Calls \mref{mCompliance}::logAction(type='SaveBudget', userID=userID, ...).}
+    \item \textbf{Output}: \textcolor{red}{(Save successful) $\implies \texttt{out} := \text{True}$}
+    \item \textbf{Exceptions}: \textcolor{red}{(User lacks permission) $\implies \texttt{exc} := \text{AccessDenied}$}. \textcolor{red}{(DB transaction fails) $\implies \texttt{exc} := \text{SaveFailed}$}
 \end{itemize}
 
 \subsubsection{Local Functions}
 None.
 
+% --- Placeholder for remaining modules ---
+\section{MIS of Notifications \& Communication Module (\mref{mNotify})}
+\dots \textit{\textcolor{red}{[Requires similar review/updates as above: Check Uses, Syntax, State/Env Vars, Assumptions, Access Semantics]}} \dots
 
-\section{MIS of Disbursement \& Payment Processing Module}
+\section{MIS of Reporting and Analytics Module (\mref{mReporting})}
+\dots \textit{\textcolor{red}{[Requires similar review/updates]}} \dots
 
-\subsection{Module}
-Disbursement \& Payment Processing
+\section{MIS of Graphical User Interface (GUI) Module (\mref{mGUI})}
+\dots \textit{\textcolor{red}{[Requires similar review/updates - Note: State vars here might represent UI state like active view/filters, Env var is the Browser Window]} \dots}
 
-\subsection{Uses}
-\begin{itemize}
-    \item Database Module
-    \item Budget and Funding Management Module
-    \item Notifications and Communication Module
-    \item Integration with Other University Systems Module
-\end{itemize}
+\section{MIS of Policy \& Compliance Management Module (\mref{mCompliance})}
+\dots \textit{\textcolor{red}{[Requires similar review/updates - Focus on logging actions and potentially validating against rules]}} \dots
 
-\subsection{Syntax}
-\subsubsection{Exported Constants}
-\begin{itemize}
-    \item PAYMENT\_METHODS: Available payment types ["direct\_deposit", "check", "e\_transfer"]
-    \item MAX\_PAYMENT\_AMOUNT: The maximum amount for a single payment.
-\end{itemize}
+\section{MIS of Administrator and Configuration Panel Module (\mref{mAdminPanel})}
+\dots \textit{\textcolor{red}{[Requires similar review/updates - Focus on operations like addRole, updateGroup, etc., using other modules]}} \dots
 
-\subsubsection{Exported Access Programs}
-\begin{center}
-    \scriptsize
-    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|} % Add | for vertical lines
-        \hline
-        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
-        \hline
-        processPayment & paymentDetails (\texttt{Object}) & paymentID (\texttt{String}) & PaymentProcessingException \\
-        \hline
-        generatePaymentRecord & paymentID (\texttt{String}) & documentData (\texttt{Object}) & DocumentGenerationException \\
-        \hline
-        cancelPayment & paymentID (\texttt{String}), reason (\texttt{String}) & confirmation (\texttt{Boolean}) & PaymentCancellationException \\
-        \hline
-        getPaymentStatus & paymentID (\texttt{String}) & status (\texttt{Object}) & PaymentNotFoundException \\
-        \hline
-        initiateRefund & paymentID (\texttt{String}), amount (\texttt{Number}) & refundID (\texttt{String}) & RefundProcessingException \\
-        \hline
-        createBatchPayment & payments (\texttt{Array}) & batchID (\texttt{String}) & BatchProcessingException \\
-        \hline
-        verifyBankDetails & accountDetails (\texttt{Object}) & isValid (\texttt{Boolean}) & ValidationException \\
-        \hline
-    \end{tabular}
-\end{center}
-
-\subsection{Semantics}
-\subsubsection{State Variables}
-\begin{itemize}
-    \item payments: Record of all payment transactions and their states.
-    \item paymentDocuments: Generated payment records and documentation.
-    \item bankDetails: Cached bank account verification results.
-    \item auditTrail: Log of all payment-related actions.
-\end{itemize}
-
-\subsubsection{Environment Variables}
-\begin{itemize}
-    \item Document Templates: Templates for payment records.
-\end{itemize}
-
-\subsubsection{Assumptions}
-\begin{itemize}
-    \item Payment processing is secure and compliant with financial regulations.
-    \item Payment records are generated and stored for auditing purposes.
-    \item Bank account details are validated before processing payments.
-\end{itemize}
-
-\subsubsection{Access Routine Semantics}
-\noindent \texttt{processPayment(paymentDetails)}:
-\begin{itemize}
-    \item Transition: Initiates payment processing through the specified method.
-    \item Output: Returns a unique paymentID on successful processing.
-    \item Exceptions: PaymentProcessingException if the payment fails or is invalid.
-    \item Precondition: Payment amount is approved and funds are available.
-    \item Postcondition: Payment is queued for processing and audit trail is updated.
-\end{itemize}
-
-\noindent \texttt{generatePaymentRecord(paymentID)}:
-\begin{itemize}
-    \item Transition: Creates official payment documentation.
-    \item Output: Returns payment record object including all relevant details.
-    \item Exceptions: DocumentGenerationException if the record cannot be generated.
-    \item Precondition: Payment exists and is valid.
-    \item Postcondition: Payment record is generated and stored.
-\end{itemize}
-
-\noindent \texttt{cancelPayment(paymentID, reason)}:
-\begin{itemize}
-    \item Transition: Cancels pending payment and reverses any related transactions.
-    \item Output: Returns confirmation of cancellation.
-    \item Exceptions: PaymentCancellationException if the payment cannot be cancelled.
-    \item Precondition: Payment is in a cancellable state.
-    \item Postcondition: Payment is cancelled and notification is sent.
-\end{itemize}
-
-\noindent \texttt{getPaymentStatus(paymentID)}:
-Includes: Processing stage, timestamps, confirmation numbers
-Raises: PaymentNotFoundException if invalid paymentID
-\begin{itemize}
-    \item Output: Returns the current status of the payment and processing details.
-    \item Exceptions: PaymentNotFoundException if the payment ID is invalid.
-    \item Postcondition: Payment status is retrieved and displayed.
-\end{itemize}
-
-\noindent \texttt{initiateRefund(paymentID, amount)}:
-\begin{itemize}
-    \item Transition: Creates a refund transaction for the specified payment.
-    \item Output: Returns a unique refundID on successful refund initiation.
-    \item Exceptions: RefundProcessingException if the refund fails or is invalid.
-    \item Precondition: Original payment exists and was successful.
-    \item Postcondition: Refund is initiated and audit trail is updated.
-\end{itemize}
-
-\noindent \texttt{createBatchPayment(payments)}:
-\begin{itemize}
-    \item Transition: Processes multiple payments as a single batch.
-    \item Output: Returns a unique batchID on successful batch creation.
-    \item Exceptions: BatchProcessingException if the batch fails or is invalid.
-    \item Precondition: All payments are valid and within processing limits.
-    \item Postcondition: Batch payment is queued for processing and audit trail is updated.
-\end{itemize}
-
-\noindent \texttt{verifyBankDetails(accountDetails)}:
-\begin{itemize}
-    \item Output: Returns validation status of provided bank details.
-    \item Precondition: Account details follow Canadian banking format.
-    \item Postcondition: Validation result is cached for future reference.
-\end{itemize}
-
-\subsubsection{Local Functions}
-\begin{itemize}
-    \item validatePaymentAmount(amount: Number) -> Boolean: Checks payment amount against limits
-    \item formatBankingDetails(details: Object) -> Object: Standardizes banking information format
-    \item generateAuditEntry(action: String, details: Object) -> void: Creates audit log entry
-    \item notifyPaymentStatus(paymentID: String, status: String) -> void: Triggers status notifications
-\end{itemize}
-
-\section{MIS of Notifications \& Communication Module}
-
-\subsection{Module}
-Notifications \& Communication
-
-\subsection{Uses}
-\begin{itemize}
-    \item Database Module
-\end{itemize}
-
-\subsection{Syntax}
-\subsubsection{Exported Constants}
-
-\begin{itemize}
-    \item NOTIFICATION\_TYPES: Available notification types ["email", "sms", "dashboard"]
-    \item PRIORITY\_LEVELS: Notification priority levels ["low", "medium", "high"]
-\end{itemize}
-
-
-\subsubsection{Exported Access Programs}
-\begin{center}
-    \scriptsize
-    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|} % Add | for vertical lines
-        \hline
-        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
-        \hline
-        sendNotification & recipientID (\texttt{String}), message (\texttt{Object}) & notificationID (\texttt{String}) & NotificationFailedException \\
-        \hline
-        sendBulkNotification & recipients (\texttt{Array}), message (\texttt{Object}) & batchID (\texttt{String}) & BulkSendException \\
-        \hline
-        getDashboardAlerts & userID (\texttt{String}) & alerts (\texttt{Array}) & UserNotFoundException \\
-        \hline
-        markAsRead & notificationID (\texttt{String}) & success (\texttt{Boolean}) & InvalidNotificationException \\
-        \hline
-        getUserPreferences & userID (\texttt{String}) & preferences (\texttt{Object}) & UserNotFoundException \\
-        \hline
-    \end{tabular}
-\end{center}
-
-\subsection{Semantics}
-\subsubsection{State Variables}
-\begin{itemize}
-    \item notifications: Record of all sent notifications.
-    \item userPreferences: User notification preferences.
-    \item dashboardAlerts: Active alerts for each user.
-\end{itemize}
-
-\subsubsection{Environment Variables}
-\begin{itemize}
-    \item Email Service: For sending email notifications
-    \item SMS Gateway: For sending text messages
-    \item User Dashboard: For displaying alerts
-\end{itemize}
-
-\subsubsection{Assumptions}
-\begin{itemize}
-    \item Notification delivery is reliable and secure.
-    \item User preferences are stored securely and updated in real-time.
-    \item Dashboard alerts are displayed in a timely manner.
-\end{itemize}
-
-\subsubsection{Access Routine Semantics}
-\noindent \texttt{sendNotification(recipientID, message)}:
-\begin{itemize}
-    \item Transition: Sends a notification to the specified recipient through the preferred channel.
-    \item Output: Returns a unique notificationID on successful delivery.
-    \item Exceptions: NotificationFailedException if the message cannot be sent.
-    \item Precondition: Recipient has valid contact information and preferences.
-    \item Postcondition: Notification is sent and logged in the system.
-\end{itemize}
-
-\noindent \texttt{sendBulkNotification(recipients, message)}:
-\begin{itemize}
-    \item Transition: Sends the same notification to multiple recipients.
-    \item Output: Returns a unique batchID on successful delivery.
-    \item Exceptions: BulkSendException if the message cannot be sent to all recipients.
-    \item Precondition: Recipients have valid contact information and preferences.
-    \item Postcondition: Notifications are queued for all recipients and logged.
-\end{itemize}
-
-\noindent \texttt{getDashboardAlerts(userID)}:
-\begin{itemize}
-    \item Output: Returns a list of active alerts for the specified user.
-    \item Exceptions: UserNotFoundException if the user ID is invalid.
-    \item Postcondition: Alerts are retrieved and displayed on the user dashboard.
-\end{itemize}
-
-\noindent \texttt{markAsRead(notificationID)}:
-\begin{itemize}
-    \item Transition: Marks the specified notification as read.
-    \item Output: Returns \texttt{true} if successful.
-    \item Exceptions: InvalidNotificationException if the notification ID is invalid.
-\end{itemize}
-
-\noindent \texttt{getUserPreferences(userID)}:
-\begin{itemize}
-    \item Output: Returns the user's notification preferences.
-    \item Exceptions: UserNotFoundException if the user ID is invalid.
-    \item Postcondition: User preferences are retrieved and displayed.
-\end{itemize}
-
-\subsubsection{Local Functions}
-\begin{itemize}
-    \item \texttt{formatMessage(message: Object, template: String) -> String}: Formats notification content
-    \item \texttt{validateRecipient(recipientID: String) -> Boolean}: Verifies recipient exists
-    \item \texttt{logNotification(details: Object) -> void}: Records notification in audit log
-\end{itemize}
-
-\section{MIS of Reporting and Analytics Module}
-
-\subsection{Module}
-Reporting and Analytics
-
-\subsection{Uses}
-\begin{itemize}
-    \item Database Module
-\end{itemize}
-
-\subsection{Syntax}
-\subsubsection{Exported Constants}
-None.
-
-\subsubsection{Exported Access Programs}
-\begin{center}
-    \scriptsize
-    \begin{tabular}{|p{2cm}|p{4cm}|p{4cm}|p{2cm}|} % Add | for vertical lines
-        \hline
-        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
-        \hline
-        generateReport & filters (\texttt{Object}) & report (\texttt{PDF/CSV}) & InvalidFilter \newline Exception \\
-        \hline
-        getUsageStats & timeframe (\texttt{String}) & stats (\texttt{Object}) & None \\
-        \hline
-    \end{tabular}
-\end{center}
-
-\subsection{Semantics}
-\subsubsection{State Variables}
-\begin{itemize}
-    \item reports: Stores past generated reports for caching and quick access.
-\end{itemize}
-
-\subsubsection{Environment Variables}
-\begin{itemize}
-    \item Database: Stores analytics data related to system usage and transactions.
-\end{itemize}
-
-\subsubsection{Assumptions}
-\begin{itemize}
-    \item Data required for analytics is periodically updated and complete.
-\end{itemize}
-
-\subsubsection{Access Routine Semantics}
-\noindent \texttt{generateReport(filters)}:
-\begin{itemize}
-    \item Output: Returns a report in PDF or CSV format based on the filters provided, or raises InvalidFilterException if the filters are malformed.
-\end{itemize}
-
-\noindent \texttt{getUsageStats(timeframe)}:
-\begin{itemize}
-    \item Output: Returns an object containing system usage statistics for the specified timeframe.
-\end{itemize}
-
-\subsubsection{Local Functions}
-None.
-
-\section{MIS of Graphical User Interface (GUI) Module}
-
-\subsection{Module}
-Graphical User Interface (GUI)
-
-\subsection{Uses}
-\begin{itemize}
-    \item Notifications and Communication Module
-    \item Database Module
-    \item Approval Workflow and Review Module
-\end{itemize}
-
-\subsection{Syntax}
-
-\subsubsection{Exported Constants}
-None.
-
-\subsubsection{Exported Access Programs}
-\begin{center}
-    \scriptsize
-    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
-        \hline
-        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
-        \hline
-        \texttt{renderDashboard} & \texttt{userID (String)} & \texttt{dashboardView (HTML/JSON)} & \texttt{UserNotFoundException} \\
-        \hline
-        \texttt{updateView} & \texttt{viewName (String)} & \texttt{success (Boolean)} & \texttt{ViewNotFoundException} \\
-        \hline
-        \texttt{handleInput} & \texttt{event (Object)} & \texttt{actionResponse (Boolean)} & \texttt{InputException} \\
-        \hline
-    \end{tabular}
-\end{center}
-
-\subsection{Semantics}
-
-\subsubsection{State Variables}
-\begin{itemize}
-    \item \textbf{activeView}: The current view being displayed to the user, identified by its name (e.g., "Dashboard", "Expense Submission").
-    \item \textbf{userSession}: Details about the currently logged-in user, including preferences and session data.
-\end{itemize}
-
-\subsubsection{Environment Variables}
-\begin{itemize}
-    \item \textbf{Browser Window}: Displays the GUI and captures user inputs.
-    \item \textbf{Server API}: Fetches data to dynamically update the GUI based on user interactions.
-\end{itemize}
-
-\subsubsection{Assumptions}
-\begin{itemize}
-    \item The browser supports modern web standards (HTML5, CSS3, JavaScript).
-    \item Users have active and authenticated sessions before interacting with the GUI.
-\end{itemize}
-
-\subsubsection{Access Routine Semantics}
-
-\noindent \texttt{renderDashboard(userID)}:
-\begin{itemize}
-    \item \textbf{Output}: Renders the dashboard for the given \texttt{userID} or raises a \texttt{UserNotFoundException} if the user is not valid.
-\end{itemize}
-
-\noindent \texttt{updateView(viewName)}:
-\begin{itemize}
-    \item \textbf{Output}: Updates the active view to the one specified by \texttt{viewName} and returns \texttt{true} if successful, or raises a \texttt{ViewNotFoundException}.
-\end{itemize}
-
-\noindent \texttt{handleInput(event)}:
-\begin{itemize}
-    \item \textbf{Transition}: Processes user interactions, such as button clicks or form submissions, and triggers corresponding actions.
-    \item \textbf{Output}: Returns \texttt{true} if the input is handled successfully or raises an \texttt{InputException}.
-\end{itemize}
-
-\subsubsection{Local Functions}
-None.
-
-\section{MIS of Policy \& Compliance Management Module}
-
-\subsection{Module}
-Policy \& Compliance Management
-
-\subsection{Uses}
-\begin{itemize}
-    \item Database Module
-    \item Notifications and Communication Module
-\end{itemize}
-
-\subsection{Syntax}
-
-\subsubsection{Exported Constants}
-\begin{itemize}
-    \item \texttt{MAX\_REIMBURSEMENT}: The maximum allowable reimbursement amount for a single request.
-    \item \texttt{TRAVEL\_APPROVAL\_LIMIT}: The threshold above which travel expenses require prior approval.
-\end{itemize}
-
-\subsubsection{Exported Access Programs}
-\begin{center}
-    \scriptsize
-    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
-        \hline
-        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
-        \hline
-        \texttt{validateRequest} & \texttt{requestDetails (Object)} & \texttt{validationStatus (Boolean)} & \texttt{PolicyViolationException} \\
-        \hline
-        \texttt{getPolicyRules} & \texttt{policyType (String)} & \texttt{rules (Object)} & \texttt{PolicyNotFoundException} \\
-        \hline
-        \texttt{logComplianceCheck} & \texttt{requestID (String), result (Boolean)} & \texttt{confirmation (Boolean)} & \texttt{LogFailureException} \\
-        \hline
-    \end{tabular}
-\end{center}
-
-\subsection{Semantics}
-
-\subsubsection{State Variables}
-\begin{itemize}
-    \item \textbf{policies}: A mapping of policy types to their respective rules and thresholds.
-    \item \textbf{complianceLogs}: A record of compliance checks performed on submitted requests.
-\end{itemize}
-
-\subsubsection{Environment Variables}
-\begin{itemize}
-    \item \textbf{Policy Database}: Stores policy definitions and thresholds.
-    \item \textbf{Audit System}: Logs compliance checks and violations for review.
-\end{itemize}
-
-\subsubsection{Assumptions}
-\begin{itemize}
-    \item Policy rules are periodically updated to align with organizational regulations.
-    \item Compliance checks are triggered automatically during the request submission process.
-\end{itemize}
-
-\subsubsection{Access Routine Semantics}
-
-\noindent \texttt{validateRequest(requestDetails)}:
-\begin{itemize}
-    \item \textbf{Output}: Returns \texttt{true} if the request complies with all applicable policies or raises a \texttt{PolicyViolationException} if a rule is violated.
-\end{itemize}
-
-\noindent \texttt{getPolicyRules(policyType)}:
-\begin{itemize}
-    \item \textbf{Output}: Returns the rules for the specified \texttt{policyType} or raises a \texttt{PolicyNotFoundException} if the policy type is invalid.
-\end{itemize}
-
-\noindent \texttt{logComplianceCheck(requestID, result)}:
-\begin{itemize}
-    \item \textbf{Transition}: Records the result of a compliance check for the given \texttt{requestID}.
-    \item \textbf{Output}: Returns \texttt{true} if the log is updated successfully or raises a \texttt{LogFailureException}.
-\end{itemize}
-
-\subsubsection{Local Functions}
-None.
-
-\section{MIS of Integration with Other University Systems Module}
-
-\subsection{Module}
-Integration with Other University Systems
-
-\subsection{Uses}
-\begin{itemize}
-    \item Database Module
-    \item External APIs (University Systems)
-\end{itemize}
-
-\subsection{Syntax}
-
-\subsubsection{Exported Constants}
-\begin{itemize}
-    \item \texttt{STUDENT\_INFO\_API\_URL}: The endpoint for accessing the university’s Student Information System (SIS).
-    \item \texttt{FINANCE\_SYSTEM\_API\_URL}: The endpoint for accessing the university’s financial system.
-\end{itemize}
-
-\subsubsection{Exported Access Programs}
-\begin{center}
-    \scriptsize
-    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
-        \hline
-        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
-        \hline
-        \texttt{fetchStudentInfo} & \texttt{studentID (String)} & \texttt{studentDetails (Object)} & \texttt{StudentNotFoundException} \\
-        \hline
-        \texttt{syncFinancialData} & \texttt{departmentID (String)} & \texttt{syncStatus (Boolean)} & \texttt{FinanceSyncFailureException} \\
-        \hline
-        \texttt{verifyEnrollment} & \texttt{studentID (String)} & \texttt{enrollmentStatus (Boolean)} & \texttt{EnrollmentVerification \newline Exception} \\
-        \hline
-    \end{tabular}
-\end{center}
-
-\subsection{Semantics}
-
-\subsubsection{State Variables}
-\begin{itemize}
-    \item \textbf{universityData}: A cache of information fetched from external university systems for performance optimization.
-    \item \textbf{syncLogs}: A record of synchronization activities between the system and external APIs.
-\end{itemize}
-
-\subsubsection{Environment Variables}
-\begin{itemize}
-    \item \textbf{University SIS}: Provides student details such as enrollment status, department, and contact information.
-    \item \textbf{University Finance System}: Manages departmental budgets, account balances, and payment records.
-\end{itemize}
-
-\subsubsection{Assumptions}
-\begin{itemize}
-    \item API endpoints for university systems are reliable and adhere to predefined contracts.
-    \item Authentication credentials for accessing university systems are securely stored and updated as needed.
-\end{itemize}
-
-\subsubsection{Access Routine Semantics}
-
-\noindent \texttt{fetchStudentInfo(studentID)}:
-\begin{itemize}
-    \item \textbf{Output}: Returns the details of the student identified by \texttt{studentID}, or raises \texttt{StudentNotFoundException} if no matching record is found.
-\end{itemize}
-
-\noindent \texttt{syncFinancialData(departmentID)}:
-\begin{itemize}
-    \item \textbf{Transition}: Synchronizes financial data for the given \texttt{departmentID} with the university’s finance system.
-    \item \textbf{Output}: Returns \texttt{true} if the synchronization is successful or raises \texttt{FinanceSyncFailureException} if an error occurs.
-\end{itemize}
-
-\noindent \texttt{verifyEnrollment(studentID)}:
-\begin{itemize}
-    \item \textbf{Output}: Returns \texttt{true} if the student is enrolled, or raises \texttt{EnrollmentVerificationException} if verification fails.
-\end{itemize}
-
-\subsubsection{Local Functions}
-None.
-
-\section{MIS of Administrator and Configuration Panel Module}
-
-\subsection{Module}
-Administrator and Configuration Panel
-
-\subsection{Uses}
-\begin{itemize}
-    \item Database Module
-    \item Notifications and Communication Module
-    \item Integration with Other University Systems Module
-\end{itemize}
-
-\subsection{Syntax}
-
-\subsubsection{Exported Constants}
-\begin{itemize}
-    \item \texttt{DEFAULT\_ROLE\_PERMISSIONS}: A mapping of roles to their default access permissions.
-    \item \texttt{MAX\_NOTIFICATION\_TEMPLATES}: The maximum number of customizable notification templates allowed.
-\end{itemize}
-
-\subsubsection{Exported Access Programs}
-\begin{center}
-    \scriptsize
-    \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
-        \hline
-        \textbf{Name} & \textbf{Input} & \textbf{Output} & \textbf{Exceptions} \\
-        \hline
-        \texttt{addRole} & \texttt{roleName (String), permissions (List)} & \texttt{confirmation (Boolean)} & \texttt{RoleAlreadyExistsException} \\
-        \hline
-        \texttt{updateApprovalChain} & \texttt{chainConfig (Object)} & \texttt{confirmation (Boolean)} & \texttt{InvalidChainConfigException} \\
-        \hline
-        \texttt{editNotification \newline Template} & \texttt{templateID (String), newTemplate (String)} & \texttt{confirmation (Boolean)} & \texttt{TemplateNotFoundException} \\
-        \hline
-        \texttt{viewLogs} & \texttt{timeframe (String)} & \texttt{logData (Object)} & None \\
-        \hline
-    \end{tabular}
-\end{center}
-
-\subsection{Semantics}
-
-\subsubsection{State Variables}
-\begin{itemize}
-    \item \textbf{roles}: A mapping of roles to their permissions and associated users.
-    \item \textbf{notificationTemplates}: A collection of templates for system notifications.
-    \item \textbf{auditLogs}: A collection of system logs for administrative actions.
-\end{itemize}
-
-\subsubsection{Environment Variables}
-\begin{itemize}
-    \item \textbf{Database}: Stores configuration settings, logs, and role assignments.
-    \item \textbf{Notification System}: Delivers updates to users based on configured templates.
-\end{itemize}
-
-\subsubsection{Assumptions}
-\begin{itemize}
-    \item Role and permission updates propagate immediately to all system components.
-    \item Audit logs are retained and accessible for the configured retention period.
-\end{itemize}
-
-\subsubsection{Access Routine Semantics}
-
-\noindent \texttt{addRole(roleName, permissions)}:
-\begin{itemize}
-    \item \textbf{Transition}: Adds a new role with the specified permissions to the system.
-    \item \textbf{Output}: Returns \texttt{true} if the role is added successfully or raises \texttt{RoleAlreadyExistsException}.
-\end{itemize}
-
-\noindent \texttt{updateApprovalChain(chainConfig)}:
-\begin{itemize}
-    \item \textbf{Transition}: Updates the approval chain configuration based on the provided settings.
-    \item \textbf{Output}: Returns \texttt{true} if the update is successful or raises \texttt{InvalidChainConfigException}.
-\end{itemize}
-
-\noindent \texttt{editNotificationTemplate(templateID, newTemplate)}:
-\begin{itemize}
-    \item \textbf{Transition}: Updates the specified notification template with the new content.
-    \item \textbf{Output}: Returns \texttt{true} if the template is updated successfully or raises \texttt{TemplateNotFoundException}.
-\end{itemize}
-
-\noindent \texttt{viewLogs(timeframe)}:
-\begin{itemize}
-    \item \textbf{Output}: Returns log data for the specified timeframe.
-\end{itemize}
-
-\subsubsection{Local Functions}
-None.
-
+\section{MIS of Data Validation Module (\mref{mValidation})}
+\dots \textit{\textcolor{red}{[Requires similar review/updates - Focus on validation functions for different data types/structures]} \dots}
 
 \newpage
 
 \bibliographystyle {plainnat}
-\bibliography {../../../refs/References}
+\bibliography {../../../refs/References} % Correct relative path
 
 \newpage
 
-\section{Appendix} \label{Appendix}
+% --- Keep Appendix and Reflection as is ---
+\appendix
+\section*{Appendix}
 
-\wss{Extra information if required. Currently, none.}
-
-\newpage{}
-
-\section{Appendix} \label{Appendix}
-
-\wss{Extra information if required. Currently, none.}
-
-\newpage{}
-
-\section*{Appendix --- Reflection}
-
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Problem Analysis and Design.
-
-\input{../../Reflection.tex}
+\input{../../Reflection.tex} % Correct relative path
 
 \begin{enumerate}
-  \item \textbf{What went well while writing this deliverable?}  
-  \newline
-  Rachid: Collaborating as a team was smooth, and we were able to divide the modules effectively, which streamlined the writing process. \\
-  Sufyan: Our TA meeting going over the modules and discussing it helped us understand the requirements better. \\
-  Housam: Identifying each module’s secrets and responsibilities early on helped maintain clarity and reduced redundancy in our design process. \\
-  Taaha: Understanding a double checking our modules over with the TA helped tremendously, ensuring we had the correct approach \\
-  Omar: The TA meeting went over a lot of our confusion that we had, in addition the extra alloted time allowed us to flesh out this deliverable a bit more. \\
-
-  \item \textbf{What pain points did you experience during this deliverable, and how did you resolve them?}  
-  \newline
-  Rachid: One challenge was ensuring consistency across modules. Regular team reviews and communication helped resolve any inconsistencies. \\
-  Sufyan: Coordinating between the MG and MIS was a bit challenging, since we broke up who does each PDF. \\
-  Housam: Aligning anticipated changes with module-level details was challenging but resolved through a thorough review of the SRS and MG. \\
-  Taaha: Some of the questions were somewhat hard to understand what to do such as the ones requiring to create diagrams. \\
-  Omar: A pain point I had was ensuring consistency between documents and ensuring all ideas align with eachother. \\
-
-  \item \textbf{Which of your design decisions stemmed from speaking to your client(s) or a proxy (e.g., your peers, stakeholders, potential users)? For those that were not, why, and where did they come from?}  
-  \newline
-  GROUP: Many decisions, like integrating notifications, came directly from stakeholder feedback. Others, like modular decomposition, were based on best practices and team experience.
-
-  \item \textbf{While creating the design doc, what parts of your other documents (e.g., requirements, hazard analysis, etc.), if any, needed to be changed, and why?}  
-  \newline
-  GROUP: The requirements document was updated to better align with the final design, specifically in the Reporting module to include export formats.
-
-  \item \textbf{What are the limitations of your solution? Put another way, given unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)}  
-  \newline
-  Rachid: With unlimited resources, we could enhance system scalability and user interface design, making it more robust and user-friendly. \\
-  Sufyan: We could also improve the integration with external systems such as banking APIs but we are limited by Open Banking not being available. \\
-  Housam: With unlimited resources, we could incorporate advanced machine learning algorithms for OCR-based receipt processing to enhance accuracy and reduce manual intervention. \\
-  Taaha: Provided unlimited resources, we could integrate better support with online banking organizations to allow for easier transactions. \\
-  Omar: We could increase the use cases of the application, we could allow users more options based off what the MES requires or we could refine our solution to be more user friendly. We could have additionaly made a mobile app as well as a web app. \\
-
-  \item \textbf{Give a brief overview of other design solutions you considered. What are the benefits and tradeoffs of those other designs compared with the chosen design? From all the potential options, why did you select the documented design? (LO\_Explores)}  
-  \newline
-  Rachid: We considered alternative approaches for managing the workflow logic, such as using external libraries, but chose an in-house solution for simplicity and better control over implementation. \\
-  Sufyan: We also considered using a third-party notification service, but opted for an in-house system to maintain data privacy and security. \\
-  Housam: We debated between centralized compliance validation versus distributed validation across modules. While centralized validation offered simplicity, we chose the distributed approach to align better with modular decomposition and scalability goals.\\
-  Taaha: We considered using external libraries to manage numerous functionality such as workflow process and notifications. \\
-  Omar: A design solution I considered was making a mobile app instead of a web app, this in my opinion would have made the notifcaion process easier and more friendly to users. The tradeoff being the MES did not want this initially so we would not be making an appealing app to our main stakeholder. We decided to select a web app since that would appeal to all stakeholders and we are still able to notify users via email. 
-\end{enumerate}
-
+    \item \textbf{What went well while writing this deliverable?}  
+    \newline
+    Rachid: Collaborating as a team was smooth, and we were able to divide the modules effectively, which streamlined the writing process. \\
+    Sufyan: Our TA meeting going over the modules and discussing it helped us understand the requirements better. \\
+    Housam: Identifying each module’s secrets and responsibilities early on helped maintain clarity and reduced redundancy in our design process. \\
+    Taaha: Understanding a double checking our modules over with the TA helped tremendously, ensuring we had the correct approach \\
+    Omar: The TA meeting went over a lot of our confusion that we had, in addition the extra alloted time allowed us to flesh out this deliverable a bit more. \\
+  
+    \item \textbf{What pain points did you experience during this deliverable, and how did you resolve them?}  
+    \newline
+    Rachid: One challenge was ensuring consistency across modules. Regular team reviews and communication helped resolve any inconsistencies. \\
+    Sufyan: Coordinating between the MG and MIS was a bit challenging, since we broke up who does each PDF. \\
+    Housam: Aligning anticipated changes with module-level details was challenging but resolved through a thorough review of the SRS and MG. \\
+    Taaha: Some of the questions were somewhat hard to understand what to do such as the ones requiring to create diagrams. \\
+    Omar: A pain point I had was ensuring consistency between documents and ensuring all ideas align with eachother. \\
+  
+    \item \textbf{Which of your design decisions stemmed from speaking to your client(s) or a proxy (e.g., your peers, stakeholders, potential users)? For those that were not, why, and where did they come from?}  
+    \newline
+    GROUP: Many decisions, like integrating notifications, came directly from stakeholder feedback. Others, like modular decomposition, were based on best practices and team experience.
+  
+    \item \textbf{While creating the design doc, what parts of your other documents (e.g., requirements, hazard analysis, etc.), if any, needed to be changed, and why?}  
+    \newline
+    GROUP: The requirements document was updated to better align with the final design, specifically in the Reporting module to include export formats.
+  
+    \item \textbf{What are the limitations of your solution? Put another way, given unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)}  
+    \newline
+    Rachid: With unlimited resources, we could enhance system scalability and user interface design, making it more robust and user-friendly. \\
+    Sufyan: We could also improve the integration with external systems such as banking APIs but we are limited by Open Banking not being available. \\
+    Housam: With unlimited resources, we could incorporate advanced machine learning algorithms for OCR-based receipt processing to enhance accuracy and reduce manual intervention. \\
+    Taaha: Provided unlimited resources, we could integrate better support with online banking organizations to allow for easier transactions. \\
+    Omar: We could increase the use cases of the application, we could allow users more options based off what the MES requires or we could refine our solution to be more user friendly. We could have additionaly made a mobile app as well as a web app. \\
+  
+    \item \textbf{Give a brief overview of other design solutions you considered. What are the benefits and tradeoffs of those other designs compared with the chosen design? From all the potential options, why did you select the documented design? (LO\_Explores)}  
+    \newline
+    Rachid: We considered alternative approaches for managing the workflow logic, such as using external libraries, but chose an in-house solution for simplicity and better control over implementation. \\
+    Sufyan: We also considered using a third-party notification service, but opted for an in-house system to maintain data privacy and security. \\
+    Housam: We debated between centralized compliance validation versus distributed validation across modules. While centralized validation offered simplicity, we chose the distributed approach to align better with modular decomposition and scalability goals.\\
+    Taaha: We considered using external libraries to manage numerous functionality such as workflow process and notifications. \\
+    Omar: A design solution I considered was making a mobile app instead of a web app, this in my opinion would have made the notifcaion process easier and more friendly to users. The tradeoff being the MES did not want this initially so we would not be making an appealing app to our main stakeholder. We decided to select a web app since that would appeal to all stakeholders and we are still able to notify users via email. 
+  \end{enumerate}
 
 \end{document}
