@@ -2,7 +2,6 @@
 
 \usepackage{tabularx}
 \usepackage{booktabs}
-
 \title{Reflection and Traceability Report on \progname}
 
 \author{\authname}
@@ -63,6 +62,77 @@ low.}
 
 \subsection{SRS and Hazard Analysis}
 
+\subsubsection{Changes Made to the SRS}
+
+
+\subsubsection{Changes Made to the Hazard Analysis}
+
+The document has been thoroughly revised to address feedback from a rubric. Here are the key changes:
+
+\subsubsection{Document Structure Improvements}
+\begin{itemize}
+  \item Added Table of Contents, List of Tables, and List of Figures
+  \item Improved document organization with appropriate page breaks
+  \item Updated revision history table with current changes
+  \item Added proper labels to Safety/Security Requirements (SSR-1, SSR-2, SSR-3)
+\end{itemize}
+
+\subsubsection{Content Enhancements}
+\begin{enumerate}
+  \item \textbf{Introduction \& Scope}:
+  \begin{itemize}
+    \item Refined hazard definitions specifically for MES-ERP financial operations
+    \item Expanded scope to clearly include all system components (frontend, backend, database, auth)
+    \item Added clearer document roadmap
+  \end{itemize}
+
+  \item \textbf{System Boundaries \& Components}:
+  \begin{itemize}
+    \item Added technology specifics (Supabase/PostgreSQL, Next.js/React)
+    \item Enhanced hazard descriptions with concrete examples
+    \item Added new hazards (race conditions, XSS vulnerabilities, session hijacking)
+  \end{itemize}
+
+  \item \textbf{Critical Assumptions}:
+  \begin{itemize}
+    \item Clarified existing assumptions
+    \item Added a fifth assumption about security of underlying infrastructure
+  \end{itemize}
+
+  \item \textbf{FMEA Implementation}:
+  \begin{itemize}
+    \item Created a complete FMEA table with severity, occurrence, and detection ratings
+    \item Calculated Risk Priority Numbers (RPN)
+    \item Added specific mitigation strategies for each failure mode
+    \item Cross-referenced Safety/Security Requirements
+  \end{itemize}
+
+  \item \textbf{Safety Requirements}:
+  \begin{itemize}
+    \item Added formal labels and improved descriptions
+    \item Enhanced rationales for implementation
+  \end{itemize}
+
+  \item \textbf{Roadmap}:
+  \begin{itemize}
+    \item Improved immediate implementation items with technical specifics
+    \item Added cross-references to SSRs
+    \item Added new future implementation item (Security Penetration Testing)
+  \end{itemize}
+
+  \item \textbf{Reflection}:
+  \begin{itemize}
+    \item Updated team reflections with more specific insights
+    \item Enhanced discussion of risk types beyond physical harm
+  \end{itemize}
+\end{enumerate}
+
+\vspace{1em}
+The revisions make the document more precise, technically detailed, and better aligned with software engineering best practices for hazard analysis.
+
+
+All changes were made to address the rubric feedback, with special attention to improving the technical specificity of hazard descriptions, creating a proper FMEA analysis, and ensuring consistent cross-referencing between identified hazards and safety requirements. The revisions significantly enhanced the document's precision and alignment with software engineering best practices for hazard analysis of financial systems.
+
 \subsection{Design and Design Documentation}
 
 \subsection{VnV Plan and Report}
@@ -75,9 +145,9 @@ low.}
 
 \subsection{Extras}
 \begin{enumerate}
-    \item Useability Testing \\
+    \item \textbf{Usability Testing} \\
     Conduct formal usability testing with a variety of stakeholders (students, financial staff) to refine the interface and ensure a smooth user experience.
-    \item User Documentation \\
+    \item \textbf{User Documentation} \\
     Create comprehensive user documentation in the form of written documentation and video tutorials that guides end-users through every step of submitting expenses, reviewing budgets, and navigating the platform.
 \end{enumerate}
 
