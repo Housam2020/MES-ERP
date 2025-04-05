@@ -129,9 +129,35 @@ it led to.}
 
 \section{Design Decisions (LO12)}
 
-\plt{Reflect and justify your design decisions.  How did limitations,
- assumptions, and constraints influence your decisions?  Discuss each of these
- separately.}
+\plt{This section reflects on the key design choices made during the MES-ERP project, justifying them based on the project's constraints, assumptions, and limitations derived from requirements and analysis.}
+
+Our design process aimed to create a robust, maintainable, and secure platform tailored to the MES's specific needs, while working within the constraints of a capstone project. Key decisions included:
+
+\begin{itemize}
+    \item \textbf{Technology Stack (Next.js, TypeScript, Supabase):}
+        The choice of Next.js and TypeScript was initially guided by supervisor constraints for consistency with other MES projects, as noted in the Development Plan. However, this stack proved advantageous. Next.js provided a powerful framework for both frontend (React) and backend (API Routes), simplifying development. TypeScript offered static typing, crucial for catching errors early in a complex application involving financial data and intricate permissions. Supabase was selected as the Backend-as-a-Service (BaaS) platform. This significantly reduced the backend development overhead (database setup, authentication management, storage) allowing the team to focus on core application logic, fitting well within the project's time and budget constraints. The trade-off was a dependency on Supabase's infrastructure and potential limitations of its free/pro tiers.
+
+    \item \textbf{Modular Architecture (Information Hiding - MG/MIS):}
+        We adopted the principles of information hiding, decomposing the system into Hardware-Hiding (Database Interaction), Behaviour-Hiding (Core Features like Expense Submission, Approval Workflow), and Software Decision (Validation, GUI) modules, as documented in the Module Guide (MG) and specified in the Module Interface Specification (MIS). This decision was driven by the need for maintainability and adaptability. Anticipated changes, such as supporting new input formats (\texttt{AC\ref{acInput}}) or notification methods (\texttt{AC\ref{acNotifications}}), were encapsulated as module secrets, aiming to localize the impact of future modifications. This structured approach, while requiring upfront design effort, was deemed essential for a system intended for long-term use by the MES.
+
+    \item \textbf{Role-Based Access Control (RBAC) Implementation:}
+        The decision to implement a relatively complex RBAC system, supporting users belonging to multiple groups with potentially different roles in each, stemmed directly from the MES's organizational structure (many clubs with varying leadership roles). A simpler model (e.g., one user, one role) would not have accurately reflected the real-world requirements. We used junction tables (\texttt{user\_roles}, \texttt{group\_roles}, \texttt{role\_permissions}) in the database schema, a standard approach for modeling these many-to-many relationships. This design provided the necessary flexibility but increased implementation complexity, particularly in permission checking logic within the middleware, API routes, and frontend components (\texttt{usePermissions} hook). This complexity was a necessary trade-off for accurately modeling the domain.
+
+    \item \textbf{Database Schema Design:}
+        The schema, documented in \texttt{src/docs/DATABASE.md}, prioritized clear relationships between entities (users, groups, roles, requests, budgets). The use of junction tables for RBAC was crucial. The \texttt{operating\_budget\_lines} table provided a flexible structure for managing detailed budgets per group, separating allocated amounts from actual expenses derived from \texttt{payment\_requests}. This separation supported accurate tracking and reporting.
+
+    \item \textbf{API Route Structure:}
+        We utilized Next.js API routes for specific backend operations like sending notifications (\texttt{send-email-notif}, \texttt{send-sms-notif}) and updating user roles/groups (\texttt{update-role}, \texttt{update-group}). This kept backend logic separate from the frontend rendering, promoting cleaner code and easier testing of backend functionality.
+
+    \item \textbf{External Service Integration (SendGrid, Tesseract.js):}
+        Integrating external services like SendGrid for email notifications and Tesseract.js for OCR simplified development compared to building these features from scratch. This aligned with the project's constraints, allowing focus on core MES-specific workflows. The limitation is reliance on these services' availability and potential costs.
+
+    \item \textbf{Assumption/Limitation Impact:}
+        The assumption of reliable internet meant little effort was put into offline capabilities. The budget constraint influenced the choice of Supabase (generous free tier) and limited the scope of "stretch goals". The capstone timeline necessitated prioritizing core features over extensive performance optimization or advanced features like ML-based categorization initially. The design explicitly tried to accommodate anticipated changes (like reporting formats) by isolating related logic in specific modules (\texttt{M\ref{mReporting}}).
+\end{itemize}
+
+Overall, design decisions prioritized fulfilling core MES requirements, ensuring security and data integrity for financial operations, and promoting maintainability, while leveraging existing tools and services to meet project constraints.
+
 
 \section{Economic Considerations (LO23)}
 
