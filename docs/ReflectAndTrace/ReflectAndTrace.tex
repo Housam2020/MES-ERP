@@ -142,7 +142,40 @@ Developed a comprehensive video demonstration of the system's functionality that
 \end{enumerate}
 
 \section{Design Iteration (LO11 (PrototypeIterate))}
+\plt{This section explains how the design and implementation of MES-ERP evolved from its initial concept to the final version, driven by requirements, technical challenges, feedback, and testing.}
 
+The development of MES-ERP followed an iterative process, evolving significantly from the initial concept outlined in the Problem Statement to the final demonstrated product.
+
+\begin{enumerate}
+    \item \textbf{Initial Concept \& POC Planning:} The project began with the core goal of replacing the MES's manual spreadsheet/form-based system with a digital platform for reimbursement requests and budget tracking. The initial Proof of Concept (POC) plan, as described in the Development Plan and POC Team Contributions, focused on demonstrating the fundamental feasibility:
+        \begin{itemize}
+            \item Basic user authentication (login/register).
+            \item A minimal request submission form for users.
+            \item A basic admin dashboard to view submitted requests and update their status.
+        \end{itemize}
+        This stage aimed to mitigate the primary risk identified: handling diverse inputs (receipts) and establishing a working user-admin interaction loop.
+
+    \item \textbf{Post-POC Refinement (Towards Rev 0):} Based on the successful POC, the design expanded significantly for Revision 0. Key developments likely included:
+        \begin{itemize}
+            \item \textbf{RBAC Implementation:} The necessity of handling multiple clubs and user roles became apparent. The design iterated from a potentially simpler model to the more complex multi-group RBAC system using junction tables (\texttt{user\_roles}, \texttt{group\_roles}, \texttt{role\_permissions}). This was a major design iteration driven by accurately modeling the MES structure.
+            \item \textbf{Core Feature Expansion:} Functionality beyond basic requests was added, including modules for managing Users, Roles, and Groups, as reflected in the Rev 0 Demo Plan and the final dashboard structure.
+            \item \textbf{Budget Management:} Initial concepts for budget tracking likely evolved into the more structured \texttt{operating\_budget\_lines} approach seen in the final implementation, allowing detailed income/expense tracking per group.
+            \item \textbf{Analytics Introduction:} Basic analytics visualizations were introduced (\texttt{/dashboard/analytics}), demonstrating the potential for data-driven insights.
+            \item \textbf{Early OCR Integration:} Receipt scanning/OCR, initially a stretch goal, appears to have been incorporated by Rev 0, likely using Tesseract.js as integrated into the Reimbursement Form component.
+        \end{itemize}
+        Feedback from stakeholder reviews (planned in the SRS/VnV Plan verification steps) and supervisor meetings likely influenced the prioritization and refinement of these features.
+
+    \item \textbf{Revision 0 Feedback and Final Iteration (Towards Rev 1):} The Rev 0 demonstration served as a key validation point. Feedback from this demo, along with ongoing development and testing (as documented in the VnV Report), drove the final iteration:
+        \begin{itemize}
+            \item \textbf{Refinement based on Testing:} Bug fixes identified during V\&V (e.g., handling missing attachments, duplicate submissions, notification failures for invalid emails, UTC timestamp standardization) led to direct code changes and improvements in error handling and validation logic (\texttt{M\ref{mValidation}}, \texttt{M\ref{mNotify}}).
+            \item \textbf{Usability Improvements:} Informal user testing and feedback (part of the "Extras") led to UI refinements like clearer labels, tooltips, and success messages (\texttt{M\ref{mGUI}}). The refactoring of the Reimbursement Form into smaller components (\texttt{src/components/reimbursement/}) was likely done during this phase to improve maintainability and user experience.
+            \item \textbf{Performance Optimization:} Performance bottlenecks identified under load (Test 7, Test 9) prompted optimizations like database indexing and caching.
+            \item \textbf{RBAC Polish:} The logic for assigning and managing roles, especially differentiating between global and group-specific roles and handling permissions correctly in the Users/Roles management pages, likely underwent refinement based on testing and implementation challenges.
+            \item \textbf{Documentation Completion:} The User Guide and final V\&V Report were created, reflecting the finalized feature set.
+        \end{itemize}
+
+    \item \textbf{Final Design:} The final design reflects this iterative refinement. The modular structure (MG/MIS) provided a framework, but the specific implementation details, particularly for RBAC, budget management, and the reimbursement form's complexity (including OCR), evolved based on tackling requirements, incorporating feedback, and addressing issues found during testing. The decision to integrate OCR early, despite being a stretch goal, likely came from recognizing its high potential value for users. The V\&V process proved crucial in identifying and correcting functional bugs, performance issues, and usability gaps before the final demonstration.
+\end{enumerate}
 
 \section{Design Decisions (LO12)}
 
