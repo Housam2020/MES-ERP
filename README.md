@@ -1,4 +1,6 @@
-# Project Name
+# McMaster Engineering Society - Expense Reporting Platform (MES-ERP)
+
+## Team 26 - Ethical Pals
 
 Developer Names:
 Housam Alamour
