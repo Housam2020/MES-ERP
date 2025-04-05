@@ -192,10 +192,10 @@ As a capstone project developed specifically for the McMaster Engineering Societ
             \item \textbf{Open Source + Support:} Offer the core platform as open source, charging for setup assistance, hosting, custom modifications, or premium support contracts.
         \end{itemize}
 
-    \item \textbf{Sales Estimate / Break-Even:**}
+    \item \textbf{Sales Estimate / Break-Even:}
         Assuming ongoing costs of \$600/year (\$50/month) and needing to recoup an estimated \$30,000 commercial development cost over 3 years (\$10,000/year), the platform would need to generate \$10,600 annually. At a \$1000/year subscription, this requires roughly 11 paying student societies. Given the niche market, achieving significant profit seems challenging without broad adoption or a very lean maintenance model.
 
-    \item \textbf{Potential Users:**} Initially ~60 MES clubs + MES staff. Potentially hundreds of clubs within McMaster. Thousands across Canadian universities.
+    \item \textbf{Potential Users:} Initially ~60 MES clubs + MES staff. Potentially hundreds of clubs within McMaster. Thousands across Canadian universities.
 \end{itemize}
 
 In conclusion, while MES-ERP addresses a real need for MES, its direct commercial viability is uncertain due to the niche market and the likely need for customization for other institutions. An open-source model with optional paid support or focusing on adoption within McMaster might be more realistic paths for broader impact beyond the initial MES deployment. The primary economic benefit for MES is the significant saving in administrative time and improved financial control compared to the previous manual system.
@@ -206,22 +206,53 @@ In conclusion, while MES-ERP addresses a real need for MES, its direct commercia
 
 \subsection{How Does Your Project Management Compare to Your Development Plan}
 
-\plt{Did you follow your Development plan, with respect to the team meeting plan, 
-team communication plan, team member roles and workflow plan.  Did you use the 
-technology you planned on using?}
+Our project management generally followed the Development Plan, but with some natural adaptations:
+
+\begin{itemize}
+    \item \textbf{Team Meeting Plan:} We adhered to the plan for regular team meetings (twice weekly initially, likely adjusting frequency later) and scheduled supervisor meetings (though one was missed by a member). Attendance, as tracked in contribution reports, was generally high for team meetings.
+    \item \textbf{Team Communication Plan:} Discord was used as the primary informal communication channel, as planned. GitHub Issues were used for tracking tasks and feedback, although perhaps not as consistently for \textit{all} communication or discussion as initially intended. Merge conflicts and urgent issues were likely handled via Discord/calls.
+    \item \textbf{Team Member Roles:} Initial roles (Meeting Chair, Notetaker, Reviewer, Leader, Helper) were defined. In practice, roles in small student teams often become more fluid, with members contributing across different areas based on need and expertise. The commit history suggests varying levels of contribution, which might indicate roles shifted or workloads weren't perfectly balanced despite the initial plan. The plan did include monthly reviews to adjust roles, but it's unclear if these formal reviews occurred.
+    \item \textbf{Workflow Plan (Git, Issues, CI/CD):}
+        \begin{itemize}
+            \item \textbf{Git Usage:} The use of branches for features/bugfixes and Pull Requests (PRs) with peer review seems to have been implemented, based on standard practice and the presence of multiple contributors. Commit messages aimed for descriptiveness (mentioning Conventional Commits). Tags for releases may or may not have been consistently used.
+            \item \textbf{Issue Management:} GitHub Issues were used, and templates were defined. The team contribution reports mention issues authored and assigned, indicating usage. The effectiveness depended on issue granularity and consistent tracking/closing.
+            \item \textbf{CI/CD Implementation:} The planned CI/CD pipeline (Lint, Format, PDF Build, Unit Tests via GitHub Actions) was successfully implemented, as evidenced by the workflow files. This automated quality checks and documentation builds. Test coverage goals (90\%) were set, but the VnV report indicates actual automated coverage was lower, suggesting challenges in achieving this target.
+        \end{itemize}
+    \item \textbf{Technology:} The core technology stack (Next.js, TypeScript, Supabase, Shadcn UI, Tailwind, Jest) defined in the Development Plan was indeed used in the implementation.
+\end{itemize}
 
 \subsection{What Went Well?}
 
-\plt{What went well for your project management in terms of processes and 
-technology?}
+\begin{itemize}
+  \item \textbf{Clear Initial Planning:} The Development Plan provided a good roadmap for roles, communication, and workflow.
+  \item \textbf{Technology Stack Adoption:} The team successfully implemented the application using the chosen modern web technologies.
+  \item \textbf{Version Control:} Effective use of Git and GitHub facilitated collaboration, code sharing, and tracking changes.
+  \item \textbf{CI/CD Automation:} Implementing workflows for linting, formatting, testing, and PDF building automated crucial quality checks and saved manual effort.
+  \item \textbf{Communication Channels:} Utilizing Discord for quick communication and GitHub Issues for task tracking generally worked well.
+  \item \textbf{Regular Meetings:} Consistent team meetings helped maintain alignment and address roadblocks.
+\end{itemize}
 
 \subsection{What Went Wrong?}
 
-\plt{What went wrong in terms of processes and technology?}
+\begin{itemize}
+  \item \textbf{Uneven Workload/Contributions:} Commit history and team contribution reports indicate some members contributed significantly more code than others, suggesting potential workload imbalance or differing levels of engagement/availability.
+  \item \textbf{Achieving Test Coverage Goals:} The ambitious 90\% automated test coverage target was not met, indicating challenges in writing comprehensive tests alongside feature development, possibly due to time constraints or complexity.
+  \item \textbf{Initial Setup Friction:} Reflections mentioned initial difficulties with setting up development environments (e.g., LaTeX), causing early delays.
+  \item \textbf{Strict Role Adherence:} Maintaining the initially defined, distinct roles might have been impractical; tasks likely required more cross-functional collaboration than the roles implied.
+  \item \textbf{Meeting Scheduling:} Some scheduling conflicts occurred, leading to missed supervisor meetings or team building activities.
+  \item \textbf{Issue Tracker Discipline:} While used, the consistency of using GitHub Issues for \textit{all} task tracking and discussion might have varied.
+\end{itemize}
 
 \subsection{What Would you Do Differently Next Time?}
 
-\plt{What will you do differently for your next project?}
+\begin{itemize}
+  \item \textbf{Proactive Workload Management:} Implement more explicit task breakdown and assignment during sprint planning. Use pair programming or focused work sessions to help members who might be falling behind or need assistance. Regularly check in on individual progress and offer support.
+  \item \textbf{Integrate Testing Earlier and Continuously:} Write unit tests concurrently with feature development rather than potentially leaving it towards the end. Set more realistic, incremental coverage goals throughout the project lifecycle.
+  \item \textbf{Improve Onboarding/Setup:} Create a more streamlined setup guide or utilize tools like Dev Containers to minimize initial environment configuration issues.
+  \item \textbf{Flexible Roles:} Define roles more flexibly from the start, acknowledging that members will likely contribute across different areas. Emphasize shared responsibility.
+  \item \textbf{Enhanced Issue Tracking:} Encourage more disciplined use of the issue tracker for all tasks, discussions, and decisions to improve traceability and transparency.
+  \item \textbf{Better Time Estimation:} Factor in more buffer time for complex features (like RBAC) and for writing thorough tests.
+\end{itemize}
 
 \section{Reflection on Capstone}
 
