@@ -17,13 +17,6 @@
 
 \maketitle
 
-\plt{Reflection is an important component of getting the full benefits from a
-learning experience.  Besides the intrinsic benefits of reflection, this
-document will be used to help the TAs grade how well your team responded to
-feedback.  Therefore, traceability between Revision 0 and Revision 1 is and
-important part of the reflection exercise.  In addition, several CEAB (Canadian
-Engineering Accreditation Board) Learning Outcomes (LOs) will be assessed based
-on your reflections.}
 
 \section{Changes in Response to Feedback}
 
@@ -150,17 +143,9 @@ Developed a comprehensive video demonstration of the system's functionality that
 
 \section{Design Iteration (LO11 (PrototypeIterate))}
 
-\plt{Explain how you arrived at your final design and implementation.  How did
-the design evolve from the first version to the final version?} 
-
-\plt{Don't just say what you changed, say why you changed it.  The needs of the
-client should be part of the explanation.  For example, if you made changes in
-response to usability testing, explain what the testing found and what changes
-it led to.}
 
 \section{Design Decisions (LO12)}
 
-\plt{This section reflects on the key design choices made during the MES-ERP project, justifying them based on the project's constraints, assumptions, and limitations derived from requirements and analysis.}
 
 Our design process aimed to create a robust, maintainable, and secure platform tailored to the MES's specific needs, while working within the constraints of a capstone project. Key decisions included:
 
@@ -169,7 +154,7 @@ Our design process aimed to create a robust, maintainable, and secure platform t
         The choice of Next.js and TypeScript was initially guided by supervisor constraints for consistency with other MES projects, as noted in the Development Plan. However, this stack proved advantageous. Next.js provided a powerful framework for both frontend (React) and backend (API Routes), simplifying development. TypeScript offered static typing, crucial for catching errors early in a complex application involving financial data and intricate permissions. Supabase was selected as the Backend-as-a-Service (BaaS) platform. This significantly reduced the backend development overhead (database setup, authentication management, storage) allowing the team to focus on core application logic, fitting well within the project's time and budget constraints. The trade-off was a dependency on Supabase's infrastructure and potential limitations of its free/pro tiers.
 
     \item \textbf{Modular Architecture (Information Hiding - MG/MIS):}
-        We adopted the principles of information hiding, decomposing the system into Hardware-Hiding (Database Interaction), Behaviour-Hiding (Core Features like Expense Submission, Approval Workflow), and Software Decision (Validation, GUI) modules, as documented in the Module Guide (MG) and specified in the Module Interface Specification (MIS). This decision was driven by the need for maintainability and adaptability. Anticipated changes, such as supporting new input formats (\texttt{AC\ref{acInput}}) or notification methods (\texttt{AC\ref{acNotifications}}), were encapsulated as module secrets, aiming to localize the impact of future modifications. This structured approach, while requiring upfront design effort, was deemed essential for a system intended for long-term use by the MES.
+        We adopted the principles of information hiding, decomposing the system into Hardware-Hiding (Database Interaction), Behaviour-Hiding (Core Features like Expense Submission, Approval Workflow), and Software Decision (Validation, GUI) modules, as documented in the Module Guide (MG) and specified in the Module Interface Specification (MIS). This decision was driven by the need for maintainability and adaptability. Anticipated changes, such as supporting new input formats or notification methods, were encapsulated as module secrets, aiming to localize the impact of future modifications. This structured approach, while requiring upfront design effort, was deemed essential for a system intended for long-term use by the MES.
 
     \item \textbf{Role-Based Access Control (RBAC) Implementation:}
         The decision to implement a relatively complex RBAC system, supporting users belonging to multiple groups with potentially different roles in each, stemmed directly from the MES's organizational structure (many clubs with varying leadership roles). A simpler model (e.g., one user, one role) would not have accurately reflected the real-world requirements. We used junction tables (\texttt{user\_roles}, \texttt{group\_roles}, \texttt{role\_permissions}) in the database schema, a standard approach for modeling these many-to-many relationships. This design provided the necessary flexibility but increased implementation complexity, particularly in permission checking logic within the middleware, API routes, and frontend components (\texttt{usePermissions} hook). This complexity was a necessary trade-off for accurately modeling the domain.
@@ -184,7 +169,7 @@ Our design process aimed to create a robust, maintainable, and secure platform t
         Integrating external services like SendGrid for email notifications and Tesseract.js for OCR simplified development compared to building these features from scratch. This aligned with the project's constraints, allowing focus on core MES-specific workflows. The limitation is reliance on these services' availability and potential costs.
 
     \item \textbf{Assumption/Limitation Impact:}
-        The assumption of reliable internet meant little effort was put into offline capabilities. The budget constraint influenced the choice of Supabase (generous free tier) and limited the scope of "stretch goals". The capstone timeline necessitated prioritizing core features over extensive performance optimization or advanced features like ML-based categorization initially. The design explicitly tried to accommodate anticipated changes (like reporting formats) by isolating related logic in specific modules (\texttt{M\ref{mReporting}}).
+        The assumption of reliable internet meant little effort was put into offline capabilities. The budget constraint influenced the choice of Supabase (generous free tier) and limited the scope of "stretch goals". The capstone timeline necessitated prioritizing core features over extensive performance optimization or advanced features like ML-based categorization initially. The design explicitly tried to accommodate anticipated changes (like reporting formats) by isolating related logic in specific modules.
 \end{itemize}
 
 Overall, design decisions prioritized fulfilling core MES requirements, ensuring security and data integrity for financial operations, and promoting maintainability, while leveraging existing tools and services to meet project constraints.
@@ -192,7 +177,6 @@ Overall, design decisions prioritized fulfilling core MES requirements, ensuring
 
 \section{Economic Considerations (LO23)}
 
-\plt{This section explores the potential market, costs, and economic viability of the MES-ERP platform, considering its current context and potential future paths.}
 
 As a capstone project developed specifically for the McMaster Engineering Society (MES), the initial "market" is internal. However, the underlying problem – managing finances for multiple student clubs within a larger organization – is common across universities.
 
@@ -233,7 +217,6 @@ In conclusion, while MES-ERP addresses a real need for MES, its direct commercia
 
 \section{Reflection on Project Management (LO24)}
 
-\plt{This question focuses on processes and tools used for project management.}
 
 \subsection{How Does Your Project Management Compare to Your Development Plan}
 
@@ -266,7 +249,6 @@ Our project management generally followed the Development Plan, but with some na
 \subsection{What Went Wrong?}
 
 \begin{itemize}
-  \item \textbf{Uneven Workload/Contributions:} Commit history and team contribution reports indicate some members contributed significantly more code than others, suggesting potential workload imbalance or differing levels of engagement/availability.
   \item \textbf{Achieving Test Coverage Goals:} The ambitious 90\% automated test coverage target was not met, indicating challenges in writing comprehensive tests alongside feature development, possibly due to time constraints or complexity.
   \item \textbf{Initial Setup Friction:} Reflections mentioned initial difficulties with setting up development environments (e.g., LaTeX), causing early delays.
   \item \textbf{Strict Role Adherence:} Maintaining the initially defined, distinct roles might have been impractical; tasks likely required more cross-functional collaboration than the roles implied.
