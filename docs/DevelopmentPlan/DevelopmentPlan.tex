@@ -2,6 +2,10 @@
 
 \usepackage{booktabs}
 \usepackage{tabularx}
+% --- Required for strikethrough ---
+\usepackage{xcolor}
+\usepackage[normalem]{ulem}
+% --- End Required ---
 
 \title{Development Plan\\\progname}
 
@@ -24,6 +28,7 @@
 \midrule
 Sept 24th, 2024 & Housam \& Taaha & Completed the confidential information, IP info, Copyright, Team plan and Workflow plan \\
 Sept 24th, 2024 & Omar, Rachid & Changes to part 8, 9, Appendix\\
+\textcolor{red}{April 4, 2025} & \textcolor{red}{Sufyan} & \textcolor{red}{Revised based on rubric feedback: Added detail to Meeting Plan, Roles, POC Demo Plan (linking to risks), and Team Charter. Clarified Confidential Info section purpose.} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -32,12 +37,14 @@ Sept 24th, 2024 & Omar, Rachid & Changes to part 8, 9, Appendix\\
 
 \section*{Introduction}
 
-This Development Plan outlines the key aspects of our project, the MES (McMaster Engineering Society) Custom Financial Expense Reporting Platform. The document is structured to provide an overview of the project's goals, workflow, and expected technologies. It includes sections on confidential information handling, intellectual property considerations, copyright licensing, team roles, and communication plans. Additionally, the plan covers our coding standards, Git workflow, issue management, and CI/CD implementation. 
+This Development Plan outlines the key aspects of our, the MES (McMaster Engineering Society) Custom Financial Expense Reporting Platform. The document is structured to provide an overview of the project's goals, workflow, and expected technologies. It includes sections on confidential information handling, intellectual property considerations, copyright licensing, team roles, and communication plans. Additionally, the plan covers our coding standards, Git workflow, issue management, and CI/CD implementation.
 
-The document also provides a project decomposition and scheduling plan, along with a proof of concept demonstration plan to address potential risks. Finally, the appendices include reflections on the importance of a development plan, the advantages and disadvantages of CI/CD, and our team charter, which outlines our external goals, attendance expectations, accountability, and decision-making processes.
+The document also provides a project decomposition and scheduling plan, along with a proof of concept demonstration plan designed to \textcolor{red}{validate core functionality and} address potential risks \textcolor{red}{early in the development cycle}. Finally, the appendices include reflections on the importance of a development plan, the advantages and disadvantages of CI/CD, and our team charter, which outlines our external goals, attendance expectations, accountability, and decision-making processes.
 
 \section{Confidential Information}
-This project deals with a large amount of confidental information related to the financials of all the MES clubs and organizations. Such details must maintain confidentiality and can only be shared within MES and student groups. All group member will sign an NDA provided by the MES before gaining access to said information. Confidential information includes, but is not limited to, the following:
+\textcolor{red}{This section outlines the types of sensitive information the MES-ERP system will handle, informing team members about data sensitivity during development. While the primary mechanism for protecting this information involves formal Non-Disclosure Agreements (NDAs) signed with the MES, understanding the nature of the data is crucial for implementing appropriate security measures within the application itself.}
+
+This project deals with a large amount of \sout{confidental} \textcolor{red}{confidential} information related to the financials of all the MES clubs and organizations. Such details must maintain confidentiality and can only be shared within MES and student groups. All group member\textcolor{red}{s} will sign an NDA provided by the MES before gaining access to said information. Confidential information includes, but is not limited to, the following:
 
 \begin{itemize}
   \item \textbf{Expense Receipts}: Detailed records of all expenses incurred by the MES clubs and organizations, including receipts for purchases, travel expenses, and other financial transactions.
@@ -46,6 +53,7 @@ This project deals with a large amount of confidental information related to the
   \item \textbf{Membership Fees and Dues}: Information on membership fees collected from MES members, including payment records, dues schedules, and any outstanding balances.
   \item \textbf{Event Financials}: Detailed financial records for events organized by MES, including income from ticket sales, sponsorships, and expenses related to event logistics and execution.
   \item \textbf{Vendor Contracts}: Agreements with vendors providing goods and services to MES, including payment terms, service agreements, and financial obligations.
+  \item \textcolor{red}{\textbf{User Information}: Personal details like names, emails, phone numbers, and potentially banking information for reimbursements.}
 \end{itemize}
 
 
@@ -58,7 +66,7 @@ This project will follow a proprietary licensing agreement, which can be found i
 
 \section{Team Meeting Plan}
 
-We will hold team meetings twice a week, either online or in person, based on availability and need. Advisor meetings will take place monthly through Teams unless urgent issues arise. In such cases, meetings may be held in person, depending on the severity of the matter and in consultation with the advisor.
+We will hold team meetings twice a week, either online or in person, based on availability and need. \textcolor{red}{Meeting times will be coordinated weekly via Discord poll or discussion to accommodate varying schedules.} Advisor meetings will take place monthly through Teams unless urgent issues arise. In such cases, meetings may be held in person, depending on the severity of the matter and in consultation with the advisor.
 
 \subsection{Meeting Structure}
 
@@ -72,11 +80,11 @@ We will begin by providing an overview of the project’s progress and potential
 The role of meeting chair will rotate among team members. Prior to advisor meetings, the team will collaboratively decide on the agenda and compile a list of questions and concerns to be addressed.
 
 \section{Team Communication Plan}
-In terms of team communication for this project, we will use discord as the main messaging platform. Discord will be used for messaging between the group members, to plan meetings, talk about issues, share resources and concepts. In addition, all group members will stay up to date on the GitHub issues to track any issue with their commits and be required to address (fix or simply respond) all their issues. Additionally, any merge conflicts or issues pushing or pulling code will be notified to team members via discord or if urgent through phone call.
+In terms of team communication for this project, we will use \sout{d}Discord as the main \sout{messaging platform} \textcolor{red}{channel for informal discussion, quick questions, and meeting coordination}. Discord will be used for messaging between the group members, to plan meetings, talk about issues, share resources and concepts. In addition, all group members will stay up to date on the GitHub \sout{issues} \textcolor{red}{Issues section}, \sout{to track any issue with their commits and be} \textcolor{red}{which will serve as the primary tool for tracking specific tasks, bugs, and feature progress. Team members are} required to address (fix or simply respond) \sout{all their issues.} \textcolor{red}{issues assigned to them in a timely manner.} Additionally, any merge conflicts or issues pushing or pulling code will be notified to team members via Discord or\sout{, if urgent,} through phone call \textcolor{red}{if urgent}.
 
 \section{Team Member Roles}
 
-We have assigned the following roles to team members, detailing their responsibilities.
+We have assigned the following \sout{roles} \textcolor{red}{procedural roles} to team members, detailing their responsibilities.
 Every month we will meet back to adjust the roles of each person as needed according to what people want to do and what their strengths are. In addition, group members can request a vote to switch to another role at any time.
 
 \begin{itemize}
@@ -103,8 +111,8 @@ Every month we will meet back to adjust the roles of each person as needed accor
 
     \item \textbf{Notetaker/Helper: Omar Muhammad}
     \begin{itemize}
-        \item Reviews all project documents and deliverables for accuracy and completeness (with Rachid).
-        \item Talks to anyone else in the group to see if they need assistance for any work.
+        \item \sout{Reviews all project documents and deliverables for accuracy and completeness (with Rachid).} \textcolor{red}{Assists the primary Notetaker during meetings.}
+        \item Talks to anyone else in the group to see if they need assistance for any work \textcolor{red}{and helps coordinate support}.
     \end{itemize}
 
     \item \textbf{Leader: Housam Alamour}
@@ -112,11 +120,10 @@ Every month we will meet back to adjust the roles of each person as needed accor
         \item Oversees the overall progress of the project.
         \item Coordinates tasks and ensures that deadlines are met.
         \item Acts as the main point of contact between the team and the advisor.
+        \textcolor{red}{\item Facilitates the distribution of technical tasks.}
     \end{itemize}
 \end{itemize}
-
-
-\section{Workflow Plan}
+\textcolor{red}{In addition to these procedural roles, technical tasks related to frontend development, backend logic, database management, testing, and documentation will be distributed based on member expertise, interest, and project phase needs, coordinated by the Leader.}
 
 \section{Workflow Plan}
 
@@ -148,34 +155,7 @@ Continuous Integration and Continuous Deployment (CI/CD) will be implemented to 
     \item \textbf{Automated Testing}: Automated tests will be run on each commit to ensure that new changes do not break existing functionality.
 \end{itemize}
 
-\section{POC Demo Plan}
-
-\subsection{Proof of Concept (POC) Demonstration}
-The Proof of Concept (POC) demonstration will be a critical part of our project, showcasing the feasibility and functionality of our proposed solution. The following elements will be included in the POC demo plan:
-\subsection{Demo Plans}
-
-For our upcoming Proof of Concept (POC) demo, we will showcase the core functionalities of the website. The goal is to demonstrate the key user flows and interactions while keeping the design straightforward and focused on functionality. The demo will highlight the following features:
-
-\begin{itemize}
-    \item \textbf{Authentication System:} Users will be able to register, log in, and be assigned a role (user or admin) to access their respective dashboards.
-    
-    \item \textbf{User and Admin Dashboards:}
-    \begin{itemize}
-        \item \textbf{User Dashboard:} The user will have access to a form for submitting reimbursement requests. Once a form is submitted, the user can view the status of their request, which will be updated as the request progresses.
-        
-        \item \textbf{Admin Dashboard:} The admin will be able to view all reimbursement requests submitted by users. Admins can update the status of each request (in progress, accepted, rejected), and these status changes will be reflected on the user’s dashboard.
-    \end{itemize}
-\end{itemize}
-
-This demo will serve as a basic proof of concept, focusing on demonstrating essential functionalities without incorporating overly complex elements. The emphasis is on ensuring that the primary user interactions, such as registration, dashboard navigation, request submission, request review, and request approval/denial work as intended. This will provide a solid foundation for future development and refinement as the project progresses.
-
-\subsection{Next Steps and Feedback}
-
-As this is a preliminary demonstration, we aim to gather feedback on whether the functionalities outlined above meet the requirements and if any improvements are needed. Any suggestions for enhancements, as well as additional features that may be valuable for the next phase, will be highly appreciated.
-
-
-
-The POC demo plan will provide a good overview of our steps taken to complete this project, making sure that all aspects are thoroughly considered and addressed. This will help us identify and mitigate risks early, leading to the success of the project.
+\textcolor{red}{\section{Project Decomposition and Schedule}}
 
 Our project will be scheduled as such: \\
 
@@ -192,13 +172,41 @@ Our project will be scheduled as such: \\
   EXPO Demonstration \> April TBD \\
 \end{tabbing}
 
-\section{Proof of Concept Demonstration Plan}
+\textcolor{red}{\section{Proof of Concept (POC) Demonstration Plan}}
 
 \vspace{0.5cm}
 
-The Proof of Concept (POC) demonstration will be a critical part of our project, showcasing the feasibility and functionality of our proposed solution.
+The Proof of Concept (POC) demonstration \sout{will be a critical part of our project, showcasing} \textcolor{red}{aims to demonstrate} the feasibility and core functionality of our proposed solution \textcolor{red}{while explicitly addressing key project risks identified early on}.
 
-The main risk for our project is handling unexpected inputs from the receipts we are given. Since this is the primary purpose of the project, failure to handle these inputs 100\% of the time would be a significant issue. To demonstrate success at the POC demo, we will bring a variety of receipts and showcase how our project operates. We will show that we can handle normal, boundary, and unusual inputs with appropriate responses. Successfully demonstrating this capability will indicate that we have effectively mitigated the risk of being unable to handle some inputs.
+\textcolor{red}{\subsection{Key Risks Addressed by POC}}
+\textcolor{red}{The primary risks this POC aims to mitigate are:}
+\begin{itemize}
+    \item \textbf{\textcolor{red}{Core Workflow Viability:}} \textcolor{red}{The risk that the fundamental process of user authentication, request submission, and administrative review is technically infeasible or overly complex within the chosen tech stack (Next.js/Supabase).}
+    \item \textbf{\textcolor{red}{Role-Based Access Control (RBAC) Implementation Risk:}} \textcolor{red}{The risk that implementing basic role separation between standard users and administrators is fundamentally difficult or cannot be securely achieved with Supabase Auth.}
+    \item \textbf{\textcolor{red}{Data Handling and Persistence Risk:}} \textcolor{red}{The risk that submitted request data cannot be reliably stored, retrieved, and updated in the database.}
+\end{itemize}
+\textcolor{red}{While the original plan mentioned risks related to handling diverse receipt inputs, this POC focuses first on validating the core digital workflow before tackling input variability.}
+
+\subsection{Demo Plans}
+
+For our upcoming Proof of Concept (POC) demo, we will showcase the core functionalities of the website. The goal is to demonstrate the key user flows and interactions while keeping the design straightforward and focused on functionality. \textcolor{red}{This demonstration directly addresses the identified risks by proving the viability of the core workflow and basic RBAC.} The demo will highlight the following features:
+
+\begin{itemize}
+    \item \textbf{Authentication System:} Users will be able to register, log in, and be assigned a role (user or admin) to access their respective dashboards.
+
+    \item \textbf{User and Admin Dashboards:}
+    \begin{itemize}
+        \item \textbf{User Dashboard:} The user will have access to a form for submitting reimbursement requests. Once a form is submitted, the user can view the status of their request \textcolor{red}{(initially 'Submitted')}.
+
+        \item \textbf{Admin Dashboard:} The admin will be able to view all reimbursement requests submitted by users. Admins can update the status of each request (e.g., change 'Submitted' to '\sout{in progress, accepted, rejected} \textcolor{red}{Approved' or 'Rejected'}), and these status changes will be reflected on the user’s dashboard.
+    \end{itemize}
+\end{itemize}
+
+\textcolor{red}{The planned demo flow will involve: (1) Registering a new user account. (2) Logging in as the user and submitting a sample request. (3) Logging out and logging in as an admin. (4) Viewing the submitted request on the admin dashboard. (5) Changing the request status (e.g., to 'Approved'). (6) Logging out and logging back in as the original user to show the updated status.} This demo will serve as a basic proof of concept, focusing on demonstrating essential functionalities without incorporating overly complex elements \sout{. The emphasis is on ensuring that the primary user interactions, such as registration, dashboard navigation, request submission, request review, and request approval/denial work as intended}. This will provide a solid foundation for future development and refinement as the project progresses.
+
+\subsection{Next Steps and Feedback}
+
+As this is a preliminary demonstration, we aim to gather feedback on whether the functionalities outlined above meet the requirements and if any improvements are needed. Any suggestions for enhancements, as well as additional features that may be valuable for the next phase, will be highly appreciated.
 
 \subsection{Link to GitHub Project:} \href{https://github.com/Housam2020/MES-ERP}{https://github.com/Housam2020/MES-ERP} \\
 \section{Expected Technology}
@@ -210,43 +218,43 @@ Please note that any specific technologies referenced in this section are merely
   \begin{itemize}
       \item \textbf{TypeScript}: For this project, we will be using Typescript as it has been set out as a constraint by the supervisor for consistency reasons as many of the previous MES tools use this language. However, its benefits are that it provides static typing, which helps catch errors early and improves code quality. Additionally, it integrates well with Next.js, the other requirement for this project.
   \end{itemize}
-  
+
   \item \textbf{Specific libraries:}
-  
+
   \begin{itemize}
     \item First, we have a constraint that we must use Next.js imposed by the supervisor for similar reasons above as to why Typescript will be used. Our team wants to choose libraries that facilitate the development of a web application, as that is the main goal of our project. We are looking for libraries that help with server-side rendering, static site generation, and routing. We also need libraries that will help us sort through the old financial information as part of this project involves reading and parsing the old Excel documents that were used to keep track of financials for clubs in the past.
   \end{itemize}
-  
+
   \item \textbf{Pre-trained models and Machine Learning Technologies:}
   \begin{itemize}
       \item TensorFlow or PyTorch: Frameworks for utilizing pre-trained machine learning models for the machine learning based expense categorization stretch goal.
   \end{itemize}
-  
+
   \item \textbf{Specific linter tool:}
   \begin{itemize}
-    \item The team will pick a linter tool to ensure code quality and consistency that will help to identify and fix problems in the codebase. It helps identify and fix problems in TypeScript code.
+    \item The team will pick a linter tool \textcolor{red}{(ESLint)} to ensure code quality and consistency that will help to identify and fix problems in the codebase. It helps identify and fix problems in TypeScript code.
   \end{itemize}
-  
+
   \item \textbf{Specific unit testing framework:}
   \begin{itemize}
     \item  A unit testing framework such as Jest will be chosen to test the individual components, ensuring that each part of the application functions correctly.
   \end{itemize}
-  
+
   \item \textbf{Investigation of code coverage measuring tools:}
   \begin{itemize}
     \item Code coverage tools will be used to measure the percent of the codebase tested, showing the team how to improve test coverage and code quality. This may be potentially done with Jest and GitHub actions. This will help ensure  that all parts of the codebase are tested.
   \end{itemize}
-  
+
   \item \textbf{Specific plans for Continuous Integration (CI):}
   \begin{itemize}
     \item Continuous Integration (CI) tools will be implemented to automate the testing and deployment process. This will help ensure that code changes are continuously integrated and tested. GitHub Actions has most of the features needed for our development as it automates the testing and deployment process.
   \end{itemize}
-  
+
   \item \textbf{Specific performance measuring tools:}
   \begin{itemize}
     \item While not likely that we will need specific performance measuring tools for a web application, as this is not quite a real time system, we still want the tool to be responsive, fast and easy to use for all users. For this reason we will mostly be basing our performance tests off how long pages take to load on different hardware, and if needed we will utilize other tools like Lighthouse to assess the efficiency and speed of the application, identifying areas for optimization.
   \end{itemize}
-  
+
   \item \textbf{Tools you will likely be using:}
   \begin{itemize}
     \item We will choose development tools and editors to increase productivity and streamline the development process. We want good "return on investment" for our time to implement and learn how to use any tools in this project. Thus, we will mainly be using tools already used by our team members. This includes Visual Studio Code: This code editor will be used for development. It offers a wide range of extensions and integrations that enhance productivity. We will also extensively be using GitHub and GitHub projects as part of this effort for version control.
@@ -260,38 +268,38 @@ We will adopt the following coding standards to ensure code quality and maintain
 \begin{itemize}
     \item \textbf{Language-Specific Guidelines:}
     \begin{itemize}
-        \item \textbf{TypeScript}: Follow official TypeScript guidelines to ensure type safety and consistency.
+        \item \textbf{TypeScript}: Follow official TypeScript guidelines \textcolor{red}{and leverage strict type checking} to ensure type safety and consistency.
     \end{itemize}
 
     \item \textbf{Code Formatting:}
     \begin{itemize}
-        \item Use Prettier for consistent code formatting through the codebase.
+        \item Use Prettier for consistent code formatting through the codebase\textcolor{red}{, enforced via pre-commit hooks and CI checks}.
     \end{itemize}
 
     \item \textbf{Commenting and Documentation:}
     \begin{itemize}
-        \item Add inline comments for logic that is complex and need explanation. This will help to improve code readability.
+        \item Add inline comments for logic that is complex and need\textcolor{red}{s} explanation. \textcolor{red}{Use JSDoc comments for functions and components where appropriate.} This will help to improve code readability.
     \end{itemize}
 
     \item \textbf{Version Control:}
     \begin{itemize}
-        \item Follow the Git branching model for feature development and bug fixes.
-        \item Use descriptive commit messages, this can be done by following the \href{https://www.conventionalcommits.org/en/v1.0.0/}{Conventional Commits} specification.
+        \item Follow the Git branching model \textcolor{red}{(e.g., Gitflow or GitHub Flow)} for feature development and bug fixes.
+        \item Use descriptive commit messages, \sout{this can be done by} \textcolor{red}{ideally} following the \href{https://www.conventionalcommits.org/en/v1.0.0/}{Conventional Commits} specification.
     \end{itemize}
 
     \item \textbf{Code Reviews:}
     \begin{itemize}
-        \item Require peer reviews for all code changes to ensure quality and adherence to standards.
+        \item Require peer reviews \textcolor{red}{(at least one approval)} for all code changes \textcolor{red}{via Pull Requests} to ensure quality and adherence to standards.
     \end{itemize}
 
     \item \textbf{Testing:}
     \begin{itemize}
-        \item Write unit tests for each major feature using a set testing framework.
+        \item Write unit tests \textcolor{red}{(using Jest)} for each major feature \sout{using a set testing framework}.
         \item Monitor code coverage to ensure an adequate amount of code coverage has been reached (currently set to 90\%).
     \end{itemize}
     \item \textbf{Variable Naming:}
   \begin{itemize}
-      \item Use camelCase for variable names to ensure consistency and readability. For example, use \texttt{totalAmount} instead of \texttt{total\_amount}.
+      \item Use camelCase for variable names \textcolor{red}{and function names}. \textcolor{red}{Use PascalCase for component and type names.} \sout{to ensure consistency and readability.} For example, use \texttt{totalAmount} instead of \texttt{total\_amount}.
   \end{itemize}
 \end{itemize}
 
@@ -332,37 +340,37 @@ This appendix was discussed and completed as a group.
 \section*{Appendix --- Team Charter}
 
 \subsection*{External Goals}
-Our team’s external goals for this project are to further develop our skills as software engineers and gain hands-on experience in real-world project management and development. We aim to build a strong foundation of practical skills that we can confidently showcase in our resumes and discuss in interviews. We want to use this project to show our abilities when demonstrating our expertise and contributions to future employers.
+Our team’s external goals for this project are to further develop our skills as software engineers and gain hands-on experience in real-world project management and development \textcolor{red}{within a modern web technology stack (Next.js, TypeScript, Supabase)}. We aim to build a strong foundation of practical skills that we can confidently showcase in our resumes and discuss in interviews. We want to use this project to show our abilities when demonstrating our expertise and contributions to future employers. \textcolor{red}{Delivering a functional and useful tool for the MES is also a key external goal.}
 
 \subsection*{Attendance}
 
 \subsubsection*{Expectations}
-All team members are expected to attend every meeting on time. If someone is delayed, they must notify the group in advance. If a member needs to leave early or miss a meeting for a valid reason, they are required to update the team on their progress via text and stay informed about the work and progress of others.
+All team members are expected to attend every \textcolor{red}{scheduled team and supervisor/stakeholder} meeting on time. If someone is delayed, they must notify the group \textcolor{red}{via Discord} in advance. If a member needs to leave early or miss a meeting for a valid reason, they are required to update the team on their progress via text \textcolor{red}{or Discord} and stay informed about the work and progress of others \textcolor{red}{by reviewing meeting minutes or catching up with a teammate}.
 
 \subsubsection*{Acceptable Excuse}
-Valid reasons for missing a meeting or deadline include family emergencies or severe illness that prevents the individual from working. Excuses like having a midterm or an upcoming assignment will not be considered acceptable.
+Valid reasons for missing a meeting or deadline include family emergencies or severe illness that prevents the individual from working. Excuses like having a midterm or an upcoming assignment will not be considered acceptable\textcolor{red}{, as these should be planned for in advance}.
 
 \subsubsection*{In Case of Emergency}
-In the event of an emergency, the work that was initially assigned to the affected team member will be equally distributed amongst the others to be completed. The team member that was unable to complete their work last time will have a slight increase in work for the next deliverable to make up.
+In the event of an emergency \textcolor{red}{preventing a member from completing critical work}, the work \sout{that was initially assigned to the affected team member} will be \sout{equally} distributed amongst the others \textcolor{red}{based on availability and relevant skills,} to \sout{be completed.} \textcolor{red}{ensure project progress is not significantly hindered.} The team member that was unable to complete their work last time \sout{will} \textcolor{red}{may} have a slight increase in work for the next deliverable to make up\textcolor{red}{, discussed and agreed upon by the team}.
 
 
 \subsection*{Accountability and Teamwork}
 
-\subsubsection*{Quality} 
-Team members are to be expected to have questions prepared for team meetings as well as a detailed understanding of what they are currently working on and what they have completed. This information is crucial as it will be required to present each team meeting. The quality of the deliverables that members bring to the team should be detailed and well done. The team is expected to look at the rubric while completing their portions for the deliverables.
-
+\subsubsection*{Quality}
+Team members are \sout{to be} expected to \sout{have questions prepared for team meetings as well as} \textcolor{red}{come prepared to team meetings with updates on their progress, potential blockers, and questions for the group. They should have} a detailed understanding of what they are currently working on and what they have completed. This information is crucial as it will be required \sout{to present} \textcolor{red}{for discussion during} each team meeting. The quality of the deliverables that members bring to the team should be detailed and well done. The team is expected to look at the rubric \textcolor{red}{and project requirements} while completing their portions for the deliverables. \textcolor{red}{Code contributions should adhere to the agreed-upon Coding Standard and pass CI checks.}
 
 \subsubsection*{Attitude}
-All team members are expected to maintain a welcoming and open-minded attitude towards all ideas and suggestions. While discussions on the effectiveness of an idea are encouraged, no idea should be dismissed outright. Everyone is expected to collaborate and contribute to the task at hand. If conflicts arise, members involved are expected to communicate their concerns openly and work together to find a resolution as quickly as possible.
+All team members are expected to maintain a welcoming and open-minded attitude towards all ideas and suggestions. While discussions on the effectiveness of an idea are encouraged, no idea should be dismissed outright \textcolor{red}{without constructive reasoning}. Everyone is expected to collaborate and contribute to the task at hand. If conflicts arise, members involved are expected to communicate their concerns openly and \textcolor{red}{respectfully,} \sout{and} work together to find a resolution as quickly as possible.
 
 \subsubsection*{Stay on Track}
-To keep the team on track, we will hold weekly meetings to review current progress and outline upcoming tasks. Each member will provide a brief summary of their contributions for the week. Members who fall behind compared to their peers will receive warnings and be encouraged to meet the group’s standards. Those who do not contribute at all will be reported to the professor or TA.
+To keep the team on track, we will hold weekly meetings to review current progress and outline upcoming tasks \textcolor{red}{using our GitHub Project board}. Each member will provide a brief summary of their contributions for the week. Members who fall behind compared to their peers will receive warnings \textcolor{red}{and offers of support from the team}. \sout{and be encouraged to meet the group’s standards.} \textcolor{red}{Persistent lack of contribution, after attempts to resolve the issue internally, will be discussed with the Leader and potentially} \sout{Those who do not contribute at all will be} reported to the professor or TA.
 
-We will set a target number of commits for each team member. At the end of the month, the member with the highest number of commits will be rewarded with a free meal of their choice.
+\sout{We will set a target number of commits for each team member. At the end of the month, the member with the highest number of commits will be rewarded with a free meal of their choice.}
+
 \subsubsection*{Team Building}
-We will have bi-weekly meetups where we go for food or do an activity together.
+We will \sout{have} \textcolor{red}{plan} bi-weekly meetups where we \sout{go for food or do an activity together.} \textcolor{red}{can socialize outside of project work, such as grabbing food or participating in a group activity chosen by consensus. This aims to foster camaraderie and improve team dynamics.}
 
-\subsubsection*{Decision Making} 
-All decisions will be made through a voting process. If a member strongly disagrees with the outcome, they must present their concerns and explain why an alternative option might be preferable. A revote can then be conducted based on this new information.
+\subsubsection*{Decision Making}
+All \textcolor{red}{major technical or project direction} decisions will be made through a voting process \textcolor{red}{after discussion}. If a member strongly disagrees with the outcome, they must present their concerns and explain why an alternative option might be preferable. A revote can then be conducted based on this new information \textcolor{red}{if the group agrees the concerns warrant reconsideration}. \textcolor{red}{Minor decisions can be made by the assigned individual or relevant subgroup, keeping the Leader informed.}
 
 \end{document}
