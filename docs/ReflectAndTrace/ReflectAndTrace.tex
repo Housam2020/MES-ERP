@@ -161,12 +161,44 @@ Overall, design decisions prioritized fulfilling core MES requirements, ensuring
 
 \section{Economic Considerations (LO23)}
 
-\plt{Is there a market for your product? What would be involved in marketing your 
-product? What is your estimate of the cost to produce a version that you could 
-sell?  What would you charge for your product?  How many units would you have to 
-sell to make money? If your product isn't something that would be sold, like an 
-open source project, how would you go about attracting users?  How many potential 
-users currently exist?}
+\plt{This section explores the potential market, costs, and economic viability of the MES-ERP platform, considering its current context and potential future paths.}
+
+As a capstone project developed specifically for the McMaster Engineering Society (MES), the initial "market" is internal. However, the underlying problem – managing finances for multiple student clubs within a larger organization – is common across universities.
+
+\begin{itemize}
+    \item \textbf{Market Potential:}
+        \begin{itemize}
+            \item \textbf{Internal (MES):} The immediate user base consists of roughly 60 MES-affiliated clubs, MES executives, and financial administrators. Success here relies on adoption and usability.
+            \item \textbf{McMaster Expansion:} Other student societies within McMaster (e.g., MSU clubs, Faculty societies) face similar challenges and could be potential users if the platform is adaptable.
+            \item \textbf{External Universities:} Student unions/societies at other universities represent a larger potential market, though adaptation to different financial policies would be necessary.
+        \end{itemize}
+
+    \item \textbf{Marketing and User Attraction:}
+        \begin{itemize}
+            \item \textbf{MES Internal:} Promotion via MES communication channels, training sessions for club treasurers, and endorsements from MES executives. Ease of use and clear benefits over the old system (faster reimbursements, better tracking) are key selling points.
+            \item \textbf{External/Open Source:} If generalized or open-sourced, marketing could involve presentations at student government conferences, articles in university tech forums, presence on GitHub, and potentially partnerships with university IT departments. Attracting users would depend on demonstrating clear advantages over generic tools (like spreadsheets) or commercial alternatives, ease of deployment, and good documentation.
+        \end{itemize}
+
+    \item \textbf{Production and Ongoing Costs:}
+        \begin{itemize}
+            \item \textbf{Initial Development Cost:} Primarily student labor within the capstone structure. The stated project budget was \$750, likely covering minor expenses (perhaps specific software tools or small service tiers). Estimating a commercial equivalent would involve multiplying development hours (estimated 400-500 in the VnV Report) by a junior/intermediate developer rate, resulting in tens of thousands of dollars.
+            \item \textbf{Hosting \& Services:} Supabase offers a free tier, but scaling might require paid plans (\$25+/month). Vercel (for Next.js hosting) also has free/pro tiers. SendGrid and Twilio have usage-based pricing, likely low initially but scaling with notification volume. Domain name registration (around \$15/year). Total ongoing costs could range from \$0 (on free tiers with low usage) to \$50-\$100+/month depending on scale and features used.
+            \item \textbf{Maintenance:} Requires ongoing effort for bug fixes, security updates, adapting to policy changes, and user support. This could be handled by future student volunteers, MES IT staff, or potentially paid contractors, representing a significant hidden cost.
+        \end{itemize}
+
+    \item \textbf{Pricing Model (If Commercialized/Generalized):}
+        \begin{itemize}
+            \item \textbf{Subscription:} A tiered annual subscription based on the number of clubs or users seems most plausible for university societies (e.g., \$500-\$2000/year per society).
+            \item \textbf{Open Source + Support:} Offer the core platform as open source, charging for setup assistance, hosting, custom modifications, or premium support contracts.
+        \end{itemize}
+
+    \item \textbf{Sales Estimate / Break-Even:**}
+        Assuming ongoing costs of \$600/year (\$50/month) and needing to recoup an estimated \$30,000 commercial development cost over 3 years (\$10,000/year), the platform would need to generate \$10,600 annually. At a \$1000/year subscription, this requires roughly 11 paying student societies. Given the niche market, achieving significant profit seems challenging without broad adoption or a very lean maintenance model.
+
+    \item \textbf{Potential Users:**} Initially ~60 MES clubs + MES staff. Potentially hundreds of clubs within McMaster. Thousands across Canadian universities.
+\end{itemize}
+
+In conclusion, while MES-ERP addresses a real need for MES, its direct commercial viability is uncertain due to the niche market and the likely need for customization for other institutions. An open-source model with optional paid support or focusing on adoption within McMaster might be more realistic paths for broader impact beyond the initial MES deployment. The primary economic benefit for MES is the significant saving in administrative time and improved financial control compared to the previous manual system.
 
 \section{Reflection on Project Management (LO24)}
 
